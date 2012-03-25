@@ -209,19 +209,19 @@ namespace ReadingTool.Services
             if(!currentItem.CollectionNo.HasValue) return ObjectId.Empty;
 
             var query = Query.And(
-               Query.EQ("Owner", _identity.UserId),
-               Query.EQ("LanguageId", currentItem.LanguageId),
-               Query.EQ("CollectionName", currentItem.CollectionName),
-               Query.GT("CollectionNo", currentItem.CollectionNo),
-               Query.EQ("Type", currentItem.ItemType)
-               );
+                Query.EQ("Owner", _identity.UserId),
+                Query.EQ("LanguageId", currentItem.LanguageId),
+                Query.EQ("CollectionName", currentItem.CollectionName),
+                Query.GT("CollectionNo", currentItem.CollectionNo),
+                Query.EQ("ItemType", currentItem.ItemType)
+                );
 
             return
                 _db.GetCollection<Item>(Collections.Items)
                 .Find(query)
                 .SetSortOrder("CollectionNo")
                 .SetLimit(1)
-                .SetFields("TextId")
+                .SetFields("_id")
                 .Select(x => x.ItemId)
                 .FirstOrDefault()
                 ;
@@ -234,19 +234,19 @@ namespace ReadingTool.Services
             if(!currentItem.CollectionNo.HasValue) return ObjectId.Empty;
 
             var query = Query.And(
-               Query.EQ("Owner", _identity.UserId),
-               Query.EQ("LanguageId", currentItem.LanguageId),
-               Query.EQ("CollectionName", currentItem.CollectionName),
-               Query.LT("CollectionNo", currentItem.CollectionNo),
-               Query.EQ("Type", currentItem.ItemType)
-               );
+                Query.EQ("Owner", _identity.UserId),
+                Query.EQ("LanguageId", currentItem.LanguageId),
+                Query.EQ("CollectionName", currentItem.CollectionName),
+                Query.LT("CollectionNo", currentItem.CollectionNo),
+                Query.EQ("ItemType", currentItem.ItemType)
+                );
 
             return
                 _db.GetCollection<Item>(Collections.Items)
                 .Find(query)
                 .SetSortOrder(SortBy.Descending("CollectionNo"))
                 .SetLimit(1)
-                .SetFields("ItemId")
+                .SetFields("_id")
                 .Select(x => x.ItemId)
                 .FirstOrDefault()
                 ;
