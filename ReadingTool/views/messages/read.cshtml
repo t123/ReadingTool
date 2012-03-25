@@ -1,0 +1,124 @@
+﻿@using MongoDB.Bson
+@model MessageViewModel
+@{
+    ViewBag.Title = "Read Message";
+    var users = ViewBag.Users as Dictionary<ObjectId, UserSimpleModel>;
+}
+@section styles {
+    <link href="@AppHelper.CssUrl("markdowndeep/mdd_styles.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+<table class="message" width="95%" cellspacing="1" cellpadding="0" >
+    <tbody>
+        <tr>
+            <th>
+                <ul class="top">
+                    @if(users.ContainsKey(Model.From)) 
+                    {
+                        <li>
+                            @using(Html.BeginForm<MessagesController>(x=>x.Send(users[Model.From].ToString()), FormMethod.Get, new { @style = "display: inline" }))
+                            { 
+                                <input type="submit" title="reply to message" value="" class="sprite spritesedit-reply" style="padding:0px 0px 0px 0px; margin: 0px 0px 0px 0px; height:23px;width: 24px;border:none;cursor:pointer"/>
+                            }
+                        </li>
+                    }
+                    @if(Model.IsStarred)
+                    {
+                        <li>
+                            @using(Html.BeginForm<MessagesController>(x => x.Unstar(Model.MessageId.ToString()), FormMethod.Post, new { @style = "display: inline" }))
+                            { 
+                                @Html.AntiForgeryToken()
+                                <input type="submit" value="" title="unstar message" class="sprite spritesedit-removestar" style="padding:0px 0px 0px 0px; margin: 0px 0px 0px 0px; height:23px;width: 24px;border:none;cursor:pointer"/>
+                            }
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            @using(Html.BeginForm<MessagesController>(x => x.Star(Model.MessageId.ToString()), FormMethod.Post, new { @style = "display: inline" }))
+                            { 
+                                @Html.AntiForgeryToken()
+                                <input type="submit" value="" title="star message" class="sprite spritesedit-addstar" style="padding:0px 0px 0px 0px; margin: 0px 0px 0px 0px; height:23px;width: 24px;border:none;cursor:pointer"/>
+                            }
+                        </li>
+                    }
+                    <li>
+                        @using(Html.BeginForm<MessagesController>(x => x.Delete(Model.MessageId.ToString()), FormMethod.Post, new { @style = "display: inline" }))
+                        { 
+                            @Html.AntiForgeryToken()
+                            <input type="submit" value="" title="delete message" class="sprite spritesedit-deletemessage" style="padding:0px 0px 0px 0px; margin: 0px 0px 0px 0px; height:23px;width: 24px;border:none;cursor:pointer"/>
+                        }
+                    </li>
+                </ul>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <div style="float:left; display: inline; margin-left: 20px">
+                    @{
+                        if(users.ContainsKey(Model.From))
+                        {
+                            <a style="background-color: inherit; text-decoration: none" target="_blank" href="@(Html.BuildUrlFromExpression<ProfilesController>(x => x.Index(users[Model.From].Username)))">
+                                @if(!string.IsNullOrWhiteSpace(users[Model.From].EmailAddressMD5))
+                                {
+                                    <img src="@string.Format("http://www.gravatar.com/avatar/{0}?s=80&d=mm", users[Model.From].EmailAddressMD5))" width="80" height="80" title="@users[Model.From].ToString()" alt="Gravatar for @users[Model.From].ToString()"/>
+                                }
+                                else
+                                {
+                                    <img src="http://www.gravatar.com/avatar/?s=80&d=mm" width="80" height="80" title="Gravatar" alt="Gravatar"/>
+                                }
+                            </a>
+                        }
+                    }
+                </div>
+                <div style="float:left; display: inline; margin-left: 20px">
+                    @if(Model.IsStarred)
+                    {
+                        <img src="@AppHelper.ImageUrl(Icons.Size32.STAR_MESSAGE)" width="32" height="32" alt="message starred" title="message starred" />
+                    }
+                    else
+                    { 
+                        <img src="@AppHelper.ImageUrl(Icons.Size32.UNSTAR_MESSAGE)" width="32" height="32" alt="message not starred" title="message not starred" />
+                    }
+                </div>
+                <div style="float:left; display: inline; margin-left: 20px">
+                    From 
+                    @if(Model.MessageType == MessageType.Sent)
+                    {
+                        <strong>you</strong> <text>to </text>
+                        foreach(var id in Model.To)
+                        { 
+                            <strong>@(users.ContainsKey(id) ? users[id].ToString() : "Unkonwn")</strong><text>, </text>
+                        }
+                    }
+                    else if(Model.MessageType == MessageType.Received)
+                    {
+                        <strong>@(users.ContainsKey(Model.From) ? users[Model.From].ToString() : "Unkonwn")</strong>
+                    }
+                    on @Html.FormatDateTime(Model.Created)
+                    <div class="clear10"></div>
+                    @Model.Subject
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <div class="mdd_preview">
+                    @if(string.IsNullOrEmpty(Model.Body))
+                    {
+                        <p>
+                            (no message body)
+                        </p>
+                    }
+                    else
+                    {
+                        @Html.Raw(Model.Body)
+                    }
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+@section footer { }

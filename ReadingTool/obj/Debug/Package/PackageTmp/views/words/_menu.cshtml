@@ -1,0 +1,9 @@
+<div class="subnav">
+    <ul class="subnav">
+        <li>@(Html.ActionLink<WordsController>(x=>x.Index(), "your words"))</li>
+        <li>@(Html.ActionLink<WordsController>(x => x.Review(), "review words"))</li>
+        <li>@(Html.ActionLink<WordsController>(x => x.Import(), "import"))</li>
+        <li>@(Html.ActionLink<WordsController>(x => x.Export(), "export"))</li>
+    </ul>
+</div>
+<div class="clr10"></div>

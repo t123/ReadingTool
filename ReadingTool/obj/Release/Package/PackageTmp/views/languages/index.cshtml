@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Your Languages";
+}
+@section submenu { @Html.Partial("_menu") }
+@section bottomJS
+{
+    <script language="javascript" type="text/javascript">
+        var settings = {
+            url: '@(Html.BuildUrlFromExpression<AjaxLanguagesController>(x=>x.Index()))',
+            languageUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Languages)',
+            afToken: $('#afForm input[name=__RequestVerificationToken]').val()
+        };
+        var languages = new languagesVM(settings);
+    </script>
+}
+
+<p class="notice" data-bind="visible: items().length==0">
+    You don't have any languages yet, you should start off by @(Html.ActionLink<LanguagesController>(x=>x.Add(), "adding a language")).
+</p>
+<p class="notice" data-bind="visible: notSetLanguages">
+    Some of your languages haven't been set yet to the system languages. Doing so gives extra features for some languages and helps group 
+    users studying the same language. You can do this in the edit screen for your language.
+</p>
+<div id="main" style="margin-left: 0px;">
+<table class="texts" width="100%" cellspacing="0" cellpadding="0" data-bind="visible: items().length>0">
+    <thead>
+        <tr>
+            <th>Language</th>
+            <th>Linked to system name</th>
+            <th style="width: 30px">&nbsp;</th>
+            <th style="width: 30px">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: items">
+        <tr>
+            <td>
+                <div style="width:10px; height: 10px; display: inline-block;" data-bind="text: ' ', style: { backgroundColor: colour }">&nbsp;</div>
+                <span data-bind="text: name"></span>
+            </td>
+            <td data-bind="text: systemName"></td>
+            <td><a data-bind="attr: { href: settings.languageUrl + '/edit/' + id }" class="sprite sprite-edit" title="edit">edit</a></td>
+            <td><a href="#" data-bind="click: $parent.deleteLanguage" class="sprite sprite-delete" title="delete">delete</a></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<form action="#" id="afForm" style="display:none">@Html.AntiForgeryToken()</form>
+@section footer { }

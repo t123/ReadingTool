@@ -1,0 +1,77 @@
+﻿@model LwtJsonModel
+@{
+    ViewBag.Title = "LWT Import";
+}
+@section submenu { @Html.Partial("_menu") }
+<p class="warning">
+    <strong>Always</strong> try the test mode first. If the import fails you can either send an email to 
+    <a href="mailto:@SystemSettings.Instance.Values.Site.ContactEmail">@SystemSettings.Instance.Values.Site.ContactEmail</a> or file a 
+    bug report at <a target="_blank" href="@SystemSettings.Instance.Values.Site.BugReportingUrl">@SystemSettings.Instance.Values.Site.BugReportingUrl</a>.
+</p>
+<p class="notice">
+    If you have direct access to your LWT server you can export your data from there. First you must download
+    <a href="@Url.Content("~/content/jsonexport.php.txt")">this script</a> and remove the .txt extension, so the filename becomes 
+    <strong>jsonexport.php</strong>. You must then upload it to your LWT server and go to http://www.example.org/jsonexport.php (replace 
+    example.org with your server). This will start a download of all your data. When it's finished you must delete the 
+    <strong>jsonexport.php</strong> file, otherwise anyone will be able to download your data. Once you have your JSON file, you can upload it
+    below.
+</p>
+@{
+    if(ViewData.ModelState.Values.Count(x => x.Errors.Count > 0) > 0)
+    {
+        <div class="validation-summary-errors">
+            @foreach(var state in ViewData.ModelState.Values.Where(x => x.Errors.Count > 0))
+            {
+                foreach(var error in state.Errors)
+                {
+                    @Html.Raw(error.ErrorMessage)
+                }
+            }
+        </div>
+    }
+
+    using(Html.BeginForm<MyAccountController>(x => x.LwtImportJson(), FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <legend>Import data from LWT JSON export</legend>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.File)
+            <input type="file" name="File" />
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.TestMode)
+            @Html.CheckBoxFor(x => x.TestMode)
+            @Html.ValidationMessageFor(x => x.TestMode)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.MediaUrl)
+            @Html.TextBoxFor(x => x.MediaUrl)
+            @Html.ValidationMessageFor(x => x.MediaUrl)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.TagsToCollections)
+            @Html.CheckBoxFor(x => x.TagsToCollections)
+            @Html.ValidationMessageFor(x => x.TagsToCollections)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.UseRomanisationAsBaseWord)
+            @Html.CheckBoxFor(x => x.UseRomanisationAsBaseWord)
+            @Html.ValidationMessageFor(x => x.UseRomanisationAsBaseWord)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.NumberCollectionRegEx)
+            @Html.TextBoxFor(x => x.NumberCollectionRegEx)
+            @Html.ValidationMessageFor(x => x.NumberCollectionRegEx)
+        </div>
+        
+        <button type="submit">
+            <span>import data</span>
+        </button>
+    }
+}

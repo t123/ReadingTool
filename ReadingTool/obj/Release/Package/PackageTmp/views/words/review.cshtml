@@ -1,0 +1,110 @@
+﻿@model ReadingTool.Models.Create.Word.ReviewWordsModel
+@{
+    ViewBag.Title = "Review Words";
+    var words = ViewBag.Words as IEnumerable<WordViewModel>;
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer { }
+@{
+    using (Html.BeginForm<WordsController>(x => x.Review(), FormMethod.Post))
+    {
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <legend>Find Words To Review</legend>
+
+    <div class="input_wrapper">
+        @Html.LabelFor(x => x.LanguageId)
+        @Html.DropDownListFor(
+                x => x.LanguageId,
+                new SelectList(from l in ViewBag.Languages as IEnumerable<LanguageSimpleViewModel> select new { Key = l.LanguageId, Value = l.Name }, "Key", "Value")
+           )
+        @Html.ValidationMessageFor(x => x.LanguageId)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelFor(x => x.NumberOfWords)
+        @Html.TextBoxFor(x => x.NumberOfWords)
+        @Html.ValidationMessageFor(x => x.NumberOfWords)
+    </div>
+    
+    <button type="submit">
+        <span>review words</span>
+    </button>
+    }
+}
+<div class="clr20"></div>
+@if(words==null)
+{
+    <p class="notice">
+        This is a deliberately simple review system. If you would like more statistics or control, please download 
+        <a href="http://en.wikipedia.org/wiki/Spaced_repetition" target="_blank">an SRS program</a>, like 
+        <a href="http://ankisrs.net" target="_blank">Anki</a>.
+    </p>
+    <div class="clr10"></div>
+    <p class="notice">
+        When words are saved they are added to box 1, with a 10 minute delay before the first review. When a card is 
+        marked as correct, it moves to the next box. If it is marked incorrect it moves back to box 1. The next review 
+        in hours is calculated by:<br/>
+        <code>3<sup>box</sup>*24+C, where C is a random number, bewteen -12 and 12</code>
+        <br/><br/>
+        Changing a word, even state, does not affect which box it is in. That is only changeable in the review section.
+    </p>
+}
+else if (!words.Any())
+{
+    <p class="notice">Nothing to review</p>
+}
+else
+{
+    using (Html.BeginForm<WordsController>(x => x.SaveReviewWords(), FormMethod.Post))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.LanguageId)
+        @Html.HiddenFor(x => x.NumberOfWords)
+        <table class="texts" width="95%" cellspacing="0" cellpadding="0" style="margin-left: 20px;">
+            <thead>
+                <tr>
+                    <th>Box</th>
+                    <th>Word</th>
+                    <th>Sentence</th>
+                    <th>Do Nothing</th>
+                    <th>Known</th>
+                    <th>Remember</th>
+                    <th>Don't Remember</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var word in words.OrderBy(x => Guid.NewGuid()))
+                {
+                    <tr>
+                        <td>@word.Box</td>
+                        <td>@word.WordPhrase</td>
+                        <td>@(Html.FormatSentence(word))</td>
+                        <td><input type="radio" name="@word.WordId" value="I" checked="checked"/></td>
+                        <td><input type="radio" name="@word.WordId" value="K"/></td>
+                        <td><input type="radio" name="@word.WordId" value="R"/></td>
+                        <td><input type="radio" name="@word.WordId" value="F"/></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    <button type="submit">
+        <span>save and get next words</span>
+    </button>
+    }
+}
+
+@section bottomJS
+{
+    <script language="javascript" type="text/javascript">
+        $('input:radio').click(function () {
+            if ($(this).is(':checked')) {
+                $(this).parent().parent().children().css('background-color', 'inherit');
+                $(this).parent().css('background-color', '#FFF4F4');
+            }
+        });
+    </script>
+}

@@ -1,0 +1,39 @@
+﻿@model SplitModel
+@{
+    ViewBag.Title = "Split Text";
+    ViewBag.IsParallelText = Model.IsParallelText;
+}
+@section submenu { @Html.Partial("_menu") }
+@section footer { }
+@Html.Partial("_submenu", Model.TextId, ViewData)
+
+<p class="notice">
+    The text will be split into multiple pieces on ===. The original text will be kept. If this is a parallel text you 
+    should put the === in the parallel text as well.
+</p>
+
+@{
+    using (Html.BeginForm<TextsController>(x => x.Split(Model.TextId.ToString()), FormMethod.Post))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x=>x.TextId)
+        <legend>Split Text</legend>
+
+        <div class="input_wrapper">
+            @Html.LabelFor(x => x.Tags)
+            @Html.TextBoxFor(x => x.Tags)
+            @Html.ValidationMessageFor(x => x.Tags)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelFor(x => x.StartingNumber)
+            @Html.TextBoxFor(x => x.StartingNumber)
+            @Html.ValidationMessageFor(x => x.StartingNumber)
+        </div>
+    
+        <button type="submit">
+            <span>split text</span>
+        </button>
+    }
+}

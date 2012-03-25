@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "ಠ_ಠ  Error";
+}
+<div class="clr10"></div>
+<div style="margin-left: 20px">
+    <img src="@AppHelper.ImageUrl("challenge.png")" width="330" height="267" alt="Bug found - challenge accepted."/>
+    <br/>
+    <strong>You found a bug</strong> - it will be quashed!
+    <p class="general" style="margin-left: 0px">
+        Your error has been automatically logged. You don't have to do anything further, but it would be appreciated if you could file a bug report 
+        at <a target="_blank" href="@SystemSettings.Instance.Values.Site.BugReportingUrl">@SystemSettings.Instance.Values.Site.BugReportingUrl</a>. 
+        Please try include as much information as possible, for example your operating system (Windows/Mac/Linux), your browser 
+        (Chrome/Firefox/Internet Explorer/Safari/Opera) and the version number if you know. Even the date and time can help in tracking down 
+        a bug. If the error happens when you visit a specific page, or try do a specific action, please include the URL and any details you think 
+        may have caused the error.
+    </p>
+</div>

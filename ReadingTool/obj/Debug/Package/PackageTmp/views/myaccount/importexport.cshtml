@@ -1,0 +1,68 @@
+﻿@model ImportDataUploadModel
+@{
+    ViewBag.Title = "Import and Export";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+<p class="notice">
+    You can import your data from @(Html.ActionLink<MyAccountController>(x => x.LwtImport(), "LWT here")).
+</p>
+<hr />
+<p class="notice">
+    This function allows you to export your data if you wish to move to another server.
+    This includes everything except the complete system languages, however these may
+    be reimported. Your sytem langugages are included.
+</p>
+@{
+    using (Html.BeginForm<MyAccountController>(x => x.Export(), FormMethod.Post))
+    {
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <legend>Export my data</legend>
+
+    <button type="submit">
+        <span>export my data</span>
+    </button>
+    }
+}
+<div class="clr20">
+</div>
+<hr />
+@if(ViewBag.AllowImports)
+{
+    if(ViewBag.VerifyHash)
+    {
+        <p class="warning">
+            The administrator has required that all data imported be verified. This means that you can only import data that was exported from 
+            this site.
+        </p>
+    }
+    
+    <p class="notice">
+        <strong>ZIP files only please!</strong>
+        <br/><br/>
+        This function allows you to import your data that was previously exported. The data will be imported into the account you are signed into.
+    </p>
+    using (Html.BeginForm<MyAccountController>(x => x.Import(null), FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <legend>Import my data</legend>
+
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.File)
+        <input type="file" name="File" />
+        @Html.ValidationMessageFor(x => x.File)
+    </div>
+    
+    <button type="submit">
+        <span>import my data</span>
+    </button>
+    }
+}
+else
+{
+    <p class="warning">The administrator has disabled the importing of account data.</p>
+}
+

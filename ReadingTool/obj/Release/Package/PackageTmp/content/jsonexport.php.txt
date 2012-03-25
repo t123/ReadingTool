@@ -1,0 +1,58 @@
+<?php
+include "connect.inc.php";
+include "settings.inc.php";
+include "utilities.inc.php";
+
+class Export {
+	var $LWT_ArchivedTexts = array();
+	var $LWT_ArchTextTags = array();
+	var $LWT_Languages = array();
+	var $LWT_Tags = array();
+	var $LWT_Tags2 = array();
+	var $LWT_Texts = array();
+	var $LWT_TextTags = array();
+	var $LWT_Words = array();
+	var $LWT_Wordtags = array();
+}
+
+function export($table, &$array) {
+	$res = mysql_query("SELECT * FROM " . $table);		
+	if ($res == FALSE) die("Invalid Query: $sql");
+	while ($record = mysql_fetch_assoc($res)) {
+		$array[] = $record;
+	}
+	mysql_free_result($res);
+}
+
+$temp = new Export();
+export('archivedtexts', $temp->LWT_ArchivedTexts);
+export('archtexttags', $temp->LWT_ArchTextTags);
+export('languages', $temp->LWT_Languages);
+export('tags', $temp->LWT_Tags);
+export('tags2', $temp->LWT_Tags2);
+export('texts', $temp->LWT_Texts);
+export('texttags', $temp->LWT_TextTags);
+export('words', $temp->LWT_Words);
+export('wordtags', $temp->LWT_Wordtags);
+
+$output = json_encode($temp);
+$output = str_replace('"LgRemoveSpaces":"0"','"LgRemoveSpaces":false', $output);
+$output = str_replace('"LgRemoveSpaces":"1"','"LgRemoveSpaces":true', $output);
+$output = str_replace('"LgSplitEachChar":"0"','"LgSplitEachChar":false', $output);
+$output = str_replace('"LgSplitEachChar":"1"','"LgSplitEachChar":true', $output);
+$output = str_replace('"LgRightToLeft":"0"','"LgRightToLeft":false', $output);
+$output = str_replace('"LgRightToLeft":"1"','"LgRightToLeft":true', $output);
+$output = str_replace('"TiIsNotWord":"0"','"TiIsNotWord":false', $output);
+$output = str_replace('"TiIsNotWord":"1"','"TiIsNotWord":true', $output);
+
+header("Pragma: public"); // required
+header("Expires: 0");
+header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+header("Cache-Control: private",false); // required for certain browsers
+header("Content-Type: 'application/json'");
+header("Content-Disposition: attachment; filename=\"lwt.json\";" );
+header("Content-Transfer-Encoding: 8bit");
+header("Content-Length: ".$fsize);
+
+echo $output;
+?>

@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Words";
+    var languages = ViewBag.Languages as IEnumerable<LanguageSimpleViewModel>;
+    ViewBag.IsWord = true;
+}
+@section submenu { @Html.Partial("_menu") }
+@section styles
+{
+    <link href="@AppHelper.CssUrl("site/jquery-ui-1.8.17.custom.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+}
+@section bottomJS
+{
+    <script language="javascript" type="text/javascript">
+        new uiHelper({
+            urls: { ajaxUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Ajax.Base)' },
+            tags:
+                [
+                    { name: '#tagstoadd', endpoint: 'autocompletetexttags', vm: texts, type: 'tag' },
+                    { name: '#tagstoremove', endpoint: 'autocompletetexttags', vm: texts, type: 'untag' }
+                ]
+        });
+
+        var settings = {
+            index: 'words',
+            url: '@((ViewData[CacheKeys.URLS] as UrlModel).Ajax.Words)',
+            videoUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Videos)',
+            textUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Texts)',
+            wordUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Words)',
+            afToken: $('#afForm input[name=__RequestVerificationToken]').val()
+        };
+
+        var texts = new mergedVM(settings);
+    </script>
+}
+<div id="wrapper">
+    <div id="leftbar">
+        <div style="height:30px">
+            <strong style="padding-left:20px">Filters</strong>
+        </div>
+        <hr /><div class="clr5"></div>
+        <select style="margin-left: 10px; width: 120px" data-bind="options: limits, value: limit"></select>
+        <div class="clr5"></div><hr /><div class="clr5"></div>
+        <input type="text" style="margin-left: 10px; width: 120px" name="filter" data-bind="value: textFilter, valueUpdate: 'afterkeydown'" />
+        <div class="clr5"></div><hr /><div class="clr5"></div>
+        <ul>
+            @foreach(var language in languages)
+            {
+                <li>
+                    <div style="width:100%">
+                        @if(string.IsNullOrEmpty(language.Colour))
+                        {
+                            <div style="width:8px; height: 8px; display: inline-block; border:1px dotted black;">&nbsp;</div>
+                        }
+                        else
+                        {
+                            <div style="width:10px; height: 10px; display: inline-block; background-color: @language.Colour">&nbsp;</div>
+                        }
+                        <span>@language.Name</span>
+                        <div style="float: right; width: 15px;" >
+                            <input type="checkbox" value="@language.LanguageId" data-bind="checked: selectedLanguages" />
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        <div class="clr5"></div><hr /><div class="clr5"></div>
+        <ul>
+            @foreach(WordState state in Enum.GetValues(typeof(WordState)))
+            {
+                <li>
+                    <div style="width:100%">
+                        <span>
+                            @EnumHelper.GetDescription(state)
+                        </span>
+                        <div style="float: right; width: 15px">
+                            <input type="checkbox" name="states" value="@state" data-bind="checked: selectedStates" />
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        <div class="clr5"></div><hr /><div class="clr5"></div>
+        <ul>
+            @for(int i = 1; i <= 5; i++)
+            {
+                <li>
+                    <div style="width:100%">
+                        <span>
+                            Box @i
+                        </span>
+                        <div style="float: right; width: 15px">
+                            <input type="checkbox" name="boxes" value="@i" data-bind="checked: selectedBoxes" />
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div id="main">
+        @Html.Partial("_icons", null, ViewData)
+        <table class="texts" width="100%" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr id="headerRow">
+                    <th style="width:15px"><input type="checkbox" name="itemSelection" data-bind="checked: checkAll, click: selectAll" /></th>
+                    <th style="width:150px">Language <a data-bind="click: changeOrder.bind($data, 'language')" class="sprite sprite-uparrow" style="float: right"></a></th>
+                    <th style="width:70px">State <a data-bind="click: changeOrder.bind($data, 'state')" class="sprite sprite-downarrow" style="float: right"></a></th>
+                    <th style="width:60px">Box <a data-bind="click: changeOrder.bind($data, 'box')" class="sprite sprite-downarrow" style="float: right"></a></th>
+                    <th>Word <a data-bind="click: changeOrder.bind($data, 'word')" class="sprite sprite-downarrow" style="float: right"></a></th>
+                    <th>Sentence</th>
+                    <th style="width:25px">&nbsp;</th>
+                    <th style="width:25px">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: items">
+                <tr>
+                    <td><input type="checkbox" data-bind="value: id, checked: $parent.selectedItems" /></td>
+                    <td>
+                        <div style="width:10px; height: 10px; display: inline-block;" data-bind="visible: languageColour!='', text: ' ', style: { backgroundColor: languageColour }">&nbsp;</div>
+                        <div style="width:8px; height: 8px; display: inline-block; border:1px dotted black;" data-bind="visible: languageColour=='', text: ' ', style: { backgroundColor: languageColour }">&nbsp;</div>
+                        <span data-bind="text: languageName"></span>
+                    </td>
+                    <td data-bind="text: state"></td>
+                    <td data-bind="text: box"></td>
+                    <td data-bind="text: word"></td>
+                    <td data-bind="html: sentence"></td>
+                    <td><a data-bind="attr: { href: settings.wordUrl + '/edit/' + id }" class="sprite sprite-edit" title="edit">edit</a></td>
+                    <td><a href="#" data-bind="click: $parent.deleteItem" class="sprite sprite-delete" title="delete">delete</a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="8">
+                        <ul class="lra" style="padding-left:6px" >
+                            <li class="current first" data-bind="text: 'Showing Page: ' + currentPage() + ' of ' + totalPages()"></li>
+                            <li class="current" data-bind="text: 'Total Words : ' + totalItems()"></li>
+                            <!-- ko foreach: paging -->
+                            <li><a href="#" data-bind="text: $data, style: { color: $parent.currentPage()===$data ? 'black' : 'blue' }, click: $parent.changePage"></a></li>
+                            <!-- /ko -->
+                        </ul>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<form action="#" id="afForm" style="display:none">@Html.AntiForgeryToken()</form>
+@section footer { }

@@ -1,0 +1,30 @@
+﻿@model long
+@{
+    ViewBag.Title = "Thank You";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+<p class="notice">Thank you for signing up! You are user number @Model (if you are interested in such things!).</p>
+<div class="clr10"></div>
+<p class="general" style="width: 75%; padding-bottom: 20px;">
+    Now that you have an @(Html.ActionLink<MyAccountController>(x=>x.Index(), "account")), you can play around with the system. 
+    Click through some of the links, explore and get reading.
+    <br/><br/>
+    To get started immediately, @(Html.ActionLink<LanguagesController>(x => x.Add(), "first add a new language")). If you're not sure what 
+    everything means, that's OK, just leave it alone or hover over the ? for more information. You can always change it later. Once 
+    you've added a language, you can @(Html.ActionLink<TextsController>(x=>x.AddText(), "add a new text")). You can the read 
+    the text by clicking on the read icon <a href="" class="sprite sprite-read">read icon</a>. To get the most out of the reading page 
+    you'll need a dictionary. If you're using a software dictionary (such as 
+    <a href="http://goldendict.org/" target="_blank" rel="external">Golden Dict</a>) you can change what triggers the popup to open so it 
+    doesn't interfere. If you don't have a software dictionary you can add Internet dictionaries from the edit page of your language.
+    <br/><br/>
+    If you have been using <a rel="external" target="_blank" href="http://lwt.sourceforge.net/">LWT</a> you can 
+    @(Html.ActionLink<MyAccountController>(x=>x.LwtImport(), "import your data directly")). This will import all your texts and words 
+    directly from your LWT data.
+    <br/><br/>
+    If you have any problems or need help, please see the @(Html.ActionLink<HomeController>(x=>x.Contact(), "contact page")).
+    <br/><br/>
+    Happy reading.
+</p>
+

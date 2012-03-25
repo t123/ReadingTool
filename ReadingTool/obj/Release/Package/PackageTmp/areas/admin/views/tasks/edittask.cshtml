@@ -1,0 +1,74 @@
+﻿@using ReadingTool.Common.Helpers
+@model SystemTaskModel
+@{
+    ViewBag.Title = "Edit Task";
+}
+
+@section submenu { @Html.Partial("_menu") }
+
+@{ using (Html.BeginForm<TasksController>(x => x.EditTask(@Model.SystemTaskId.ToString()), FormMethod.Post))
+   {
+        @Html.AntiForgeryToken()
+        <legend>Edit Task</legend>
+    
+        <div class="input_wrapper">  
+           @Html.LabelFor(x => x.IsActive)
+           @Html.CheckBoxFor(x => x.IsActive)
+           @Html.ValidationMessageFor(x => x.IsActive)
+       </div>
+
+       <div class="input_wrapper">  
+           @Html.LabelFor(x => x.Name)
+           @Html.TextBoxFor(x => x.Name)
+           @Html.ValidationMessageFor(x => x.Name)
+       </div>
+    
+       <div class="input_wrapper">  
+           @Html.LabelFor(x => x.ClassName)
+           @Html.TextBoxFor(x => x.ClassName)
+           @Html.ValidationMessageFor(x => x.ClassName)
+       </div>
+    
+        <div class="input_wrapper">  
+           @Html.LabelFor(x => x.MaximumFailures)
+           @Html.TextBoxFor(x => x.MaximumFailures)
+           @Html.ValidationMessageFor(x => x.MaximumFailures)
+       </div>
+    
+       <div class="input_wrapper">  
+           @Html.LabelFor(x => x.Schedule)
+           @Html.DropDownListFor(x => x.Schedule, new SelectList(from TaskSchedule s in Enum.GetValues(typeof(TaskSchedule)) select new { Id = s, Value = EnumHelper.GetDescription(s) },
+          "Id", "Value"), "Please choose")
+           @Html.ValidationMessageFor(x => x.Schedule)
+       </div>
+    
+       <div class="input_wrapper">   
+           @Html.LabelFor(x => x.Minutes)
+           @Html.TextBoxFor(x => x.Minutes)
+           @Html.ValidationMessageFor(x => x.Minutes)
+       </div>
+    
+       <div class="input_wrapper">
+           @Html.LabelFor(x => x.Hour)
+           @Html.TextBoxFor(x => x.Hour)
+           @Html.ValidationMessageFor(x => x.Hour)
+       </div>
+    
+        <div class="input_wrapper">   
+           @Html.LabelFor(x => x.Minute)
+           @Html.TextBoxFor(x => x.Minute)
+           @Html.ValidationMessageFor(x => x.Minute)
+        </div>
+        <button type="submit">
+            <span>update task</span>
+        </button>
+   }
+   
+   using(Html.BeginForm<TasksController>(x=>x.RunTask(Model.SystemTaskId.ToString()), FormMethod.Post))
+   {
+       @Html.AntiForgeryToken()
+       <button type="submit">
+            <span>run this task</span>
+       </button>
+   }
+}

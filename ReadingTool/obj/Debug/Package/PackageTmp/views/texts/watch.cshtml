@@ -1,0 +1,33 @@
+﻿@model ReadingTool.Entities.Parser.ParserOutput
+@{
+    ViewBag.Title = "Watch";
+    ViewBag.groupId = "";
+}
+@section topJS
+{
+    @Html.Partial("_readingscripts")
+}
+@section styles
+{
+    @Html.Partial("_readingcss", Model)
+}
+@section submenu { @Html.Partial("_menu") }
+@section footer { }
+@section bottomJS
+{
+    <script language="javascript" type="text/javascript">
+        @Html.Partial("_readingscriptsettings", Model)
+        var l1subs = [];
+        var l2subs = [];
+        @foreach(var playback in Model.VideoPlayback.Where(x=>x.L1))
+        {
+            <text>l1subs.push({ id: '@playback.ElementId', from: @playback.FromSeconds, to: @playback.ToSeconds});</text>
+        }
+        @foreach(var playback in Model.VideoPlayback.Where(x=>!x.L1))
+        {
+            <text>l2subs.push({ id: '@playback.ElementId', from: @playback.FromSeconds, to: @playback.ToSeconds});</text>
+        }
+    </script>
+}
+@Html.Partial("_watchtextarea", Model)
+@Html.Partial("_textmodal", Model)

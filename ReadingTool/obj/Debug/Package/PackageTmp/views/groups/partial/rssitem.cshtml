@@ -1,0 +1,21 @@
+﻿@model GroupShareNoticeViewModel
+@{
+    string url = Model.ItemType == ItemType.Text
+                     ? SystemSettings.Instance.Values.Site.Domain + Html.BuildUrlFromExpression<GroupsController>(x => x.Read(Model.ItemId.ToString(), Model.GroupId.ToString()))
+                     : SystemSettings.Instance.Values.Site.Domain + Html.BuildUrlFromExpression<GroupsController>(x => x.Watch(Model.ItemId.ToString(), Model.GroupId.ToString()))
+        ;
+}
+<item> 
+    <title>@Model.Title</title>
+    <link>@url</link>
+    <description>
+        @Model.Username has shared a @Model.ItemType.ToString().ToLower() titled '@Model.Title' 
+        @if(!string.IsNullOrEmpty(Model.CollectionName))
+        {
+            <text> in the collection '@Model.CollectionName'. </text>
+        }
+        (the language is @Model.LanguageName)
+    </description>
+    <pubDate>@Model.Created.ToString("r")</pubDate>
+    <guid>@url</guid>
+</item>

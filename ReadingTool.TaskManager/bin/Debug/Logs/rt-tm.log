@@ -1,0 +1,30 @@
+2012-03-24 14:53:15,773 INFO  ReadingTool.TaskManager.Manager - Task Clean Up must execute
+2012-03-24 14:53:15,853 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 14:53:15,854 INFO  ReadingTool.TaskManager.Manager - Task Tag Task must execute
+2012-03-24 14:53:15,863 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 15:13:11,642 INFO  ReadingTool.TaskManager.Manager - Task Tag Task must execute
+2012-03-24 15:13:47,143 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 15:13:49,007 INFO  ReadingTool.TaskManager.Manager - Task Clean Up must execute
+2012-03-24 15:14:13,303 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:28:18,521 INFO  ReadingTool.TaskManager.Manager - Task Clean Up must execute
+2012-03-24 17:28:18,603 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:28:18,603 INFO  ReadingTool.TaskManager.Manager - Task Tag Task must execute
+2012-03-24 17:28:18,614 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:29:46,841 INFO  ReadingTool.TaskManager.Manager - Task Tag Task must execute
+2012-03-24 17:29:46,940 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:29:46,941 INFO  ReadingTool.TaskManager.Manager - Task Clean Up must execute
+2012-03-24 17:29:46,946 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:30:08,886 INFO  ReadingTool.TaskManager.Manager - Task Tag Task must execute
+2012-03-24 17:30:09,070 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:30:56,063 INFO  ReadingTool.TaskManager.Manager - Task Mecab must execute
+2012-03-24 17:31:16,075 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:31:16,076 INFO  ReadingTool.TaskManager.Manager - Task Clean Up must execute
+2012-03-24 17:31:16,086 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:44:17,250 INFO  ReadingTool.TaskManager.Manager - Task Mecab must execute
+2012-03-24 17:44:17,504 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:44:17,505 INFO  ReadingTool.TaskManager.Manager - Task Clean Up must execute
+2012-03-24 17:44:17,511 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:49:32,623 INFO  ReadingTool.TaskManager.Manager - Task Mecab must execute
+2012-03-24 17:49:32,789 INFO  ReadingTool.TaskManager.Manager - Passed: 
+2012-03-24 17:49:32,790 INFO  ReadingTool.TaskManager.Manager - Task Clean Up must execute
+2012-03-24 17:49:32,795 INFO  ReadingTool.TaskManager.Manager - Passed: 

@@ -1,0 +1,144 @@
+﻿@using ReadingTool.Entities.Identity
+@{
+    Layout = "";
+    var user = HttpContext.Current.User.Identity.IsAuthenticated ? (UserIdentity)HttpContext.Current.User.Identity : (UserIdentity)null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@SystemSettings.Instance.Values.Site.NiceName</title>
+    @Html.Partial("_css")
+</head>
+    <body>
+        <div class="nav">
+            <ul class="nav">
+                @if(user != null)
+                {
+                    <li>
+                        @(string.IsNullOrEmpty(user.DisplayName) ? user.Name : user.DisplayName)
+                    </li>
+                }
+                <li class="current">@(Html.ActionLink<HomeController>(x => x.Index(), "home"))</li>
+                @if(user != null)
+                {
+                    <li>@(Html.ActionLink<MyAccountController>(x => x.Index(), "my account"))</li>
+                    <li>@(Html.ActionLink<MessagesController>(x => x.Index(), "messages"))<span id="msgCount"></span></li>
+                    <li>@(Html.ActionLink<GroupsController>(x => x.Index(), "groups"))</li>
+                    <li>@(Html.ActionLink<LanguagesController>(x => x.Index(), "languages"))</li>
+                    <li>@(Html.ActionLink<TextsController>(x => x.Index(), "texts & videos"))</li>
+                    <li>@(Html.ActionLink<WordsController>(x => x.Index(), "words"))</li>
+                    <li>@(Html.ActionLink<RegistrationController>(x => x.SignOut(), "sign out"))</li>
+                }
+                else
+                {
+                    <li>@(Html.ActionLink<RegistrationController>(x => x.SignIn(), "sign in"))</li>
+                    <li>@(Html.ActionLink<RegistrationController>(x => x.SignUp(), "sign up"))</li>
+                }
+            </ul>
+        </div>
+        <div class="clr15"></div>
+        <noscript>
+            <div class="clr20"></div>
+            <div style="margin-left: 20px;">
+                <img src="@AppHelper.ImageUrl(Icons.Size128.ERROR_ICON)" height="128" width="128" alt="error" title="error" />
+            </div>
+            <div class="clr20"></div>
+            <p class="warning">
+                Hang on, you don't have Javascript enabled. Without it, this site will not function. Please enable it,
+                or <a href="http://www.google.com/search?q=enable%20javasript&meta=" target="_blank">click here</a> to search 
+                for instructions.
+            </p>
+        </noscript>
+        <p style="margin-left: 40px;">
+            Welcome to <strong>@SystemSettings.Instance.Values.Site.NiceName</strong>, an 
+            <a style="background-color: #fff; text-decoration: none;" target="_blank" rel="external" href="@SystemSettings.Instance.Values.Site.SourceCodeUrl">open source project</a> all about reading. 
+            And listening. And sometimes watching. But mainly reading.
+        </p>
+        <div id="ss" style="margin-left: 20px; width: 1000px; display: none;">
+            <div id="s1" onmouseover="$('#s1').cycle('pause');" onmouseout="$('#s1').cycle('resume');">
+                <div style="margin-left: 24px; display: inline">
+                    <img src="@AppHelper.ImageUrl("/home/image1.png")" alt="quickly filter texts" style="float: left; padding-right: 20px; width: 627px;" />
+                    <p>
+                        Add texts and videos and quickly filter them. Select languages, collection names or type in the title or 
+                        tags to filter. No more paging through endless pages of texts. You can assign your own colours to languages to
+                        make them more recognisable.
+                        <br/><br/>
+                        Your texts and videos will be automatically tagged with common tags, such as new, parallel and shared.
+                        <br/><br/>
+                        <a href="#" onclick="$('#s1').cycle(1); return false;">next</a>
+                    </p>
+                </div>
+                <div style="margin-left: 24px;">
+                    <img src="@AppHelper.ImageUrl("/home/image2.png")" alt="reads texts in single mode" style="float: left; padding-right: 20px; width: 627px;" />
+                    <p>
+                        Words you've never seen before are highlighted, as are words you know and don't know. You can define what triggers 
+                        the word popup so that it doesn't interfere with a software dictionary.
+                        <br/><br/>
+                        You can set the audio to automatically pause and resume when the text popup opens, or control the media player with 
+                        predefined keys.
+                        <br/><br />
+                        And if you don't like the colours or font you can define your own, or include your own style sheet.
+                        <br/><br/>
+                        <a href="#" onclick="$('#s1').cycle(0); return false;">previous</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="$('#s1').cycle(2); return false;">next</a>
+                    </p>
+                </div>
+                <div style="margin-left: 24px;">
+                    <img src="@AppHelper.ImageUrl("/home/image3.png")" alt="parallel texts" style="float: left; padding-right: 20px; width: 627px;" />
+                    <p>
+                        Parallel texts are supported as well. You can choose to have spaces between the words, and 
+                        Japanese text can be automatically parsed with Mecab.
+                        <br/><br/>
+                        If you like to listen and read you can use the quick mode. Quick mode marks words as unknown without triggering the word 
+                        popup, so you can easily highlight words without interfering with your reading. No more worrying about whether you should 
+                        stop to look up a word, you can just come back to it later.
+                        <br/><br/>
+                        <a href="#" onclick="$('#s1').cycle(1); return false;">previous</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="$('#s1').cycle(3); return false;">next</a>
+                    </p>
+                </div>
+                <div style="margin-left: 24px;">
+                    <img src="@AppHelper.ImageUrl("/home/image4.png")" alt="videos" style="float: left; padding-right: 20px; width: 627px;" />
+                    <p>
+                        And if you have videos with subtitles, you can add those too. Both single and dual translations are supported, and 
+                        marking words works the same way as with texts. 
+                        <br/><br/>
+                        You can choose to automatically pause and resume the video, as well as control the playback with predefined short cuts.
+                        <br/><br/>
+                        <a href="#" onclick="$('#s1').cycle(2); return false;">previous</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="$('#s1').cycle(4); return false;">next</a>
+                    </p>
+                </div>
+                <div style="margin-left: 24px;">
+                    <img src="@AppHelper.ImageUrl("/home/image5.png")" alt="groups" style="float: left; padding-right: 20px; width: 627px;" />
+                    <p>
+                        If you're part of language group, or studying a language with friends, you can create a group. Groups can be either 
+                        open to the public or by invitaion only and you can share any of your own texts and videos.
+                        <br/><br/>
+                        There's also builtin messaging if you want to send and receive messages, or switch it off if you don't want it.
+                        <br/><br/>
+                        <a href="#" onclick="$('#s1').cycle(3); return false;">previous</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="$('#s1').cycle(0); return false;">back to start</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="clr50"></div>
+        @Html.Partial("_footer")
+        @Html.Partial("_scripts")
+        <script src="@AppHelper.ScriptUrl("sane/jquery.cycle.min.js")" type="text/javascript" language="javascript"></script>
+        <script language="javascript" type="text/javascript">
+            $(function () { $('#ss').show(); $('#s1').before('<ul id="sn">').cycle({ fx: 'fade', speed: 'fast', timeout: 5000, pager: '#sn',
+                    pagerAnchorBuilder: function (idx, slide) {
+                        return '<li onmouseover="$(\'#s1\').cycle(\'pause\');" onmouseout="$(\'#s1\').cycle(\'resume\');"><a href="#"><img src="' + $(slide).children('img').attr('src') + '" width="167" height="80" /></a></li>';
+                    } }); });
+        </script>
+        @if(user != null)
+        {
+            <script language="javascript" type="text/javascript">new messageCount('@(Html.BuildUrlFromExpression<AjaxMessagesController>(x => x.UnreadMessageCount()))');</script>
+        }
+        @SystemSettings.Instance.Values.Site.Analytics
+    </body>
+    <!-- © 2012 Released under the AGPL (http://www.gnu.org/licenses/agpl.html) -->
+</html>

@@ -1,0 +1,45 @@
+﻿@model UserDictionaryModel
+@{
+    ViewBag.Title = "Edit Dictionary";
+    string languageId = ViewBag.LanguageId.ToString();
+}
+@section submenu { @Html.Partial("_menu") }
+@section footer { }
+<div style="height:30px">
+<ul class="top">
+    <li>
+        <a title="edit language" href="@(Html.BuildUrlFromExpression<LanguagesController>(x=>x.Edit(languageId)))" class="sprite spritesedit-edit">edit language</a>
+    </li>
+</ul>
+</div>
+@{
+    using (Html.BeginForm<LanguagesController>(x => x.EditDictionary(languageId, ""), FormMethod.Post))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="originalname" value="@Model.Name"/>
+        <legend>Edit Dictionary</legend>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Name)
+            @Html.TextBoxFor(x => x.Name)
+            @Html.ValidationMessageFor(x => x.Name)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.WindowName)
+            @Html.TextBoxFor(x => x.WindowName)
+            @Html.ValidationMessageFor(x => x.WindowName)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Url)
+            @Html.TextBoxFor(x => x.Url)
+            @Html.ValidationMessageFor(x => x.Url)
+        </div>
+        
+        <button type="submit">
+            <span>save dictionary</span>
+        </button>
+    }
+}

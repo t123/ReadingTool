@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Export Words";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer { }
+@{
+    using(Html.BeginForm<WordsController>(x=>x.Export(), FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <legend>Export Words</legend>
+        <div class="input_wrapper">
+            @Html.Label("Export Format")
+            @Html.DropDownList("Format", new SelectList(new List<string>{"JSON", "CSV", "TSV", "XML"}))
+        </div>
+    
+        <button type="submit">export all words</button>
+    }
+}

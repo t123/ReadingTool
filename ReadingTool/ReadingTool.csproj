@@ -1,0 +1,597 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{699DDF70-23C2-4E78-BD5C-AA4EE82EC01D}</ProjectGuid>
+    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ReadingTool</RootNamespace>
+    <AssemblyName>ReadingTool</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\ReadingTool\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.2.0.0\lib\net40-client\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah">
+      <HintPath>..\packages\elmah.corelibrary.1.2.1\lib\Elmah.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah.MongoDB">
+      <HintPath>..\packages\elmah.mongodb.1.3.1\lib\net35\Elmah.MongoDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4mongo-net">
+      <HintPath>..\Dependencies\log4mongo-log4mongo-net-6ae3575\src\log4mongo-net\bin\Release\log4mongo-net.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.1.2.11\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="LowercaseRoutesMVC">
+      <HintPath>..\packages\LowercaseRoutesMVC.1.0.3\lib\LowercaseRoutesMVC.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkdownDeep">
+      <HintPath>..\packages\MarkdownDeep.Full.1.4\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Mvc">
+      <HintPath>..\packages\Mvc3Futures.3.0.20105.0\lib\Microsoft.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson, Version=1.3.1.4349, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\mongocsharpdriver.1.3.1\lib\net35\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=1.3.1.4349, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\mongocsharpdriver.1.3.1\lib\net35\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcContrib, Version=3.0.98.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcContrib.Mvc3-ci.3.0.98.0\lib\MvcContrib.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NotFoundMvc">
+      <HintPath>..\packages\NotFoundMvc.1.0.0\lib\net40\NotFoundMvc.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\packages\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DynamicData">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Abstractions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Services">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.EnterpriseServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebActivator, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebActivator.1.5\lib\net40\WebActivator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="areas\admin\AdminAreaRegistration.cs" />
+    <Compile Include="areas\admin\Controllers\BaseController.cs" />
+    <Compile Include="areas\admin\Controllers\EmailsController.cs" />
+    <Compile Include="areas\admin\Controllers\ParsersController.cs" />
+    <Compile Include="areas\admin\Controllers\ElmahController.cs" />
+    <Compile Include="areas\admin\Controllers\HomeController.cs" />
+    <Compile Include="areas\admin\Controllers\LanguagesController.cs" />
+    <Compile Include="areas\admin\Controllers\LogsController.cs" />
+    <Compile Include="areas\admin\Controllers\RandomDataController.cs" />
+    <Compile Include="areas\admin\Controllers\SystemSettingsController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="areas\admin\Controllers\TasksController.cs" />
+    <Compile Include="areas\admin\Models\EmailTemplateModel.cs" />
+    <Compile Include="areas\admin\Models\ImportLanguageModel.cs" />
+    <Compile Include="areas\admin\Models\SystemLanguageModel.cs" />
+    <Compile Include="areas\admin\Models\SystemTaskModel.cs" />
+    <Compile Include="areas\admin\Models\TextParserModel.cs" />
+    <Compile Include="Attributes\AuthorizeAttribute.cs" />
+    <Compile Include="Common\Authentication.cs" />
+    <Compile Include="Common\JsonNetResult.cs" />
+    <Compile Include="Common\Settings.cs" />
+    <Compile Include="Common\TaskRunner.cs" />
+    <Compile Include="Controllers\Ajax\AjaxItemsController.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Filters\AutoMapFilter.cs" />
+    <Compile Include="Binders\MongoIdBinder.cs" />
+    <Compile Include="Binders\MongoIdJsonContractResolver.cs" />
+    <Compile Include="Common\Mappings.cs" />
+    <Compile Include="Common\Helpers\MarkdownHelper.cs" />
+    <Compile Include="Common\Providers\CustomMembershipProvider.cs" />
+    <Compile Include="Common\Constants\Messages.cs" />
+    <Compile Include="Common\Providers\CustomRoleProvider.cs" />
+    <Compile Include="Controllers\Ajax\AjaxController.cs" />
+    <Compile Include="Controllers\Ajax\AjaxWordsController.cs" />
+    <Compile Include="Controllers\Ajax\AjaxLanguagesController.cs" />
+    <Compile Include="Controllers\Ajax\AjaxMessagesController.cs" />
+    <Compile Include="Controllers\Ajax\AjaxGroupsController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\GroupsController.cs" />
+    <Compile Include="Controllers\LanguagesController.cs" />
+    <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Controllers\MyAccountController.cs" />
+    <Compile Include="Controllers\ProfilesController.cs" />
+    <Compile Include="Controllers\RemoteValidatorController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RegistrationController.cs" />
+    <Compile Include="Controllers\TextsController.cs" />
+    <Compile Include="Controllers\WordsController.cs" />
+    <Compile Include="DependencyResolution\IoC.cs" />
+    <Compile Include="DependencyResolution\SmDependencyResolver.cs" />
+    <Compile Include="Extensions\FlashMessageExtensions.cs" />
+    <Compile Include="Filters\ElmahHandledErrorLoggerFilter.cs" />
+    <Compile Include="Filters\UrlFilter.cs" />
+    <Compile Include="Filters\UserIdentityFilter.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\AppHelper.cs" />
+    <Compile Include="Helpers\HtmlHelpers.cs" />
+    <Compile Include="Helpers\HtmlPrefixScopeExtensions.cs" />
+    <Compile Include="InitialiseForIis7.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DependencyResolution\StructuremapMvc.cs" />
+    <Compile Include="ViewEngine\LowereRazorViewEngine.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\XSL\watch.xsl" />
+    <Content Include="App_Data\XSL\readparallel.xsl">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_Data\XSL\read.xsl" />
+    <Content Include="content\css\markdowndeep\mdd_ajax_loader.gif" />
+    <Content Include="content\css\markdowndeep\mdd_gripper.png" />
+    <Content Include="content\css\markdowndeep\mdd_modal_background.png" />
+    <Content Include="content\css\markdowndeep\mdd_styles.css" />
+    <Content Include="content\css\markdowndeep\mdd_toolbar.png" />
+    <Content Include="content\css\reading\DroidSans-webfont.svg" />
+    <Content Include="content\css\site\jquery-ui-1.8.17.custom.original.css" />
+    <Content Include="content\css\site\jquery-ui-1.8.17.custom.css" />
+    <Content Include="content\css\site\site.min.css" />
+    <Content Include="content\css\site\images\sprites.png" />
+    <Content Include="content\css\site\images\spritesedit.png" />
+    <Content Include="content\css\site\images\spritestop.png" />
+    <Content Include="content\css\watching\DroidSans-webfont.svg" />
+    <Content Include="content\css\watching\jplayer.blue.monday.css" />
+    <Content Include="content\css\watching\jplayer.blue.monday.jpg" />
+    <Content Include="content\css\watching\jplayer.blue.monday.seeking.gif" />
+    <Content Include="content\css\watching\jplayer.blue.monday.video.play.png" />
+    <Content Include="content\images\24\trash_delete24.png" />
+    <Content Include="content\images\32\star.png" />
+    <Content Include="content\images\32\star_empty.png" />
+    <Content Include="content\images\bullet_error128.png" />
+    <Content Include="content\images\challenge.png" />
+    <Content Include="content\images\home\image1.png" />
+    <Content Include="content\images\home\image2.png" />
+    <Content Include="content\images\home\image3.png" />
+    <Content Include="content\images\home\image4.png" />
+    <Content Include="content\images\home\image5.png" />
+    <Content Include="content\images\misc-jackie-chan.png" />
+    <Content Include="content\images\twitter.png" />
+    <Content Include="content\images\twitter16.png" />
+    <Content Include="content\Jplayer.swf" />
+    <Content Include="content\lwt.txt" />
+    <Content Include="content\markitup\templates\preview.css" />
+    <Content Include="content\markitup\templates\preview.html" />
+    <Content Include="content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="content\themes\base\jquery-ui.css" />
+    <Content Include="content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="content\themes\base\jquery.ui.all.css" />
+    <Content Include="content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="content\themes\base\jquery.ui.base.css" />
+    <Content Include="content\themes\base\jquery.ui.button.css" />
+    <Content Include="content\themes\base\jquery.ui.core.css" />
+    <Content Include="content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="content\themes\base\jquery.ui.slider.css" />
+    <Content Include="content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="content\themes\base\jquery.ui.theme.css" />
+    <Content Include="content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.all.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.base.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="content\css\watching\watching.css" />
+    <Content Include="content\images\ui-anim_basic_16x16.gif" />
+    <Content Include="content\css\reading\jplayer.blue.monday.css" />
+    <Content Include="content\css\reading\jplayer.blue.monday.jpg" />
+    <Content Include="content\css\reading\jplayer.blue.monday.seeking.gif" />
+    <Content Include="content\css\reading\jplayer.blue.monday.video.play.png" />
+    <Content Include="content\css\reading\reading.css" />
+    <Content Include="content\css\site\site.css" />
+    <Content Include="content\css\site\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
+    <Content Include="content\css\site\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
+    <Content Include="content\css\site\images\ui-bg_flat_10_000000_40x100.png" />
+    <Content Include="content\css\site\images\ui-bg_glass_100_f6f6f6_1x400.png" />
+    <Content Include="content\css\site\images\ui-bg_glass_100_fdf5ce_1x400.png" />
+    <Content Include="content\css\site\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="content\css\site\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
+    <Content Include="content\css\site\images\ui-bg_highlight-soft_100_eeeeee_1x100.png" />
+    <Content Include="content\css\site\images\ui-bg_highlight-soft_75_ffe45c_1x100.png" />
+    <Content Include="content\css\site\images\ui-icons_222222_256x240.png" />
+    <Content Include="content\css\site\images\ui-icons_228ef1_256x240.png" />
+    <Content Include="content\css\site\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="content\css\site\images\ui-icons_ffd27a_256x240.png" />
+    <Content Include="content\css\site\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Global.asax" />
+    <Content Include="areas\admin\views\systemsettings\index.cshtml" />
+    <Content Include="areas\admin\views\systemsettings\import.cshtml" />
+    <Content Include="areas\admin\views\systemsettings\_menu.cshtml" />
+    <Content Include="areas\admin\views\tasks\addtask.cshtml" />
+    <Content Include="areas\admin\views\tasks\edittask.cshtml" />
+    <Content Include="areas\admin\views\tasks\index.cshtml" />
+    <Content Include="areas\admin\views\tasks\_menu.cshtml" />
+    <Content Include="areas\admin\views\randomdata\index.cshtml" />
+    <Content Include="areas\admin\views\systemsettings\dbsettings.cshtml" />
+    <Content Include="areas\admin\views\_ViewStart.cshtml" />
+    <Content Include="areas\admin\views\logs\log4netdetails.cshtml" />
+    <None Include="COPYING" />
+    <Content Include="robots.txt" />
+    <Content Include="scripts\jplayer\jquery.jplayer.min.js" />
+    <Content Include="scripts\markdowndeep\MarkdownDeep License.txt" />
+    <Content Include="scripts\markdowndeep\MarkdownDeep Quick Reference.txt" />
+    <Content Include="scripts\markdowndeep\MarkdownDeepLib.min.js" />
+    <Content Include="scripts\markdowndeep\mdd_help.htm" />
+    <Content Include="scripts\min\jquery-1.5.1-vsdoc.js" />
+    <Content Include="scripts\sane\combined.js" />
+    <Content Include="scripts\sane\combined.min.js" />
+    <Content Include="scripts\sane\complete.min.js" />
+    <Content Include="scripts\sane\jquery.cycle.lite.min.js" />
+    <Content Include="scripts\sane\general.min.js" />
+    <Content Include="scripts\sane\jQuery.flashMessage.min.js" />
+    <Content Include="scripts\sane\jquery.cookie.min.js" />
+    <Content Include="scripts\sane\jquery.cycle.min.js" />
+    <Content Include="scripts\sane\general.js" />
+    <Content Include="scripts\min\jquery-1.5.1.js" />
+    <Content Include="scripts\min\jquery-1.5.1.min.js" />
+    <Content Include="scripts\min\jquery-1.7.1-vsdoc.js" />
+    <Content Include="scripts\min\jquery-1.7.1.js" />
+    <Content Include="scripts\min\jquery-1.7.1.min.js" />
+    <Content Include="scripts\min\jquery-ui-1.8.17.js" />
+    <Content Include="scripts\min\jquery-ui-1.8.17.min.js" />
+    <Content Include="scripts\min\jquery.validate-vsdoc.js" />
+    <Content Include="scripts\min\jquery.validate.js" />
+    <Content Include="scripts\min\jquery.validate.min.js" />
+    <Content Include="scripts\min\jquery.validate.unobtrusive.js" />
+    <Content Include="scripts\min\jquery.validate.unobtrusive.min.js" />
+    <Content Include="scripts\min\knockout-2.0.0.debug.js" />
+    <Content Include="scripts\sane\jquery.cycle.all.js" />
+    <Content Include="scripts\sane\jquery.cycle.lite.js" />
+    <Content Include="scripts\sane\knockout-2.0.0.js" />
+    <Content Include="scripts\sane\jquery.cookie.js" />
+    <Content Include="scripts\sane\jQuery.flashMessage.js" />
+    <Content Include="scripts\min\jquery.jplayer.min.js" />
+    <Content Include="scripts\min\lawnchair-0.6.1.js" />
+    <Content Include="scripts\reading\reading.js" />
+    <Content Include="scripts\reading\readingcommon.js" />
+    <Content Include="sitemaps.xml" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="views\Web.config" />
+    <Content Include="views\_ViewStart.cshtml" />
+    <Content Include="views\shared\Error.cshtml" />
+    <Content Include="views\shared\_layout.cshtml" />
+    <Content Include="views\myaccount\lwtimportsql.cshtml" />
+    <Content Include="views\myaccount\account.cshtml" />
+    <Content Include="views\myaccount\styles.cshtml" />
+    <Content Include="views\myaccount\importexport.cshtml" />
+    <Content Include="views\home\about.cshtml" />
+    <Content Include="views\home\todo.cshtml" />
+    <Content Include="views\registration\denied.cshtml" />
+    <Content Include="views\messages\_menu.cshtml" />
+    <Content Include="views\messages\send.cshtml" />
+    <Content Include="views\messages\read.cshtml" />
+    <Content Include="views\registration\thankyou.cshtml" />
+    <Content Include="views\myaccount\publicprofile.cshtml" />
+    <Content Include="views\profiles\index.cshtml" />
+    <Content Include="views\profiles\special\notfound.cshtml" />
+    <Content Include="views\profiles\special\login.cshtml" />
+    <Content Include="views\messages\disabled.cshtml" />
+    <Content Include="views\groups\index.cshtml" />
+    <Content Include="views\groups\_menu.cshtml" />
+    <Content Include="views\groups\add.cshtml" />
+    <Content Include="views\groups\edit.cshtml" />
+    <Content Include="views\groups\manage.cshtml" />
+    <Content Include="views\groups\viewinfo.cshtml" />
+    <Content Include="views\messages\index.cshtml" />
+    <Content Include="views\profiles\special\notavailable.cshtml" />
+    <Content Include="views\registration\signedout.cshtml" />
+    <Content Include="views\words\import.cshtml" />
+    <Content Include="views\words\importlwt.cshtml" />
+    <Content Include="views\shared\_icons.cshtml" />
+    <Content Include="views\groups\view.cshtml" />
+    <Content Include="views\groups\watch.cshtml" />
+    <Content Include="views\groups\readparallel.cshtml" />
+    <Content Include="views\groups\read.cshtml" />
+    <Content Include="views\shared\NotFound.cshtml" />
+    <Content Include="views\texts\addvideo.cshtml" />
+    <Content Include="views\texts\editvideo.cshtml" />
+    <Content Include="views\texts\experimental.cshtml" />
+    <Content Include="views\texts\watch.cshtml" />
+    <Content Include="views\groups\rss.cshtml" />
+    <Content Include="views\groups\partial\rssitem.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Start\" />
+    <Folder Include="content\css\site\ui-lightness\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="views\home\index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="views\registration\signup.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="views\registration\signin.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="views\shared\_flash.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="views\myaccount\index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\views\home\index.cshtml" />
+    <Content Include="areas\admin\views\home\_menu.cshtml" />
+    <Content Include="areas\admin\views\languages\index.cshtml" />
+    <Content Include="areas\admin\views\languages\_menu.cshtml" />
+    <Content Include="areas\admin\views\languages\import.cshtml" />
+    <Content Include="views\languages\index.cshtml" />
+    <Content Include="views\languages\_menu.cshtml" />
+    <Content Include="areas\admin\views\shared\_layout.cshtml" />
+    <Content Include="views\languages\add.cshtml" />
+    <Content Include="views\languages\edit.cshtml" />
+    <Content Include="views\myaccount\mediacontrols.cshtml" />
+    <Content Include="views\languages\adddictionary.cshtml" />
+    <Content Include="views\languages\editdictionary.cshtml" />
+    <Content Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="areas\admin\views\systemsettings\edit.cshtml" />
+    <Content Include="areas\admin\views\logs\index.cshtml" />
+    <Content Include="areas\admin\views\logs\_menu.cshtml" />
+    <Content Include="areas\admin\views\parsers\_menu.cshtml" />
+    <Content Include="areas\admin\views\parsers\index.cshtml" />
+    <Content Include="areas\admin\views\parsers\add.cshtml" />
+    <Content Include="areas\admin\views\parsers\edit.cshtml" />
+    <Content Include="areas\admin\views\emails\_menu.cshtml" />
+    <Content Include="areas\admin\views\emails\edit.cshtml" />
+    <Content Include="areas\admin\views\emails\index.cshtml" />
+    <Content Include="content\css\reading\DroidSans-webfont.eot" />
+    <None Include="content\css\reading\DroidSans-webfont.ttf" />
+    <Content Include="content\css\reading\DroidSans-webfont.woff" />
+    <Content Include="content\css\reading\DroidSans.ttf" />
+    <Content Include="content\css\watching\DroidSans-webfont.eot" />
+    <Content Include="content\css\watching\DroidSans-webfont.ttf" />
+    <Content Include="content\css\watching\DroidSans-webfont.woff" />
+    <Content Include="content\css\watching\DroidSans.ttf" />
+    <Content Include="content\jsonexport.php.txt" />
+    <None Include="content\sample.json" />
+    <Content Include="views\home\_menu.cshtml" />
+    <Content Include="views\myaccount\lwtimportjson.cshtml" />
+    <Content Include="views\myaccount\lwtimport.cshtml" />
+    <Content Include="views\home\contact.cshtml" />
+    <Content Include="views\home\legalese.cshtml" />
+    <Content Include="views\myaccount\_menu.cshtml" />
+    <Content Include="views\texts\index.cshtml" />
+    <Content Include="views\texts\_menu.cshtml" />
+    <Content Include="views\texts\addtext.cshtml" />
+    <Content Include="views\texts\edittext.cshtml" />
+    <Content Include="views\texts\read.cshtml" />
+    <Content Include="views\texts\split.cshtml" />
+    <Content Include="views\words\index.cshtml" />
+    <Content Include="views\words\_menu.cshtml" />
+    <Content Include="views\words\review.cshtml" />
+    <Content Include="views\texts\addmultiple.cshtml" />
+    <Content Include="views\texts\partial\multitextpart.cshtml" />
+    <Content Include="views\texts\readparallel.cshtml" />
+    <Content Include="views\shared\_footer.cshtml" />
+    <Content Include="views\texts\_submenu.cshtml" />
+    <Content Include="views\texts\addfromfile.cshtml" />
+    <Content Include="views\words\edit.cshtml" />
+    <Content Include="views\words\export.cshtml" />
+    <Content Include="views\registration\_menu.cshtml" />
+    <Content Include="views\registration\forgotpassword.cshtml" />
+    <Content Include="views\registration\resetpassword.cshtml" />
+    <Content Include="views\shared\_textmodal.cshtml" />
+    <Content Include="views\words\shared.cshtml" />
+    <Content Include="views\shared\_scripts.cshtml" />
+    <Content Include="views\shared\_css.cshtml" />
+    <Content Include="views\shared\_readingscripts.cshtml" />
+    <Content Include="views\shared\_readingcss.cshtml" />
+    <Content Include="views\shared\_readtextarea.cshtml" />
+    <Content Include="views\shared\_watchtextarea.cshtml" />
+    <Content Include="views\shared\_readingscriptsettings.cshtml" />
+    <Content Include="views\shared\toomanywords.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReadingTool.Common\ReadingTool.Common.csproj">
+      <Project>{8DE73439-2B28-45AC-A4F6-C11221A28EDB}</Project>
+      <Name>ReadingTool.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReadingTool.Entities\ReadingTool.Entities.csproj">
+      <Project>{D9DBC773-E465-4337-96E6-7507AEE72E68}</Project>
+      <Name>ReadingTool.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReadingTool.Models\ReadingTool.Models.csproj">
+      <Project>{D18C0D0B-54B1-4EB4-A9E4-44B05813B96E}</Project>
+      <Name>ReadingTool.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReadingTool.Services\ReadingTool.Services.csproj">
+      <Project>{19E546CF-E699-4C19-A30D-5510B0EA856C}</Project>
+      <Name>ReadingTool.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReadingTool.Tasks\ReadingTool.Tasks.csproj">
+      <Project>{813172AE-D440-470E-87FE-14DAC2252D4C}</Project>
+      <Name>ReadingTool.Tasks</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>53891</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:53891/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+</Project>

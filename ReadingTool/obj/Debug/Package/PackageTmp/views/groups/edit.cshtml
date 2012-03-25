@@ -1,0 +1,71 @@
+﻿@model GroupModel
+@{
+    ViewBag.Title = "Edit Group";
+}
+@section styles {
+    <link href="@AppHelper.CssUrl("markdowndeep/mdd_styles.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+    <link href="@AppHelper.CssUrl("site/jquery-ui-1.8.17.custom.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+}
+@section footer { }
+@section topJS
+{
+    <script src="@AppHelper.ScriptUrl("markdowndeep/MarkdownDeepLib.min.js")" type="text/javascript" language="javascript"></script>
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@{
+    using(Html.BeginForm<GroupsController>(x => x.Edit(Model.GroupId.ToString()), FormMethod.Post))
+    {
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.GroupId);
+    <legend>Edit Group</legend>
+
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Type)
+        @Html.DropDownListFor(x =>
+        x.Type,
+             new SelectList(from GroupType g in Enum.GetValues(typeof(GroupType)) select new { Key = g, Value = EnumHelper.GetDescription(g) }, "Key", "Value"),
+        "Please choose"
+       )
+        @Html.ValidationMessageFor(x => x.Type)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Name)
+        @Html.TextBoxFor(x => x.Name)
+        @Html.ValidationMessageFor(x => x.Name)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Tags)
+        @Html.TextBoxFor(x => x.Tags)
+        @Html.ValidationMessageFor(x => x.Tags)
+    </div>
+    <div class="clr10"></div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.About)
+        @Html.TextAreaFor(x => x.About, new { @class = "mdd_editor" })
+    </div>
+    
+    <button type="submit">
+        <span>save group</span>
+    </button>
+    }
+}
+@section bottomJS {
+    <script language="javascript" type="text/javascript">
+        new uiHelper({
+            urls: { ajaxUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Ajax.Base)' },
+            tags: [{ name: '#Tags', endpoint: 'autocompletegrouptags'}]
+        });
+        
+        $(document).ready(function () {
+            $("textarea.mdd_editor").MarkdownDeep({
+                help_location: "/scripts/markdowndeep/mdd_help.htm",
+                ExtraMode: true
+            });
+        });
+    </script>
+}

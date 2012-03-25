@@ -1,0 +1,35 @@
+﻿@model SignInModel
+@{
+    ViewBag.Title = "Sign In";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@{
+    using (Html.BeginForm<RegistrationController>(x => x.SignIn(), FormMethod.Post))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl"/>
+        <legend>Sign In</legend>
+
+        <div class="input_wrapper">
+            @Html.LabelFor(x => x.Username)
+            @Html.EditorFor(x => x.Username)
+            @Html.ValidationMessageFor(x => x.Username)
+        </div>
+
+        <div class="input_wrapper">
+            @Html.LabelFor(x => x.Password)
+            @Html.EditorFor(x => x.Password)
+            @Html.ValidationMessageFor(x => x.Password)
+        </div>
+        <button type="submit">
+            <span>sign in</span>
+        </button>
+    }
+}
+<div class="clr20"></div>
+<p class="general">
+    @(Html.ActionLink<RegistrationController>(x=>x.ForgotPassword(), "Forgotten your password?"))
+</p>

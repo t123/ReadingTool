@@ -1,0 +1,26 @@
+{
+  "Defaults": {
+    "Language": "",
+    "CollectionName": "",
+    "StartCollectionWithNumber": null,
+    "AutoNumberCollection": false,
+    "Tags": "",
+    "ShareUrl": false,
+    "ItemType": null
+  },
+  "Items": [
+    {
+      "Title": null,
+      "Url": null,
+      "ShareUrl": null,
+      "Language": null,
+      "CollectionName": null,
+      "CollectionNo": null,
+      "L1Text": null,
+      "L2Text": null,
+      "Tags": null,
+      "ParallelIsRtl": null,
+      "ItemType": null
+    }
+  ]
+}

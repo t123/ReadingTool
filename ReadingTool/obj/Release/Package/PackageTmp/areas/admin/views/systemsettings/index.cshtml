@@ -1,0 +1,11 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section submenu { @Html.Partial("_menu") }
+
+<p class="warning">These settings are cached. They are what the site is currently using.</p>
+
+<pre style="margin-left: 20px">@Model</pre>

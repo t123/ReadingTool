@@ -1,0 +1,84 @@
+﻿@model MultiTextModel
+@{
+    ViewBag.Title = "Add Multiple Texts";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer { }
+@section styles {
+    <link href="@AppHelper.CssUrl("site/jquery-ui-1.8.17.custom.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+}
+@{
+    using(Html.BeginForm<TextsController>(x => x.AddMultiple(), FormMethod.Post, new { id = "afForm" }))
+    {
+    @Html.AntiForgeryToken()
+    <legend>Add Text</legend>
+
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.LanguageId)
+        @Html.DropDownListFor(x => x.LanguageId, new SelectList(new Dictionary<string, string>()),
+                            new Dictionary<string, object>()
+                                {
+                                    {
+                                        "data-bind", 
+                                        "options: languages, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Please choose a language', selectedOptions: selectedLanguage"
+                                        }
+                                })
+        @Html.ValidationMessageFor(x => x.LanguageId)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Tags)
+        @Html.TextBoxFor(x => x.Tags)
+        @Html.ValidationMessageFor(x => x.Tags)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.CollectionName)
+        @Html.TextBoxFor(x => x.CollectionName)
+        @Html.ValidationMessageFor(x => x.CollectionName)
+    </div>
+    <div class="clr10">
+    </div>
+    <hr />    
+    <div id="parts">
+        @foreach (var part in Model.Parts)
+        {
+            @Html.Partial("partial/multitextpart", part)
+        }
+    </div>
+        <div class="clr5"></div>
+        <ul class="top">
+            <li>
+                <a title="add new text part" class="sprite spritesedit-addpart" onclick="return false;" id="addPart" style="margin-left: 20px;">add part</a>
+            </li>
+        </ul>
+    <div class="clr">
+    </div>
+    <ul class="lr">
+        <li class="first">
+            <button type="submit">
+                <span>add texts</span>
+            </button>
+        </li>
+    </ul>
+    }
+}
+@section bottomJS {
+    <script language="javascript" type="text/javascript">
+        new uiHelper({
+            urls: { ajaxUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Ajax.Base)', textUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Texts)' },
+            autocomplete: [{ name: '#CollectionName', endpoint: 'autocompletetextcollectionname'}],
+            tags: [{ name: '#Tags', endpoint: 'autocompletetexttags'}]
+        });
+
+        new addTextVM(
+            {
+                urls: { ajaxUrl: '@(Html.BuildUrlFromExpression<AjaxItemsController>(x=>x.Index()))' },
+                languageId: '',
+                afToken: $('#afForm input[name=__RequestVerificationToken]').val()
+            }
+        );
+    </script>
+}

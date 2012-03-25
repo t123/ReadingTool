@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Contact";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+<div class="general">
+    <h1>Contact Infomation</h1>
+    <div class="clr20"></div>
+    <p style="width: 75%; padding-bottom: 20px;">
+        <strong>General Contact</strong><br/><br/>
+        If you want to suggest a feature, leave feedback, report abuse or send any other message, please send an email to 
+        <a href="mailto:@SystemSettings.Instance.Values.Site.ContactEmail">@SystemSettings.Instance.Values.Site.ContactEmail</a>.
+        If you are already a user and have enabled messages you can send a message directly to username 
+        <strong>@SystemSettings.Instance.Values.Site.AdminUsername</strong>.
+        <br/><br/>
+        <strong>Bugs and Errors</strong><br/><br/>
+        If you want to report a bug you can do that at 
+        <a rel="external" target="_blank" href="@SystemSettings.Instance.Values.Site.BugReportingUrl">@SystemSettings.Instance.Values.Site.BugReportingUrl</a>.
+        Please try include as much information as possible, for example your operating system (Windows/Mac/Linux), your browser 
+        (Chrome/Firefox/Internet Explorer/Safari/Opera) and the version number if you know. Even the date and time can help in tracking down 
+        a bug. If the error happens when you visit a specific page, or try do a specific action, please include the URL and any details you think 
+        may have caused the error.
+        <br/><br/>
+        <strong>Open Source</strong><br/><br/>
+        If you would like to look at the source code, make improvements or fix bugs you can download the source code at 
+        <a rel="external" target="_blank" href="@SystemSettings.Instance.Values.Site.SourceCodeUrl">@SystemSettings.Instance.Values.Site.SourceCodeUrl</a>.
+    </p>
+</div>
+

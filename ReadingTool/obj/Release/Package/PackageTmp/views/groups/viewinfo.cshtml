@@ -1,0 +1,92 @@
+﻿@model GroupViewModel
+@{
+    ViewBag.Title = "Group Information";
+    var membership = ViewBag.Membership as GroupMemberViewModel;
+}
+@section styles {
+    <link href="@AppHelper.CssUrl("markdowndeep/mdd_styles.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+ }
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer { }
+@if(membership != null && membership.Type == GroupMembershipType.Banned)
+{ 
+    <p class="warning">You have been banned from this group</p>
+    <div class="clr20"></div>
+}
+<div class="profile" style="border-left: 1px solid #DEDEDE; padding-left: 10px;">
+    <div class="block">
+        <div class="label">Name</div>
+        <span>@Model.Name</span>
+    </div>
+    <div class="clr10"></div>
+    <div class="block">
+        <div class="label">Tags</div>
+        <span>@Model.Tags</span>
+    </div>
+    <div class="clr10"></div>
+    @if(!string.IsNullOrEmpty(Model.About))
+    {
+        <div class="block">
+            <div class="label" style="padding-top: 10px">About</div>
+            <div style="display: inline-block; margin-left: 0px;" class="mdd_preview">@Html.Raw(Model.About)</div>
+        </div>
+    }
+</div>
+<div class="clr20"></div>
+@if(membership == null)
+{
+    if(Model.Type == GroupType.Public)
+    {
+        using(Html.BeginForm<GroupsController>(x => x.JoinGroup(Model.GroupId.ToString()), FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit">
+                Join Group
+            </button>
+        }
+    }
+}
+else
+{
+    if(membership.Type == GroupMembershipType.Invitation)
+    {
+        using(Html.BeginForm<GroupsController>(x => x.JoinGroup(Model.GroupId.ToString()), FormMethod.Post))
+        {
+        @Html.AntiForgeryToken()
+        <button type="submit">
+            Join Group
+        </button>
+        }
+        <div class="clr20"></div>
+        using(Html.BeginForm<GroupsController>(x => x.LeaveGroup(Model.GroupId.ToString()), FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit">
+                Ignore Invitation
+            </button>
+        }
+    }
+    if(membership.Type == GroupMembershipType.Moderator || membership.Type == GroupMembershipType.Member)
+    {
+        using(Html.BeginForm<GroupsController>(x => x.LeaveGroup(Model.GroupId.ToString()), FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit">
+                Leave Group
+            </button>
+        }
+    }
+    
+    if(membership.Type == GroupMembershipType.Request)
+    {
+        using(Html.BeginForm<GroupsController>(x => x.LeaveGroup(Model.GroupId.ToString()), FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit">
+                Withdraw pending request
+            </button>
+        }
+    }
+} 

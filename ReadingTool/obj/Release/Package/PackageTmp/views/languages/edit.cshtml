@@ -1,0 +1,178 @@
+﻿@model LanguageModel
+@{
+    ViewBag.Title = "Edit Language";
+    var dictionaries = ViewBag.Dictionaries as IList<UserDictionaryModel>;
+    var yesNo = new Dictionary<bool, string>() {{true, "Yes"}, {false, "No"}};
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer { }
+@section styles {
+    <link href="@AppHelper.CssUrl("site/jquery-ui-1.8.17.custom.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+}
+<div style="height:30px">
+<ul class="top">
+    <li>
+        <a title="add dictionary" href="@(Html.BuildUrlFromExpression<LanguagesController>(x=>x.AddDictionary(Model.LanguageId.ToString())))" class="sprite spritesedit-dictionary">add dictionary</a>
+    </li>
+</ul>
+</div>
+@{
+    using (Html.BeginForm<LanguagesController>(x => x.Edit(Model.LanguageId.ToString()), FormMethod.Post))
+    {
+    @Html.AntiForgeryToken()
+    <legend>Edit Language</legend>
+
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.SystemLanguageName)
+        @Html.TextBoxFor(x => x.SystemLanguageName)
+        @Html.ValidationMessageFor(x => x.SystemLanguageName)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Name)
+        @Html.TextBoxFor(x => x.Name)
+        @Html.ValidationMessageFor(x => x.Name)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Colour)
+        @Html.TextBoxFor(x => x.Colour, new { style = "width: 70px" })
+        <select style="width: 100px" onchange="$('#Colour').val($(this).val()); $('#Colour').css('background-color', $(this).val())">
+            <option value="">Choose</option>
+            @foreach(var colour in ViewBag.Colours as Dictionary<string, string>)
+            { 
+                <option value="@colour.Key">@colour.Value</option>
+            }
+        </select>
+        @Html.ValidationMessageFor(x => x.Colour)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.TranslateUrl)
+        @Html.TextBoxFor(x => x.TranslateUrl)
+        @Html.ValidationMessageFor(x => x.TranslateUrl)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.IsRtlLanguage)
+        @Html.CheckBoxFor(x => x.IsRtlLanguage)
+        @Html.ValidationMessageFor(x => x.IsRtlLanguage)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.HasRomanisationField)
+        @Html.CheckBoxFor(x => x.HasRomanisationField)
+        @Html.ValidationMessageFor(x => x.HasRomanisationField)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.RemoveSpaces)
+        @Html.CheckBoxFor(x => x.RemoveSpaces)
+        @Html.ValidationMessageFor(x => x.RemoveSpaces)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.ModalBehaviour)
+        @Html.DropDownListFor(
+                x => x.ModalBehaviour,
+                new SelectList(
+                    from ModalBehaviour mb in Enum.GetValues(typeof(ModalBehaviour))
+                    select new { Key = mb, Value = EnumHelper.GetDescription(mb) }, "Key", "Value"
+                    ),
+                "Please choose a modal behaviour"
+           )
+        @Html.ValidationMessageFor(x => x.ModalBehaviour)
+    </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.DefaultDictionary)
+            @Html.DropDownListFor(
+                x => x.DefaultDictionary,
+                new SelectList(
+                    from UserDictionaryModel d in dictionaries
+                    select new { Key = d.Name, Value = d.Name }, "Key", "Value"
+                    ),
+                "None"
+           )
+            @Html.ValidationMessageFor(x => x.ModalBehaviour)
+        </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.KeepFocus)
+        @Html.DropDownListFor(
+                x => x.KeepFocus,
+                new SelectList(yesNo, "Key", "Value"), "Please choose"
+            )
+        @Html.ValidationMessageFor(x => x.KeepFocus)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Punctuation)
+        @Html.TextBoxFor(x => x.Punctuation)
+        @Html.ValidationMessageFor(x => x.Punctuation)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.PunctuationRegEx)
+        @Html.TextBoxFor(x => x.PunctuationRegEx)
+        @Html.ValidationMessageFor(x => x.PunctuationRegEx)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.SentenceEndRegEx)
+        @Html.TextBoxFor(x => x.SentenceEndRegEx)
+        @Html.ValidationMessageFor(x => x.SentenceEndRegEx)
+    </div>
+        
+    <button type="submit">
+        <span>save language</span>
+    </button>
+    }
+}
+<div class="clr20"></div><hr/><div class="clr10"></div>
+@if(dictionaries == null || dictionaries.Count == 0)
+{
+    <p class="notice">You do not have any dictionaries defined yet</p>
+}
+else
+{
+    <table class="texts" width="95%" cellspacing="0" cellpadding="0" style="margin-left: 10px">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Window Name</th>
+                <th>URL</th>
+                <th style="width: 30px">&nbsp;</th>
+                <th style="width: 30px">&nbsp;</th>
+            </tr>
+        </thead>
+        @foreach(var dictionary in dictionaries)
+        {
+            <tr>
+                <td>@dictionary.Name</td>
+                <td>@dictionary.WindowName</td>
+                <td>@dictionary.Url</td>
+                <td>
+                    <a class="sprite sprite-edit" title="edit" href="@(Html.BuildUrlFromExpression<LanguagesController>(x=>x.EditDictionary(Model.LanguageId.ToString(), dictionary.Name)))">
+                        edit
+                    </a>
+                </td>
+                    <td>
+                    <a class="sprite sprite-delete" title="delete" href="@(Html.BuildUrlFromExpression<LanguagesController>(x=>x.DeleteDictionary(Model.LanguageId.ToString(), dictionary.Name)))">
+                        delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+@section bottomJS {
+    <script language="javascript" type="text/javascript">
+        new uiHelper({
+            urls: { ajaxUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Ajax.Base)' },
+            autocomplete: [{ name: '#SystemLanguageName', length: 2, endpoint: 'autocompletesystemlanguagename'}]
+        });
+    </script>
+}

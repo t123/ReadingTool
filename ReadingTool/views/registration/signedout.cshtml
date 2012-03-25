@@ -1,0 +1,7 @@
+﻿@{
+    ViewBag.Title = "Signed out";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+<p class="notice">You have been signed out. @(Html.ActionLink<RegistrationController>(x=>x.SignIn(), "Click here")) to sign in again.</p>

@@ -1,0 +1,46 @@
+﻿@model TextFromFileModel
+@{
+    ViewBag.Title = "Add Texts from File";
+}
+@section submenu { @Html.Partial("_menu") }
+@section footer { }
+<p class="notice">
+    You can add a single or multiple texts from a <a href="http://en.wikipedia.org/wiki/JSON" target="_blank">JSON</a> file. 
+    Your file must be encoded in UTF-8, otherwise it may not be imported correctly. You can download an example file 
+    <a href="@Url.Content("~/content/sample.json")">here</a>. Remember that your language <strong>must match</strong> the name of 
+    one of your languages:
+    <br/>
+    @foreach (var language in ViewBag.Languages as IEnumerable<string>)
+    {
+        <code>@language</code><br />
+    }
+</p>
+@{
+    if(ViewData.ModelState.Values.Count(x=>x.Errors.Count>0)>0)
+    {
+        <div class="validation-summary-errors">
+            @foreach(var state in ViewData.ModelState.Values.Where(x=>x.Errors.Count>0))
+            {
+                foreach(var error in state.Errors)
+                {
+                    @Html.Raw(error.ErrorMessage)
+                }
+            }
+        </div>
+    }
+
+    using (Html.BeginForm<TextsController>(x => x.AddFromFile(), FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <legend>Add Text From File</legend>
+
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.File)
+            <input type="file" name="File" />
+        </div>
+    
+        <button type="submit">
+            <span>add text</span>
+        </button>
+    }
+}

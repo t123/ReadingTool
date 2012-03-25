@@ -1,0 +1,50 @@
+﻿@model LwtWordsImportModel
+@{
+    ViewBag.Title = "Import words from LWT";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer { }
+<p class="warning">
+    <strong>Careful</strong>: This function is currently not very robust. Try importing your words to a test language first.
+</p>
+<p class="notice">
+    This function will attempt import words exported by the <strong>Export ALL terms (TSV)</strong> function in LWT, but will
+    skip existing terms for that language. Please make sure the names of your languages <strong>exactly match</strong> those in 
+    the TSV file, including the case. For example <strong>French</strong> and <strong>french</strong> do NOT match. 
+    Your file must also be in UTF-8 format (LWT should export it in this format) and must only contain 1 language.
+</p>
+@{
+    using(Html.BeginForm<WordsController>(x => x.ImportLwt(), FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <legend>Import Words</legend>
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.File)
+            <input type="file" name="File" />
+            @Html.ValidationMessageFor(x=>x.File)
+        </div>
+    
+        <button type="submit">import words</button>
+    }
+}
+<div class="clr20"></div>
+<hr/>
+<p class="general">
+    The format is (TAB separated) (<a href="@Url.Content("~/content/lwt.txt")">example file</a>) :<br/>
+    TERM&nbsp;&nbsp;&nbsp;TRANSLATION&nbsp;&nbsp;&nbsp;SENTENCE&nbsp;&nbsp;&nbsp;ROMANISATION&nbsp;&nbsp;&nbsp;
+    BOX&nbsp;&nbsp;&nbsp;LANGUAGE&nbsp;&nbsp;&nbsp;ID&nbsp;&nbsp;&nbsp;TAGS
+    <br/><br/>
+    TERM: this is the word<br/>
+    TRANSLATION: this is your translation of the TERM<br/>
+    SENTENCE: an example sentence using the TERM<br/>
+    ROMANISATION: the romanisation of the TERM<br/>
+    BOX: an indication of how well you know the word, 1 being completely unknown. 98 means the word is ignored, and 99 means known.<br/>
+    LANGUAGE: the language of the word that matches one of your languages<br/>
+    ID: ignored, simple use 1 if creating your own file from scratch<br/>
+    TAGS: a list of space separated tags for the word<br/>
+</p>
+<pre>
+
+</pre>

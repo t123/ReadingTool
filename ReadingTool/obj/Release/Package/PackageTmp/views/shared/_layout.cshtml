@@ -1,0 +1,70 @@
+﻿@using ReadingTool.Entities.Identity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - @SystemSettings.Instance.Values.Site.NiceName</title>
+    @Html.Partial("_css")
+    @RenderSection("styles", false)
+    @Html.Partial("_scripts")
+    @RenderSection("topJS", false)
+</head>
+    <body>
+        @{
+            var user = HttpContext.Current.User.Identity.IsAuthenticated ? (UserIdentity)HttpContext.Current.User.Identity : (UserIdentity)null;
+        }
+        <div class="nav">
+            <ul class="nav">
+                @if(user != null)
+                {
+                    <li>
+                        @(string.IsNullOrEmpty(user.DisplayName) ? user.Name : user.DisplayName)
+                    </li>
+                }
+                <li>@(Html.ActionLink<HomeController>(x => x.Index(), "home"))</li>
+                @if(user != null)
+                {
+                    string currentMenu = (string)ViewData[ViewDataKeys.CURRENT_MENU] ?? "";
+                    <li @Html.Raw(currentMenu.Equals("myaccount") ? @"class=""current""" : "")>@(Html.ActionLink<MyAccountController>(x => x.Index(), "my account"))</li>
+                    <li @Html.Raw(currentMenu.Equals("messages") ? @"class=""current""" : "")>@(Html.ActionLink<MessagesController>(x => x.Index(), "messages"))<span id="msgCount"></span></li>
+                    <li @Html.Raw(currentMenu.Equals("groups") ? @"class=""current""" : "")>@(Html.ActionLink<GroupsController>(x => x.Index(), "groups"))</li>
+                    <li @Html.Raw(currentMenu.Equals("languages") ? @"class=""current""" : "")>@(Html.ActionLink<LanguagesController>(x => x.Index(), "languages"))</li>
+                    <li @Html.Raw(currentMenu.Equals("texts") ? @"class=""current""" : "")>@(Html.ActionLink<TextsController>(x => x.Index(), "texts & videos"))</li>
+                    <li @Html.Raw(currentMenu.Equals("words") ? @"class=""current""" : "")>@(Html.ActionLink<WordsController>(x => x.Index(), "words"))</li>
+                    <li @Html.Raw(currentMenu.Equals("registration") ? @"class=""current""" : "")>@(Html.ActionLink<RegistrationController>(x => x.SignOut(), "sign out"))</li>
+                }
+                else
+                {
+                    <li>@(Html.ActionLink<RegistrationController>(x => x.SignIn(), "sign in"))</li>
+                    <li>@(Html.ActionLink<RegistrationController>(x => x.SignUp(), "sign up"))</li>
+                }
+            </ul>
+        </div>
+        @RenderSection("submenu", false)
+        @Html.Partial("_flash")
+        <div class="clr10"></div>
+        <noscript>
+            <style type="text/css">.pagecontent { display: none; } </style>
+            <p class="warning">
+                Hang on, you don't have Javascript enabled. Without it this site will not function. Please enable it,
+                or <a href="http://www.google.com/search?q=enable%20javasript&meta=" target="_blank">click here</a> to search 
+                for instructions.
+            </p>
+        </noscript>
+        <div class="pagecontent">
+            @RenderBody()
+        </div>
+        <div class="clr50"></div>
+        @this.RenderSection("footer",
+                          @<div id="footer">
+                                &copy; 2012 released under the <a rel="license" href="http://www.gnu.org/licenses/agpl-3.0.txt" target="_blank">AGPL</a>
+                                &nbsp;&nbsp;-&nbsp;&nbsp;<a target="_blank" href="@SystemSettings.Instance.Values.Site.SourceCodeUrl">source code</a>
+                                &nbsp;&nbsp;-&nbsp;&nbsp;<a href="@(Html.BuildUrlFromExpression<HomeController>(x=>x.Contact()))">contact</a>
+                                &nbsp;&nbsp;-&nbsp;&nbsp;<a href="@(Html.BuildUrlFromExpression<HomeController>(x=>x.Legalese()))">legal</a>
+                                &nbsp;&nbsp;-&nbsp;&nbsp;language data from <a rel="external" href="http://www.sil.org/iso639-3/" target="_blank">www.sil.org/iso639-3/</a>
+                            </div>)
+        @RenderSection("bottomJS", false)
+        <script language="javascript" type="text/javascript">new messageCount('@(Html.BuildUrlFromExpression<AjaxMessagesController>(x=>x.UnreadMessageCount()))');</script>
+        @SystemSettings.Instance.Values.Site.Analytics
+    </body>
+</html>

@@ -1,0 +1,132 @@
+﻿@model TextModel
+@{
+    ViewBag.Title = "Edit Text";
+    ViewBag.IsParallelText = Model.IsParallel;
+    bool tooManyWords = ViewBag.TooManyWords != null && (bool) ViewBag.TooManyWords;
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer {
+}
+@section styles {
+    <link href="@AppHelper.CssUrl("site/jquery-ui-1.8.17.custom.css")" rel="stylesheet" type="text/css" media="screen, projection"/>
+}
+@Html.Partial("_submenu", Model.ItemId, ViewData)
+@if(tooManyWords)
+{
+    <p class="warning">
+        An approximation of the number of words in this text shows it <strong>might</strong> contain too many words to read (but it may be fine).
+        You can reduce the length of this text or split it into multiple pieces. The current maximum words per text is 
+        <strong>@SystemSettings.Instance.Values.Site.MaxWordsParsingException</strong> words.
+    </p>
+}
+@{
+    using(Html.BeginForm<TextsController>(x => x.EditText(Model.ItemId.ToString()), FormMethod.Post, new { id = "afForm" }))
+    {
+    @Html.AntiForgeryToken()
+    <legend>Edit Text</legend>
+
+    <div class="input_wrapper">
+        @Html.LabelFor(x => x.LanguageId)
+        @Html.DropDownListFor(x => x.LanguageId, new SelectList(new Dictionary<string, string>()),
+                            new Dictionary<string, object>()
+                                {
+                                    {
+                                        "data-bind", 
+                                        "options: languages, optionsText: 'name', optionsValue: 'id', optionsCaption: 'Please choose a language', selectedOptions: selectedLanguage"
+                                        }
+                                })
+        @Html.ValidationMessageFor(x => x.LanguageId)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Url)
+        @Html.TextBoxFor(x => x.Url)
+        @Html.ValidationMessageFor(x => x.Url)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.ShareUrl)
+        @Html.CheckBoxFor(x => x.ShareUrl)
+        @Html.ValidationMessageFor(x => x.ShareUrl)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.CollectionName)
+        @Html.TextBoxFor(x => x.CollectionName)
+        @Html.ValidationMessageFor(x => x.CollectionName)
+    </div>
+
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.CollectionNo)
+        @Html.TextBoxFor(x => x.CollectionNo)
+        @Html.ValidationMessageFor(x => x.CollectionNo)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Title)
+        @Html.TextBoxFor(x => x.Title)
+        @Html.ValidationMessageFor(x => x.Title)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Tags)
+        @Html.TextBoxFor(x => x.Tags)
+        @Html.ValidationMessageFor(x => x.Tags)
+    </div>
+    
+    <div class="input_wrapper" data-bind="visible: canParse">
+        @Html.LabelHelpFor(x => x.ParseWith)
+        @Html.DropDownListFor(x => x.ParseWith, new SelectList(ViewBag.Parsers as Dictionary<string, string>, "Key", "Value"), "None")
+        @Html.ValidationMessageFor(x => x.ParseWith)
+    </div>
+    
+     if(ViewBag.CurrentlyParsing)
+     {
+         <p class="warning">
+             Your text is currently in the queue to be parsed. If you update your text during parsing you may get unexpected results 
+             (such as replacing the parsed text with a non parsed one). It can take a couple of minutes depending on server load. 
+             If you do update, your L1 Text will be ignored if it's still in the queue for parsing.
+         </p>
+     }
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.L1Text)
+        @Html.TextAreaFor(x => x.L1Text, new Dictionary<string, object>() { { "data-bind", "attr: { dir: isRtl }" } })
+        @Html.ValidationMessageFor(x => x.L1Text)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.ParallelIsRtl)
+        @Html.CheckBoxFor(x => x.ParallelIsRtl)
+        @Html.ValidationMessageFor(x => x.ParallelIsRtl)
+    </div>
+    
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.L2Text)
+        @Html.TextAreaFor(x => x.L2Text, new { @dir = Model.ParallelIsRtl ? "rtl" : "dir" })
+        @Html.ValidationMessageFor(x => x.L2Text)
+    </div>
+    
+    <button type="submit">
+        <span>save text</span>
+    </button>
+    }
+}
+@section bottomJS {
+    <script language="javascript" type="text/javascript">
+        new uiHelper({
+            urls: { ajaxUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Ajax.Base)', textUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Texts)' },
+            autocomplete: [{ name: '#CollectionName', endpoint: 'autocompletetextcollectionname'}],
+            tags: [{ name: '#Tags', endpoint: 'autocompletetexttags'}]
+        });
+
+        new addTextVM(
+            {
+                urls: { ajaxUrl: '@(Html.BuildUrlFromExpression<AjaxItemsController>(x => x.Index()))' },
+                languageId: '@Model.LanguageId',
+                afToken: $('#afForm input[name=__RequestVerificationToken]').val()
+            }
+        );
+    </script>
+}

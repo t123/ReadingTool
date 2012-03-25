@@ -1,0 +1,115 @@
+﻿@model ReadingTool.Entities.Parser.ParserOutput
+@{
+    Layout = null;
+    string groupId = ViewBag.GroupId.ToString();
+    var isGroup = !string.IsNullOrEmpty(groupId);
+}
+<div id="textArea">
+    <div id="textContent" dir="@(Model.Language.IsRtlLanguage ? "rtl" : "ltr")">
+        @Html.Raw(Model.ParsedHtml)
+        <div class="clr50"></div>
+        <input type="button" id="markRemainingAsKnown" value="mark the remaining words as known"/>
+        <div id="markRemainingAsKnownProgress" class="warning" style="display: none"></div>
+        <div class="clr100"></div>
+    </div>
+    
+    <div id="textBottom">
+        <div class="clr5"></div>
+        @if(!string.IsNullOrEmpty(Model.Item.Url))
+        {
+            <div style="display:inline; float:left;">
+                <input type="hidden" id="currentTime"/>
+                <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+                <div id="jp_container_1" class="jp-audio">
+                    <div class="jp-type-single">
+                        <div class="jp-gui jp-interface">
+                            <ul class="jp-controls">
+                                <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+                                <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+                                <li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
+                            </ul>
+                            <div class="jp-progress">
+                                <div class="jp-seek-bar">
+                                    <div class="jp-play-bar"></div>
+                                </div>
+                            </div>
+                            <div class="jp-volume-bar">
+                                <div class="jp-volume-bar-value"></div>
+                            </div>
+                            <a href="javascript:;" id="btnRewind"><div class="jp-t-rewind"></div></a>
+                            <a href="javascript:;" id="btnForward"><div class="jp-t-forward"></div></a>
+                        </div>
+                        <div class="jp-current-time"></div>
+                        <div class="jp-duration"></div>
+                        <div class="jp-no-solution">
+                            <span>Update Required</span>
+                            To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        
+        @if(!isGroup)
+        {
+            @*User*@
+            <div id="textTitle">
+                <strong>@Model.Item.Title</strong>
+                (@(string.IsNullOrEmpty(Model.Item.CollectionName) ? "No collection" : Model.Item.CollectionName) @Model.Item.CollectionNo)
+                <div class="clr"></div>
+                <ul class="lr" style="padding-left:0px">
+                    @if(Model.Item.AsParallel)
+                    {
+                        <li class="first">@(Html.ActionLink<TextsController>(x => x.Read(Model.Item.ItemId), "read"))</li>
+                    }
+                    else if(Model.Item.IsParallel && !Model.Item.AsParallel)
+                    {
+                        <li class="first">@(Html.ActionLink<TextsController>(x => x.ReadParallel(Model.Item.ItemId), "read parallel"))</li>
+                    }
+                    <li>@(Html.ActionLink<TextsController>(x => x.EditText(Model.Item.ItemId), "edit text"))</li>
+                    <li>@(Html.ActionLink<LanguagesController>(x => x.Edit(Model.Language.LanguageId), "edit language"))</li>
+                
+                    @if(!string.IsNullOrEmpty(Model.Item.PreviousItem))
+                    {
+                        <li>@(Html.ActionLink<TextsController>(x => x.Read(Model.Item.PreviousItem), "previous"))</li>
+                    }
+                
+                    @if(!string.IsNullOrEmpty(Model.Item.NextItem))
+                    {
+                        <li>@(Html.ActionLink<TextsController>(x => x.Read(Model.Item.NextItem), "next"))</li>
+                    }
+                </ul>
+                <div class="clr"></div>
+                <input type="checkbox" id="quickmode"/>&nbsp;quick mode&nbsp;
+                <input type="checkbox" id="removespaces" />&nbsp;remove spaces&nbsp;
+                <div class="clr5"></div>
+            </div>
+        }
+        else
+        {
+            @*Group*@
+            <div id="textTitle">
+                <strong>@Model.Item.Title</strong>
+                (@(string.IsNullOrEmpty(Model.Item.CollectionName) ? "No collection" : Model.Item.CollectionName) @Model.Item.CollectionNo)
+                <div class="clr"></div>
+                <ul class="lr" style="padding-left:0px">
+                    @if(Model.Item.AsParallel)
+                    {
+                        <li class="first">@(Html.ActionLink<GroupsController>(x => x.Read(Model.Item.ItemId, groupId), "read"))</li>
+                    }
+                    else if(Model.Item.IsParallel && !Model.Item.AsParallel)
+                    {
+                        <li class="first">@(Html.ActionLink<GroupsController>(x => x.ReadParallel(Model.Item.ItemId, groupId), "read parallel"))</li>
+                    }
+                    <li>
+                        @(Html.ActionLink<GroupsController>(x => x.View(groupId), "back to group"))
+                    </li>
+                </ul>
+                <div class="clr"></div>
+                <input type="checkbox" id="quickmode"/>&nbsp;quick mode&nbsp;
+                <input type="checkbox" id="removespaces" />&nbsp;remove spaces&nbsp;
+                <div class="clr5"></div>
+            </div>
+        }
+    </div>
+</div>

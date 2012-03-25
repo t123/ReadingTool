@@ -1,0 +1,22 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section submenu { @Html.Partial("_menu") }
+
+<p class="warning">You are editting the <strong>database</strong> settings, not the current site settings.</p>
+@{
+    using(Html.BeginForm<SystemSettingsController>(x=>x.Edit(), FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="input_wrapper">
+            <textarea name="settings" style="width: 90%; height: 300px">@Model</textarea>
+        </div>
+        <div class="clr20"></div>
+        <button type="submit">
+            <span>save changes</span>
+        </button>
+    }
+}

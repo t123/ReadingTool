@@ -1,0 +1,20 @@
+﻿@model LwtModel
+@{
+    ViewBag.Title = "LWT Import";
+}
+@section submenu { @Html.Partial("_menu") }
+<p class="warning">
+    There are 2 options. <strong>Always</strong> try the test mode first. If the import fails you can either send an email to 
+    <a href="mailto:@SystemSettings.Instance.Values.Site.ContactEmail">@SystemSettings.Instance.Values.Site.ContactEmail</a> or file a 
+    bug report at <a target="_blank" href="@SystemSettings.Instance.Values.Site.BugReportingUrl">@SystemSettings.Instance.Values.Site.BugReportingUrl</a>.
+</p>
+<p class="notice">
+    <strong>Option 1:</strong>This option requires direct access to the MySQL database. You can also create a readonly user and use that 
+    if you want. You'll need to open the necessary ports and supply the information in from the connect.php file.
+    @(Html.ActionLink<MyAccountController>(x=>x.LwtImportSql(), "Click here to import via SQL")).
+    <br/><br/>
+    <strong>Option 2:</strong>This option requires direct access to the LWT server, or the ability to upload a file to the LWT installation 
+    directory. You will need to place a file in the LWT installation directory and execute it. This will generate a file in JSON format which 
+    you can use to import all your data. 
+    @(Html.ActionLink<MyAccountController>(x=>x.LwtImportJson(), "Click here to import via JSON")).
+</p>

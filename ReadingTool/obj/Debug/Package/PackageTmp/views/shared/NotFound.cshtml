@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "404 - Page Not Found";
+}
+<div class="clr10"></div>
+<div style="margin-left: 20px">
+    <a href="http://alltheragefaces.com/face/misc-jackie-chan" target="_blank" style="text-decoration: none;
+                                background-color: inherit; margin-left: 10px">
+        <img src="@AppHelper.ImageUrl("misc-jackie-chan.png")" width="320" height="203" alt="Jackie Chan"/>
+    </a>
+    <br />
+    <strong>Where's my page?</strong>
+    <p class="general" style="margin-left: 0px">
+        Sorry, the page <strong>@ViewBag.RequestedUrl</strong> could not be found.
+        <br /><br />
+        Things you can try:<br />
+        1. go back to the <a href="@ViewBag.ReferrerUrl">page</a> you just came from and try the link again.<br />
+        2. use one of the links in the navigation bar.<br />
+        3. refresh the page.<br />
+        <br/>
+        If you're sure this page should exist, <a target="_blank" href="@SystemSettings.Instance.Values.Site.BugReportingUrl">please file a bug report</a>.
+    </p>
+</div>

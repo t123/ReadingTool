@@ -1,0 +1,164 @@
+﻿@{
+    var isWord = ViewBag.IsWord ?? false;
+}
+<div style="height:30px">
+    <ul class="top">
+        <li>
+            <a href="#" data-bind="click: showAddTagsDD" title="add tags to selected items" class="spritetop spritestop-addtag"></a>
+        </li>
+        <li>
+            <a href="#" data-bind="click: showRemoveTagsDD" title="remove tags from selected items" class="spritetop spritestop-removetag">
+            </a>
+        </li>
+        @if(isWord)
+        {
+            <li>
+                <a href="#" data-bind="click: showChangeStateDD" title="change the state of selected items" class="spritetop spritestop-changestate">
+                </a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="#" data-bind="click: showChangeCollectionDD" title="change the colleciton name for selected items" class="spritetop spritestop-changecollection">
+                </a>
+            </li>
+            <li>
+                <a href="#" data-bind="click: showShareDD" title="share selected items" class="spritetop spritestop-share">
+                </a>
+            </li>
+            <li>
+                <a href="#" data-bind="click: showUnshareDD"title="unshare selected items" class="spritetop spritestop-unshare">
+                </a>
+            </li>
+        }
+        <li>
+            <a href="#" data-bind="click: showDeleteDD" title="delete the selected items" class="spritetop spritestop-delete">
+            </a>
+        </li>
+    </ul>
+    <div id="addTagsDD" class="dropdown">
+        <strong>Add Tags for Selected</strong>
+        <a class="close" onclick="$('#addTagsDD').hide(); return false;">x</a>
+        <div style="margin: 10px 0 10px 0">
+            <input type="text" id="tagstoadd" style="width: 100%" data-bind="value: tagsToAdd, valueUpdate: 'afterkeydown'"/>
+        </div>
+        <div>
+            <a href="#" data-bind="visible:selectedItems().length>0, click: addTags" title="make changes" class="spritetop spritestop-accept">
+            </a>
+            <span data-bind="visible: selectedItems().length==0" style="font-weight: bold;">
+                please choose some items first
+            </span>
+            <a id="addTagsStatus" class="sprite ui-autocomplete-loading" style="display: none; float: right; margin-right: 30px;">
+                loading
+            </a>
+        </div>
+    </div>
+    <div id="removeTagsDD" class="dropdown">
+        <strong>Remove Tags for Selected</strong>
+        <a class="close" onclick="$('#removeTagsDD').hide(); return false;">x</a>
+        <div style="margin: 10px 0 10px 0">
+            <input type="text" id="tagstoremove" style="width: 100%" data-bind="value: tagsToRemove, valueUpdate: 'afterkeydown'"/>
+        </div>
+        <div>
+            <a href="#" data-bind="visible:selectedItems().length>0, click: removeTags" title="make changes" class="spritetop spritestop-accept">
+            </a>
+            <span data-bind="visible: selectedItems().length==0" style="font-weight: bold;">
+                please choose some items first
+            </span>
+            <a id="removeTagsStatus" class="sprite ui-autocomplete-loading" style="display: none; float: right; margin-right: 30px;">
+                loading
+            </a>
+        </div>
+    </div>
+    @if(isWord)
+    {
+        <div id="changeStateDD" class="dropdown">
+            <strong>Change State for Selected</strong>
+            <a class="close" href="#" onclick="$('#changeStateDD').hide(); return false;">x</a>
+            <div style="margin: 10px 0 10px 0">
+                <select style="margin-left: 10px; width: 120px" data-bind="options: states, value: newState"></select>
+            </div>
+            <div>
+                <a href="#" data-bind="visible:selectedItems().length>0, click: changeStatus" title="make changes" class="spritetop spritestop-accept">
+                </a>
+                <span data-bind="visible: selectedItems().length==0" style="font-weight: bold;">
+                    please choose some items first
+                </span>
+                <a id="changeStateStatus" class="sprite ui-autocomplete-loading" style="display: none; float: right; margin-right: 30px;">
+                    loading
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div id="changeCollectionDD" class="dropdown">
+            <strong>Change Collection Name for Selected</strong>
+            <a class="close" onclick="$('#changeCollectionDD').hide(); return false;">x</a>
+            <div style="margin: 10px 0 10px 0">
+                <input id="newcollectionname" type="text" style="width: 100%" data-bind="value: newCollectionName, valueUpdate: 'afterkeydown'"/>
+            </div>
+            <div>
+                <a href="#" data-bind="visible:selectedItems().length>0, click: changeCollectionName" title="make changes" class="spritetop spritestop-accept">
+                </a>
+                <span data-bind="visible: selectedItems().length==0" style="font-weight: bold;">
+                    please choose some items first
+                </span>
+                <a id="changeCollectionStatus" class="sprite ui-autocomplete-loading" style="display: none; float: right; margin-right: 30px;">
+                    loading
+                </a>
+            </div>
+        </div>
+        <div id="shareDD" class="dropdown">
+            <strong>Share Selected with Group</strong>
+            <a class="close" onclick="$('#shareDD').hide(); return false;">x</a>
+            <div style="margin: 10px 0 10px 0">
+                <input type="text" id="groupShareName" style="width: 100%" data-bind="value: groupName, valueUpdate: 'afterkeydown'"/>
+            </div>
+            <div>
+                <a href="#" data-bind="visible:selectedItems().length>0, click: shareWithGroup" title="make changes"  class="spritetop spritestop-accept">
+                </a>
+                
+                <span data-bind="visible: selectedItems().length==0" style="font-weight: bold;">
+                    please choose some items first
+                </span>
+                <a id="shareGroupStatus" class="sprite ui-autocomplete-loading" style="display: none; float: right; margin-right: 30px;">
+                    loading
+                </a>
+            </div>
+        </div>
+        <div id="unshareDD" class="dropdown">
+            <strong>Unshare Selected from Group</strong>
+            <a class="close" onclick="$('#unshareDD').hide(); return false;">x</a>
+            <div style="margin: 10px 0 10px 0">
+                <input type="text" id="groupUnshareName" style="width: 100%" data-bind="value: ungroupName, valueUpdate: 'afterkeydown'"/>
+            </div>
+            <div>
+                <a href="#" data-bind="visible:selectedItems().length>0, click: unshareFromGroup" title="make changes" class="spritetop spritestop-accept">
+                </a>
+                
+                <span data-bind="visible: selectedItems().length==0" style="font-weight: bold;">
+                    please choose some items first
+                </span>
+                <a id="unshareGroupStatus" class="sprite ui-autocomplete-loading" style="display: none; float: right; margin-right: 30px;">
+                    loading
+                </a>
+            </div>
+        </div>
+    }
+    <div id="deleteDD" class="dropdown">
+        <strong>Delete all the Selected</strong>
+        <a class="close" onclick="$('#deleteDD').hide(); return false;">x</a>
+        <div>
+            <a href="#" data-bind="visible:selectedItems().length>0, click: deleteItems" title="make changes" class="spritetop spritestop-accept">
+            </a>
+            <span data-bind="visible: selectedItems().length==0" style="font-weight: bold;">
+                please choose some items first
+            </span>
+            <a id="deleteStatus" class="sprite ui-autocomplete-loading" style="display: none; float: right; margin-right: 30px;">
+                loading
+            </a>
+        </div>
+    </div>
+</div>

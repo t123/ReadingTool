@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Messages Disabled";
+}
+@section submenu {
+    @Html.Partial("_menu")
+}
+<p class="notice">
+    You currently have messages disabled. In order to send messages or receive new messages you need to 
+    @(Html.ActionLink<MyAccountController>(x=>x.Index(), "enable messages")) in your profile.
+</p>
+@section footer { }

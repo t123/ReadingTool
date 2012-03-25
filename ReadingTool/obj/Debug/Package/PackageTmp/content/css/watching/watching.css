@@ -1,0 +1,85 @@
+@font-face {
+    font-family: 'DroidSansRegular';
+    src: url('DroidSans-webfont.eot');
+    src: url('DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
+         url('DroidSans-webfont.woff') format('woff'),
+         url('DroidSans-webfont.ttf') format('truetype'),
+         url('DroidSans-webfont.svg#DroidSansRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#textArea { background-color: #565656; }
+
+#textTop {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: white;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding-left: 100px;
+}
+
+
+#textBottom {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    height: 25px;
+    border-top: 1px dotted black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding-left: 25px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+#textTitle {
+    display:inline; 
+    float:left; 
+    margin-left: 20px;
+    background-color: white;
+}
+
+#textContent {
+    font-family: 'DroidSansRegular', Tahoma, Arial;
+    background-color: white;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 25px;
+}
+
+#textContent p { padding-bottom: 10px; }
+
+#textContent a { text-decoration: none; }
+
+#textContent p span { line-height: 25px; }
+#textContent p span.knx { }
+#textContent p span.nkx { background: #F5B8A9; }
+#textContent p span.nsx { background: #DAE5EB; }
+#textContent p span.igx { background: white; }
+#textContent p span.wsx { }
+#textContent p span.pcx { }
+#textContent p span a:hover { background-color: inherit;}
+
+#textContent a { color: #0D0D0D; }
+
+#textContent table { border-collapse: collapse; }
+
+#textContent table td.f {
+    vertical-align: top;
+    padding-bottom: 10px;
+    width: 95%;
+}
+
+#textContent table td.s {
+    vertical-align: top;
+    padding-bottom: 10px;
+    width: 95%;
+}

@@ -1,0 +1,29 @@
+﻿@model EmailTemplateModel
+@{
+    ViewBag.Title = "Edit Template";
+}
+
+@section submenu { @Html.Partial("_menu") }
+
+@{ using (Html.BeginForm<EmailsController>(x => x.Edit(Model.Name), FormMethod.Post))
+   {
+        @Html.AntiForgeryToken()
+        <legend>Edit Template</legend>
+    
+       <div class="input_wrapper">  
+           @Html.LabelFor(x => x.Subject)
+           @Html.TextBoxFor(x => x.Subject)
+           @Html.ValidationMessageFor(x => x.Subject)
+       </div>
+    
+       <div class="input_wrapper">  
+           @Html.LabelFor(x => x.Body)
+           @Html.TextAreaFor(x => x.Body, new { style="height: 350px; width:900px;"})
+           @Html.ValidationMessageFor(x => x.Body)
+       </div>
+    
+        <button type="submit">
+            <span>edit template</span>
+        </button>
+   }
+}

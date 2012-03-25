@@ -1,0 +1,1 @@
+﻿Katze	cat	Die Katze.		1	German	1	noun die

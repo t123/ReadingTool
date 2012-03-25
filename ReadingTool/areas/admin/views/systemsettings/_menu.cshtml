@@ -1,0 +1,11 @@
+﻿<div class="subnav">
+    <ul class="subnav">
+        <li>@( Html.ActionLink<SystemSettingsController>(x=>x.Index(), "current settings"))</li>
+        <li>@( Html.ActionLink<SystemSettingsController>(x=>x.Edit(), "edit settings"))</li>
+        <li>@( Html.ActionLink<SystemSettingsController>(x=>x.DbSettings(), "db settings"))</li>
+        <li>@( Html.ActionLink<SystemSettingsController>(x => x.Reload(), "reload settings"))</li>
+        <li>@( Html.ActionLink<SystemSettingsController>(x => x.Export(), "export settings"))</li>
+        <li>@( Html.ActionLink<SystemSettingsController>(x => x.Import(), "import settings"))</li>
+    </ul>
+</div>
+<div class="clr10"></div>

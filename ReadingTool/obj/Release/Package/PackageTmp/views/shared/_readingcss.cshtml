@@ -1,0 +1,41 @@
+﻿@model ReadingTool.Entities.Parser.ParserOutput
+@{
+    string version = SystemSettings.Instance.Values.Site.ScriptVersioning;
+}
+<link href="@AppHelper.CssUrl("reading/jplayer.blue.monday.css")?v=@version" rel="stylesheet" type="text/css" media="screen, projection"/>
+@if(Model != null && Model.Item.ItemType == ItemType.Text)
+{
+    if(Model.UserStyle == null || string.IsNullOrEmpty(Model.UserStyle.ReadingCssUrl))
+    {
+        <link href="@AppHelper.CssUrl("reading/reading.css")?v=@version" rel="stylesheet" type="text/css" media="screen, projection"/>
+    }
+    if(Model.UserStyle != null)
+    {
+        if(!string.IsNullOrEmpty(Model.UserStyle.ReadingCssUrl))
+        {
+            <link href="@Model.UserStyle.ReadingCssUrl" type="text/css" rel="stylesheet"/>
+        }
+        else
+        {
+            <style type="text/css">@Model.UserStyle.Css</style>
+        }
+    }
+}
+else if(Model != null && Model.Item.ItemType == ItemType.Video)
+{
+    if(Model.UserStyle == null || string.IsNullOrEmpty(Model.UserStyle.WatchingCssUrl))
+    {
+    <link href="@AppHelper.CssUrl("watching/watching.css")?v=@version" rel="stylesheet" type="text/css" media="screen, projection"/>
+    }
+    if(Model.UserStyle != null)
+    {
+        if(!string.IsNullOrEmpty(Model.UserStyle.WatchingCssUrl))
+        {
+            <link href="@Model.UserStyle.WatchingCssUrl" type="text/css" rel="stylesheet"/>
+        }
+        else
+        {
+            <style type="text/css">@Model.UserStyle.Css</style>
+        }
+    }
+}

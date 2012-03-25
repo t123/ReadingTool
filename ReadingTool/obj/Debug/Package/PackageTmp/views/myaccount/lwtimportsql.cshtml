@@ -1,0 +1,104 @@
+﻿@model LwtModel
+@{
+    ViewBag.Title = "LWT Import";
+}
+@section submenu { @Html.Partial("_menu") }
+<p class="warning">
+    <strong>Always</strong> try the test mode first. If the import fails you can either send an email to 
+    <a href="mailto:@SystemSettings.Instance.Values.Site.ContactEmail">@SystemSettings.Instance.Values.Site.ContactEmail</a> or file a 
+    bug report at <a target="_blank" href="@SystemSettings.Instance.Values.Site.BugReportingUrl">@SystemSettings.Instance.Values.Site.BugReportingUrl</a>.
+</p>
+<p class="notice">
+    If you have direct access to your LWT database you can import your data from there. 
+    These settings can be found in the <strong>connect.inc.php</strong> file in the home directory of your LWT installation.
+</p>
+@{
+    if(ViewData.ModelState.Values.Count(x=>x.Errors.Count>0)>0)
+    {
+        <div class="validation-summary-errors">
+            @foreach (var state in ViewData.ModelState.Values.Where(x => x.Errors.Count > 0))
+            {
+                foreach (var error in state.Errors)
+                {
+                    @Html.Raw(error.ErrorMessage)
+                }
+            }
+        </div>
+    }
+    
+    using (Html.BeginForm<MyAccountController>(x => x.LwtImportSql(), FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <legend>Import data directly from LWT</legend>
+
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.TestMode)
+            @Html.CheckBoxFor(x => x.TestMode)
+            @Html.ValidationMessageFor(x => x.TestMode)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.MediaUrl)
+            @Html.TextBoxFor(x => x.MediaUrl)
+            @Html.ValidationMessageFor(x => x.MediaUrl)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Hostname)
+            @Html.TextBoxFor(x => x.Hostname)
+            @Html.ValidationMessageFor(x => x.Hostname)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Port)
+            @Html.TextBoxFor(x => x.Port)
+            @Html.ValidationMessageFor(x => x.Port)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Username)
+            @Html.TextBoxFor(x => x.Username)
+            @Html.ValidationMessageFor(x => x.Username)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Password)
+            @Html.TextBoxFor(x => x.Password)
+            @Html.ValidationMessageFor(x => x.Password)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.DbName)
+            @Html.TextBoxFor(x => x.DbName)
+            @Html.ValidationMessageFor(x => x.DbName)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Ping)
+            @Html.CheckBoxFor(x => x.Ping)
+            @Html.ValidationMessageFor(x => x.Ping)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.TagsToCollections)
+            @Html.CheckBoxFor(x => x.TagsToCollections)
+            @Html.ValidationMessageFor(x => x.TagsToCollections)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.UseRomanisationAsBaseWord)
+            @Html.CheckBoxFor(x => x.UseRomanisationAsBaseWord)
+            @Html.ValidationMessageFor(x => x.UseRomanisationAsBaseWord)
+        </div>
+    
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.NumberCollectionRegEx)
+            @Html.TextBoxFor(x => x.NumberCollectionRegEx)
+            @Html.ValidationMessageFor(x => x.NumberCollectionRegEx)
+        </div>
+        
+        <button type="submit">
+            <span>import data</span>
+        </button>
+    }
+}
