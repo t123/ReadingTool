@@ -48,9 +48,6 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="log4mongo-net">
-      <HintPath>..\Dependencies\log4mongo-log4mongo-net-6ae3575\src\log4mongo-net\bin\Release\log4mongo-net.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.1.2.11\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -442,6 +439,7 @@
     <Content Include="views\texts\watch.cshtml" />
     <Content Include="views\groups\rss.cshtml" />
     <Content Include="views\groups\partial\rssitem.cshtml" />
+    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Start\" />
