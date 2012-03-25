@@ -30,33 +30,9 @@ using ReadingTool.Entities;
 
 namespace ReadingTool.Tasks
 {
-    public class MecabTask : ITask
+    public class MecabTask : DefaultTask
     {
-        private MongoDatabase _db;
-
-        public SystemTaskResult Run(MongoDatabase db)
-        {
-            _db = db;
-            Task task = null;
-            try
-            {
-                task = Task.Factory.StartNew(Mecab);
-                task.Wait();
-            }
-            catch(Exception e)
-            {
-                return new SystemTaskResult() { Success = false, Message = e.Message, Exception = e };
-            }
-
-            if(!task.IsCompleted)
-            {
-                return new SystemTaskResult() { Success = false, Message = "Task did not complete, no exception" };
-            }
-
-            return new SystemTaskResult() { Success = true };
-        }
-
-        private void Mecab()
+        protected new void DoWork()
         {
             var items = _db.GetCollection<Item>(Item.DbCollectionName)
                 .Find(Query.Exists("ParseWith", true))

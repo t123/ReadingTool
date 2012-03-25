@@ -26,33 +26,9 @@ using ReadingTool.Entities;
 
 namespace ReadingTool.Tasks
 {
-    public class CleanUpTask : ITask
+    public class CleanUpTask : DefaultTask
     {
-        private MongoDatabase _db;
-
-        public SystemTaskResult Run(MongoDatabase db)
-        {
-            _db = db;
-            Task task = null;
-            try
-            {
-                task = Task.Factory.StartNew(CleanUp);
-                task.Wait();
-            }
-            catch(Exception e)
-            {
-                return new SystemTaskResult() { Success = false, Message = e.Message, Exception = e };
-            }
-
-            if(!task.IsCompleted)
-            {
-                return new SystemTaskResult() { Success = false, Message = "Task did not complete, no exception" };
-            }
-
-            return new SystemTaskResult() { Success = true };
-        }
-
-        private void CleanUp()
+        protected new void DoWork()
         {
             _db.GetCollection(Token.CollectionName).Remove(Query.LT("Expiry", DateTime.Now));
             _db.GetCollection(ApiRequest.CollectionName).Remove(Query.LT("DateTime", DateTime.Now.AddHours(-24)));

@@ -442,7 +442,6 @@
     <Content Include="views\texts\watch.cshtml" />
     <Content Include="views\groups\rss.cshtml" />
     <Content Include="views\groups\partial\rssitem.cshtml" />
-    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Start\" />

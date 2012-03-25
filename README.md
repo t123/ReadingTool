@@ -1,4 +1,5 @@
-﻿# ReadingTool #
+﻿ReadingTool
+============
 
 * See [http://readingtool.net](http://readingtool.net/) for an example.
 * ASP.NET MVC 3

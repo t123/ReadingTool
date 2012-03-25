@@ -27,33 +27,9 @@ using ReadingTool.Entities;
 
 namespace ReadingTool.Tasks
 {
-    public class TagTask : ITask
+    public class TagTask : DefaultTask
     {
-        private MongoDatabase _db;
-
-        public SystemTaskResult Run(MongoDatabase db)
-        {
-            _db = db;
-            Task task = null;
-            try
-            {
-                task = Task.Factory.StartNew(Tag);
-                task.Wait();
-            }
-            catch(Exception e)
-            {
-                return new SystemTaskResult() { Success = false, Message = e.Message, Exception = e };
-            }
-
-            if(!task.IsCompleted)
-            {
-                return new SystemTaskResult() { Success = false, Message = "Task did not complete, no exception" };
-            }
-
-            return new SystemTaskResult() { Success = true };
-        }
-
-        private void Tag()
+        protected override void DoWork()
         {
             var collection = _db.GetCollection(Item.DbCollectionName);
 

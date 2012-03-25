@@ -55,9 +55,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CleanUpTask.cs" />
+    <Compile Include="DefaultTask.cs" />
     <Compile Include="MecabTask.cs" />
     <Compile Include="ITask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatisticsTask.cs" />
     <Compile Include="TagTask.cs" />
   </ItemGroup>
   <ItemGroup>
