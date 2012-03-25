@@ -26,6 +26,7 @@
                 @if(user!=null)
                 {
                     <li>@(Html.ActionLink<LanguagesController>(x => x.Index(), "languages"))</li>
+                    <li>@(Html.ActionLink<UsersController>(x => x.Index(1), "users"))</li>
                     <li>@(Html.ActionLink<TasksController>(x => x.Index(), "tasks"))</li>
                     <li>@(Html.ActionLink<ParsersController>(x => x.Index(), "parsers"))</li>
                     <li>@(Html.ActionLink<SystemSettingsController>(x => x.Index(), "settings"))</li>

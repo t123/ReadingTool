@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ReadingTool.Models.Create.User.ProfileModel>
+           
+@{
+    ViewBag.Title = "Index";
+    int page = ViewBag.Page;
+    long total = ViewBag.Total;
+}
+
+@section submenu { @Html.Partial("_menu") }
+
+<table width="95%" cellpadding="0" cellspacing="0" border="0" class="texts" style="margin-left: 10px">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Display Name</th>
+            <th>Member Since</th>
+            <th>Receive Messages</th>
+            <th>Has Email?</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>@user.DisplayName</td>
+                <td>@Html.FormatTimespan(DateTime.Now-user.Created)</td>
+                <td>@Html.CheckBox("ReceiveMessages", user.ReceiveMessages, new { @disabled = "disabled" })</td>
+                <td>@Html.CheckBox("HasEmail", !string.IsNullOrEmpty(user.EmailAddress), new { @disabled="disabled"})</td>
+                <td>
+                    @using(Html.BeginForm<UsersController>(x=>x.Delete(user.UserId.ToString()), FormMethod.Post, new { onsubmit="return confirm('Delete user?')"}))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.SubmitButton("delete", "delete")
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="6">
+                <ul class="lr">
+                    @{
+                        int pages = (int)Math.Ceiling((double)@total / 20);
+                    }
+                    <li>Total Pages: @pages</li>
+                </ul>
+            </th>
+        </tr>
+    </tfoot>
+</table>

@@ -166,6 +166,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="areas\admin\Controllers\TasksController.cs" />
+    <Compile Include="areas\admin\Controllers\UsersController.cs" />
     <Compile Include="areas\admin\Models\EmailTemplateModel.cs" />
     <Compile Include="areas\admin\Models\ImportLanguageModel.cs" />
     <Compile Include="areas\admin\Models\SystemLanguageModel.cs" />
@@ -349,6 +350,8 @@
     <Content Include="areas\admin\views\systemsettings\dbsettings.cshtml" />
     <Content Include="areas\admin\views\_ViewStart.cshtml" />
     <Content Include="areas\admin\views\logs\log4netdetails.cshtml" />
+    <Content Include="areas\admin\views\users\_menu.cshtml" />
+    <Content Include="areas\admin\views\users\index.cshtml" />
     <None Include="COPYING" />
     <Content Include="robots.txt" />
     <Content Include="scripts\jplayer\jquery.jplayer.min.js" />
@@ -502,7 +505,7 @@
     <Content Include="content\css\watching\DroidSans-webfont.woff" />
     <Content Include="content\css\watching\DroidSans.ttf" />
     <Content Include="content\jsonexport.php.txt" />
-    <None Include="content\sample.json" />
+    <Content Include="content\sample.json" />
     <Content Include="views\home\_menu.cshtml" />
     <Content Include="views\myaccount\lwtimportjson.cshtml" />
     <Content Include="views\myaccount\lwtimport.cshtml" />

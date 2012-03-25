@@ -46,6 +46,8 @@ namespace ReadingTool.Services
         string ConfirmPasswordReset(string username, string resetKey);
         void ResetPassword(string username, string password);
         long UserCount();
+        IEnumerable<User> FindAll();
+        Tuple<long, IEnumerable<User>> FindAll(int page);
     }
 
     public class UserService : IUserService
@@ -206,6 +208,27 @@ namespace ReadingTool.Services
         public long UserCount()
         {
             return _db.GetCollection(Collections.Users).Count();
+        }
+
+        public IEnumerable<User> FindAll()
+        {
+            return _db.GetCollection<User>(Collections.Users)
+                .FindAll()
+                .SetSortOrder(SortBy.Ascending("UsernameLower"));
+        }
+
+        public Tuple<long, IEnumerable<User>> FindAll(int page)
+        {
+            var cursor = _db.GetCollection<User>(Collections.Users)
+                .FindAll()
+                .SetSortOrder(SortBy.Ascending("UsernameLower"))
+                .SetSkip((page - 1) * 20).SetLimit(20)
+                ;
+
+            return new Tuple<long, IEnumerable<User>>(
+                cursor.Count(),
+                cursor
+                );
         }
 
         public User FindOneByUsername(string username)
