@@ -2,6 +2,8 @@
     <ul class="subnav">
         <li>@(Html.ActionLink<LogsController>(x => x.Index(1), "index"))</li>
         <li>@(Html.ActionLink<LogsController>(x => x.DeleteAll(), "delete all logs"))</li>
+        <li>@(Html.ActionLink<LogsController>(x => x.ParsingTimes(1), "parsing times"))</li>
+        <li>@(Html.ActionLink<LogsController>(x => x.DeleteAllParsingTimes(), "delete all parsing times"))</li>
     </ul>
 </div>
 <div class="clr10"></div>

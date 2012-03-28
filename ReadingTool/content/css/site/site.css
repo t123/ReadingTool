@@ -392,7 +392,7 @@ form .input_wrapper input
     height: 15px;
     margin: 12px 0 0 11px;
     padding: 3px 0px 3px 3px;
-    width: 250px;
+    width: 350px;
 }
 
 form .input_wrapper input[type="checkbox"]
@@ -926,6 +926,19 @@ form button a
 .spritesedit-removepart:hover
 {
     background-position: -48px -360px;
+}
+
+.spritesedit-print
+{
+    background: url(./images/spritesedit.png) no-repeat top left;
+    background-position: 0 -384px;
+    width: 24px;
+    height: 24px;
+}
+
+.spritesedit-print:hover
+{
+    background-position: -48px -384px;
 }
 
 table.message

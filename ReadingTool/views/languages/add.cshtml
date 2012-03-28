@@ -40,6 +40,12 @@
         @Html.ValidationMessageFor(x => x.Colour)
     </div>
     
+        <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.DefaultMediaUrl)
+            @Html.TextBoxFor(x => x.DefaultMediaUrl)
+            @Html.ValidationMessageFor(x => x.DefaultMediaUrl)
+        </div>
+    
     <div class="input_wrapper">
         @Html.LabelHelpFor(x => x.TranslateUrl)
         @Html.TextBoxFor(x => x.TranslateUrl)

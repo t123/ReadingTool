@@ -1,0 +1,54 @@
+﻿@model Tuple<long, IEnumerable<MongoDB.Bson.BsonDocument>>
+           
+@{
+    ViewBag.Title = "Index";
+    int page = ViewBag.Page;
+}
+
+@section submenu { @Html.Partial("_menu") }
+
+<table width="95%" cellpadding="0" cellspacing="0" border="0" class="texts" style="margin-left: 10px">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>MultiWords</th>
+            <th>SingleWords</th>
+            <th>TotalWords</th>
+            <th>Init</th>
+            <th>Tokenise</th>
+            <th>Parse</th>
+            <th>Class</th>
+            <th>Stats</th>
+            <th>Transform</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var message in Model.Item2)
+        {
+            <tr>
+                <td>@message.GetElement("Created").Value.AsDateTime</td>
+                <td>@message.GetElement("MultiWords").Value.AsInt32</td>
+                <td>@message.GetElement("SingleWords").Value.AsInt32</td>
+                <td>@message.GetElement("TotalWords").Value.AsInt32</td>
+                <td>@message.GetElement("Init").Value.AsDouble</td>
+                <td>@message.GetElement("Tokenise").Value.AsDouble</td>
+                <td>@message.GetElement("Parse").Value.AsDouble</td>
+                <td>@message.GetElement("Class").Value.AsDouble</td>
+                <td>@message.GetElement("Stats").Value.AsDouble</td>
+                <td>@message.GetElement("Transform").Value.AsDouble</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="10">
+                <ul class="lr">
+                    @{
+                        int pages = (int)Math.Ceiling((double)@Model.Item1 / 20);
+                    }
+                    <li>Total Pages: @pages</li>
+                </ul>
+            </th>
+        </tr>
+    </tfoot>
+</table>

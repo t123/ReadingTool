@@ -131,7 +131,7 @@ namespace ReadingTool.Controllers
             {
                 TryUpdateModel(language, new[]
                                              {
-                                                 "Name", "Colour", "TranslateUrl", "KeepFocus",
+                                                 "Name", "Colour", "TranslateUrl", "KeepFocus", "DefaultMediaUrl", 
                                                  "IsRtlLanguage", "HasRomanisationField", "ModalBehaviour",
                                                  "DefaultDictionary", "RemoveSpaces", "PunctuationRegEx", "SentenceEndRegEx"
                                              });

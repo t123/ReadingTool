@@ -84,6 +84,11 @@ namespace ReadingTool.Models.Create.Language
             "you will have to refocus on the text modal window to enter information (with your mouse/keyboard/touch etc).")]
         public bool KeepFocus { get; set; }
 
+        [DisplayName("Default Media URL")]
+        [Help("If all your media is at the same host specify the base part of the URL here so you don't have to type it in every time. " +
+              "For example <strong>http://example.org/mymedia/</strong>")]
+        public string DefaultMediaUrl { get; set; }
+
         public LanguageModel()
         {
             KeepFocus = true;

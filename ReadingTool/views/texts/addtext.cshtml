@@ -29,11 +29,12 @@
         @Html.ValidationMessageFor(x => x.LanguageId)
     </div>
     
-        <div class="input_wrapper">
-            @Html.LabelHelpFor(x => x.Url)
-            @Html.TextBoxFor(x => x.Url)
-            @Html.ValidationMessageFor(x => x.Url)
-        </div>
+    <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.Url)
+        @Html.TextBoxFor(x => x.Url)
+        <span data-bind="text: defaultMediaUrl" onclick="$('#Url').val($(this).html()); return false;">&nbsp;</span>
+        @Html.ValidationMessageFor(x => x.Url)
+    </div>
     
     <div class="input_wrapper">
         @Html.LabelHelpFor(x => x.ShareUrl)

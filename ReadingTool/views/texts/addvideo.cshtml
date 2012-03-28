@@ -13,7 +13,7 @@
     are not supported. It is safe to save and change words though.
 </p>
 @{
-    using (Html.BeginForm<TextsController>(x => x.AddVideo(), FormMethod.Post))
+    using(Html.BeginForm<TextsController>(x => x.AddVideo(), FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <legend>Add Video</legend>
@@ -22,7 +22,7 @@
             @Html.LabelHelpFor(x => x.LanguageId)
             @Html.DropDownListFor(
                 x => x.LanguageId,
-                new SelectList(ViewBag.Languages as Dictionary<ObjectId,string>, "Key", "Value"),
+                new SelectList(ViewBag.Languages as Dictionary<ObjectId, string>, "Key", "Value"),
                 "Please choose a language"
            )
             @Html.ValidationMessageFor(x => x.LanguageId)
@@ -31,6 +31,7 @@
         <div class="input_wrapper">
             @Html.LabelHelpFor(x => x.Url)
             @Html.TextBoxFor(x => x.Url)
+            <span data-bind="text: defaultMediaUrl" onclick="$('#Url').val($(this).html()); return false;">&nbsp;</span>
             @Html.ValidationMessageFor(x => x.Url)
         </div>
     

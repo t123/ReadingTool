@@ -43,6 +43,7 @@ using ReadingTool.Models.Create.Text;
 using ReadingTool.Models.Create.Video;
 using ReadingTool.Models.View.Language;
 using ReadingTool.Services;
+using StructureMap;
 
 namespace ReadingTool.Controllers
 {
@@ -230,6 +231,55 @@ namespace ReadingTool.Controllers
         {
             _itemService.Delete(id);
             return this.RedirectToAction(x => x.Index()).Success("Text deleted");
+        }
+
+        [HttpGet]
+        public ActionResult PdfText(string id)
+        {
+            var item = _itemService.FindOne(id);
+
+            if(item == null)
+            {
+                return this.RedirectToAction(x => x.Index()).Error("Text not found");
+            }
+
+            var latexParserService = ObjectFactory.GetInstance<LatextParserService>();
+
+            var wordService = DependencyResolver.Current.GetService<IWordService>();
+            var userService = DependencyResolver.Current.GetService<IUserService>();
+            var parserInput = new ParserInput
+                (
+                    userService.FindOne(UserId),
+                    _languageService.FindOne(item.LanguageId),
+                    item,
+                    wordService.FindAllForParsingSplit(item.LanguageId),
+                    false
+                );
+
+            try
+            {
+                var parserOutput = latexParserService.Parse(parserInput);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(@"\documentclass[12pt]{article}");
+                sb.AppendLine(@"\usepackage[papersize={108mm,144mm},margin=2mm]{geometry}");
+                sb.AppendLine(@"\sloppy");
+                sb.AppendLine(@"\pagestyle{empty}");
+                sb.AppendLine(@"\usepackage[scaled]{helvet}");
+                sb.AppendLine(@"\renewcommand{\familydefault}{\sfdefault}");
+                sb.AppendLine(@"\setlength\parindent{0pt}");
+                sb.AppendLine(@"");
+                sb.AppendLine(@"\begin{document}");
+                sb.AppendLine(parserOutput.ParsedHtml);
+                sb.AppendLine(@"\end{document}");
+
+                return View((object)sb.ToString());
+            }
+            catch(TooManyWords e)
+            {
+                return View("toomanywords", e);
+            }
+
+            return this.RedirectToAction(x => x.EditText(id));
         }
 
         [HttpGet]

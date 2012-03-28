@@ -29,11 +29,13 @@ namespace ReadingTool.Areas.Admin.Controllers
     public class LogsController : BaseController
     {
         private readonly ILogService _logService;
+        private readonly IItemService _itemService;
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public LogsController(ILogService logService)
+        public LogsController(ILogService logService, IItemService itemService)
         {
             _logService = logService;
+            _itemService = itemService;
         }
 
         public ActionResult Index(int page)
@@ -52,6 +54,18 @@ namespace ReadingTool.Areas.Admin.Controllers
         {
             Logger.Info("Called Log4NetDetails");
             return View(Logger);
+        }
+
+        public ActionResult ParsingTimes(int page)
+        {
+            ViewBag.Page = page;
+            return View(_itemService.FindAllParsingTimes(page));
+        }
+
+        public ActionResult DeleteAllParsingTimes()
+        {
+            _itemService.DeleteAllParsingTimes();
+            return this.RedirectToAction(x => x.ParsingTimes(1));
         }
     }
 }

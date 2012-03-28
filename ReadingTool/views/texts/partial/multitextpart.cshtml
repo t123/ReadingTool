@@ -21,6 +21,7 @@
             <div class="input_wrapper">
                 @Html.LabelHelpFor(x => x.AudioUrl)
                 @Html.TextBoxFor(x => x.AudioUrl)
+                <span data-bind="text: defaultMediaUrl" onclick="$('#Url').val($(this).html()); return false;">&nbsp;</span>
                 @Html.ValidationMessageFor(x => x.AudioUrl)
             </div>
         

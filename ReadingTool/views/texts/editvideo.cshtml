@@ -2,8 +2,8 @@
 @model VideoModel
 @{
     ViewBag.Title = "Edit Video";
-    var nextId = (ObjectId) ViewBag.NextId;
-    var previousId = (ObjectId) ViewBag.PreviousId;
+    var nextId = (ObjectId)ViewBag.NextId;
+    var previousId = (ObjectId)ViewBag.PreviousId;
     bool tooManyWords = ViewBag.TooManyWords != null && (bool)ViewBag.TooManyWords;
 }
 @section styles {
@@ -21,13 +21,13 @@
             <a title="watch video" href="@(Html.BuildUrlFromExpression<TextsController>(x => x.Watch(Model.ItemId.ToString())))" class="sprite spritesedit-watch">watch</a>
         </li>
     
-        @if(previousId!=ObjectId.Empty)
+        @if(previousId != ObjectId.Empty)
         {
             <li>
                 <a title="previous video" href="@(Html.BuildUrlFromExpression<TextsController>(x => x.EditVideo(previousId.ToString())))" class="sprite spritesedit-prev">previous</a>
             </li>
         }
-        @if(nextId!=ObjectId.Empty)
+        @if(nextId != ObjectId.Empty)
         {
             <li>
                 <a title="next video" href="@(Html.BuildUrlFromExpression<TextsController>(x => x.EditVideo(nextId.ToString())))" class="sprite spritesedit-next">next</a>
@@ -56,7 +56,7 @@
     using(Html.BeginForm<TextsController>(x => x.EditVideo(Model.ItemId.ToString()), FormMethod.Post))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x=>x.ItemId)
+        @Html.HiddenFor(x => x.ItemId)
         <legend>Edit Video</legend>
 
         <div class="input_wrapper">
@@ -72,6 +72,7 @@
         <div class="input_wrapper">
             @Html.LabelHelpFor(x => x.Url)
             @Html.TextBoxFor(x => x.Url)
+            <span data-bind="text: defaultMediaUrl" onclick="$('#Url').val($(this).html()); return false;">&nbsp;</span>
             @Html.ValidationMessageFor(x => x.Url)
         </div>
     

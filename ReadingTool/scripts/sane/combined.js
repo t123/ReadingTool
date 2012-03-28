@@ -214,6 +214,7 @@ function textaddLanguageModel(language) {
     this.isRtl = language.isRtl;
     this.code = language.code;
     this.name = language.name;
+    this.defaultMediaUrl = language.defaultMediaUrl;
 }
 
 
@@ -240,6 +241,14 @@ function addTextVM(settings) {
 		);
     };
 
+    self.defaultMediaUrl = ko.computed(function () {
+        if (self.selectedLanguage() == undefined) return false;
+        var l = ko.utils.arrayFirst(self.languages(), function (item) {
+            return item.id == self.selectedLanguage();
+        });
+        return l == null ? '' : l.defaultMediaUrl;
+    }, self);
+    
     self.canParse = ko.computed(function () {
         if (self.selectedLanguage() == undefined) return false;
         var l = ko.utils.arrayFirst(self.languages(), function (item) {

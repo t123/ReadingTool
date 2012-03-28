@@ -17,7 +17,7 @@ $(function() {
         forward: @Model.MediaControls.FastForward,
         swfPath: '@Url.Content("~/content/Jplayer.swf")',
         hasAudio: @(Model.Item.ItemType==ItemType.Text && !string.IsNullOrEmpty(Model.Item.Url) ? "true" : "false"),
-        url: '@Model.Item.Url',
+        url: '@Html.Raw(Model.Item.Url)',
         itemId: '@Model.Item.ItemId',
         hasVideo: @(Model.Item.ItemType==ItemType.Text ? "false" : "true"),
         languageId: '@Model.Language.LanguageId',

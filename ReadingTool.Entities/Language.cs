@@ -45,6 +45,7 @@ namespace ReadingTool.Entities
         public ModalBehaviour ModalBehaviour { get; set; }
         public IList<UserDictionary> Dictionaries { get; set; }
         public string DefaultDictionary { get; set; }
+        public string DefaultMediaUrl { get; set; }
         public string PunctuationRegEx { get; set; }
         public string[] Punctuation { get; set; }
         public string SentenceEndRegEx { get; set; }

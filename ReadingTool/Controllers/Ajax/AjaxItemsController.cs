@@ -86,7 +86,8 @@ namespace ReadingTool.Controllers.Ajax
                                      id = x.LanguageId.ToString(),
                                      name = x.Name,
                                      isRtl = x.IsRtlLanguage,
-                                     code = _systemLanguageService.FindOne(x.SystemLanguageId).Code
+                                     code = _systemLanguageService.FindOne(x.SystemLanguageId).Code,
+                                     defaultMediaUrl = x.DefaultMediaUrl
                                  }
                     )
                     }

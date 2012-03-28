@@ -37,6 +37,7 @@ namespace ReadingTool.Services
     public class ParserService : BaseParserService
     {
         private readonly MongoDatabase _db;
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ParserService(MongoDatabase db, IItemService itemService, SystemSystemValues values)
             : base(itemService, values)
@@ -65,10 +66,10 @@ namespace ReadingTool.Services
                 document.Add(new BsonElement("TotalWords", timings.Item1));
                 document.Add(new BsonElement("Init", init.TotalSeconds));
                 document.Add(new BsonElement("Tokenise", timings.Item2.TotalSeconds));
-                document.Add(new BsonElement("Parse", timings.Item2.TotalSeconds));
-                document.Add(new BsonElement("Class", timings.Item3.TotalSeconds));
-                document.Add(new BsonElement("Stats", timings.Item4.TotalSeconds));
-                document.Add(new BsonElement("Transform", timings.Item5.TotalSeconds));
+                document.Add(new BsonElement("Parse", timings.Item3.TotalSeconds));
+                document.Add(new BsonElement("Class", timings.Item4.TotalSeconds));
+                document.Add(new BsonElement("Stats", timings.Item5.TotalSeconds));
+                document.Add(new BsonElement("Transform", timings.Item6.TotalSeconds));
 
                 _db.GetCollection(Collections.ParsingTimes).Save(document);
             }
@@ -81,7 +82,7 @@ namespace ReadingTool.Services
             return _output;
         }
 
-        protected Tuple<int, TimeSpan, TimeSpan, TimeSpan, TimeSpan, TimeSpan> CreateOutput(ParserInput input)
+        protected virtual Tuple<int, TimeSpan, TimeSpan, TimeSpan, TimeSpan, TimeSpan> CreateOutput(ParserInput input)
         {
             input.Item.TokenisedText = string.Empty;
 
@@ -120,7 +121,7 @@ namespace ReadingTool.Services
             return new Tuple<int, TimeSpan, TimeSpan, TimeSpan, TimeSpan, TimeSpan>(totalWords, tokenise, parse, classWords, stats, transform);
         }
 
-        protected Tuple<int, XDocument> ClassWords(XDocument document)
+        protected virtual Tuple<int, XDocument> ClassWords(XDocument document)
         {
             var totalWords = document.Descendants("t").Count(x => x.Attribute("type").Value == "word");
 
@@ -128,6 +129,7 @@ namespace ReadingTool.Services
                 throw new TooManyWords(_output.Item.ItemId, _output.Item.ItemType, totalWords, _maxWords);
 
             //Multilength
+            DateTime start = DateTime.Now;
             foreach(var multi in _words)
             {
                 var first = multi.WordPhraseLower.Split(' ').First();
@@ -165,19 +167,23 @@ namespace ReadingTool.Services
                 }
             }
 
-            if(totalWords > _singleWords.Length)
-            {
-                foreach(var word in _singleWords)
-                {
-                    var elements = document.Descendants("t").Where(x => x.Attribute("type").Value == "word" && x.Attribute("lower").Value.Equals(word.WordPhraseLower));
-                    foreach(var element in elements)
-                    {
-                        element.SetAttributeValue("state", _wordStates[word.State]);
-                        element.SetAttributeValue("data", word.FullDefinition);
-                    }
-                }
-            }
-            else
+            Logger.DebugFormat("Multi words took: {0}", (DateTime.Now - start).TotalSeconds);
+
+            start = DateTime.Now;
+            //if(totalWords > _singleWords.Length)
+            //{
+            //    This is actually really slow ~5 on Linode for 167 single words & 5000 total
+            //    foreach(var word in _singleWords)
+            //    {
+            //        var elements = document.Descendants("t").Where(x => x.Attribute("type").Value == "word" && x.Attribute("lower").Value.Equals(word.WordPhraseLower));
+            //        foreach(var element in elements)
+            //        {
+            //            element.SetAttributeValue("state", _wordStates[word.State]);
+            //            element.SetAttributeValue("data", word.FullDefinition);
+            //        }
+            //    }
+            //}
+            //else
             {
                 var elements = document.Descendants("t").Where(x => x.Attribute("type").Value == "word");
                 var wordsAsDict = _singleWords.ToDictionary(x => x.WordPhraseLower, x => new { State = x.State, FullDefinition = x.FullDefinition });
@@ -193,13 +199,15 @@ namespace ReadingTool.Services
                     }
                 }
             }
+            Logger.DebugFormat("Single words took: {0}", (DateTime.Now - start).TotalSeconds);
 
             return new Tuple<int, XDocument>(totalWords, document);
         }
 
-        protected XDocument CreateStats(int totalWords, XDocument document)
+        protected virtual XDocument CreateStats(int totalWords, XDocument document)
         {
             //var totalWords = document.Descendants("t").Count(x => x.Attribute("type").Value == "word");
+            DateTime begin = DateTime.Now;
             var knownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "word" && x.Attribute("state").Value == _wordStates[WordState.Known]);
             var unknownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "word" && x.Attribute("state").Value == _wordStates[WordState.Unknown]);
             var notseenCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "word" && x.Attribute("state").Value == _wordStates[WordState.NotSeen]);
@@ -234,19 +242,22 @@ namespace ReadingTool.Services
             var data = new XElement("stats", tw, ns, kn, un,
                                     new XElement("unknownWords",
                                                  newWords.Select(x =>
-                                                 {
-                                                     var element = new XElement("word", x.Word.Key);
-                                                     element.SetAttributeValue("count", x.Count);
-                                                     return element;
-                                                 }
+                                                                     {
+                                                                         var element = new XElement("word", x.Word.Key);
+                                                                         element.SetAttributeValue("count", x.Count);
+                                                                         return element;
+                                                                     }
                                                      ))
                 );
 
             document.Descendants("root").First().Add(data);
+
+            Logger.DebugFormat("Method total: {0}", (DateTime.Now - begin).TotalSeconds);
+
             return document;
         }
 
-        protected string ApplyTransform(ParserInput input, XDocument document)
+        protected virtual string ApplyTransform(ParserInput input, XDocument document)
         {
             var xslService = ObjectFactory.GetInstance<XslService>();
             XmlWriterSettings settings = new XmlWriterSettings();

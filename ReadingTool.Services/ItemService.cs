@@ -70,6 +70,8 @@ namespace ReadingTool.Services
         SearchResult<Item> SearchItemsForGroup(ObjectId groupId, string filter, string[] folders, int limit, int page);
         Item FindOneForGroup(ObjectId textId, ObjectId groupId);
         SearchResult<Item> SearchItems(string[] types, string filter, string[] languages, string[] collectionNames, string orderBy, string orderDirection, int limit, int page);
+        Tuple<long, IEnumerable<BsonDocument>> FindAllParsingTimes(int page);
+        void DeleteAllParsingTimes();
     }
 
     public class ItemService : IItemService
@@ -664,6 +666,26 @@ namespace ReadingTool.Services
                 Items = cursor
             };
         }
+
+        public Tuple<long, IEnumerable<BsonDocument>> FindAllParsingTimes(int page)
+        {
+            var cursor = _db.GetCollection(Collections.ParsingTimes)
+                .FindAll()
+                .SetSortOrder(SortBy.Descending("Created"))
+                .SetSkip((page - 1) * 20).SetLimit(20)
+                ;
+
+            return new Tuple<long, IEnumerable<BsonDocument>>(
+                cursor.Count(),
+                cursor
+                );
+        }
+
+        public void DeleteAllParsingTimes()
+        {
+            _db.GetCollection(Collections.ParsingTimes).RemoveAll();
+        }
+
         #endregion
     }
 }

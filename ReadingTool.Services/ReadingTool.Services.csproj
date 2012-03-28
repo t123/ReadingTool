@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="BaseParserService.cs" />
     <Compile Include="Collections.cs" />
+    <Compile Include="LatexParserService.cs" />
     <Compile Include="TokenService.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="EmailService.cs" />

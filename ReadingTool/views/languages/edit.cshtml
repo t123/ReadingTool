@@ -51,6 +51,12 @@
     </div>
     
     <div class="input_wrapper">
+        @Html.LabelHelpFor(x => x.DefaultMediaUrl)
+        @Html.TextBoxFor(x => x.DefaultMediaUrl)
+        @Html.ValidationMessageFor(x => x.DefaultMediaUrl)
+    </div>
+    
+    <div class="input_wrapper">
         @Html.LabelHelpFor(x => x.TranslateUrl)
         @Html.TextBoxFor(x => x.TranslateUrl)
         @Html.ValidationMessageFor(x => x.TranslateUrl)
@@ -156,12 +162,12 @@ else
                 <td>@dictionary.WindowName</td>
                 <td>@dictionary.Url</td>
                 <td>
-                    <a class="sprite sprite-edit" title="edit" href="@(Html.BuildUrlFromExpression<LanguagesController>(x=>x.EditDictionary(Model.LanguageId.ToString(), dictionary.Name)))">
+                    <a class="sprite sprite-edit" title="edit" href="@(Html.BuildUrlFromExpression<LanguagesController>(x => x.EditDictionary(Model.LanguageId.ToString(), dictionary.Name)))">
                         edit
                     </a>
                 </td>
                     <td>
-                    <a class="sprite sprite-delete" title="delete" href="@(Html.BuildUrlFromExpression<LanguagesController>(x=>x.DeleteDictionary(Model.LanguageId.ToString(), dictionary.Name)))">
+                    <a class="sprite sprite-delete" title="delete" href="@(Html.BuildUrlFromExpression<LanguagesController>(x => x.DeleteDictionary(Model.LanguageId.ToString(), dictionary.Name)))">
                         delete
                     </a>
                 </td>
