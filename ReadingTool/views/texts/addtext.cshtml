@@ -29,6 +29,16 @@
         @Html.ValidationMessageFor(x => x.LanguageId)
     </div>
     
+     if(!SystemSettings.Instance.Values.Site.ActingAsServer)
+     {
+         <div class="input_wrapper">
+             <label>Media on host</label>
+             <select data-bind="options: media, optionsCaption: 'Pick a local file'" onchange="$('#Url').val($(this).val()); return false;">
+             </select>
+             <a href="#" data-bind="click: loadMedia">(refresh)</a>
+         </div>
+     }
+     
     <div class="input_wrapper">
         @Html.LabelHelpFor(x => x.Url)
         @Html.TextBoxFor(x => x.Url)
@@ -74,7 +84,7 @@
     
     <div class="input_wrapper" data-bind="visible: canParse">
         @Html.LabelHelpFor(x => x.ParseWith)
-        @Html.DropDownListFor(x => x.ParseWith, 
+        @Html.DropDownListFor(x => x.ParseWith,
             new SelectList(ViewBag.Parsers as Dictionary<string, string>, "Key", "Value"), "None"
         )
         @Html.ValidationMessageFor(x => x.ParseWith)
@@ -107,7 +117,7 @@
 
         new addTextVM(
             {
-                urls: { ajaxUrl: '@(Html.BuildUrlFromExpression<AjaxItemsController>(x=>x.Index()))' },
+                urls: { ajaxUrl: '@(Html.BuildUrlFromExpression<AjaxItemsController>(x => x.Index()))' },
                 languageId: '@(Model==null || Model.LanguageId==ObjectId.Empty ? "" : Model.LanguageId.ToString())',
                 afToken: $('#afForm input[name=__RequestVerificationToken]').val()
             }

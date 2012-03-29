@@ -26,19 +26,59 @@ using System.Xml.Linq;
 using System.Xml.Xsl;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using ReadingTool.Common;
 using ReadingTool.Common.Enums;
 using ReadingTool.Common.Exceptions;
+using ReadingTool.Entities;
 using ReadingTool.Entities.Parser;
 using StructureMap;
 
 namespace ReadingTool.Services
 {
-    public class LatextParserService : ParserService
+    public class LatexParserService : ParserService
     {
-        public LatextParserService(MongoDatabase db, IItemService itemService, SystemSystemValues values)
+        public LatexParserService(MongoDatabase db, IItemService itemService, SystemSystemValues values)
             : base(db, itemService, values)
         {
+        }
+
+        public byte[] FindOne(ObjectId latexId, ObjectId userId)
+        {
+            var latex = _db.GetCollection<LatexQueue>(LatexQueue.CollectionName).FindOneById(latexId);
+
+            if(latex == null || latex.UserId != userId)
+            {
+                return null;
+            }
+
+            MongoGridFS grid = new MongoGridFS(_db);
+            var result = grid.FindOneById(latex.FileId);
+
+            if(result == null)
+            {
+                return null;
+            }
+
+            using(var stream = result.OpenRead())
+            {
+                Byte[] buffer = new byte[stream.Length];
+                stream.Read(buffer, 0, (int)stream.Length);
+                return buffer;
+            }
+        }
+
+        public void AddToQueue(ObjectId userId, ParserOutput output)
+        {
+            LatexQueue latex = new LatexQueue()
+                                   {
+                                       Created = DateTime.Now,
+                                       UserId = userId,
+                                       ItemId = new ObjectId(output.Item.ItemId),
+                                       Latex = output.ParsedHtml,
+                                   };
+
+            _db.GetCollection(Collections.LatexQueue).Save(latex);
         }
 
         protected override Tuple<int, XDocument> ClassWords(XDocument document)

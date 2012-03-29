@@ -48,7 +48,9 @@ namespace ReadingTool.Common
         public static void ViewMappings()
         {
             Mapper.CreateMap<User, UserSimpleModel>().ForMember(x => x.Name, y => y.MapFrom(z => z.Fullname));
-            Mapper.CreateMap<Message, MessageViewModel>();
+            Mapper.CreateMap<Message, MessageViewModel>()
+                .ForMember(x => x.Body, y => y.MapFrom(z => MarkdownHelper.Default().Transform(z.Body)));
+
             Mapper.CreateMap<Group, GroupViewModel>().ForMember(x => x.Tags, y => y.MapFrom(z => string.Join(TagHelper.TAG_SEPARATOR, z.Tags)));
             Mapper.CreateMap<Word, WordViewModel>().ForMember(x => x.Tags, y => y.MapFrom(z => string.Join(TagHelper.TAG_SEPARATOR, z.Tags)));
             Mapper.CreateMap<GroupMember, GroupMemberViewModel>();

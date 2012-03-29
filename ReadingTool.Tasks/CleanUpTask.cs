@@ -28,7 +28,7 @@ namespace ReadingTool.Tasks
 {
     public class CleanUpTask : DefaultTask
     {
-        protected new void DoWork()
+        protected override void DoWork()
         {
             _db.GetCollection(Token.CollectionName).Remove(Query.LT("Expiry", DateTime.Now));
             _db.GetCollection(ApiRequest.CollectionName).Remove(Query.LT("DateTime", DateTime.Now.AddHours(-24)));

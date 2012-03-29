@@ -99,9 +99,11 @@ namespace ReadingTool.Common
             public string Analytics { get; set; }
             public string ScriptVersioning { get; set; }
             public int MaxWordsParsingException { get; set; }
+            public bool ActingAsServer { get; set; }
 
             public ValueSite()
             {
+                ActingAsServer = true;
             }
         }
 

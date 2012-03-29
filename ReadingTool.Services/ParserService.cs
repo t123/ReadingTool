@@ -36,8 +36,8 @@ namespace ReadingTool.Services
 {
     public class ParserService : BaseParserService
     {
-        private readonly MongoDatabase _db;
-        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected readonly MongoDatabase _db;
+        protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ParserService(MongoDatabase db, IItemService itemService, SystemSystemValues values)
             : base(itemService, values)

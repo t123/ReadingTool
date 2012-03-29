@@ -106,16 +106,8 @@
         <tr>
             <td>
                 <div class="mdd_preview">
-                    @if(string.IsNullOrEmpty(Model.Body))
-                    {
-                        <p>
-                            (no message body)
-                        </p>
-                    }
-                    else
-                    {
+                    
                         @Html.Raw(Model.Body)
-                    }
                 </div>
             </td>
         </tr>

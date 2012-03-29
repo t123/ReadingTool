@@ -221,12 +221,16 @@
     <Compile Include="ViewEngine\LowereRazorViewEngine.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\XSL\latexread.xsl" />
+    <Content Include="App_Data\XSL\latexread.xsl">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_Data\XSL\watch.xsl" />
     <Content Include="App_Data\XSL\readparallel.xsl">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_Data\XSL\read.xsl" />
+    <Content Include="App_Data\XSL\read.xsl">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="content\css\markdowndeep\mdd_ajax_loader.gif" />
     <Content Include="content\css\markdowndeep\mdd_gripper.png" />
     <Content Include="content\css\markdowndeep\mdd_modal_background.png" />
@@ -445,6 +449,7 @@
     <Content Include="views\groups\rss.cshtml" />
     <Content Include="views\groups\partial\rssitem.cshtml" />
     <Content Include="views\texts\pdftext.cshtml" />
+    <Content Include="views\texts\filenotfound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Start\" />

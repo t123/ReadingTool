@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiRequest.cs" />
+    <Compile Include="LatexQueue.cs" />
     <Compile Include="ParsingWord.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="EmailTemplate.cs" />

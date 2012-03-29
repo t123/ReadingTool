@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using MongoDB.Bson;
@@ -364,6 +365,35 @@ namespace ReadingTool.Controllers.Ajax
             {
                 return Json(FAIL);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult Media()
+        {
+            if(SystemSettings.Instance.Values.Site.ActingAsServer)
+            {
+                return Json(new { media = new string[] { "" } });
+            }
+
+            DirectoryInfo di = new DirectoryInfo(Path.Combine(SystemSettings.Instance.Values.Site.BasePath, "media"));
+
+            if(!di.Exists)
+            {
+                return Json(new { media = new string[] { "" } });
+            }
+
+            var files = di.GetFiles("*.mp3", SearchOption.AllDirectories);
+
+            return Json(
+                new
+                    {
+                        media = files
+                    .OrderBy(x => x.DirectoryName)
+                    .ThenBy(x => x.Name, StringComparer.InvariantCultureIgnoreCase)
+                    .Select(x => "/" + x.FullName.Replace(SystemSettings.Instance.Values.Site.BasePath, "").Replace("\\", "/"))
+                    }
+                );
         }
     }
 }

@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "File Not Found";
+}
+
+@section submenu {
+    @Html.Partial("_menu")
+}
+@section footer { }
+<p class="warning">
+    Sorry, the file you requested was not found. 
+    
+</p>
+<div class="general">
+    Possible reasons are:
+    <ul style="list-style-type: disc; padding-left: 20px;">
+        <li>files are only kept for 48 hours</li>
+        <li>the link ID is incorrect</li>
+        <li>you do not have permission to access this file</li>
+    </ul>
+</div>

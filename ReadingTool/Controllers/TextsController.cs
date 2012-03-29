@@ -27,6 +27,9 @@ using System.Text;
 using System.Web.Mvc;
 using AutoMapper;
 using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.GridFS;
 using MvcContrib;
 using Newtonsoft.Json;
 using ReadingTool.Attributes;
@@ -243,7 +246,7 @@ namespace ReadingTool.Controllers
                 return this.RedirectToAction(x => x.Index()).Error("Text not found");
             }
 
-            var latexParserService = ObjectFactory.GetInstance<LatextParserService>();
+            var latexParserService = ObjectFactory.GetInstance<LatexParserService>();
 
             var wordService = DependencyResolver.Current.GetService<IWordService>();
             var userService = DependencyResolver.Current.GetService<IUserService>();
@@ -259,27 +262,32 @@ namespace ReadingTool.Controllers
             try
             {
                 var parserOutput = latexParserService.Parse(parserInput);
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(@"\documentclass[12pt]{article}");
-                sb.AppendLine(@"\usepackage[papersize={108mm,144mm},margin=2mm]{geometry}");
-                sb.AppendLine(@"\sloppy");
-                sb.AppendLine(@"\pagestyle{empty}");
-                sb.AppendLine(@"\usepackage[scaled]{helvet}");
-                sb.AppendLine(@"\renewcommand{\familydefault}{\sfdefault}");
-                sb.AppendLine(@"\setlength\parindent{0pt}");
-                sb.AppendLine(@"");
-                sb.AppendLine(@"\begin{document}");
-                sb.AppendLine(parserOutput.ParsedHtml);
-                sb.AppendLine(@"\end{document}");
-
-                return View((object)sb.ToString());
+                latexParserService.AddToQueue(UserId, parserOutput);
             }
             catch(TooManyWords e)
             {
-                return View("toomanywords", e);
+                return this.RedirectToAction(x => x.EditText(id)).Error("There are too many words in your text to generate a PDF.");
             }
 
-            return this.RedirectToAction(x => x.EditText(id));
+            return this.RedirectToAction(x => x.EditText(id)).Success("Your PDF has been placed in the queue. When it's done you will receive a message with a link.");
+        }
+
+        public ActionResult Download(string id)
+        {
+            var latexService = ObjectFactory.GetInstance<LatexParserService>();
+            var buffer = latexService.FindOne(new ObjectId(id), UserId);
+
+            if(buffer == null)
+            {
+                return this.RedirectToAction(x => x.FileNotFound());
+            }
+
+            return new FileContentResult(buffer, "application/pdf");
+        }
+
+        public ActionResult FileNotFound()
+        {
+            return View();
         }
 
         [HttpGet]

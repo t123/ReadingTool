@@ -132,6 +132,8 @@ div.mdd_preview {
 
 div.mdd_preview p { padding: 10px 2px 10px 2px; }
 
+div.mdd_preview ul { padding-left: 20px; }
+
 span.mdd_sep
 {
 	width:5px;

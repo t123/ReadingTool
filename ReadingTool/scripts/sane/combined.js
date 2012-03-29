@@ -6,12 +6,12 @@ function messageCount(url) {
     $.post(
         url,
         function (data) {
-            if(data=='') {
+            if (data == '') {
                 $('#msgCount').hide();
             } else {
                 $('#msgCount').show().html(data);
             }
-            
+
         }
     );
 }
@@ -226,6 +226,7 @@ function addTextVM(settings) {
     self.settings = settings;
     self.languages = ko.observableArray([]);
     self.selectedLanguage = ko.observableArray([]);
+    self.media = ko.observableArray([]);
 
     self.init = function () {
         $.post(
@@ -235,8 +236,21 @@ function addTextVM(settings) {
 			    data.languages.forEach(function (language) {
 			        self.languages.push(new textaddLanguageModel(language));
 			    });
-
 			    self.selectedLanguage.push(self.settings.languageId);
+			}
+		);
+
+        self.loadMedia();
+    };
+
+    self.loadMedia = function () {
+        $.post(
+			self.settings.urls.ajaxUrl + '/media',
+			{ __RequestVerificationToken: self.settings.afToken },
+			function (data) {
+			    data.media.forEach(function (item) {
+			        self.media.push(item);
+			    });
 			}
 		);
     };
@@ -248,7 +262,7 @@ function addTextVM(settings) {
         });
         return l == null ? '' : l.defaultMediaUrl;
     }, self);
-    
+
     self.canParse = ko.computed(function () {
         if (self.selectedLanguage() == undefined) return false;
         var l = ko.utils.arrayFirst(self.languages(), function (item) {

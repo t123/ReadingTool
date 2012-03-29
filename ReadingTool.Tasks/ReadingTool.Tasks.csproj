@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CleanUpTask.cs" />
+    <Compile Include="LatexTask.cs" />
     <Compile Include="DefaultTask.cs" />
     <Compile Include="MecabTask.cs" />
     <Compile Include="ITask.cs" />

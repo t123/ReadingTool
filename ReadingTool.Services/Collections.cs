@@ -40,6 +40,7 @@ namespace ReadingTool.Services
         public const string GroupMembers = GroupMember.CollectionName;
         public const string Items = Item.DbCollectionName;
         public const string Xsl = Entities.Xsl.CollectionName;
+        public const string LatexQueue = Entities.LatexQueue.CollectionName;
 
         public const string ParsingTimes = @"ParsingTimes";
         public const string SystemSettings = @"SystemSettings";

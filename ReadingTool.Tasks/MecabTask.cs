@@ -32,7 +32,7 @@ namespace ReadingTool.Tasks
 {
     public class MecabTask : DefaultTask
     {
-        protected new void DoWork()
+        protected override void DoWork()
         {
             var items = _db.GetCollection<Item>(Item.DbCollectionName)
                 .Find(Query.Exists("ParseWith", true))
