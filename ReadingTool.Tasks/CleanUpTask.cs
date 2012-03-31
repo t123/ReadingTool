@@ -32,6 +32,7 @@ namespace ReadingTool.Tasks
         {
             _db.GetCollection(Token.CollectionName).Remove(Query.LT("Expiry", DateTime.Now));
             _db.GetCollection(ApiRequest.CollectionName).Remove(Query.LT("DateTime", DateTime.Now.AddHours(-24)));
+            _db.GetCollection(LatexQueue.CollectionName).Remove(Query.LT("Created", DateTime.Now.AddHours(-24)));
             _db.GetCollection(Word.CollectionName).Remove(Query.EQ("WordPhrase", ""));
             _db.GetCollection(PasswordReset.CollectionName).Remove(Query.LT("Created", DateTime.Now.AddHours(-48)));
         }

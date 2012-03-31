@@ -39,15 +39,16 @@ namespace ReadingTool.Tasks
 {
     public class LatexTask : DefaultTask
     {
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         protected override void DoWork()
         {
             var values = _db.GetCollection<SystemSystemValues>("SystemSettings").FindOneById("default");
 
             var toParse =
                 _db.GetCollection<LatexQueue>(LatexQueue.CollectionName)
-                    .AsQueryable()
-                    .Where(x => x.FileId == ObjectId.Empty)
-                    .OrderBy(x => x.Created);
+                    .Find(Query.Exists("File", false))
+                    .SetSortOrder("Created");
 
             var parser = _db.GetCollection<TextParser>(TextParser.CollectionName).FindOne(Query.EQ("Name", "Latex"));
 
@@ -55,26 +56,32 @@ namespace ReadingTool.Tasks
             {
                 throw new NoNullAllowedException("Latex parser not found");
             }
+
             string body = @"Your file is now ready for download. You can download your file at [{0}{1}]({0}{1}).
 
 Please note that:
 
+* You must be logged in to access your file.
 * Your file is only downloadable by you.
-* The link is only valid for 48 hours.
+* Your file will be deleted in 24 hours. You may request a new PDF at any time.
 
 Thanks";
 
-            string url = values.Site.Domain + @"texts/download/";
+            string url = values.Site.Domain + @"/texts/download/";
             foreach(var document in toParse)
             {
-                var outfile = ParseText(parser, document.Latex);
+                Logger.Debug("Sending document to latex");
+                var file = ParseText(parser, document.Latex);
 
-                if(string.IsNullOrEmpty(outfile)) continue;
+                if(file == null)
+                {
+                    Logger.Debug("No data return from file");
+                    continue;
+                }
 
-                MongoGridFS fs = new MongoGridFS(_db);
-                var result = fs.Upload(outfile);
-                document.FileId = result.Id.AsObjectId;
+                document.File = file;
                 _db.GetCollection(LatexQueue.CollectionName).Save(document);
+                Logger.Debug("Saved file");
 
                 Message message = new Message()
                                       {
@@ -90,47 +97,119 @@ Thanks";
                                       };
 
                 _db.GetCollection(Message.CollectionName).Save(message);
+                Logger.Debug("Saved message");
             }
         }
 
-        private string ParseText(TextParser parser, string text)
+        private byte[] ParseText(TextParser parser, string text)
         {
-            return @"c:\temp\test.pdf";
-
             if(parser == null) return null;
             if(string.IsNullOrWhiteSpace(text)) return null;
 
-            string infile = Path.GetTempFileName();
-            string outfile = Path.GetTempFileName();
-
-            using(TextWriter tw = new StreamWriter(infile))
-            {
-                tw.Write(text);
-            }
-
-            string cmd = parser.FullPath;
-            string args = string.Format(parser.Arguments, infile, outfile);
-
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = false;
-            startInfo.UseShellExecute = false;
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.FileName = cmd;
-            startInfo.Arguments = args;
+            string infile = Path.Combine(Path.GetTempFileName());
+            string outfile = Path.ChangeExtension(infile, "pdf");
+            string auxfile = Path.ChangeExtension(infile, "aux");
+            string logfile = Path.ChangeExtension(infile, "log");
 
             try
             {
+                Logger.DebugFormat("Infile: {0}", infile);
+                Logger.DebugFormat("Outfile: {0}", outfile);
+
+                using(TextWriter tw = new StreamWriter(infile))
+                {
+                    tw.Write(text);
+                }
+
+                string cmd = parser.FullPath;
+                string args = string.Format(parser.Arguments, infile);
+
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.CreateNoWindow = false;
+                startInfo.UseShellExecute = false;
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.FileName = cmd;
+                startInfo.Arguments = args;
+                startInfo.WorkingDirectory = Path.GetTempPath();
+
                 using(Process exeProcess = Process.Start(startInfo))
                 {
                     exeProcess.WaitForExit();
                 }
+
+                Logger.DebugFormat("Reading outfile");
+                byte[] buffer;
+                using(FileStream fs = new FileStream(outfile, FileMode.Open, FileAccess.Read))
+                {
+                    buffer = new byte[fs.Length];
+                    fs.Read(buffer, 0, (int)fs.Length);
+                }
+
+                return buffer;
             }
-            catch
+            catch(Exception e)
             {
+                Logger.Error(e);
                 return null;
             }
+            finally
+            {
+                if(File.Exists(infile))
+                {
+                    Logger.DebugFormat("Deleting infile");
 
-            return outfile;
+                    try
+                    {
+                        File.Delete(infile);
+                    }
+                    catch(Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                }
+
+                if(File.Exists(outfile))
+                {
+                    Logger.DebugFormat("Deleting outfile");
+
+                    try
+                    {
+                        File.Delete(outfile);
+                    }
+                    catch(Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                }
+
+                if(File.Exists(auxfile))
+                {
+                    Logger.DebugFormat("Deleting auxfile");
+
+                    try
+                    {
+                        File.Delete(auxfile);
+                    }
+                    catch(Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                }
+
+                if(File.Exists(logfile))
+                {
+                    Logger.DebugFormat("Deleting logfile");
+
+                    try
+                    {
+                        File.Delete(logfile);
+                    }
+                    catch(Exception e)
+                    {
+                        Logger.Error(e);
+                    }
+                }
+            }
         }
     }
 }

@@ -17,6 +17,8 @@ namespace ReadingTool.Entities
         public ObjectId ItemId { get; set; }
         public string Latex { get; set; }
         public DateTime Created { get; set; }
-        public ObjectId FileId { get; set; }
+
+        [BsonIgnoreIfNull]
+        public Byte[] File { get; set; }
     }
 }

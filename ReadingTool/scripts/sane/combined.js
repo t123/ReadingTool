@@ -277,7 +277,7 @@ function addTextVM(settings) {
         var l = ko.utils.arrayFirst(self.languages(), function (item) {
             return item.id == self.selectedLanguage();
         });
-
+        
         return l != null && l.isRtl ? 'rtl' : 'ltr';
     });
 
@@ -734,7 +734,6 @@ function mergedVM(settings) {
     self.showUnshareDD = function () { $('#unshareDD').toggle(); };
     self.showDeleteDD = function () { $('#deleteDD').toggle(); };
     self.showChangeStateDD = function () { $('#changeStateDD').toggle(); };
-
 
     self.init = function () {
         ko.applyBindings(self);

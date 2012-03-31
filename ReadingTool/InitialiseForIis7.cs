@@ -74,7 +74,6 @@ namespace ReadingTool
                     });
                 }
 
-
                 using(TextReader tr = new StreamReader(Path.Combine(SystemSettings.Instance.Values.Site.BasePath, @"App_Data/XSL/read.xsl"), Encoding.UTF8))
                 {
                     xslService.Save(new Xsl()
@@ -91,6 +90,17 @@ namespace ReadingTool
                     xslService.Save(new Xsl()
                     {
                         Name = "Watch",
+                        SystemLanguageId = ObjectId.Empty,
+                        ItemType = ItemType.Video,
+                        XslTransform = tr.ReadToEnd()
+                    });
+                }
+
+                using(TextReader tr = new StreamReader(Path.Combine(SystemSettings.Instance.Values.Site.BasePath, @"App_Data/XSL/latexread.xsl"), Encoding.UTF8))
+                {
+                    xslService.Save(new Xsl()
+                    {
+                        Name = "LatexRead",
                         SystemLanguageId = ObjectId.Empty,
                         ItemType = ItemType.Video,
                         XslTransform = tr.ReadToEnd()

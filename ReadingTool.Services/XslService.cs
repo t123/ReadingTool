@@ -33,6 +33,7 @@ namespace ReadingTool.Services
         void Save(Xsl xsl);
         string XslForItem(ObjectId systemLanguageId, ItemType type, bool parallel);
         IEnumerable<Xsl> FindAll();
+        string FindOne(string name);
     }
 
     public class XslService : IXslService
@@ -88,6 +89,15 @@ namespace ReadingTool.Services
         {
             return _db.GetCollection<Xsl>(Collections.Xsl)
                 .FindAll();
+        }
+
+        public string FindOne(string name)
+        {
+            var xsl = _db.GetCollection<Xsl>(Collections.Xsl)
+                .AsQueryable()
+                .FirstOrDefault(x => x.Name == name);
+
+            return xsl == null ? string.Empty : xsl.XslTransform;
         }
     }
 }

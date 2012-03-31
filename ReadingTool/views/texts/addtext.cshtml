@@ -109,6 +109,14 @@
 }
 @section bottomJS {
     <script language="javascript" type="text/javascript">
+        $('#ParallelIsRtl').click(function () {
+            if($('#ParallelIsRtl').is(':checked')) {
+                $('#L2Text').attr('dir', 'rtl');
+            } else {
+                $('#L2Text').attr('dir', 'ltr');
+            }
+        });
+        
         new uiHelper({
             urls: { ajaxUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Ajax.Base)', textUrl: '@((ViewData[CacheKeys.URLS] as UrlModel).Texts)' },
             autocomplete: [{ name: '#CollectionName', endpoint: 'autocompletetextcollectionname'}],

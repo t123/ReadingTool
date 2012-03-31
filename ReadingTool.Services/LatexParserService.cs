@@ -1,5 +1,5 @@
 ﻿#region License
-// ParserService.cs is part of ReadingTool.Services
+// LatexParserService.cs is part of ReadingTool.Services
 // 
 // ReadingTool.Services is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by
@@ -52,20 +52,7 @@ namespace ReadingTool.Services
                 return null;
             }
 
-            MongoGridFS grid = new MongoGridFS(_db);
-            var result = grid.FindOneById(latex.FileId);
-
-            if(result == null)
-            {
-                return null;
-            }
-
-            using(var stream = result.OpenRead())
-            {
-                Byte[] buffer = new byte[stream.Length];
-                stream.Read(buffer, 0, (int)stream.Length);
-                return buffer;
-            }
+            return latex.File;
         }
 
         public void AddToQueue(ObjectId userId, ParserOutput output)
@@ -117,18 +104,12 @@ namespace ReadingTool.Services
             settings.OmitXmlDeclaration = true;
             settings.ConformanceLevel = ConformanceLevel.Fragment;
 
-            string xsl;
-            using(StreamReader sr = new StreamReader(@"C:\gitrepository\ReadingTool\ReadingTool\App_Data\XSL\latexread.xsl"))
-            {
-                xsl = sr.ReadToEnd();
-            }
-
             StringBuilder sb = new StringBuilder();
             using(StringWriter sw = new StringWriter(sb))
             {
                 using(XmlWriter writer = XmlWriter.Create(sw, settings))
                 {
-                    //var xsl = xslService.XslForItem(input.Language.SystemLanguageId, input.Item.ItemType, input.AsParallel);
+                    var xsl = xslService.FindOne("LatexRead");
                     XslCompiledTransform xslt = new XslCompiledTransform();
                     xslt.Load(XmlReader.Create(new StringReader(xsl)));
                     xslt.Transform(document.CreateReader(), writer);
