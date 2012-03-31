@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using AutoMapper;
+using Ionic.Zip;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -352,6 +353,7 @@ namespace ReadingTool.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult AddFromFile(TextFromFileModel model)
         {
             var languages = _languageService.FindAllForOwner();
@@ -361,10 +363,33 @@ namespace ReadingTool.Controllers
                 try
                 {
                     JsonTextFromFile json;
-                    using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
+
+                    if(ZipFile.IsZipFile(model.File.InputStream, true))
                     {
-                        JsonSerializer serializer = new JsonSerializer();
-                        json = serializer.Deserialize<JsonTextFromFile>(new JsonTextReader(sr));
+                        model.File.InputStream.Position = 0;
+                        using(var zip = ZipFile.Read(model.File.InputStream))
+                        {
+                            var data = zip[0];
+
+                            if(data == null)
+                            {
+                                throw new FileNotFoundException();
+                            }
+
+                            using(var sr = new StreamReader(data.OpenReader()))
+                            {
+                                JsonSerializer serializer = new JsonSerializer();
+                                json = serializer.Deserialize<JsonTextFromFile>(new JsonTextReader(sr));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
+                        {
+                            JsonSerializer serializer = new JsonSerializer();
+                            json = serializer.Deserialize<JsonTextFromFile>(new JsonTextReader(sr));
+                        }
                     }
 
                     if(json == null) throw new NoNullAllowedException("File is empty");
