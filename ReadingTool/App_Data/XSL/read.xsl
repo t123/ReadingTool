@@ -169,7 +169,7 @@
         <table class="texts" width="95%" cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <th colspan="2" dir="ltr">20 most common new words</th>
+              <th colspan="2" dir="ltr">Most common new words</th>
             </tr>
           </thead>
           <tbody>

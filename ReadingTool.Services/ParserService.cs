@@ -207,6 +207,9 @@ namespace ReadingTool.Services
         protected virtual XDocument CreateStats(int totalWords, XDocument document)
         {
             //var totalWords = document.Descendants("t").Count(x => x.Attribute("type").Value == "word");
+
+            var toTake = (int)Math.Ceiling(totalWords / 1000f) * 20;
+
             DateTime begin = DateTime.Now;
             var knownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "word" && x.Attribute("state").Value == _wordStates[WordState.Known]);
             var unknownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "word" && x.Attribute("state").Value == _wordStates[WordState.Unknown]);
@@ -219,7 +222,7 @@ namespace ReadingTool.Services
                 .Select(y => new { Word = y, Count = y.Count() })
                 .OrderByDescending(y => y.Count)
                 .OrderBy(y => y.Word.ToString(), StringComparer.InvariantCultureIgnoreCase)
-                .Take(20);
+                .Take(toTake);
 
             var tw = new XElement("totalWords", totalWords); tw.SetAttributeValue("percent", "100");
             var ns = new XElement("notseenCount", notseenCount);
