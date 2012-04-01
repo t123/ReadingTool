@@ -226,16 +226,6 @@ function init() {
         }
     });
 
-    function openDictionary(windowName, url) {
-        var currentWord = $('#currentWord').text();
-        var openUrl = url.replace('[[word]]', currentWord);
-        window.open(openUrl, windowName);
-        
-        if (settings.keepFocus) {
-            self.focus();
-        }
-    }
-
     $(document).keyup(function (event) {
         var code = (event.keyCode ? event.keyCode : event.which);
 
@@ -269,4 +259,14 @@ function init() {
     $('#removespaces').click(function (event) {
         $('.wsx').toggle();
     });
+}
+
+function openDictionary(windowName, url) {
+    var currentWord = $('#currentWord').text();
+    var openUrl = url.replace('[[word]]', currentWord);
+    window.open(openUrl, windowName);
+
+    if (settings.keepFocus) {
+        self.focus();
+    }
 }

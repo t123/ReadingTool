@@ -1,6 +1,5 @@
 ﻿var settings;
 var reader = new mReader();
-        
 $(function() {
     settings = {
         changed: false,
@@ -23,9 +22,9 @@ $(function() {
         languageId: '@Model.Language.LanguageId',
         modalBehaviour: '@Model.Language.ModalBehaviour.ToLower()',
         baseUrl: '@(Html.BuildUrlFromExpression<AjaxController>(x => x.Index()))',
-        translateUrl: '@Model.Language.TranslateUrl',
+        translateUrl: '@Html.Raw(Model.Language.TranslateUrl)',
         autoOpenDictionary:  @Model.Language.AutoOpenDictionary.ToString().ToLower(),
-        autoDictionaryUrl: '@Model.Language.AutoDictionaryUrl',
+        autoDictionaryUrl: '@Html.Raw(Model.Language.AutoDictionaryUrl)',
         autoDictionaryWindowName: '@Model.Language.AutoDictionaryWindowName',
         keepFocus: @Model.Language.KeepFocus.ToString().ToLower(),
         removeSpaces: @Model.Language.RemoveSpaces.ToString().ToLower(),

@@ -69,14 +69,29 @@
                     <li>@(Html.ActionLink<TextsController>(x => x.EditText(Model.Item.ItemId), "edit text"))</li>
                     <li>@(Html.ActionLink<LanguagesController>(x => x.Edit(Model.Language.LanguageId), "edit language"))</li>
                 
-                    @if(!string.IsNullOrEmpty(Model.Item.PreviousItem))
+                    @if(Model.Item.AsParallel)
                     {
-                        <li>@(Html.ActionLink<TextsController>(x => x.Read(Model.Item.PreviousItem), "previous"))</li>
+                        if(!string.IsNullOrEmpty(Model.Item.PreviousItem))
+                        {
+                            <li>@(Html.ActionLink<TextsController>(x => x.ReadParallel(Model.Item.PreviousItem), "previous"))</li>
+                        }
+
+                        if(!string.IsNullOrEmpty(Model.Item.NextItem))
+                        {
+                            <li>@(Html.ActionLink<TextsController>(x => x.ReadParallel(Model.Item.NextItem), "next"))</li>
+                        }
                     }
-                
-                    @if(!string.IsNullOrEmpty(Model.Item.NextItem))
+                    else
                     {
-                        <li>@(Html.ActionLink<TextsController>(x => x.Read(Model.Item.NextItem), "next"))</li>
+                        if(!string.IsNullOrEmpty(Model.Item.PreviousItem))
+                        {
+                        <li>@(Html.ActionLink<TextsController>(x => x.Read(Model.Item.PreviousItem), "previous"))</li>
+                        }
+
+                        if(!string.IsNullOrEmpty(Model.Item.NextItem))
+                        {
+                            <li>@(Html.ActionLink<TextsController>(x => x.Read(Model.Item.NextItem), "next"))</li>
+                        }
                     }
                 </ul>
                 <div class="clr"></div>

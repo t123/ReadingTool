@@ -43,7 +43,7 @@
             {
                 foreach(var dictionary in Model.Dictionaries)
                 {
-                    <li><a href="#" onclick="openDictionary('@dictionary.WindowName', '@dictionary.Url'); return false;">@dictionary.Name</a></li>
+                    <li><a href="#" onclick="openDictionary('@dictionary.WindowName', '@Html.Raw(dictionary.Url)'); return false;">@dictionary.Name</a></li>
                 }
             }
         </ul>
