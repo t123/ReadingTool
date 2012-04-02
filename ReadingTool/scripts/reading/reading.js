@@ -331,7 +331,7 @@ mReader.prototype = {
             sentence += nodeContent;
         });
 
-        return sentence;
+        return $.trim(sentence);
     },
 
     _getCurrentSentence: function (element) {

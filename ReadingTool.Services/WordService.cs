@@ -129,14 +129,14 @@ namespace ReadingTool.Services
                                   Owner = _identity.UserId,
                                   State = GetEnumFromAlternateName(state),
                                   //ItemId = string.IsNullOrEmpty(itemId) ? ObjectId.Empty : new ObjectId(itemId),
-                                  WordPhrase = word,
-                                  BaseWord = baseWord,
+                                  WordPhrase = (word ?? "").Trim(),
+                                  BaseWord = (baseWord ?? "").Trim(),
                                   Box = 1,
                                   NextReview = DateTime.Now.AddMinutes(10),
-                                  Definition = defintiion,
-                                  Romanisation = romanisation,
+                                  Definition = (defintiion ?? "").Trim(),
+                                  Romanisation = (romanisation ?? "").Trim(),
                                   Tags = TagHelper.Split(tags),
-                                  Sentence = sentence,
+                                  Sentence = (sentence ?? "").Trim(),
                                   LanguageColour = l.Colour,
                                   LanguageName = l.Name,
                                   SystemLanguageId = l.SystemLanguageId
@@ -146,10 +146,10 @@ namespace ReadingTool.Services
             {
                 newWord.Modified = DateTime.Now;
                 newWord.State = GetEnumFromAlternateName(state);
-                newWord.BaseWord = baseWord;
-                newWord.Romanisation = romanisation;
-                newWord.Definition = defintiion;
-                newWord.Sentence = string.IsNullOrEmpty(sentence) ? newWord.Sentence : sentence;
+                newWord.BaseWord = (baseWord ?? "").Trim();
+                newWord.Romanisation = (romanisation ?? "").Trim();
+                newWord.Definition = (defintiion ?? "").Trim();
+                newWord.Sentence = string.IsNullOrEmpty(sentence) ? (newWord.Sentence ?? "").Trim() : (sentence ?? "").Trim();
                 newWord.Tags = TagHelper.Split(tags);
             }
 
