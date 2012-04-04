@@ -450,6 +450,7 @@
     <Content Include="views\groups\partial\rssitem.cshtml" />
     <Content Include="views\texts\pdftext.cshtml" />
     <Content Include="views\texts\filenotfound.cshtml" />
+    <Content Include="views\texts\aligntext.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Start\" />

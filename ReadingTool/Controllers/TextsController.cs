@@ -229,6 +229,40 @@ namespace ReadingTool.Controllers
             return View(model).Error(Messages.FormValidationError);
         }
 
+        [HttpGet]
+        [AutoMap(typeof(Item), typeof(TextModel))]
+        public ActionResult AlignText(string id)
+        {
+            var item = _itemService.FindOne(id);
+
+            if(item == null)
+            {
+                return this.RedirectToAction(x => x.Index()).Error("Text not found");
+            }
+
+            ViewBag.NextId = _itemService.NextItemId(item);
+            ViewBag.PreviousId = _itemService.PreviousItemId(item);
+
+            return View(item);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AlignText(string id, string l1Text, string l2Text)
+        {
+            var item = _itemService.FindOne(id);
+
+            if(item == null)
+            {
+                return this.RedirectToAction(x => x.Index()).Error("Text not found");
+            }
+
+            item.L1Text = l1Text;
+            item.L2Text = l2Text;
+
+            return this.RedirectToAction(x => x.AlignText(id)).Success("Text saved");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteText(string id)

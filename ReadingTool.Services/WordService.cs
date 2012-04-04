@@ -75,6 +75,7 @@ namespace ReadingTool.Services
     {
         private readonly MongoDatabase _db;
         private readonly UserForService _identity;
+        protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public WordService(
             MongoDatabase db,
@@ -569,6 +570,8 @@ namespace ReadingTool.Services
         public IEnumerable<Word> FindSharedDefinitions(User user, string word, ObjectId systemLanguageId)
         {
             word = (word ?? "").ToLowerInvariant().Trim();
+            //Logger.DebugFormat("Initial Word: {0}", word);
+
             var collection = _db.GetCollection<Word>(Collections.Words).AsQueryable();
 
             var userIds =
@@ -579,7 +582,7 @@ namespace ReadingTool.Services
                           .Select(x => x.UserId)
                     : _db.GetCollection<User>(Collections.Users)
                           .AsQueryable()
-                          .Where(x => x.ShareWords && x.UserId == user.UserId)
+                          .Where(x => x.UserId == user.UserId)
                           .Select(x => x.UserId);
 
             var initial = collection.Where(x =>
@@ -588,13 +591,28 @@ namespace ReadingTool.Services
                                            userIds.Contains(x.Owner)
                 ).ToArray();
 
-            var baseWords = initial.Select(x => x.BaseWordLower).Distinct().ToArray();
+            //foreach(var x in initial)
+            //{
+            //    Logger.DebugFormat("Init {0}", x.WordPhrase);
+            //}
+
+            var baseWords = initial.Where(x => x.BaseWordLower != "").Select(x => x.BaseWordLower).Distinct().ToArray();
+
+            //foreach(var x in baseWords)
+            //{
+            //    Logger.DebugFormat("Base {0}", x);
+            //}
 
             var second = collection.Where(x =>
                                           (baseWords.Contains(x.WordPhraseLower) || baseWords.Contains(x.BaseWordLower)) &&
                                           x.SystemLanguageId == systemLanguageId &&
                                           userIds.Contains(x.Owner)
                 );
+
+            //foreach(var x in second)
+            //{
+            //    Logger.DebugFormat("Second {0}", x.WordPhraseLower);
+            //}
 
             var union = initial.Union(second)
                 .ToArray()
