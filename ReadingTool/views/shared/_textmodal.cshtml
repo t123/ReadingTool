@@ -38,7 +38,6 @@
             {
                 <li><a href="#" onclick="return false" id="lnkTrans">translate</a></li>
             }
-            <li><a href="#" onclick="return false" id="lnkShare">user defintions</a></li>
             @if(Model.Dictionaries.Count > 0)
             {
                 foreach(var dictionary in Model.Dictionaries)
@@ -46,6 +45,7 @@
                     <li><a href="#" onclick="openDictionary('@dictionary.WindowName', '@Html.Raw(dictionary.Url)'); return false;">@dictionary.Name</a></li>
                 }
             }
+            <li><a href="#" onclick="return false" id="lnkShare">user defintions</a></li>
         </ul>
     </div>
     <div class="clr5"></div>

@@ -63,6 +63,10 @@ function init() {
         $('.wsx').toggle();
     }
 
+    if (settings.keepFocus) {
+        $('#keepfocus').attr('checked', true);
+    }
+
     $('#btnSave').click(function (event) { reader.save(); });
     $('#increaseWord').click(function (event) { reader.increaseWord(); });
     $('#decreaseWord').click(function (event) { reader.decreaseWord(); });
@@ -127,7 +131,7 @@ function init() {
             return;
         } else {
             if ($(this).hasClass(settings.punctuationClass) || $(this).hasClass(settings.spaceClass)) return;
-            
+
             if (settings.isPlaying)
                 settings.wasPlaying = true;
 
@@ -138,7 +142,7 @@ function init() {
             reader.createPopup($(this));
 
             if (settings.autoOpenDictionary) {
-                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl);
+                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
             }
         }
     });
@@ -201,49 +205,52 @@ function init() {
             reader.createPopup($(this));
 
             if (settings.autoOpenDictionary) {
-                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl);
+                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
             }
         }
     });
 
-    $('#textContent p span span').live('touchstart', function (event) {
-        if ($('#textModal').is(":visible")) {
-            closeTextModal();
-            return;
-        }
+    if (navigator.userAgent.indexOf('iPad') != -1) {
+        $('#textContent p span span').live('touchstart', function(event) {
+            if ($('#textModal').is(":visible")) {
+                closeTextModal();
+                return;
+            }
 
-        if ($(this).hasClass(settings.punctuationClass) || $(this).hasClass(settings.spaceClass)) return;
+            if ($(this).hasClass(settings.punctuationClass) || $(this).hasClass(settings.spaceClass)) return;
 
-        var quickmode = $('#quickmode').is(":checked");
+            var quickmode = $('#quickmode').is(":checked");
 
-        if (quickmode) {
-            if ($(this).hasClass(settings.notseenClass)) {
-                reader.quicksave($(this), settings.unknownClass);
+            if (quickmode) {
+                if ($(this).hasClass(settings.notseenClass)) {
+                    reader.quicksave($(this), settings.unknownClass);
+                } else {
+                    reader.quicksave($(this), settings.notseenClass);
+                }
+                ;
             } else {
-                reader.quicksave($(this), settings.notseenClass);
-            };
-        } else {
-            if (settings.isPlaying)
-                settings.wasPlaying = true;
+                if (settings.isPlaying)
+                    settings.wasPlaying = true;
 
-            if (settings.autoPause) {
-                $("#jquery_jplayer_1").jPlayer("pause");
+                if (settings.autoPause) {
+                    $("#jquery_jplayer_1").jPlayer("pause");
+                }
+
+                reader.createPopup($(this));
+
+                if (settings.autoOpenDictionary) {
+                    openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
+                }
             }
-
-            reader.createPopup($(this));
-
-            if (settings.autoOpenDictionary) {
-                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl);
-            }
-        }
-    });
-
+        });
+    }
+    
     $('#lnkTrans').click(function () {
         var sentence = $('#currentSentence').val();
         var openUrl = settings.translateUrl.replace('[[text]]', sentence);
         window.open(openUrl, "__translate");
 
-        if (settings.keepFocus) {
+        if ($('#keepfocus').is(":checked")) {
             self.focus();
         }
     });
@@ -252,8 +259,8 @@ function init() {
         var currentWord = $('#currentWord').text();
         var openUrl = settings.shareUrl + '/' + escape(currentWord) + '/' + settings.languageId;
         window.open(openUrl, "__sharedWords");
-        
-        if (settings.keepFocus) {
+
+        if ($('#keepfocus').is(":checked")) {
             self.focus();
         }
     });
@@ -293,12 +300,14 @@ function init() {
     });
 }
 
-function openDictionary(windowName, url) {
-    var currentWord = $('#currentWord').text();
-    var openUrl = url.replace('[[word]]', currentWord);
+function openDictionary(windowName, url, word) {
+    if(word==undefined)
+        word = $('#currentWord').text();
+    
+    var openUrl = url.replace('[[word]]', word);
     window.open(openUrl, windowName);
 
-    if (settings.keepFocus) {
+    if ($('#keepfocus').is(":checked")) {
         self.focus();
     }
 }
