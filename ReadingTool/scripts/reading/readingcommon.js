@@ -206,6 +206,38 @@ function init() {
         }
     });
 
+    $('#textContent p span span').live('touchstart', function (event) {
+        if ($('#textModal').is(":visible")) {
+            closeTextModal();
+            return;
+        }
+
+        if ($(this).hasClass(settings.punctuationClass) || $(this).hasClass(settings.spaceClass)) return;
+
+        var quickmode = $('#quickmode').is(":checked");
+
+        if (quickmode) {
+            if ($(this).hasClass(settings.notseenClass)) {
+                reader.quicksave($(this), settings.unknownClass);
+            } else {
+                reader.quicksave($(this), settings.notseenClass);
+            };
+        } else {
+            if (settings.isPlaying)
+                settings.wasPlaying = true;
+
+            if (settings.autoPause) {
+                $("#jquery_jplayer_1").jPlayer("pause");
+            }
+
+            reader.createPopup($(this));
+
+            if (settings.autoOpenDictionary) {
+                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl);
+            }
+        }
+    });
+
     $('#lnkTrans').click(function () {
         var sentence = $('#currentSentence').val();
         var openUrl = settings.translateUrl.replace('[[text]]', sentence);
