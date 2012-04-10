@@ -248,6 +248,7 @@ namespace ReadingTool.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult AlignText(string id, string l1Text, string l2Text)
         {
             var item = _itemService.FindOne(id);

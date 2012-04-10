@@ -177,7 +177,7 @@ namespace ReadingTool.Controllers.Ajax
                         word = new
                         {
                             multiword = result.Length > 1,
-                            wordLower = result.WordPhraseLower,
+                            wordLower = result.WordPhraseLower.Replace("'", @"\'"),
                             state = EnumHelper.GetAlternateName(result.State),
                             stateHuman = EnumHelper.GetDescription(result.State),
                             length = result.Length,
@@ -210,7 +210,7 @@ namespace ReadingTool.Controllers.Ajax
                         result = OK,
                         word = new
                                    {
-                                       wordLower = result.WordPhraseLower,
+                                       wordLower = result.WordPhraseLower.Replace("'", @"\'"),
                                        state = EnumHelper.GetAlternateName(result.State)
                                    }
                     }

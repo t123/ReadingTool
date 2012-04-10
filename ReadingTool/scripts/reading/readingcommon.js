@@ -271,6 +271,8 @@ function init() {
         if ($('#textModal').is(":visible")) {
             if (code == 27) {
                 closeTextModal();
+            } else if(event.ctrlKey && code==13) {
+                reader.save();
             }
         } else {
             if (settings.controlsEnabled) {
