@@ -273,6 +273,7 @@ function init() {
                 closeTextModal();
             } else if(event.ctrlKey && code==13) {
                 reader.save();
+                closeTextModal();
             }
         } else {
             if (settings.controlsEnabled) {
