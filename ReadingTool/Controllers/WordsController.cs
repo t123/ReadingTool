@@ -33,6 +33,7 @@ using Newtonsoft.Json;
 using ReadingTool.Attributes;
 using ReadingTool.Common;
 using ReadingTool.Common.CsvBuilder;
+using ReadingTool.Common.Enums;
 using ReadingTool.Common.Helpers;
 using ReadingTool.Entities;
 using ReadingTool.Extensions;
@@ -300,6 +301,8 @@ namespace ReadingTool.Controllers
         [HttpGet]
         public ActionResult Export()
         {
+            ViewBag.Languages = _languageService.FindAllForOwner().ToDictionary(x => x.LanguageId, x => x.Name);
+
             return View();
         }
 
@@ -417,7 +420,58 @@ namespace ReadingTool.Controllers
                 return File(ms, "application/zip", "words.zip");
             }
 
+            ViewBag.Languages = _languageService.FindAllForOwner().ToDictionary(x => x.LanguageId, x => x.Name);
+
             return this.RedirectToAction(x => x.Export()).Error("Please choose a format");
+        }
+
+        [HttpGet]
+        public ActionResult ExportUnknown()
+        {
+            throw new NotSupportedException();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExportUnknown(string language)
+        {
+            var l = _languageService.FindOne(new ObjectId(language));
+
+            if(l == null)
+            {
+                return this.RedirectToAction(x => x.Export()).Error("Language not found");
+            }
+
+            var words = _wordService.FindAllForLanguage(l.LanguageId);
+            CsvBuilder csv = new CsvBuilder(CsvType.TSV, false);
+            csv.AddHeader(new[]
+                                  {
+                                      "WordId", "Language", "Created", "Modified", "Word", "State", "Definition", "Base Word",
+                                      "Romanisation", "Tags", "Box", "Recognition Sentence", "Production Sentence"
+                                  });
+
+            foreach(var word in words.Where(x => x.State == WordState.Unknown))
+            {
+                csv.AddRow(new[]
+                               {
+                                   word.WordId.ToString(),
+                                   word.LanguageName,
+                                   word.Created.ToString("o"),
+                                   word.Modified.ToString("o"),
+                                   word.WordPhrase,
+                                   word.State.ToString(),
+                                   word.Definition,
+                                   string.IsNullOrEmpty(word.BaseWord) ? word.WordPhrase : word.BaseWord,
+                                   word.Romanisation,
+                                   string.Join(",", word.Tags),
+                                   word.Box.ToString(),
+                                   word.Sentence,
+                                   word.Sentence.ReplaceString(word.WordPhrase, "[...]", StringComparison.InvariantCultureIgnoreCase)
+                               });
+            }
+
+            byte[] data = Encoding.UTF8.GetBytes(csv.ToString(true));
+            return File(data, "text/csv", "words.tsv");
         }
 
         [AutoMap(typeof(IEnumerable<Word>), typeof(IEnumerable<WordShareModel>))]

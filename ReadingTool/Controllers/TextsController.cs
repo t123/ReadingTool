@@ -97,7 +97,7 @@ namespace ReadingTool.Controllers
             {
                 var item = Mapper.Map<TextModel, Item>(model);
                 item.ItemType = ItemType.Text;
-                item.IsParallel = !string.IsNullOrWhiteSpace(item.L1Text);
+                item.IsParallel = !string.IsNullOrWhiteSpace(item.L2Text);
                 item.L1Text = model.L1Text;
                 var tp = _textParsers.FindOne(model.ParseWith);
                 item.ParseWith = tp == null ? ObjectId.Empty : tp.TextParserId;
@@ -142,9 +142,11 @@ namespace ReadingTool.Controllers
                     newItem.Url = part.AudioUrl;
                     newItem.CollectionNo = part.CollectionNo;
                     newItem.ParallelIsRtl = part.ParallelIsRtl;
-                    item.L1Text = part.Text;
+                    newItem.L1Text = part.Text;
+                    newItem.IsParallel = !string.IsNullOrWhiteSpace(part.ParallelText);
+
                     var tp = _textParsers.FindOne(part.ParseWith);
-                    item.ParseWith = tp == null ? ObjectId.Empty : tp.TextParserId;
+                    newItem.ParseWith = tp == null ? ObjectId.Empty : tp.TextParserId;
 
                     newItem.ShareUrl = part.ShareUrl;
 

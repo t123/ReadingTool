@@ -1,4 +1,5 @@
-﻿@{
+﻿@using MongoDB.Bson
+@{
     ViewBag.Title = "Export Words";
 }
 @section submenu {
@@ -16,6 +17,23 @@
         </div>
     
         <button type="submit">export all words</button>
+    }
+}
+
+<div class="clr20"></div>
+<hr/>
+
+@{
+    using(Html.BeginForm<WordsController>(x=>x.ExportUnknown(), FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <legend>Export Unknown Words as TSV for Anki</legend>
+        <div class="input_wrapper">
+            @Html.Label("Language")
+            @Html.DropDownList("Language", new SelectList(ViewBag.Languages as Dictionary<ObjectId, string>, "Key", "Value"))
+        </div>
+    
+        <button type="submit">export all unknown words</button>
     }
 }
 

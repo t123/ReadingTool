@@ -78,8 +78,8 @@ namespace ReadingTool.Common.CsvBuilder
 
         public void AddRow(string[] values)
         {
-            if (values == null) throw new NoNullAllowedException("Array cannot be null");
-            if (values.Length != _header.Data.Count) throw new Exception("Mismatched bewteen row length and header length");
+            if(values == null) throw new NoNullAllowedException("Array cannot be null");
+            if(values.Length != _header.Data.Count) throw new Exception("Mismatched bewteen row length and header length");
 
             CsvRow row = new CsvRow();
             row.AddColumn(values);
@@ -107,13 +107,16 @@ namespace ReadingTool.Common.CsvBuilder
             char joinCharacter = _csvType == CsvType.CSV ? ',' : '\t';
             string joinString = _includeQuotes ? @"""" + joinCharacter + @"""" : joinCharacter.ToString();
 
-            sb.AppendFormat(@"{0}{1}{0}{2}",
-                _includeQuotes ? @"""" : "",
-                string.Join(joinString, _header.Data.Select(x => x).ToArray()),
-                Environment.NewLine
-                );
+            if(!excludeHeader)
+            {
+                sb.AppendFormat(@"{0}{1}{0}{2}",
+                                _includeQuotes ? @"""" : "",
+                                string.Join(joinString, _header.Data.Select(x => x).ToArray()),
+                                Environment.NewLine
+                    );
+            }
 
-            foreach (var row in _rows)
+            foreach(var row in _rows)
             {
                 sb.AppendFormat(@"{0}{1}{0}{2}",
                 _includeQuotes ? @"""" : "",
