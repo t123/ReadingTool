@@ -450,7 +450,7 @@ namespace ReadingTool.Controllers
                                       "Romanisation", "Tags", "Box", "Recognition Sentence", "Production Sentence"
                                   });
 
-            foreach(var word in words.Where(x => x.State == WordState.Unknown))
+            foreach(var word in words.Where(x => x.State == WordState.Unknown).OrderBy(x => x.Created))
             {
                 csv.AddRow(new[]
                                {

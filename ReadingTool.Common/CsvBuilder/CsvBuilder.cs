@@ -101,6 +101,11 @@ namespace ReadingTool.Common.CsvBuilder
             return ToString(false);
         }
 
+        public string Escape(string value)
+        {
+            return value.Replace("\"", "&quot;").Replace("\n", "<br/>");
+        }
+
         public string ToString(bool excludeHeader)
         {
             StringBuilder sb = new StringBuilder();
@@ -111,7 +116,7 @@ namespace ReadingTool.Common.CsvBuilder
             {
                 sb.AppendFormat(@"{0}{1}{0}{2}",
                                 _includeQuotes ? @"""" : "",
-                                string.Join(joinString, _header.Data.Select(x => x).ToArray()),
+                                string.Join(joinString, _header.Data.Select(x => Escape(x)).ToArray()),
                                 Environment.NewLine
                     );
             }
@@ -120,7 +125,7 @@ namespace ReadingTool.Common.CsvBuilder
             {
                 sb.AppendFormat(@"{0}{1}{0}{2}",
                 _includeQuotes ? @"""" : "",
-                string.Join(joinString, row.Data.Select(x => x).ToArray()),
+                string.Join(joinString, row.Data.Select(x => Escape(x)).ToArray()),
                 Environment.NewLine
                 );
             }
