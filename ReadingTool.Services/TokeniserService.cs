@@ -71,9 +71,28 @@ namespace ReadingTool.Services
                                VideoPlaybackData = vo.PlaybackData
                            };
             }
-            
+
             if(_item.ItemType == ItemType.Text)
             {
+                item.L1Text =
+                (item.CollectionNo.HasValue ? item.CollectionNo + ". " : "") +
+                item.Title +
+                (string.IsNullOrEmpty(item.CollectionName) ? "" : " (" + item.CollectionName + ")") +
+                ".\n\n" +
+                item.L1Text
+                ;
+
+                item.L2Text =
+                    (
+                        (item.CollectionNo.HasValue ? item.CollectionNo + ". " : "") +
+                        item.Title +
+                        (string.IsNullOrEmpty(item.CollectionName) ? "" : " (" + item.CollectionName + ")") +
+                        ".\n\n" +
+                        item.L2Text
+                    )
+                    ;
+
+
                 item.TokenisedText = CreateTextXml(item.L1Text, item.L2Text).ToString();
 
                 return new ParserTokeniserDto()
