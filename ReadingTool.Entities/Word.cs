@@ -38,6 +38,8 @@ namespace ReadingTool.Entities
         public string LanguageName { get; set; }
         public string LanguageColour { get; set; }
         public ObjectId SystemLanguageId { get; set; }
+        public DateTime? LastReview { get; set; }
+        public int Resets { get; set; }
 
         private string _wordPhrase;
         public string WordPhrase

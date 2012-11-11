@@ -222,6 +222,12 @@
     <Compile Include="ViewEngine\LowereRazorViewEngine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\XSL\original\read.xsl">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_Data\XSL\original\readparallel.xsl">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_Data\XSL\latexread.xsl">
       <SubType>Designer</SubType>
     </Content>

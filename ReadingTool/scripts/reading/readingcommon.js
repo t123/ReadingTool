@@ -24,6 +24,26 @@ function init() {
         });
     }
 
+    $('#hidel1').click(function (e) {
+        if ($('#hidel1').attr('checked')) {
+            closeTextModal();
+            $('td.f p span').hide();
+            $('#textContent p span').hide();
+        } else {
+            $('td.f p span').show();
+            $('#textContent p span').show();
+        }
+    });
+
+    $('#hidel2').click(function (e) {
+        if ($('#hidel2').attr('checked')) {
+            closeTextModal();
+            $('td.s p span').hide();
+        } else {
+            $('td.s p span').show();
+        }
+    });
+
     if (settings.hasVideo) {
         $("#jquery_jplayer_1").jPlayer({
             solution: "html, flash",
@@ -68,6 +88,7 @@ function init() {
     }
 
     $('#btnSave').click(function (event) { reader.save(); });
+    $('#btnReset').click(function (event) { reader.reset(); });
     $('#increaseWord').click(function (event) { reader.increaseWord(); });
     $('#decreaseWord').click(function (event) { reader.decreaseWord(); });
 
@@ -78,7 +99,20 @@ function init() {
 
     $('#markRemainingAsKnown').click(function (event) {
         event.preventDefault();
+        if (!confirm('Are you sure you want to mark remaining words as known?')) {
+            return;
+        }
+        
         reader.markRemainingAsKnown();
+    });
+
+    $('#reviewUnknownWords').click(function (event) {
+        event.preventDefault();
+        if (!confirm('Are you sure you want to review the unknown words?')) {
+            return;
+        }
+
+        reader.reviewUnknown();
     });
 
     $('#baseWord').keyup(function () { settings.changed = true; });

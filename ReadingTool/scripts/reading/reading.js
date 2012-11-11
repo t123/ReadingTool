@@ -105,7 +105,34 @@ mReader.prototype = {
                 }
             }
         );
-    },
+        },
+    
+    reset: function () {
+            var currentWord = $('#currentWord').text();
+            var thisObject = this;
+            $('#saveMessage').html();
+
+            $.post(
+                this.baseUrl + '/resetword',
+                {
+                    languageId: thisObject.languageId,
+                    word: currentWord,
+                },
+                function(data) {
+                    if (data != null && data.result == "OK" && data.word != null) {
+                        if (data.word.multiword) {
+                            thisObject._updateMultiSpan(data.word);
+                        } else {
+                            thisObject._updateSingleSpan(data.word);
+                        }
+
+                        $('#saveMessage').html('...reset, state is ' + data.word.stateHuman);
+                    } else {
+                        $('#saveMessage').html('...not reset');
+                    }
+                }
+            );
+        },
 
     save: function () {
         var currentWord = $('#currentWord').text();
@@ -148,9 +175,13 @@ mReader.prototype = {
     },
 
     _updateSingleSpan: function (word) {
+        $('#wordInfo').html('Current box: ' + word.box);
         $('#textContent .' + word.wordLower)
-                        .removeClass(settings.knownClass + ' ' + settings.unknownClass + ' ' + settings.ignoredClass + ' ' + settings.notseenClass)
-                        .addClass(word.state);
+                        .removeClass(
+                            settings.knownClass + ' ' + settings.unknownClass + ' ' + settings.ignoredClass + ' ' + settings.notseenClass +
+                            ' box1 box2 box3 box4 box5 box6 box7 box8 box9'
+                        )
+                        .addClass(word.state == 'nkx' ? 'box' + word.box : word.state);
 
         $('#textContent .' + word.wordLower).each(function (index) {
             var currentWord = $(this).text();
@@ -162,9 +193,13 @@ mReader.prototype = {
 
     _updateMultiSpan: function (word) {
         var id = this.element.data('id');
+        $('#wordInfo').html('Current box: ' + word.box);
         $('#textContent .' + id)
-                        .removeClass(settings.knownClass + ' ' + settings.unknownClass + ' ' + settings.ignoredClass + ' ' + settings.notseenClass)
-                        .addClass(word.state);
+                        .removeClass(
+                            settings.knownClass + ' ' + settings.unknownClass + ' ' + settings.ignoredClass + ' ' + settings.notseenClass +
+                            ' box1 box2 box3 box4 box5 box6 box7 box8 box9'
+                        )
+                        .addClass(word.state == 'nkx' ? 'box' + word.box : word.state);
 
         $('#textContent .' + id).each(function (index) {
             var currentWord = $(this).text();
@@ -255,6 +290,54 @@ mReader.prototype = {
             );
 
         $('#markRemainingAsKnownProgress').html('saving words, awaiting confirmation');
+        toWorkOn.removeClass(settings.notseenClass).addClass(settings.knownClass);
+        //startIndex += max;
+        //toWorkOn = $('#textContent .notseen').slice(startIndex,startIndex+max);
+        //}
+    },
+    
+    reviewUnknown: function () {
+        var startIndex = 0;
+        var max = 100000;
+        //var toWorkOn = $('#textContent .notseen').slice(startIndex,max);
+        var toWorkOn = $('#textContent .' + settings.unknownClass);
+
+        //while(toWorkOn.length>0) {
+        var words = [];
+        toWorkOn.each(function (i) {
+            if ($(this).is('sup')) return;
+            words.push($(this).text());
+        });
+
+        if (words.length > 0) {
+            $('#markRemainingAsKnownProgress').html('update unknown words');
+            $('#markRemainingAsKnownProgress').show();
+        } else {
+            $('#markRemainingAsKnownProgress').html('no words to review').show();
+        }
+
+        var thisObject = this;
+
+        $.post(
+                this.baseUrl + '/reviewwords',
+                {
+                    languageId: thisObject.languageId,
+                    words: words,
+                    itemId: thisObject.itemId
+                }, function (data) {
+                    if (data != null) {
+                        $('#markRemainingAsKnownProgress').show();
+
+                        if (data.result == "OK") {
+                            $('#markRemainingAsKnownProgress').html('all words updated');
+                        } else {
+                            $('#markRemainingAsKnownProgress').html('some words not updated, please refresh and retry.');
+                        }
+                    }
+                }
+            );
+
+        $('#markRemainingAsKnownProgress').html('updating words, awaiting confirmation');
         toWorkOn.removeClass(settings.notseenClass).addClass(settings.knownClass);
         //startIndex += max;
         //toWorkOn = $('#textContent .notseen').slice(startIndex,startIndex+max);

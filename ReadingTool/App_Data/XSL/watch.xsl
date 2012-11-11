@@ -24,6 +24,8 @@
             <xsl:value-of select="@state" />
             <xsl:text> </xsl:text>
             <xsl:value-of select='@lower' />
+            <xsl:text> </xsl:text>
+            <xsl:value-of select='@box' />
           </xsl:attribute>
           <xsl:choose>
             <xsl:when test="@data">
@@ -81,6 +83,8 @@
           <xsl:value-of select="@state" />
           <xsl:text> </xsl:text>
           <xsl:value-of select="@id" />
+          <xsl:text> </xsl:text>
+          <xsl:value-of select='@box' />
         </xsl:attribute>
         <xsl:attribute name="data-phrase">
           <xsl:value-of select="." />

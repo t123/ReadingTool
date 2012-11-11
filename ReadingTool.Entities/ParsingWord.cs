@@ -32,6 +32,8 @@ namespace ReadingTool.Entities
         public string BaseWord { get; set; }
         public string Romanisation { get; set; }
         public int Length { get; set; }
+        public int Box { get; set; }
+
         public string FullDefinition
         {
             get { return string.Join("\n", new string[] { BaseWord, Romanisation, Definition }).Trim(); }

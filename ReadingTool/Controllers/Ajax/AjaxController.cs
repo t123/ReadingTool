@@ -283,5 +283,58 @@ namespace ReadingTool.Controllers.Ajax
                 return Json(new { result = FAIL });
             }
         }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult ReviewWords(string languageId, string[] words, string itemId)
+        {
+            if(
+                words == null ||
+                words.Length == 0 ||
+                (words.Length == 1 && words[0].Equals(""))
+                )
+                return Json(new { result = OK });
+
+            var result = _wordService.ReviewWords(languageId, words, itemId);
+            return Json(new { result = result ? OK : FAIL });
+        }
+
+        [ValidateInput(false)]
+        public JsonResult ResetWord(
+            string languageId,
+            string word
+            )
+        {
+            try
+            {
+                var result = _wordService.ResetWord(languageId, word);
+                //List<string> data = new List<string>();
+                //if(!string.IsNullOrEmpty(result.BaseTerm))
+                //{
+                //    data.Add(result.BaseTerm);
+                //}
+
+                return Json(
+                    new
+                    {
+                        result = OK,
+                        word = new
+                        {
+                            multiword = result.Length > 1,
+                            wordLower = result.WordPhraseLower.Replace("'", @"\'"),
+                            state = EnumHelper.GetAlternateName(result.State),
+                            stateHuman = EnumHelper.GetDescription(result.State),
+                            length = result.Length,
+                            definition = result.FullDefinition,
+                            box = result.Box
+                        }
+                    }
+                );
+            }
+            catch
+            {
+                return Json(new { result = FAIL });
+            }
+        }
     }
 }

@@ -35,6 +35,7 @@ using ReadingTool.Common.Keys;
 using ReadingTool.Entities;
 using ReadingTool.Entities.Identity;
 using ReadingTool.Entities.Search;
+using StructureMap;
 
 namespace ReadingTool.Services
 {
@@ -64,11 +65,13 @@ namespace ReadingTool.Services
         IEnumerable<Word> FindAllById(ObjectId[] id);
         IEnumerable<Word> FindAllForLanguage(ObjectId id);
         IEnumerable<Word> SearchWords(string filter, string[] boxes, string[] languages, string[] states, string[] tags);
+        Word ResetWord(string languageId, string word);
 
         int FindKnownCountForUser(ObjectId userId, ObjectId languageId);
         //MongoCursor<Word> SearchWords(string filter, string[] languages, string[] states, string[] boxes);
         SearchResult<Word> SearchWords(string filter, string[] languages, string[] states, string[] boxes, string orderBy, string orderDirection, int limit, int page);
         IEnumerable<Word> FindSharedDefinitions(User user, string word, ObjectId systemLanguage);
+        bool ReviewWords(string languageId, string[] words, string itemId);
     }
 
     public class WordService : IWordService
@@ -302,7 +305,8 @@ namespace ReadingTool.Services
                                          WordId = x.WordId,
                                          BaseWord = x.BaseWord,
                                          Definition = x.Definition,
-                                         Romanisation = x.Romanisation
+                                         Romanisation = x.Romanisation,
+                                         Box = x.Box
                                      })
                     .ToArray(),
                 collection.Where(x => x.LanguageId == languageId && x.Owner == _identity.UserId && x.Length > 1)
@@ -315,7 +319,8 @@ namespace ReadingTool.Services
                                          WordId = x.WordId,
                                          BaseWord = x.BaseWord,
                                          Definition = x.Definition,
-                                         Romanisation = x.Romanisation
+                                         Romanisation = x.Romanisation,
+                                         Box = x.Box
                                      })
                     .ToArray()
                 );
@@ -498,6 +503,25 @@ namespace ReadingTool.Services
             return cursor;
         }
 
+        public Word ResetWord(string languageId, string word)
+        {
+            var newWord = FindWordByLower(languageId, word);
+
+            if(newWord == null)
+            {
+                return null;
+            }
+
+            newWord.Box = 1;
+            newWord.State = WordState.Unknown;
+            newWord.Modified = DateTime.Now;
+            newWord.NextReview = GetNextReview(new ObjectId(languageId), 1);
+            newWord.Resets = newWord.Resets + 1;
+            _db.GetCollection(Word.CollectionName).Save(newWord);
+
+            return newWord;
+        }
+
         public int FindKnownCountForUser(ObjectId userId, ObjectId languageId)
         {
             return _db.GetCollection<Word>(Collections.Words)
@@ -632,6 +656,87 @@ namespace ReadingTool.Services
             return union;
         }
 
+        public bool ReviewWords(string languageId, string[] words, string itemId)
+        {
+            if(words == null || words.Length == 0) return true;
+
+            var lid = new ObjectId(languageId);
+            var review = Review.Default;
+
+            foreach(var word in words)
+            {
+                var term = FindWordByLower(languageId, word);
+
+                if(term == null || term.State != WordState.Unknown)
+                {
+                    continue;
+                }
+
+                if(DateTime.Now > term.NextReview)
+                {
+                    term.Box++;
+
+                    if(term.Box > (review.KnownAfterBox ?? Review.MAX_BOXES))
+                    {
+                        term.State = WordState.Known;
+                    }
+                    else
+                    {
+                        term.NextReview = GetNextReview(lid, term.Box);
+                    }
+
+                    term.Modified = DateTime.Now;
+                    term.LastReview = DateTime.Now;
+                    _db.GetCollection(Word.CollectionName).Save(term);
+                }
+            }
+
+            return true;
+        }
+
+        private DateTime GetNextReview(ObjectId languageId, int? currentLevel)
+        {
+            Review review = Review.Default;
+
+            if(currentLevel == null)
+            {
+                currentLevel = 1;
+            }
+
+            switch(currentLevel)
+            {
+                case 1:
+                    return DateTime.Now.AddMinutes(review.Box1Minutes ?? Review.Default.Box1Minutes.Value);
+
+                case 2:
+                    return DateTime.Now.AddMinutes(review.Box2Minutes ?? Review.Default.Box2Minutes.Value);
+
+                case 3:
+                    return DateTime.Now.AddMinutes(review.Box3Minutes ?? Review.Default.Box3Minutes.Value);
+
+                case 4:
+                    return DateTime.Now.AddMinutes(review.Box4Minutes ?? Review.Default.Box4Minutes.Value);
+
+                case 5:
+                    return DateTime.Now.AddMinutes(review.Box5Minutes ?? Review.Default.Box5Minutes.Value);
+
+                case 6:
+                    return DateTime.Now.AddMinutes(review.Box6Minutes ?? Review.Default.Box6Minutes.Value);
+
+                case 7:
+                    return DateTime.Now.AddMinutes(review.Box7Minutes ?? Review.Default.Box7Minutes.Value);
+
+                case 8:
+                    return DateTime.Now.AddMinutes(review.Box8Minutes ?? Review.Default.Box8Minutes.Value);
+
+                case 9:
+                    return DateTime.Now.AddMinutes(review.Box9Minutes ?? Review.Default.Box9Minutes.Value);
+
+                default:
+                    return DateTime.Now.AddMinutes(review.Box9Minutes ?? Review.Default.Box9Minutes.Value);
+            }
+        }
+
         private class WordEqualityComparer : IEqualityComparer<Word>
         {
             public bool Equals(Word x, Word y)
@@ -642,6 +747,42 @@ namespace ReadingTool.Services
             public int GetHashCode(Word obj)
             {
                 return obj.WordId.GetHashCode();
+            }
+        }
+
+        private class Review
+        {
+            public const int MAX_BOXES = 9;
+
+            public int? Box1Minutes { get; set; }
+            public int? Box2Minutes { get; set; }
+            public int? Box3Minutes { get; set; }
+            public int? Box4Minutes { get; set; }
+            public int? Box5Minutes { get; set; }
+            public int? Box6Minutes { get; set; }
+            public int? Box7Minutes { get; set; }
+            public int? Box8Minutes { get; set; }
+            public int? Box9Minutes { get; set; }
+            public int? KnownAfterBox { get; set; }
+
+            public static Review Default
+            {
+                get
+                {
+                    return new Review()
+                    {
+                        Box1Minutes = 3 * 60 * 24,
+                        Box2Minutes = 7 * 60 * 24,
+                        Box3Minutes = 15 * 60 * 24,
+                        Box4Minutes = 30 * 60 * 24,
+                        Box5Minutes = 60 * 60 * 24,
+                        Box6Minutes = 90 * 60 * 24,
+                        Box7Minutes = 180 * 60 * 24,
+                        Box8Minutes = 210 * 60 * 24,
+                        Box9Minutes = 240 * 60 * 24,
+                        KnownAfterBox = MAX_BOXES
+                    };
+                }
             }
         }
     }

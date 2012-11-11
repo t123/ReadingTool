@@ -157,6 +157,12 @@ namespace ReadingTool.Services
 
                     var node = new XElement("multi");
                     node.Value = multi.WordPhrase;
+
+                    if(multi.State == WordState.Unknown)
+                    {
+                        node.SetAttributeValue("box", "box" + multi.Box);
+                    }
+
                     node.SetAttributeValue("length", multi.Length);
                     node.SetAttributeValue("lower", multi.WordPhraseLower);
                     node.SetAttributeValue("state", _wordStates[multi.State]);
@@ -186,7 +192,7 @@ namespace ReadingTool.Services
             //else
             {
                 var elements = document.Descendants("t").Where(x => x.Attribute("type").Value == "word");
-                var wordsAsDict = _singleWords.ToDictionary(x => x.WordPhraseLower, x => new { State = x.State, FullDefinition = x.FullDefinition });
+                var wordsAsDict = _singleWords.ToDictionary(x => x.WordPhraseLower, x => new { State = x.State, FullDefinition = x.FullDefinition, Box = x.Box });
 
                 foreach(var element in elements)
                 {
@@ -194,6 +200,11 @@ namespace ReadingTool.Services
 
                     if(wordsAsDict.ContainsKey(lower))
                     {
+                        if(wordsAsDict[lower].State == WordState.Unknown)
+                        {
+                            element.SetAttributeValue("box", "box" + wordsAsDict[lower].Box);
+                        }
+
                         element.SetAttributeValue("state", _wordStates[wordsAsDict[lower].State]);
                         element.SetAttributeValue("data", wordsAsDict[lower].FullDefinition);
                     }

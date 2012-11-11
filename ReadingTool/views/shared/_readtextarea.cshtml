@@ -8,6 +8,8 @@
     <div id="textContent" dir="@(Model.Language.IsRtlLanguage ? "rtl" : "ltr")">
         @Html.Raw(Model.ParsedHtml)
         <div class="clr50"></div>
+        <input type="button" id="reviewUnknownWords" value="review unknown words"/>
+        <div class="clr10"></div>
         <input type="button" id="markRemainingAsKnown" value="mark the remaining words as known"/>
         <div id="markRemainingAsKnownProgress" class="warning" style="display: none"></div>
         <div class="clr100"></div>
@@ -98,6 +100,11 @@
                 <input type="checkbox" id="quickmode"/>&nbsp;quick mode&nbsp;
                 <input type="checkbox" id="removespaces" />&nbsp;remove spaces&nbsp;
                 <input type="checkbox" id="keepfocus" />&nbsp;keep focus&nbsp;
+                <input type="checkbox" id="hidel1" />&nbsp;hide L1&nbsp;
+                @if(Model.Item.AsParallel)
+                {
+                    <input type="checkbox" id="hidel2" />@:&nbsp;hide L2&nbsp;
+                }
                 <div class="clr5"></div>
             </div>
         }
@@ -125,6 +132,11 @@
                 <input type="checkbox" id="quickmode"/>&nbsp;quick mode&nbsp;
                 <input type="checkbox" id="removespaces" />&nbsp;remove spaces&nbsp;
                 <input type="checkbox" id="keepfocus" />&nbsp;keep focus&nbsp;
+                <input type="checkbox" id="hidel1" />&nbsp;hide L1&nbsp;
+                @if(Model.Item.AsParallel)
+                {
+                    <input type="checkbox" id="hidel2" />@:&nbsp;hide L2&nbsp;
+                }
                 <div class="clr5"></div>
             </div>
         }

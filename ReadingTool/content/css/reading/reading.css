@@ -77,3 +77,14 @@
     padding-bottom: 10px;
     width: 49%;
 }
+
+/* http://meyerweb.com/eric/tools/color-blend/ */
+#textContent span.box1 { background-color: #F5B8A9;}
+#textContent span.box2 { background-color: #F0C1A1;}
+#textContent span.box3 { background-color: #EBCA98;}
+#textContent span.box4 { background-color: #E6D390;}
+#textContent span.box5 { background-color: #E1DC88;}
+#textContent span.box6 { background-color: #DBE47F;}
+#textContent span.box7 { background-color: #D6ED77;}
+#textContent span.box8 { background-color: #D1F66E;}
+#textContent span.box9 { background-color: #CCFF66;}
