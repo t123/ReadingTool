@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using ReadingTool.Attributes;
 using ReadingTool.Common;
@@ -41,13 +43,15 @@ namespace ReadingTool.Controllers.Ajax
         private readonly IUserService _userService;
         private readonly IGroupService _groupService;
         private readonly IItemService _itemService;
+        private readonly ILanguageService _languageService;
 
         public AjaxController(
             ISystemLanguageService systemLanguageService,
             IWordService wordService,
             IUserService userService,
             IGroupService groupService,
-            IItemService itemService
+            IItemService itemService,
+            ILanguageService languageService
             )
         {
             _systemLanguageService = systemLanguageService;
@@ -55,6 +59,7 @@ namespace ReadingTool.Controllers.Ajax
             _userService = userService;
             _groupService = groupService;
             _itemService = itemService;
+            _languageService = languageService;
         }
 
         public ActionResult Index()
@@ -237,5 +242,46 @@ namespace ReadingTool.Controllers.Ajax
             return Json(new { result = result ? OK : FAIL });
         }
         #endregion
+
+        [HttpPost]
+        public JsonResult EncodeWord(string id, string url, string word)
+        {
+            if(string.IsNullOrEmpty(url) || string.IsNullOrEmpty(word))
+            {
+                return Json(new { result = FAIL });
+            }
+
+            try
+            {
+                var language = _languageService.FindOne(id);
+
+                if(language == null)
+                {
+                    return Json(new { result = FAIL });
+                }
+
+                var dictionary = language.Dictionaries.FirstOrDefault(x => x.Url == url);
+
+                if(dictionary == null)
+                {
+                    return Json(new { result = FAIL });
+                }
+
+                var encoder = Encoding.GetEncoding(dictionary.Encoding);
+
+                string result = HttpUtility.UrlEncode(word, encoder);
+                return Json(
+                    new
+                    {
+                        result = OK,
+                        url = url.Replace("[[word]]", result)
+                    }
+                    );
+            }
+            catch
+            {
+                return Json(new { result = FAIL });
+            }
+        }
     }
 }

@@ -142,7 +142,7 @@ function init() {
             reader.createPopup($(this));
 
             if (settings.autoOpenDictionary) {
-                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
+                //openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
             }
         }
     });
@@ -205,7 +205,7 @@ function init() {
             reader.createPopup($(this));
 
             if (settings.autoOpenDictionary) {
-                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
+//                openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
             }
         }
     });
@@ -239,7 +239,7 @@ function init() {
                 reader.createPopup($(this));
 
                 if (settings.autoOpenDictionary) {
-                    openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
+//                    openDictionary(settings.autoDictionaryWindowName, settings.autoDictionaryUrl, $(this).text());
                 }
             }
         });

@@ -24,5 +24,6 @@ namespace ReadingTool.Entities
         public string Name { get; set; }
         public string WindowName { get; set; }
         public string Url { get; set; }
+        public string Encoding { get; set; }
     }
 }

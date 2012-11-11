@@ -29,6 +29,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using ReadingTool.Common.Enums;
 using ReadingTool.Common.Helpers;
+using ReadingTool.Common.Keys;
 using ReadingTool.Entities;
 using ReadingTool.Entities.Identity;
 using ReadingTool.Entities.JSON;
@@ -78,14 +79,17 @@ namespace ReadingTool.Services
     {
         private readonly MongoDatabase _db;
         private readonly UserForService _identity;
+        private readonly ILanguageService _languageService;
 
         public ItemService(
             MongoDatabase db,
-            UserForService identity
+            UserForService identity,
+            ILanguageService languageService
             )
         {
             _db = db;
             _identity = identity;
+            _languageService = languageService;
         }
 
         #region autocomplete
@@ -588,21 +592,42 @@ namespace ReadingTool.Services
 
         public SearchResult<Item> SearchItems(string[] types, string filter, string[] languages, string[] collectionNames, string orderBy, string orderDirection, int limit, int page)
         {
-            filter = (filter ?? "").ToLowerInvariant().Trim();
             var texts = _db.GetCollection<Item>(Collections.Items);
 
-            var queries = new List<IMongoQuery>() { Query.EQ("Owner", _identity.UserId) };
+            var model = FilterParser.ParseItems(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()).ToArray(), filter);
+
+            IMongoQuery query = Query.EQ("Owner", _identity.UserId);
+            IList<IMongoQuery> lQueries = new List<IMongoQuery>();
+            IList<IMongoQuery> oQueries = new List<IMongoQuery>();
+            IMongoQuery tagQuery = new QueryDocument();
+
+            if(model.Languages.Count > 0)
+            {
+                foreach(var l in model.Languages)
+                {
+                    lQueries.Add(Query.EQ("LanguageNameLower", l));
+                }
+            }
 
             if(languages != null && !(languages.Length == 1 && languages[0].Equals("")))
-                queries.Add(Query.In("LanguageId", new BsonArray(languages.Select(x => new ObjectId(x)))));
-
-            string[] splitFilter = filter.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            string[] tags = splitFilter.Where(x => x.StartsWith("#")).Select(x => x.Substring(1, x.Length - 1)).ToArray();
-            filter = string.Join(" ", splitFilter.Where(x => !x.StartsWith("#")));
-
-            if(types != null && types.Length == 1)
             {
-                queries.Add(Query.EQ("ItemType", types[0].Equals("Texts", StringComparison.InvariantCultureIgnoreCase) ? ItemType.Text : ItemType.Video));
+                lQueries.Add(Query.In("LanguageId", new BsonArray(languages.Select(x => new ObjectId(x)))));
+            }
+
+            if(model.Tags.Count > 0)
+            {
+                tagQuery = Query.In("Tags", new BsonArray(model.Tags));
+            }
+
+            if(model.Other.Count > 0)
+            {
+                foreach(var o in model.Other)
+                {
+                    oQueries.Add(Query.Or(
+                        Query.Matches("TitleLower", BsonRegularExpression.Create(new Regex(o))),
+                        Query.Matches("CollectionNameLower", BsonRegularExpression.Create(new Regex(o)))
+                    ));
+                }
             }
 
             if(collectionNames != null && !(collectionNames.Length == 1 && collectionNames[0].Equals("")))
@@ -614,18 +639,24 @@ namespace ReadingTool.Services
                     collectionNames[indexNone] = "";
                 }
 
-                queries.Add(Query.In("CollectionName", new BsonArray(collectionNames)));
+                foreach(var o in collectionNames)
+                {
+                    oQueries.Add(Query.Or(Query.Matches("CollectionNameLower", BsonRegularExpression.Create(new Regex(o.ToLowerInvariant())))));
+                }
             }
 
-            if(tags.Length > 0)
-                queries.Add(Query.In("Tags", new BsonArray(tags)));
+            query = Query.And(query, tagQuery);
 
-            if(!string.IsNullOrEmpty(filter))
+            if(types != null && types.Length == 1)
             {
-                queries.Add(Query.Matches("TitleLower", BsonRegularExpression.Create(new Regex(filter))));
+                query = Query.And(query, Query.EQ("ItemType", types[0].Equals("Texts", StringComparison.InvariantCultureIgnoreCase) ? ItemType.Text : ItemType.Video));
             }
 
-            var cursor = texts.Find(Query.And(queries.ToArray())).SetSortOrder("ItemType");
+            if(lQueries.Count > 0) query = Query.And(query, Query.Or(lQueries.ToArray()));
+            if(oQueries.Count > 0) query = Query.And(query, Query.Or(oQueries.ToArray()));
+
+            MongoCursor<Item> cursor = texts.Find(query).SetSortOrder("ItemType");
+            //var cursor = texts.Find(Query.And(queries.ToArray())).SetSortOrder("ItemType");
 
             switch(orderBy)
             {

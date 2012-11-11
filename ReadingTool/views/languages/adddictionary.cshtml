@@ -36,6 +36,12 @@
             @Html.TextBoxFor(x => x.Url)
             @Html.ValidationMessageFor(x => x.Url)
         </div>
+    
+       <div class="input_wrapper">
+            @Html.LabelHelpFor(x => x.Encoding)
+            @Html.TextBoxFor(x => x.Encoding)
+            @Html.ValidationMessageFor(x => x.Encoding)
+        </div>
         
         <button type="submit">
             <span>add dictionary</span>

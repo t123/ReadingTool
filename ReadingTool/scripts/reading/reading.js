@@ -39,6 +39,46 @@ mReader.prototype = {
         $('#textModal').offset({ top: newTop, left: newLeft });
     },
 
+    _updateLinks: function (baseUrl) {
+        var thisObject = this;
+        $('.dictionary').each(function (index) {
+            var anchor = $(this);
+            var encoding = anchor.data('urlencoding');
+            var url = anchor.data('url');
+            var auto = anchor.data('auto');
+            var word = $('#currentWord').text();
+
+            if (auto == undefined) auto = false;
+
+            if (encoding != '') {
+                $.post(
+                    baseUrl + '/encodeword',
+                    {
+                        word: word,
+                        url: url,
+                        id: thisObject.languageId
+                    },
+                    function (data) {
+                        if (data.result == "OK") {
+                            anchor.attr('href', data.url);
+
+                            if (auto) {
+                                anchor[0].click();
+                            }
+                        } else {
+                            anchor.attr('href', '#');
+                        }
+                    }
+                );
+            } else {
+                anchor.attr('href', url.replace('[[word]]', word));
+                if (auto) {
+                    anchor[0].click();
+                }
+            }
+        });
+    },
+
     quicksave: function (element, state) {
         if (element.parent().is("sup")) return;
         var thisObject = this;
@@ -247,6 +287,8 @@ mReader.prototype = {
         } else {
             this._createPopupSingle(element, data);
         }
+
+        this._updateLinks(this.baseUrl);
     },
 
     _createPopupMulti: function (element, data) {
@@ -343,7 +385,7 @@ mReader.prototype = {
             var prev = sentenceNode.prev();
 
             if (prev != null) {
-                sentence = this._buildSentence(prev.children()) + sentence;
+                sentence = this._buildSentence(prev.children()) + ' ' + sentence;
             }
         }
 
@@ -351,7 +393,7 @@ mReader.prototype = {
             var next = sentenceNode.next();
 
             if (prev != null) {
-                sentence = sentence + this._buildSentence(next.children());
+                sentence = sentence + ' ' + this._buildSentence(next.children());
             }
         }
 

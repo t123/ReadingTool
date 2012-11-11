@@ -34,7 +34,7 @@ namespace ReadingTool.Entities
         public ObjectId Owner { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
-        //public ObjectId ItemId { get; set; }
+        public ObjectId ItemId { get; set; }
         public string LanguageName { get; set; }
         public string LanguageColour { get; set; }
         public ObjectId SystemLanguageId { get; set; }

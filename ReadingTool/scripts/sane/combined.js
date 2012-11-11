@@ -705,7 +705,7 @@ function mergedVM(settings) {
     self.totalPages = ko.observable(1);
     self.checkAll = ko.observable(false);
     self.limits = ko.observableArray([25, 50, 100, 250, 500, 1000]);
-    self.limit = ko.observable(25);
+    self.limit = ko.observable(50);
     self.states = ko.observableArray(['Known', 'Unknown', 'Not Seen', 'Ignored']);
     self.newState = ko.observable('');
     self.orderBy = ko.observable('language');
@@ -717,7 +717,14 @@ function mergedVM(settings) {
     self.selectedItems = ko.observableArray([]);
     self.selectedLanguages = ko.observableArray([]);
     self.selectedCollections = ko.observableArray([]);
-    self.textFilter = ko.observable('');
+
+    var savedFilter = localStorage[settings.index + "_filter"];
+
+    if (savedFilter == null) {
+        savedFilter = '';
+    }
+    self.textFilter = ko.observable(savedFilter);
+    
     self.selectedStates = ko.observableArray([]);
     self.selectedBoxes = ko.observableArray([]);
 
@@ -1018,7 +1025,8 @@ function mergedVM(settings) {
 
     self.filter = ko.computed(function () {
         self.selectedItems([]);
-
+        localStorage[settings.index + "_filter"] = self.textFilter();
+        
         if (settings.index == 'words') {
             $.post(
 					self.settings.url + '/search',

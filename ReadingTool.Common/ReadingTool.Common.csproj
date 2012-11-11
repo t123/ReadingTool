@@ -83,6 +83,8 @@
     <Compile Include="Exceptions\TooManyWords.cs" />
     <Compile Include="Exceptions\UnequalParagraphException.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Helpers\FilterModel.cs" />
+    <Compile Include="Helpers\FilterParser.cs" />
     <Compile Include="Helpers\Formatters.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\Splitter.cs" />

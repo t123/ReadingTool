@@ -81,6 +81,7 @@ namespace ReadingTool.Services
                         ),
                     Update
                         .Set("LanguageName", language.Name)
+                        .Set("LanguageNameLower", language.Name.ToLowerInvariant())
                         .Set("LanguageColour", language.Colour)
                         .Set("SystemLanguageId", language.SystemLanguageId),
                     UpdateFlags.Multi
@@ -140,6 +141,7 @@ namespace ReadingTool.Services
             UpdateBuilder builder = Update.Set("Dictionaries.$.Name", dictionary.Name);
             builder.Combine(Update.Set("Dictionaries.$.WindowName", dictionary.WindowName));
             builder.Combine(Update.Set("Dictionaries.$.Url", dictionary.Url));
+            builder.Combine(Update.Set("Dictionaries.$.Encoding", dictionary.Encoding));
 
             collection.Update(query, builder);
         }

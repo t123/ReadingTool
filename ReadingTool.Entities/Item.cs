@@ -35,7 +35,21 @@ namespace ReadingTool.Entities
         public ObjectId ItemId { get; set; }
         public ObjectId LanguageId { get; set; }
         public ObjectId SystemLanguageId { get; set; }
-        public string CollectionName { get; set; }
+
+        private string _collectionName;
+
+        public string CollectionName
+        {
+            get { return _collectionName; }
+            set
+            {
+                _collectionName = value ?? "";
+                CollectionNameLower = _collectionName.ToLowerInvariant();
+            }
+        }
+
+        public string CollectionNameLower { get; private set; }
+
         public int? CollectionNo { get; set; }
         public ItemType ItemType { get; set; }
 
@@ -157,7 +171,21 @@ namespace ReadingTool.Entities
 
         private ObjectId[] _groupId;
         public ObjectId[] GroupId { get { return _groupId ?? new ObjectId[0]; } set { _groupId = value; } }
-        public string LanguageName { get; set; }
+
+        private string _languageName;
+
+        public string LanguageName
+        {
+            get { return _languageName; }
+            set
+            {
+                _languageName = value ?? "";
+                LanguageNameLower = _languageName.ToLowerInvariant();
+            }
+        }
+
+        public string LanguageNameLower { get; private set; }
+
         public string LanguageColour { get; set; }
 
         public ObjectId ParseWith { get; set; }

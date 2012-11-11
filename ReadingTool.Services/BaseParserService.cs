@@ -81,13 +81,15 @@ namespace ReadingTool.Services
                     {
                         _output.Language.AutoDictionaryUrl = dictionary.Url;
                         _output.Language.AutoDictionaryWindowName = dictionary.WindowName;
+                        _output.Language.AutoDictionaryWindowName = dictionary.WindowName;
                     }
 
                     _output.Dictionaries.Add(new ParserOutput.DictionaryData()
                                                  {
                                                      Name = dictionary.Name,
                                                      WindowName = dictionary.WindowName,
-                                                     Url = dictionary.Url
+                                                     Url = dictionary.Url,
+                                                     Encoding = dictionary.Encoding
                                                  }
                         );
                 }

@@ -42,7 +42,22 @@
             {
                 foreach(var dictionary in Model.Dictionaries)
                 {
-                    <li><a href="#" onclick="openDictionary('@dictionary.WindowName', '@Html.Raw(dictionary.Url)'); return false;">@dictionary.Name</a></li>
+                    <li>
+                        <a 
+                            href="" 
+                            target="@dictionary.WindowName"
+                            class="dictionary" 
+                            data-urlencoding="@dictionary.Encoding"
+                            data-url="@dictionary.Url"
+                            @if(dictionary.Url == Model.Language.AutoDictionaryUrl)
+                            {
+                                @:data-auto="true"
+                            }
+                            >
+                            @dictionary.Name
+                        </a>
+                    </li>
+                    @*<li><a href="#" onclick="openDictionary('@dictionary.WindowName', '@Html.Raw(dictionary.Url)'); return false;">@dictionary.Name</a></li>*@
                 }
             }
             <li><a href="#" onclick="return false" id="lnkShare">user defintions</a></li>

@@ -40,5 +40,7 @@ namespace ReadingTool.Models.Create.Language
         [Help("This is the URL for your dictionary. You can use [[word]] to send the current word. For example a link to Word Reference English to French " +
             "would be www.wordreference.com/enfr/[[word]]")]
         public string Url { get; set; }
+
+        public string Encoding { get; set; }
     }
 }

@@ -52,12 +52,14 @@ namespace ReadingTool.Controllers
         private readonly ILanguageService _languageService;
         private readonly IWordService _wordService;
         private readonly IUserService _userService;
+        private readonly IItemService _itemService;
 
-        public WordsController(ILanguageService languageService, IWordService wordService, IUserService userService)
+        public WordsController(ILanguageService languageService, IWordService wordService, IUserService userService, IItemService itemService)
         {
             _languageService = languageService;
             _wordService = wordService;
             _userService = userService;
+            _itemService = itemService;
         }
 
         public ActionResult Index()
@@ -443,11 +445,13 @@ namespace ReadingTool.Controllers
             }
 
             var words = _wordService.FindAllForLanguage(l.LanguageId);
+            var items = _itemService.FindAllForLanguage(ItemType.Text, l.LanguageId).ToDictionary(x => x.ItemId, y => y);
+
             CsvBuilder csv = new CsvBuilder(CsvType.TSV, false);
             csv.AddHeader(new[]
                                   {
                                       "WordId", "Language", "Created", "Modified", "Word", "State", "Definition", "Base Word",
-                                      "Romanisation", "Tags", "Box", "Recognition Sentence", "Production Sentence"
+                                      "Romanisation", "Tags", "Box", "Recognition Sentence", "Production Sentence", "Title", "Collection"
                                   });
 
             foreach(var word in words.Where(x => x.State == WordState.Unknown).OrderBy(x => x.Created))
@@ -465,8 +469,10 @@ namespace ReadingTool.Controllers
                                    word.Romanisation,
                                    string.Join(",", word.Tags),
                                    word.Box.ToString(),
-                                   word.Sentence,
-                                   word.Sentence.ReplaceString(word.WordPhrase, "[...]", StringComparison.InvariantCultureIgnoreCase)
+                                   word.Sentence.ReplaceString(word.WordPhrase, "<b>" + word.WordPhrase + "</b>", StringComparison.InvariantCultureIgnoreCase),
+                                   word.Sentence.ReplaceString(word.WordPhrase, "[...]", StringComparison.InvariantCultureIgnoreCase),
+                                   word.ItemId==ObjectId.Empty || !items.ContainsKey(word.ItemId) ? "NA" : items[word.ItemId].Title,
+                                   word.ItemId==ObjectId.Empty || !items.ContainsKey(word.ItemId) ? "NA" : items[word.ItemId].CollectionName,
                                });
             }
 

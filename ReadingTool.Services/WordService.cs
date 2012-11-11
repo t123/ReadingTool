@@ -129,7 +129,7 @@ namespace ReadingTool.Services
                                   LanguageId = new ObjectId(languageId),
                                   Owner = _identity.UserId,
                                   State = GetEnumFromAlternateName(state),
-                                  //ItemId = string.IsNullOrEmpty(itemId) ? ObjectId.Empty : new ObjectId(itemId),
+                                  ItemId = string.IsNullOrEmpty(itemId) ? ObjectId.Empty : new ObjectId(itemId),
                                   WordPhrase = (word ?? "").Trim(),
                                   BaseWord = (baseWord ?? "").Trim(),
                                   Box = 1,
@@ -152,6 +152,11 @@ namespace ReadingTool.Services
                 newWord.Definition = (defintiion ?? "").Trim();
                 newWord.Sentence = string.IsNullOrEmpty(sentence) ? (newWord.Sentence ?? "").Trim() : (sentence ?? "").Trim();
                 newWord.Tags = TagHelper.Split(tags);
+
+                if(!string.IsNullOrEmpty(itemId))
+                {
+                    newWord.ItemId = new ObjectId(itemId);
+                }
             }
 
             _db.GetCollection(Collections.Words).Save(newWord);
@@ -191,7 +196,7 @@ namespace ReadingTool.Services
                     LanguageId = new ObjectId(languageId),
                     Owner = _identity.UserId,
                     State = newState,
-                    //ItemId = string.IsNullOrEmpty(itemId) ? ObjectId.Empty : new ObjectId(itemId),
+                    ItemId = string.IsNullOrEmpty(itemId) ? ObjectId.Empty : new ObjectId(itemId),
                     WordPhrase = word,
                     BaseWord = string.Empty,
                     Box = 1,
@@ -210,6 +215,10 @@ namespace ReadingTool.Services
                 newWord.Modified = DateTime.Now;
                 newWord.State = newState;
                 if(string.IsNullOrEmpty(newWord.Sentence)) newWord.Sentence = sentence;
+                if(!string.IsNullOrEmpty(itemId))
+                {
+                    newWord.ItemId = new ObjectId(itemId);
+                }
             }
 
             _db.GetCollection(Collections.Words).Save(newWord);
@@ -240,7 +249,7 @@ namespace ReadingTool.Services
                             LanguageId = new ObjectId(languageId),
                             Owner = _identity.UserId,
                             State = WordState.Known,
-                            //ItemId = string.IsNullOrEmpty(itemId) ? ObjectId.Empty : new ObjectId(itemId),
+                            ItemId = string.IsNullOrEmpty(itemId) ? ObjectId.Empty : new ObjectId(itemId),
                             BaseWord = string.Empty,
                             Box = 1,
                             NextReview = DateTime.Now.AddMinutes(10),
