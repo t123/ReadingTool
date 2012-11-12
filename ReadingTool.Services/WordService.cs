@@ -374,15 +374,16 @@ namespace ReadingTool.Services
                         break;
 
                     case "R":
-                        Random r = HttpRuntime.Cache[CacheKeys.RANDOM] as Random;
-                        var hours = Math.Pow(3, word.Box) * 24 + (r.Next(-12, 12));
-                        word.NextReview = DateTime.Now.AddHours(hours);
+                        //Random r = HttpRuntime.Cache[CacheKeys.RANDOM] as Random;
+                        //var hours = Math.Pow(3, word.Box) * 24 + (r.Next(-12, 12));
+                        //word.NextReview = DateTime.Now.AddHours(hours);
                         word.Box++;
+                        word.NextReview = GetNextReview(word.LanguageId, word.Box);
                         break;
 
                     case "F":
                         word.Box = 1;
-                        word.NextReview = DateTime.Now.AddMinutes(10);
+                        word.NextReview = GetNextReview(word.LanguageId, word.Box);
                         break;
 
                     default:
@@ -418,7 +419,7 @@ namespace ReadingTool.Services
                 word.Created = DateTime.Now;
                 word.Owner = _identity.UserId;
                 word.Box = 1;
-                word.NextReview = DateTime.Now.AddMinutes(10);
+                word.NextReview = GetNextReview(word.LanguageId, 1);
             }
 
             word.Romanisation = (word.Romanisation ?? "").Trim();
@@ -531,37 +532,97 @@ namespace ReadingTool.Services
 
         public SearchResult<Word> SearchWords(string filter, string[] languages, string[] states, string[] boxes, string orderBy, string orderDirection, int limit, int page)
         {
-            filter = (filter ?? "").ToLowerInvariant().Trim();
             var words = _db.GetCollection<Word>(Collections.Words);
 
-            var queries = new List<IMongoQuery>() { Query.EQ("Owner", _identity.UserId) };
+            //if(!(states.Length == 1 && states[0].Equals("")))
+            //{
+            //    queries.Add(Query.In("State", new BsonArray(states.Select(x => Enum.Parse(typeof(WordState), x, true)))));
+            //}
 
-            if(!(languages.Length == 1 && languages[0].Equals("")))
-                queries.Add(Query.In("LanguageId", new BsonArray(languages.Select(x => new ObjectId(x)))));
+            //if(!(boxes.Length == 1 && boxes[0].Equals("")))
+            //{
+            //    queries.Add(Query.In("Box", new BsonArray(boxes.Select(int.Parse))));
+            //}
 
-            string[] splitFilter = filter.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            string[] tags = splitFilter.Where(x => x.StartsWith("#")).Select(x => x.Substring(1, x.Length - 1)).ToArray();
-            filter = string.Join(" ", splitFilter.Where(x => !x.StartsWith("#")));
+            var languageService = ObjectFactory.GetInstance<ILanguageService>();
+            var model = FilterParser.ParseItems(languageService.FindAll().Select(x => x.Name.ToLowerInvariant()).ToArray(), filter);
 
-            if(!(states.Length == 1 && states[0].Equals("")))
+            IMongoQuery query = Query.EQ("Owner", _identity.UserId);
+            IList<IMongoQuery> lQueries = new List<IMongoQuery>();
+            IList<IMongoQuery> oQueries = new List<IMongoQuery>();
+            IList<IMongoQuery> mbQueries = new List<IMongoQuery>();
+            IList<IMongoQuery> msQueries = new List<IMongoQuery>();
+            IMongoQuery tagQuery = new QueryDocument();
+
+            if(model.Languages.Count > 0)
             {
-                queries.Add(Query.In("State", new BsonArray(states.Select(x => Enum.Parse(typeof(WordState), x, true)))));
+                foreach(var l in model.Languages)
+                {
+                    lQueries.Add(Query.EQ("LanguageNameLower", l));
+                }
             }
 
-            if(!(boxes.Length == 1 && boxes[0].Equals("")))
+            if(languages != null && !(languages.Length == 1 && languages[0].Equals("")))
             {
-                queries.Add(Query.In("Box", new BsonArray(boxes.Select(int.Parse))));
+                lQueries.Add(Query.In("LanguageId", new BsonArray(languages.Select(x => new ObjectId(x)))));
             }
 
-            if(tags.Length > 0)
-                queries.Add(Query.In("Tags", new BsonArray(tags)));
+            var wordStates = new[]
+                {
+                    EnumHelper.GetDescription(WordState.Known).ToLowerInvariant(),
+                    EnumHelper.GetDescription(WordState.Unknown).ToLowerInvariant(),
+                    EnumHelper.GetDescription(WordState.Ignored).ToLowerInvariant(),
+                    EnumHelper.GetDescription(WordState.NotSeen).ToLowerInvariant().Replace(" ", "")
+                };
 
-            if(!string.IsNullOrEmpty(filter))
+            if(model.Tags.Count > 0)
             {
-                queries.Add(Query.Matches("WordPhraseLower", BsonRegularExpression.Create(new Regex(filter))));
+                foreach(var o in model.Tags)
+                {
+                    if(o.StartsWith("box"))
+                    {
+                        var box = int.Parse(o.Substring(3, 1));
+                        mbQueries.Add(Query.EQ("Box", box));
+                    }
+                    else if(wordStates.Contains(o))
+                    {
+                        var state =
+                            o == "notseen"
+                                ? WordState.NotSeen
+                                : (WordState)Enum.Parse(typeof(WordState), o, true);
+
+                        msQueries.Add(Query.EQ("State", state));
+                    }
+                }
             }
 
-            var cursor = words.Find(Query.And(queries.ToArray()));
+            //HACK
+            if(model.Tags.Count > 0)
+            {
+                var newTags = model.Tags.Where(x => !x.StartsWith("box") && !wordStates.Contains(x)).ToArray();
+
+                if(newTags.Length > 0)
+                {
+                    tagQuery = Query.In("Tags", new BsonArray(newTags));
+                }
+            }
+
+            if(model.Other.Count > 0)
+            {
+                foreach(var o in model.Other)
+                {
+                    oQueries.Add(Query.Matches("WordPhraseLower", BsonRegularExpression.Create(new Regex(o))));
+                }
+            }
+
+            query = Query.And(query, tagQuery);
+
+            if(lQueries.Count > 0) query = Query.And(query, Query.Or(lQueries.ToArray()));
+            if(oQueries.Count > 0) query = Query.And(query, Query.Or(oQueries.ToArray()));
+            if(msQueries.Count > 0) query = Query.And(query, Query.Or(msQueries.ToArray()));
+            if(mbQueries.Count > 0) query = Query.And(query, Query.Or(mbQueries.ToArray()));
+
+            MongoCursor<Word> cursor = words.Find(query);
 
             switch(orderBy)
             {

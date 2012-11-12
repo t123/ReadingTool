@@ -40,8 +40,6 @@
         <hr /><div class="clr5"></div>
         <select style="margin-left: 10px; width: 120px" data-bind="options: limits, value: limit"></select>
         <div class="clr5"></div><hr /><div class="clr5"></div>
-        <input type="text" style="margin-left: 10px; width: 120px" name="filter" data-bind="value: textFilter, valueUpdate: 'afterkeydown'" />
-        <div class="clr5"></div><hr /><div class="clr5"></div>
         <ul>
             @foreach(var language in languages)
             {
@@ -81,7 +79,7 @@
         </ul>
         <div class="clr5"></div><hr /><div class="clr5"></div>
         <ul>
-            @for(int i = 1; i <= 5; i++)
+            @for(int i = 1; i <= 9; i++)
             {
                 <li>
                     <div style="width:100%">
@@ -98,6 +96,7 @@
     </div>
     <div id="main">
         @Html.Partial("_icons", null, ViewData)
+        <input type="text" style="margin-left: 10px; width: 90%; height: 20px; margin-bottom: 8px" name="filter" data-bind="value: textFilter, valueUpdate: 'afterkeydown'" />
         <table class="texts" width="100%" cellspacing="0" cellpadding="0">
             <thead>
                 <tr id="headerRow">

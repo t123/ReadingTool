@@ -41,7 +41,12 @@ namespace ReadingTool.Models.View.Word
 
         public string FullDefinition
         {
-            get { return string.Join("\n", new string[] { BaseWord, Romanisation, Definition }).Trim(); }
+            get
+            {
+                return string.IsNullOrEmpty(Romanisation)
+                    ? string.Join("\n", new string[] { BaseWord, Definition }).Trim()
+                    : string.Join("\n", new string[] { BaseWord, Romanisation, Definition }).Trim();
+            }
         }
     }
 }

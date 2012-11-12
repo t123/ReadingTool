@@ -567,17 +567,5 @@ namespace ReadingTool.Controllers
 
             return View(model).Error("Please check the errors below");
         }
-
-        public ActionResult UpdateAll()
-        {
-            var itemService = DependencyResolver.Current.GetService<IItemService>();
-
-            foreach(var item in itemService.FindAllForOwner())
-            {
-                itemService.Save(item);
-            }
-
-            return this.RedirectToAction(x => x.Index());
-        }
     }
 }

@@ -35,11 +35,23 @@ namespace ReadingTool.Entities
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
         public ObjectId ItemId { get; set; }
-        public string LanguageName { get; set; }
         public string LanguageColour { get; set; }
         public ObjectId SystemLanguageId { get; set; }
         public DateTime? LastReview { get; set; }
         public int Resets { get; set; }
+
+        private string _languageName;
+        public string LanguageName
+        {
+            get { return _wordPhrase; }
+            set
+            {
+                _languageName = (value ?? "").Trim();
+                LanguageNameLower = _languageName.ToLowerInvariant();
+            }
+        }
+
+        public string LanguageNameLower { get; set; }
 
         private string _wordPhrase;
         public string WordPhrase
