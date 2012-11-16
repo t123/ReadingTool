@@ -186,7 +186,8 @@ namespace ReadingTool.Controllers.Ajax
                             state = EnumHelper.GetAlternateName(result.State),
                             stateHuman = EnumHelper.GetDescription(result.State),
                             length = result.Length,
-                            definition = result.FullDefinition
+                            definition = result.FullDefinition,
+                            box = result.Box
                         }
                     }
                 );
@@ -216,7 +217,8 @@ namespace ReadingTool.Controllers.Ajax
                         word = new
                                    {
                                        wordLower = result.WordPhraseLower.Replace("'", @"\'"),
-                                       state = EnumHelper.GetAlternateName(result.State)
+                                       state = EnumHelper.GetAlternateName(result.State),
+                                       box = result.Box
                                    }
                     }
                 );

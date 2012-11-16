@@ -27,8 +27,12 @@ function init() {
     $('#hidel1').click(function (e) {
         if ($('#hidel1').attr('checked')) {
             closeTextModal();
-            $('td.f p span').hide();
-            $('#textContent p span').hide();
+
+            if ($('#textContent td.s').size() > 0) {
+                $('#textContent table td.f span').hide();
+            } else {
+                $('#textContent p span').hide();
+            }
         } else {
             $('td.f p span').show();
             $('#textContent p span').show();
