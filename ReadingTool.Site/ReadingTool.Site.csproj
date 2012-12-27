@@ -463,6 +463,7 @@
     <Content Include="Content\themes\united\site.less" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
+    <Content Include="Views\Shared\_Navigation.cshtml" />
     <None Include="Views\User\Languages\Add.cshtml" />
     <Content Include="Views\User\Languages\Edit.cshtml" />
     <Content Include="Views\User\Languages\Dictionaries.cshtml" />

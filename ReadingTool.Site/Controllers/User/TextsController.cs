@@ -48,7 +48,7 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Add(TextViewModel model)
+        public ActionResult Add(TextViewModel model, string save, string saveread)
         {
             if(!string.IsNullOrWhiteSpace(model.L2Text) && model.L2Id == null)
             {
@@ -66,12 +66,19 @@ namespace ReadingTool.Site.Controllers.User
                         L2Id = model.L2Id,
                         L1Text = model.L1Text,
                         L2Text = model.L2Text,
-                        Tags = TagHelper.Split(model.Tags),
-                        Title = model.Title
+                        Title = model.Title,
+                        Tags = TagHelper.ToString(TagHelper.Split(model.Tags))
                     };
 
                 _textService.Save(t);
+
                 this.FlashSuccess("Text added");
+
+                if(!string.IsNullOrEmpty(saveread))
+                {
+                    return RedirectToAction("Read", new { id = id });
+                }
+
                 return RedirectToAction("Index");
             }
 
@@ -103,14 +110,14 @@ namespace ReadingTool.Site.Controllers.User
                     L2Id = text.L2Id,
                     L1Text = text.L1Text,
                     L2Text = text.L2Text,
-                    Tags = TagHelper.ToString(text.Tags),
+                    Tags = text.Tags,
                     Title = text.Title
                 });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, TextViewModel model)
+        public ActionResult Edit(Guid id, TextViewModel model, string save, string saveread)
         {
             if(!string.IsNullOrWhiteSpace(model.L2Text) && model.L2Id == null)
             {
@@ -128,11 +135,17 @@ namespace ReadingTool.Site.Controllers.User
                 text.L2Id = model.L2Id;
                 text.L1Text = model.L1Text;
                 text.L2Text = model.L2Text;
-                text.Tags = TagHelper.Split(model.Tags);
+                text.Tags = TagHelper.ToString(TagHelper.Split(model.Tags));
                 text.Title = model.Title;
 
                 _textService.Save(text);
                 this.FlashSuccess("Text updated");
+
+                if(!string.IsNullOrEmpty(saveread))
+                {
+                    return RedirectToAction("Read", new { id = id });
+                }
+
                 return RedirectToAction("Edit", new { id = id });
             }
 

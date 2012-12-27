@@ -2,28 +2,20 @@
     Layout = "";
 }
 
-<div class="navbar navbar-static-top navbar-inverse">
-    <div class="navbar-inner">
-        <ul class="nav">
-            <li>@Html.ActionLink("all texts", "Index")</li>
-            <li>@Html.ActionLink("add new text", "Add")</li>
-        </ul>
-    </div>
+<div class="clr10"></div>
+<div class="btn-group">
+    <button class="btn btn-small">More options</button>
+    <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li><a href="@Url.Action("Index", new { id = Model })">view all of your texts</a></li>
+        <li><a href="@Url.Action("Add", new { id = Model })">add a new text</a></li>
+        @if(Model is Guid)
+        {
+            <li><a href="@Url.Action("Read", new { id = Model })">read</a></li>
+            <li><a href="@Url.Action("ReadInParallel", new { id = Model })">read parallel version</a></li>
+        }
+    </ul>
 </div>
 <div class="clr10"></div>
-<div class="clr10"></div>
-@if(Model is Guid)
-{
-    <div class="clr10"></div>
-    <div class="btn-group">
-        <button class="btn btn-small">More options for this text</button>
-        <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="@Url.Action("Read", new {id=Model})">read</a></li>
-            <li><a href="@Url.Action("ReadInParallel", new {id=Model})">read parallel version</a></li>
-        </ul>
-    </div>
-    <div class="clr10"></div>
-}

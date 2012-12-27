@@ -47,6 +47,10 @@ namespace ReadingTool.Services
             }
 
             _db.Save(text);
+
+            var tags = TagHelper.Split(text.Tags);
+            _db.Delete<Tag>(x => x.TextId == text.Id);
+            _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = null, TextId = text.Id, Value = x }));
         }
 
         public void Delete(Text text)

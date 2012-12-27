@@ -30,32 +30,7 @@
     </head>
 <body>
     <div class="container-fluid">
-        <div class="navbar navbar-static-top navbar-inverse">
-            <div class="navbar-inner">
-                <ul class="nav">
-                    @if(HttpContext.Current.User.Identity.IsAuthenticated && user != null)
-                    {
-                        <li><a href="@Url.Action("Index", "~~User.MyAccount")">@user.Name</a></li>
-                        <li><a href="@Url.Action("", "~~Home")">home</a></li>
-                        <li><a href="@Url.Action("Index", "~~User.MyAccount")">my account</a></li>
-                        <li><a href="@Url.Action("Index", "~~User.Languages")">my languages</a></li>
-                        <li><a href="@Url.Action("Index", "~~User.Texts")">my texts</a></li>
-                        <li class="divider-vertical"></li>
-                        if(HttpContext.Current.User.IsInRole(ReadingTool.Core.Constants.Roles.ADMIN))
-                        {
-                            <li><a href="@Url.Action("", "~~Admin.Home")">admin</a></li>
-                        }
-                        <li><a href="@Url.Action("SignOut", "~~Account")">sign out</a></li>
-                    }
-                    else
-                    {
-                        <li><a href="@Url.Action("", "~~Home")">home</a></li>
-                        <li><a href="@Url.Action("SignIn", "~~Account")">sign in</a></li>
-                        <li><a href="@Url.Action("SignUp", "~~Account")">sign up</a></li>
-                    }
-                </ul>
-            </div>
-        </div>
+        @Html.Partial("_Navigation")
         @Html.Flash()
         <div class="clr10"></div>
         <div class="clr50"></div>

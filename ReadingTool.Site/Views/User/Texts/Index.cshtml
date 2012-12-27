@@ -3,10 +3,8 @@
     ViewBag.Title = "Index";
 }
 
-@section Menu
-{
-    @Html.Partial("Partials/_menu")
-}
+@Html.ActionLink("add a new text", "Add", new { }, new { @class = "btn btn-primary" })
+
 
 @if(Model.Any())
 {

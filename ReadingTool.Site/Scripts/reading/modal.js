@@ -2,12 +2,14 @@ var SelectedWord = (function () {
     function SelectedWord(settings, element) {
         this.settings = settings;
         this.element = element;
-        this.length = length;
+        this.length = 1;
         this.init();
     }
     SelectedWord.prototype.init = function () {
         var _this = this;
         this.selectedWord = $(this.element).html();
+        this.sentence = this.getCurrentSentence();
+        $('#currentBox').removeClass().addClass('badge');
         $.post(this.settings.ajaxUrl + '/find-term', {
             languageId: this.settings.languageId,
             termPhrase: this.selectedWord
@@ -27,22 +29,98 @@ var SelectedWord = (function () {
         });
     };
     SelectedWord.prototype.updateModalDisplay = function () {
-        $('#selectedWord').html(this.selectedWord);
+        $('#selectedWord').text(this.selectedWord);
+        $('#sentence').val(this.sentence);
     };
     SelectedWord.prototype.saveChanges = function () {
-        console.log('save changes');
+        $.post(this.settings.ajaxUrl + '/save-term', {
+        }, function (data) {
+            if(data.Result == "OK") {
+                $('#modalMessage').removeClass().addClass('label label-success').html(data.Message);
+                $('#currentBox').removeClass().addClass('badge badge-success').html(data.Data.Box);
+            } else {
+                $('#modalMessage').removeClass().addClass('label label-error').html(data.Message);
+            }
+        });
     };
     SelectedWord.prototype.resetWord = function () {
         console.log('reset word');
     };
     SelectedWord.prototype.refreshSentence = function () {
         console.log('refresh sentence');
+        this.sentence = this.getCurrentSentence();
+        if(!$('#sentence').parent('div').parent('div').hasClass('warning')) {
+            $('#sentence').parent('div').parent('div').addClass('warning');
+        }
+        this.updateModalDisplay();
     };
     SelectedWord.prototype.increaseWord = function () {
         console.log('increase word');
+        if(this.length >= 7) {
+            return;
+        }
+        this.length++;
+        this.changePhrase();
     };
     SelectedWord.prototype.decreaseWord = function () {
         console.log('decrease word');
+        if(this.length <= 1) {
+            return;
+        }
+        this.length--;
+        this.changePhrase();
+    };
+    SelectedWord.prototype.changePhrase = function () {
+        var currentWord = '';
+        var i = 0;
+        var next = $(this.element);
+        do {
+            if(next == null) {
+                break;
+            }
+            if(next.attr('class') == this.settings.classes.spaceClass || next.attr('class') == this.settings.classes.punctuationClass || next.attr('class') == this.settings.classes.multiClass || next.is("sup")) {
+                next = next.next();
+                continue;
+            }
+            currentWord += next.text() + ' ';
+            next = next.next();
+            i++;
+        }while(i < this.length)
+        this.selectedWord = currentWord;
+        this.updateModalDisplay();
+    };
+    SelectedWord.prototype.getCurrentSentence = function () {
+        console.log('get current sentence');
+        var sentenceNode = $(this.element).parent();
+        var children = sentenceNode.children();
+        var sentence = this.buildSentence(children);
+        if(sentence.length < 25) {
+            var prev = sentenceNode.prev();
+            if(prev != null) {
+                sentence = this.buildSentence(prev.children()) + ' ' + sentence;
+            }
+        }
+        if(sentence.length < 25) {
+            var next = sentenceNode.next();
+            if(prev != null) {
+                sentence = sentence + ' ' + this.buildSentence(next.children());
+            }
+        }
+        return sentence;
+    };
+    SelectedWord.prototype.buildSentence = function (elements) {
+        var sentence = '';
+        elements.each(function (index, node) {
+            if(node.nodeName == 'SUP') {
+                return;
+            }
+            var nodeContent = node.textContent;
+            if(nodeContent == '') {
+                nodeContent = node.innerText;
+            }
+            sentence += nodeContent;
+        });
+        return $.trim(sentence);
     };
     return SelectedWord;
 })();

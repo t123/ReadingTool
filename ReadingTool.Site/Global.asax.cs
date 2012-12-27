@@ -66,6 +66,7 @@ namespace ReadingTool.Site
 
             var connection = ContextPerRequest.Current;
             //connection.DropAndCreateTable<Text>();
+            //connection.DropAndCreateTable<Tag>();
             //connection.DropAndCreateTable<SystemLanguage>();
             //connection.DropAndCreateTable<Language>();
             //connection.DropAndCreateTable<LanguageSettings>();

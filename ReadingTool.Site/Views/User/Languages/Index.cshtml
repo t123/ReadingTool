@@ -3,10 +3,7 @@
     ViewBag.Title = "Index";
 }
 
-@section Menu
-{
-    @Html.Partial("Partials/_menu")
-}
+@Html.ActionLink("add a new language", "Add", new { }, new { @class = "btn btn-primary" })
 
 @if(Model.Any())
 {
@@ -25,9 +22,9 @@
             {
                 <tr>
                     <td>@ViewHelpers.FormatLanguage(l)</td>
-                    <td>@Html.EditButton(Url.Action("Edit", new { id=l.Id}))</td>
-                    <td>@Html.GenericButton("Dictionaries", Url.Action("Dictionaries", new { id=l.Id}), "btn btn-mini")</td>
-                    <td>@Html.DeleteButton(Url.Action("Delete", new { id=l.Id}))</td>
+                    <td>@Html.EditButton(Url.Action("Edit", new { id = l.Id }))</td>
+                    <td>@Html.GenericButton("Dictionaries", Url.Action("Dictionaries", new { id = l.Id }), "btn btn-mini")</td>
+                    <td>@Html.DeleteButton(Url.Action("Delete", new { id = l.Id }))</td>
                 </tr>
             }
         </tbody>
@@ -36,6 +33,6 @@
 else
 {
     <text>
-        <div class="alert alert-info">You do not have any languages defined yet.</div>
+    <div class="alert alert-info">You do not have any languages defined yet.</div>
     </text>
 }

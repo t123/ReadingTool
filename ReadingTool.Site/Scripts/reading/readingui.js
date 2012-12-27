@@ -173,9 +173,8 @@ $('#quickmode').click(function () {
     ui.toggleQuickmode();
     return false;
 });
-$('#btnSaveAndClose').click(function () {
+$('#btnSave').click(function () {
     selectedWord.saveChanges();
-    ui.closeTextModal();
 });
 $('#btnReset').click(function () {
     selectedWord.resetWord();

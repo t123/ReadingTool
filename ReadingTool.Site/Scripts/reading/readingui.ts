@@ -174,7 +174,7 @@ class ReadingToolUi {
 $('#toggleL1').click(function () { ui.toggleL1(); return false; });
 $('#toggleL2').click(function () { ui.toggleL2(); return false; });
 $('#quickmode').click(function () { ui.toggleQuickmode(); return false; });
-$('#btnSaveAndClose').click(function () { selectedWord.saveChanges(); ui.closeTextModal(); });
+$('#btnSave').click(function () { selectedWord.saveChanges(); });
 $('#btnReset').click(function () { selectedWord.resetWord(); });
 $('#btnRefresh').click(function () { selectedWord.refreshSentence(); });
 $('#increaseWord').click(function () { selectedWord.increaseWord(); });
