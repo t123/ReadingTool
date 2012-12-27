@@ -20,7 +20,7 @@ namespace ReadingTool.Site.Controllers.User
 
         public class ResponseMessage
         {
-            public string Result { get; set; }
+            public string Result { get; private set; }
             public string Message { get; set; }
             public object Data { get; set; }
 
@@ -158,9 +158,24 @@ namespace ReadingTool.Site.Controllers.User
             return new JsonResult() { Data = term };
         }
 
-        public ActionResult Quicksave(Guid languageId, Guid textId, string term, string sentence, string state)
+        public JsonResult Quicksave(Guid languageId, Guid textId, string term, string sentence, string state)
         {
             throw new NotImplementedException();
+        }
+
+        public JsonResult SaveTerm()
+        {
+            return new JsonResult()
+                {
+                    Data = new ResponseMessage(OK)
+                        {
+                            Message = "Saved, state is UNKNOWN",
+                            Data = new
+                                {
+                                    Box = 1
+                                }
+                        }
+                };
         }
     }
 }

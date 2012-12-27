@@ -19,12 +19,22 @@
                     <input type="radio" name="state" id="ignoredState" class="radio inline" value="@Constants.TermStates.IGNORED"/>ignored
                 </div>
             </div>
+            
+            <div class="control-group">
+                <label class="control-label" for="sentence">Sentence</label>
+                <div class="controls">
+                    <input type="text" id="sentence" placeholder="Sentence" class="input-xxlarge" />
+                    <a href="#" id="btnRefresh"><i class="icon-repeat"> </i></a>
+                </div>
+            </div>
+            
             <div class="control-group">
                 <label class="control-label" for="baseTerm">Base term</label>
                 <div class="controls">
                     <input type="text" id="baseTerm" placeholder="base term" class="input-xxlarge" />
                 </div>
             </div>
+
             @if(Model.Language.Settings.ShowRomanisation)
             {
                 <div class="control-group">
@@ -38,14 +48,7 @@
             {
                 <input type="hidden" name="romanisation" />
             }
-
-            <div class="control-group">
-                <label class="control-label" for="sentence">Sentence</label>
-                <div class="controls">
-                    <input type="text" id="sentence" placeholder="Sentence" class="input-xxlarge" />
-                    <a href="#" id="btnRefresh"><i class="icon-repeat"> </i></a>
-                </div>
-            </div>
+            
             <div class="control-group">
                 <label class="control-label" for="definition">Definition</label>
                 <div class="controls">
@@ -81,8 +84,8 @@
             <span class="badge" id="currentBox">new</span>
             <span id="modalMessage"></span>
         </span>
-        <button class="btn btn-success" title="ctrl-enter to save & close" id="btnSaveAndClose">Save & Close</button>
+        <button class="btn btn-success" title="ctrl-enter to save & close" id="btnSave">Save</button>
         <button class="btn btn-danger btn-mini" id="btnReset">Reset</button>
-        <button class="btn btn-link" data-dismiss="modal" aria-hidden="true" title="escape to close without saving">or close without saving</button>
+        <button class="btn btn-link" data-dismiss="modal" aria-hidden="true" title="escape to close without saving">close without saving</button>
     </div>
 </div>
