@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ReadingTool.Entities.Language>
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+@if(Model.Any())
+{
+    <table class="table table-striped table-bordered table-condensed table-hover">
+        <caption>A list of your languages</caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="button">&nbsp;</th>
+                <th class="button">&nbsp;</th>
+                <th class="button">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var l in Model)
+            {
+                <tr>
+                    <td>
+                        <div style="width: 15px; height: 15px; display: inline-block; background-color: @l.Colour">&nbsp;</div>
+                        @l.Name
+                    </td>
+                    <td>@Html.EditButton(Url.Action("Edit", new { id=l.Id}))</td>
+                    <td>@Html.GenericButton("Dictionaries", Url.Action("Dictionaries", new { id=l.Id}), "btn btn-mini")</td>
+                    <td>@Html.DeleteButton(Url.Action("Delete", new { id=l.Id}))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <text>
+        <div class="alert alert-info">You do not have any languages defined yet.</div>
+    </text>
+}

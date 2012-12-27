@@ -1,0 +1,63 @@
+﻿@model ReadingTool.Site.Models.User.LanguageViewModel
+@{
+    ViewBag.Title = "Language";
+
+    Bundles.Reference("Scripts/other/footer/spectrum/spectrum.js");
+    Bundles.Reference("Scripts/other/footer/spectrum/spectrum.css");
+    Bundles.Reference("Scripts/other/footer/jQuery-Autocomplete/jquery.autocomplete.js");
+    
+    Bundles.AddInlineScript(
+        @<script type="text/javascript">
+             $('.autocomplete').each(function (index, html) {
+                 var url = $(html).data('autocomplete');
+                 $(html).autocomplete({
+                     minChars: 3,
+                     type: 'POST',
+                     serviceUrl: url,
+                     onSelect: function (suggestion) {
+                     }
+                 });
+             });
+
+             $('.colourpicker').spectrum({
+                 clickoutFiresChange: true,
+                 preferredFormat: "hex",
+                 showButtons: false
+             });
+         </script>
+        , "body");
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu", Model.Id)
+}
+
+
+@using(Html.BeginForm("Edit", "Languages", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Edit Language</legend>
+        @Html.BootstrapFormTextbox(x => x.Name)
+        @Html.BootstrapFormTextbox(x => x.Colour, new RouteValueDictionary { {"class" ,"colourpicker"}} )
+        @Html.BootstrapFormTextbox(x => x.SystemLanguage, new RouteValueDictionary { {"class","autocomplete"}, { "data-autocomplete", Url.Action("AutoCompleteSystemLanguage") } })
+    </fieldset>
+    <fieldset>
+        <legend>Parsing Settings</legend>
+        @Html.BootstrapFormTextbox(x=>x.Settings.CharacterSubstitutions, new { @class="input-xxlarge"})
+        @Html.BootstrapFormTextbox(x=>x.Settings.RegexSplitSentences, new { @class="input-xxlarge"})
+        @Html.BootstrapFormTextbox(x=>x.Settings.ExceptionSplitSentences, new { @class="input-xxlarge"})
+        @Html.BootstrapFormTextbox(x=>x.Settings.RegexWordCharacters, new { @class="input-xxlarge"})
+        @Html.BootstrapFormItem(x=>x.Settings.ShowRomanisation)
+        @Html.BootstrapFormItem(x=>x.Settings.RemoveSpaces)
+        @Html.BootstrapFormItem(x=>x.Settings.SplitEachCharacter)
+        @Html.BootstrapFormItem(x=>x.Settings.KeepFocus)
+        @Html.BootstrapFormItem(x=>x.Settings.Direction)
+        @Html.BootstrapFormItem(x=>x.Settings.ModalBehaviour)
+        <div class="buttons">
+            <input type="submit" class="btn btn-primary" value="save" />
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
+        </div>
+    </fieldset>
+}

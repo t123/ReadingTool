@@ -1,0 +1,18 @@
+﻿@model ReadingTool.Site.Models.Account.SignUpViewModel
+@{
+    ViewBag.Title = "SignUp";
+}
+
+@using(Html.BeginForm("SignUp", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Sign Up</legend>
+        @Html.EditorForModel()
+        <div class="buttons">
+            <ul>
+                <input type="submit" class="btn btn-primary" value="sign up"/>
+            </ul>
+        </div>
+    </fieldset>
+}

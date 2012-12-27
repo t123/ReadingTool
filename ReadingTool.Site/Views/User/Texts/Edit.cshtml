@@ -1,0 +1,114 @@
+﻿@model ReadingTool.Site.Models.User.TextViewModel
+@{
+    ViewBag.Title = "Text";
+
+    Bundles.Reference("Scripts/other/footer/jQuery-Autocomplete/jquery.autocomplete.js");
+    Bundles.Reference("Scripts/other/footer/codemirror/lib/codemirror.js");
+    Bundles.Reference("Scripts/other/footer/codemirror/lib/util/dialog.js");
+    Bundles.Reference("Scripts/other/footer/codemirror/lib/util/dialog.css");
+    Bundles.Reference("Scripts/other/footer/codemirror/lib/util/match-highlighter.js");
+    Bundles.Reference("Scripts/other/footer/codemirror/lib/util/search.js");
+    Bundles.Reference("Scripts/other/footer/codemirror/lib/util/searchcursor.js");
+    Bundles.Reference("Scripts/other/footer/codemirror/lib/codemirror.css");
+    
+    Bundles.AddInlineScript(
+        @<script type="text/javascript">
+             $('.autocomplete').each(function (index, html) {
+                 var url = $(html).data('autocomplete');
+                 $(html).autocomplete({
+                     minChars: 3,
+                     type: 'POST',
+                     serviceUrl: url,
+                     onSelect: function (suggestion) {
+                     }
+                 });
+             });
+             
+             var editor1 = CodeMirror.fromTextArea(document.getElementById("L1Text"), {
+                 mode: "plain/text",
+                 lineNumbers: true,
+                 lineWrapping: true,
+             });
+             
+             var editor2 = CodeMirror.fromTextArea(document.getElementById("L2Text"), {
+                 mode: "plain/text",
+                 lineNumbers: true,
+                 lineWrapping: true
+             });
+             
+             var hlLine = editor1.addLineClass(0, "background", "activeline");
+             editor1.on("cursorActivity", function () {
+                 var cur = editor1.getLineHandle(editor1.getCursor().line);
+                 if (cur != hlLine) {
+                     editor1.removeLineClass(hlLine, "background", "activeline");
+                     hlLine = editor1.addLineClass(cur, "background", "activeline");
+                 }
+                 
+                 editor1.matchHighlight("CodeMirror-matchhighlight");
+             });
+             
+             var h2Line = editor2.addLineClass(0, "background", "activeline");
+             editor2.on("cursorActivity", function () {
+                 var cur = editor2.getLineHandle(editor2.getCursor().line);
+                 if (cur != h2Line) {
+                     editor2.removeLineClass(h2Line, "background", "activeline");
+                     h2Line = editor2.addLineClass(cur, "background", "activeline");
+                 }
+                 
+                 editor2.matchHighlight("CodeMirror-matchhighlight");
+             });
+         </script>
+        , "body");
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+@using(Html.BeginForm("Edit", "Texts", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Edit Text</legend>
+        @Html.BootstrapFormDropDown(x=>x.L1Id, new SelectList(ViewBag.Languages as Dictionary<long,string>, "Key", "Value"), "Please choose")
+        @Html.BootstrapFormTextbox(x=>x.AudioUrl, new { @type="url", @class="input-xxlarge"})
+        @Html.BootstrapFormTextbox(x=>x.CollectionName, new { @class="input-xxlarge" })
+        @Html.BootstrapFormItem(x=>x.CollectionNo)
+        @Html.BootstrapFormTextbox(x=>x.Title, new { @class="input-xxlarge" })
+        @Html.BootstrapFormTextbox(x=>x.Tags, new { @class="input-xxlarge" })
+        @Html.BootstrapFormCustomHtml(x=>x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l1modal"">change L1 text</a>")
+        <div id="l1modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">@Html.LabelFor(x=>x.L1Text)</h3>
+          </div>
+          <div class="modal-body">
+            <p>@Html.TextAreaFor(x=>x.L1Text)</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+          </div>
+        </div>
+
+        @Html.BootstrapFormDropDown(x=>x.L2Id, new SelectList(ViewBag.Languages as Dictionary<long,string>, "Key", "Value"), "None")
+        @Html.BootstrapFormCustomHtml(x=>x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l2modal"">change L2 text</a>")
+        <div id="l2modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">@Html.LabelFor(x=>x.L2Text)</h3>
+          </div>
+          <div class="modal-body">
+            <p>@Html.TextAreaFor(x=>x.L2Text)</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+          </div>
+        </div>
+
+        <div class="buttons">
+            <input type="submit" class="btn btn-primary" value="save"/>
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { },new{@class="btn btn-link"})
+        </div>
+    </fieldset>
+}

@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Import Languages";
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+@using(Html.BeginForm("Home", "Import", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Import Languages</legend>
+        
+        <div class="control-group"> @*TODO change this to a File Helper*@
+            <label for="file" class="control-label">File</label>
+            <div class="controls">
+                <input type="file" name="file" />
+                <div class="input-append">
+                    <span class="add-on tip" rel="tooltip" title="required field"><i class="icon-star"> </i></span>
+                </div>
+                <span class="help-inline"></span>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <ul>
+                <input type="submit" class="btn btn-primary" value="import"/>
+            </ul>
+        </div>
+    </fieldset>
+}

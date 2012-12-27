@@ -1,0 +1,37 @@
+﻿@model Tuple<ReadingTool.Site.Models.User.ProfileViewModel,ReadingTool.Site.Models.User.PasswordChangeViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+@using(Html.BeginForm("Index", "MyAccount", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x=>x.Item1.Id)
+    <div class="media">
+        <a class="pull-left" href="#">
+            @Html.Gravatar(Model.Item1.EmailAddress, Model.Item1.DisplayName, classes: "media-object")
+            <div class="clearfix"></div>
+            <a href="http://www.gravatar.com" target="_blank">(change)</a>
+        </a>
+        <div class="media-body">
+            <h4 class="media-heading">@Model.Item1.Username</h4>
+            <div class="media">
+                member since @Html.FormatDate(@Model.Item1.Created, "dd MMMM yyyy")
+            </div>
+        </div>
+    </div>
+    <div class="clr10"></div>
+    <fieldset>
+        <legend>Your Profile</legend>
+        @Html.EditorFor(x=>x.Item1)
+    </fieldset>
+    <fieldset>
+        <legend>Password</legend>
+        <div class="alert alert-info">This section is only required if you want to change your password.</div>
+        @Html.EditorFor(x=>x.Item2)
+        <div class="buttons">
+            <input type="submit" class="btn btn-primary" value="save profile"/>
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { },new{@class="btn btn-link"})
+        </div>
+    </fieldset>
+}

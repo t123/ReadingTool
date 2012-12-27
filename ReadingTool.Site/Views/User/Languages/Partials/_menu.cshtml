@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "";
+}
+
+<div class="navbar navbar-static-top navbar-inverse">
+    <div class="navbar-inner">
+        <ul class="nav">
+            <li>@Html.ActionLink("all languages", "Index")</li>
+            <li>@Html.ActionLink("add new language", "Add")</li>
+        </ul>
+    </div>
+</div>
+<div class="clr10"></div>
+@if(Model is long)
+{
+    <div class="clr10"></div>
+    <div class="btn-group">
+        <button class="btn btn-small">More options for this language</button>
+        <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="@Url.Action("Edit", new {id=Model})">edit this language</a></li>
+            <li><a href="@Url.Action("Dictionaries", new {id=Model})">view the dictionaries for this language</a></li>
+            <li><a href="@Url.Action("AddDictionary", new {id=Model})">add a new dictionary for this language</a></li>
+        </ul>
+    </div>
+    <div class="clr10"></div>
+}

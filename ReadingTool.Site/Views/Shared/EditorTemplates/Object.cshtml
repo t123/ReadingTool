@@ -1,0 +1,70 @@
+﻿@using ReadingTool.Core.Attributes
+@functions
+{
+    bool ShouldShow(ModelMetadata metadata)
+    {
+        return metadata.ShowForEdit
+            //&& metadata.ModelType != typeof(System.Data.EntityState)
+            && !metadata.IsComplexType
+            && !ViewData.TemplateInfo.Visited(metadata);
+    }
+}
+
+@if(ViewData.TemplateInfo.TemplateDepth > 1)
+{
+    if (Model == null)
+    {
+        @Html.Raw(ViewData.ModelMetadata.NullDisplayText)
+    }
+    else
+    {
+        @Html.Raw(ViewData.ModelMetadata.SimpleDisplayText)
+    }
+}
+else
+{
+    foreach (var prop in ViewData.ModelMetadata.Properties.Where(pm => ShouldShow(pm)))
+    {
+        if (prop.HideSurroundingHtml)
+        {
+            @Html.Editor(prop.PropertyName)
+        }
+        else
+        {
+            string errorKey = string.IsNullOrEmpty(ViewData.TemplateInfo.HtmlFieldPrefix)
+                                  ? prop.PropertyName
+                                  : ViewData.TemplateInfo.HtmlFieldPrefix + "." + prop.PropertyName;
+
+            var errorClass =
+                ViewData.ModelState.ContainsKey(errorKey) && ViewData.ModelState[errorKey].Errors.Any()
+                    ? "error"
+                    : ""
+                ;
+
+            var tip = (TipAttribute) ViewData.ModelMetadata.ModelType.GetProperty(prop.PropertyName).GetCustomAttributes(typeof (TipAttribute), true).FirstOrDefault();
+            
+            <div class="control-group @errorClass">
+                @if (!String.IsNullOrEmpty(Html.Label(prop.PropertyName).ToHtmlString()))
+                {
+                    @Html.Label(prop.PropertyName, new { @class="control-label"})
+                }
+                <div class="controls">
+                    <div class="input-append">
+                        @Html.Editor(prop.PropertyName)
+
+                        @if(prop.IsRequired && prop.ModelType != typeof(bool))
+                        {
+                            <span class="add-on tip" rel="tooltip" title="required field"><i class="icon-star"> </i></span>
+                        }
+                        
+                        @if(tip != null)
+                        {
+                            <span class="add-on tip" rel="tooltip" title="@tip.Description"><i class="icon-question-sign"> </i></span>
+                        }
+                    </div>
+                    <span class="help-inline">@Html.ValidationMessage(prop.PropertyName)</span>
+                </div>
+            </div>
+        }
+    }
+}

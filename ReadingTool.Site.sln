@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Site", "ReadingTool.Site\ReadingTool.Site.csproj", "{D3FCFBC3-C40D-44AF-9571-7092AC749E43}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0B489EC6-449B-43E9-AE08-60E35DE09D3B}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Entities", "..\ReadingTool.Entities\ReadingTool.Entities.csproj", "{3F3A7DFE-5000-4531-97D4-64569F2E706C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Repository", "ReadingTool.Repository\ReadingTool.Repository.csproj", "{E29FE805-9199-4206-8435-017253584F1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Services", "ReadingTool.Services\ReadingTool.Services.csproj", "{20438093-0761-45CA-8353-21E58D546E86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Core", "ReadingTool.Core\ReadingTool.Core.csproj", "{C21D8B11-BD7B-4170-A11F-5CBBFC7960BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3FCFBC3-C40D-44AF-9571-7092AC749E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3FCFBC3-C40D-44AF-9571-7092AC749E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3FCFBC3-C40D-44AF-9571-7092AC749E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3FCFBC3-C40D-44AF-9571-7092AC749E43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F3A7DFE-5000-4531-97D4-64569F2E706C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F3A7DFE-5000-4531-97D4-64569F2E706C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F3A7DFE-5000-4531-97D4-64569F2E706C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F3A7DFE-5000-4531-97D4-64569F2E706C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E29FE805-9199-4206-8435-017253584F1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29FE805-9199-4206-8435-017253584F1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29FE805-9199-4206-8435-017253584F1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29FE805-9199-4206-8435-017253584F1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20438093-0761-45CA-8353-21E58D546E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20438093-0761-45CA-8353-21E58D546E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20438093-0761-45CA-8353-21E58D546E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20438093-0761-45CA-8353-21E58D546E86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C21D8B11-BD7B-4170-A11F-5CBBFC7960BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C21D8B11-BD7B-4170-A11F-5CBBFC7960BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C21D8B11-BD7B-4170-A11F-5CBBFC7960BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C21D8B11-BD7B-4170-A11F-5CBBFC7960BF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

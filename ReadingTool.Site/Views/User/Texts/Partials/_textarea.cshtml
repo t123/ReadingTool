@@ -1,0 +1,65 @@
+﻿@model ReadingTool.Site.Models.User.ReadViewModel
+<div id="textArea">
+    <div id="textContent" dir="@Model.Language.Settings.Direction.ToString().ToLowerInvariant()">
+        @Html.Raw(Model.ParsedText)
+    </div>
+    <div>
+        <div class="clr50"></div>
+        <button class="btn" id="reviewUnknownWords">Review unknown words</button>
+        <div class="clr10"></div>
+        <button class="btn" id="markRemainingAsKnown">Mark the remaining words as known</button>
+        <div id="markRemainingAsKnownProgress" class="warning" style="display: none"></div>
+        <div class="clr100"></div>
+    </div>
+</div>
+    
+<div class=" navbar-fixed-bottom">
+    <div class="navbar-inner">
+        <div class="row-fluid">
+            <div class="span3">
+                <audio src="@Model.Text.AudioUrl" controls="" id="audioPlayer"></audio>
+            </div>
+            <div class="span9">
+                <ul class="nav nav-pills">
+                    @if(Model.Text.IsParallel)
+                    {
+                        if(Model.AsParallel)
+                        {
+                            <li>@Html.ActionLink("read", "Read", new  { id=Model.Text.Id })</li>
+                            <li class="active">@Html.ActionLink("parallel version", "ReadInParallel", new { id = Model.Text.Id })</li>
+                        }
+                        else
+                        {
+                            <li class="active">@Html.ActionLink("read", "Read", new  { id=Model.Text.Id })</li>
+                            <li>@Html.ActionLink("parallel version", "ReadInParallel", new { id = Model.Text.Id })</li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="active">@Html.ActionLink("read", "Read", new  { id=Model.Text.Id })</li>
+                    }
+                    <li>@Html.ActionLink("edit text", "Edit", new { id = Model.Text.Id })</li>
+                    <li>@Html.ActionLink("edit language", "Edit", "Languages", new { id = Model.Language.Id }, new { })</li>
+                    @if(Model.PagedTexts.Item1.HasValue)
+                    {
+                        <li>@Html.ActionLink("previous", "ReadInParallel", new { id = Model.PagedTexts.Item1 })</li>
+                    }
+
+                    @if(Model.PagedTexts.Item2.HasValue)
+                    {
+                        <li>@Html.ActionLink("next", "Read", new { id = Model.PagedTexts.Item2})</li>
+                    }
+                    
+                    <li class="divider"></li>
+                    <li><a href="#" id="quickmode">quick mode</a></li>
+                    <li class="active"><a href="#" id="toggleL1">show l1</a></li>
+                    
+                    @if(Model.AsParallel)
+                    {
+                        <li class="active"><a href="#" id="toggleL2">show l2</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

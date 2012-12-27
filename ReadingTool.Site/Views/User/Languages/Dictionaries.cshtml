@@ -1,0 +1,30 @@
+﻿@model ReadingTool.Entities.Language
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu", Model.Id)
+}
+
+<table class="table table-striped table-bordered table-condensed table-hover">
+    <caption>A list of your dictionaries for <strong>@Model.Name</strong></caption>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th class="button">&nbsp;</th>
+            <th class="button">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var l in Model.Dictionaries.OrderBy(x=>x.DisplayOrder))
+        {
+            <tr>
+                <td>@l.Name</td>
+                <td>@Html.EditButton(Url.Action("EditDictionary", new { id=Model.Id, dictionaryId=l.Id }))</td>
+                <td>@Html.DeleteButton(Url.Action("DeleteDictionary", new { id=Model.Id, dictionaryId=l.Id }))</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,51 @@
+﻿@model ReadingTool.Site.Models.User.LanguageViewModel
+@{
+    ViewBag.Title = "Language";
+
+    Bundles.Reference("Scripts/other/footer/spectrum/spectrum.js");
+    Bundles.Reference("Scripts/other/footer/spectrum/spectrum.css");
+    Bundles.Reference("Scripts/other/footer/jQuery-Autocomplete/jquery.autocomplete.js");
+    
+    Bundles.AddInlineScript(
+        @<script type="text/javascript">
+             $('.autocomplete').each(function (index, html) {
+                 var url = $(html).data('autocomplete');
+                 $(html).autocomplete({
+                     minChars: 3,
+                     type: 'POST',
+                     serviceUrl: url,
+                     onSelect: function (suggestion) {
+                     }
+                 });
+             });
+             
+             $('.colourpicker').spectrum({
+                 clickoutFiresChange: true,
+                 preferredFormat: "hex",
+                 showButtons: false
+             });
+         </script>
+        , "body");
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+
+@using(Html.BeginForm("Add", "Languages", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Add Language</legend>
+        @Html.BootstrapFormTextbox(x => x.Name)
+        @Html.BootstrapFormTextbox(x => x.Colour, new RouteValueDictionary { {"class" ,"colourpicker"}} )
+        @Html.BootstrapFormTextbox(x => x.SystemLanguage, new RouteValueDictionary { {"class","autocomplete"}, { "data-autocomplete", Url.Action("AutoCompleteSystemLanguage") } })
+        @Html.EditorFor(x=>x.Settings)
+        <div class="buttons">
+            <input type="submit" class="btn btn-primary" value="save"/>
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { },new{@class="btn btn-link"})
+        </div>
+    </fieldset>
+}

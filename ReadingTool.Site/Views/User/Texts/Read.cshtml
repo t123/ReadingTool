@@ -1,0 +1,49 @@
+﻿@using ReadingTool.Core
+@model ReadingTool.Site.Models.User.ReadViewModel
+@{
+    ViewBag.Title = "Read";
+    string[] scripts = new[]
+        {
+            @"<script src=""" + Url.Content("~/Scripts/reading/audio.js") + @""" type=""text/javascript""></script>", 
+            @"<script src=""" + Url.Content("~/Scripts/reading/readingui.js") + @""" type=""text/javascript""></script>", 
+            @"<script src=""" + Url.Content("~/Scripts/reading/reading.js") + @""" type=""text/javascript""></script>", 
+        };
+
+    if(!Html.IsDebug())
+    {
+        scripts = scripts.Select(x => x.Replace(".js", ".min.js")).ToArray();
+    }
+    
+    Bundles.Reference("Scripts/other/footer/reading/reading.css");
+
+    Bundles.AddInlineScript(
+        @<text>
+             <script type="text/javascript">
+                 var ui;
+                 $(function() {
+                     var settings = new Settings();
+                     settings.classes.knownClass = '@Constants.TermStates.KNOWN';
+                     settings.classes.unknownClass = '@Constants.TermStates.UNKNOWN';
+                     settings.classes.ignoredClass = '@Constants.TermStates.IGNORED';
+                     settings.classes.notseenClass = '@Constants.TermStates.NOTSEEN';
+                     settings.classes.spaceClass = '@Constants.TermStates.SPACE';
+                     settings.classes.punctuationClass = '@Constants.TermStates.PUNCTUATION';
+                     settings.classes.multiClass = 'mxx';
+
+                     settings.hasAudio = @(!string.IsNullOrEmpty(Model.Text.AudioUrl) ? "true" : "false");
+                     settings.audioUrl = '@Model.Text.AudioUrl';
+                     settings.textId = @Model.Text.Id;
+                     settings.languageId = @Model.Language.Id;
+                     settings.modalBehaviour = '@Model.Language.Settings.ModalBehaviour';
+                     settings.ajaxUrl = '@Url.Action("Index", "Reading")';
+                     
+                     ui = new ReadingToolUi(settings);
+                 });
+             </script>
+             @Html.Raw(string.Join("\n", scripts));
+         </text>
+        , "body");
+}
+
+@Html.Partial("Partials/_textarea", Model, ViewData)
+@Html.Partial("Partials/_textmodal", Model, ViewData)
