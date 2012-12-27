@@ -1,34 +1,12 @@
-var Class = (function () {
-    function Class() { }
-    return Class;
-})();
-var Dictionary = (function () {
-    function Dictionary() {
-    }
-    return Dictionary;
-})();
-var KeyBindings = (function () {
-    function KeyBindings() {
-        this.autoPause = true;
-        this.controlsEnabled = true;
-    }
-    return KeyBindings;
-})();
-var Settings = (function () {
-    function Settings() {
-        this.classes = new Class();
-        this.keyBindings = new KeyBindings();
-    }
-    return Settings;
-})();
 var ReadingToolUi = (function () {
     function ReadingToolUi(settings) {
         this.isPlaying = false;
         this.wasPlaying = false;
         this.hasChanged = false;
+        this.modalVisible = false;
         this.settings = settings;
         if(settings.hasAudio) {
-            this.audio = new AudioPlayer();
+            this.audio = new AudioPlayer(this.settings);
         } else {
             this.audio = new NullAudioPlayer();
         }
@@ -67,6 +45,28 @@ var ReadingToolUi = (function () {
         } else {
             li.removeClass('active');
         }
+    };
+    ReadingToolUi.prototype.changeRead = function (direction) {
+        var words = $('#totalWords').data('value');
+        $.post(this.settings.ajaxUrl + '/change-read', {
+            textId: this.settings.textId,
+            direction: direction,
+            words: words
+        }, function (data) {
+            if(data.Result == "OK") {
+                $('#timesRead').html(data.Message);
+            }
+        });
+    };
+    ReadingToolUi.prototype.changeListened = function (direction) {
+        $.post(this.settings.ajaxUrl + '/change-listened', {
+            textId: this.settings.textId,
+            direction: direction
+        }, function (data) {
+            if(data.Result == "OK") {
+                $('#timesListened').html(data.Message);
+            }
+        });
     };
     ReadingToolUi.prototype.openTextModal = function (isClick, event) {
         if(!isClick && this.settings.modalBehaviour != 'Rollover') {
@@ -140,7 +140,6 @@ var ReadingToolUi = (function () {
                 }
             }
             if(this.settings.quickmode) {
-                this.reading = new Reading($(this), this.settings);
                 if($(this).hasClass(this.settings.classes.notseenClass)) {
                 } else {
                 }
@@ -154,44 +153,13 @@ var ReadingToolUi = (function () {
         if(this.isPlaying && this.settings.keyBindings.autoPause) {
             this.audio.pauseAudio();
         }
-        this.reading = new Reading($(this), this.settings);
-        selectedWord = new SelectedWord(event.srcElement);
+        selectedWord = new SelectedWord(this.settings, event.srcElement);
         modal.modal('show');
     };
     ReadingToolUi.prototype.closeTextModal = function () {
         modal.modal('hide');
     };
     return ReadingToolUi;
-})();
-var SelectedWord = (function () {
-    function SelectedWord(element) {
-        this.element = element;
-        this.length = length;
-        this.init();
-        this.updateModalDisplay();
-    }
-    SelectedWord.prototype.init = function () {
-        this.selectedWord = $(this.element).html();
-    };
-    SelectedWord.prototype.updateModalDisplay = function () {
-        $('#selectedWord').html(this.selectedWord);
-    };
-    SelectedWord.prototype.saveChanges = function () {
-        console.log('save changes');
-    };
-    SelectedWord.prototype.resetWord = function () {
-        console.log('reset word');
-    };
-    SelectedWord.prototype.refreshSentence = function () {
-        console.log('refresh sentence');
-    };
-    SelectedWord.prototype.increaseWord = function () {
-        console.log('increase word');
-    };
-    SelectedWord.prototype.decreaseWord = function () {
-        console.log('decrease word');
-    };
-    return SelectedWord;
 })();
 $('#toggleL1').click(function () {
     ui.toggleL1();
@@ -221,8 +189,32 @@ $('#increaseWord').click(function () {
 $('#decreaseWord').click(function () {
     selectedWord.decreaseWord();
 });
+$('#minusRead').click(function () {
+    ui.changeRead(-1);
+    return false;
+});
+$('#plusRead').click(function () {
+    ui.changeRead(1);
+    return false;
+});
+$('#minusListened').click(function () {
+    ui.changeListened(-1);
+    return false;
+});
+$('#plusListened').click(function () {
+    ui.changeListened(1);
+    return false;
+});
 var modal;
 var selectedWord;
+$.fn.animateHighlight = function (highlightColor, duration) {
+    var highlightBg = highlightColor || "#FFFF9C";
+    var animateMs = duration || 1500;
+    var originalBg = this.css("backgroundColor");
+    this.stop().css("background-color", highlightBg).animate({
+        backgroundColor: originalBg
+    }, animateMs);
+};
 $(function () {
     if(ui.settings.modalBehaviour == 'Rollover') {
         $('#textContent p span span').on('mouseenter', function (event) {
@@ -239,10 +231,8 @@ $(function () {
     modal = $("#myModal");
     modal.on("show", function () {
         ui.modalVisible = true;
-        modal.show();
     });
     modal.on("hide", function () {
-        console.log('hide');
         modal.hide();
         ui.modalVisible = false;
         ui.audio.resumeAudio(ui.settings.keyBindings.autoPause, ui.wasPlaying);

@@ -13,7 +13,7 @@ namespace ReadingTool.Services
 {
     public interface ITextService
     {
-        void Save(Text text);
+        void Save(Text text, bool ignoreModificationTime = false);
         void Delete(Text text);
         void Delete(Guid id);
         Text Find(Guid id);
@@ -32,7 +32,7 @@ namespace ReadingTool.Services
             _identity = principal.Identity as IUserIdentity;
         }
 
-        public void Save(Text text)
+        public void Save(Text text, bool ignoreModificationTime = false)
         {
             if(text.Id == Guid.Empty)
             {
@@ -41,7 +41,10 @@ namespace ReadingTool.Services
                 text.Id = SequentialGuid.NewGuid();
             }
 
-            text.Modified = DateTime.Now;
+            if(!ignoreModificationTime)
+            {
+                text.Modified = DateTime.Now;
+            }
 
             _db.Save(text);
         }

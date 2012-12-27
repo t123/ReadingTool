@@ -16,6 +16,7 @@ namespace ReadingTool.Services
         void Delete(Term term);
         void Delete(Guid id);
         Term Find(Guid id);
+        Term Find(Guid languageId, string term);
         IEnumerable<Term> FindAll();
         Tuple<Term[], Term[]> FindAllForParsing(Language language);
     }
@@ -31,6 +32,7 @@ namespace ReadingTool.Services
             _identity = principal.Identity as IUserIdentity;
         }
 
+        #region basic
         public void Save(Term term)
         {
             throw new NotImplementedException();
@@ -56,9 +58,32 @@ namespace ReadingTool.Services
             throw new NotImplementedException();
         }
 
+        public bool Exists(Guid languageId, string termPhrase)
+        {
+            return _db.Select<Term>(x => x.LanguageId == languageId && x.TermPhrase == termPhrase).FirstOrDefault() != null;
+        }
+        #endregion
+
+        #region parsing
         public Tuple<Term[], Term[]> FindAllForParsing(Language language)
         {
             return new Tuple<Term[], Term[]>(new Term[] { }, new Term[] { });
         }
+        #endregion
+
+        #region reading
+        public Term Find(Guid languageId, string termPhrase)
+        {
+            Term term = _db.Select<Term>(x => x.TermPhrase == termPhrase && x.LanguageId == languageId && x.Owner == _identity.UserId).FirstOrDefault();
+
+            if(term == null) return null;
+
+            var individual = _db.Select<IndividualTerm>(x => x.TermId == term.Id);
+            term.AddIndividualTerms(individual);
+
+            return term;
+        }
+
+        #endregion
     }
 }

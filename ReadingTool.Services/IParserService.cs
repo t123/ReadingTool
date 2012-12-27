@@ -52,16 +52,21 @@ namespace ReadingTool.Services
             _singleTerms = terms.Item1;
             _terms = terms.Item2;
             _l1Splitter = new Splitter(@"([^" + _l1Language.Settings.RegexWordCharacters + @"]+)", true);
-            _l2Splitter = new Splitter(@"([^" + _l2Language.Settings.RegexWordCharacters + @"]+)", true);
+
+            if(_l2Language != null)
+            {
+                _l2Splitter = new Splitter(@"([^" + _l2Language.Settings.RegexWordCharacters + @"]+)", true);
+            }
+
             _termTest = new Regex(@"([" + _l1Language.Settings.RegexWordCharacters + @"])", RegexOptions.Compiled);
 
             string l1WithTitle = BuildTextWithTitle(_text.L1Text);
             string l2WithTitle = _asParallel ? BuildTextWithTitle(_text.L2Text) : string.Empty;
 
             var l1Split = SplitText(l1WithTitle, _l1Language.Settings);
-            var l2Split = SplitText(l2WithTitle, _l2Language.Settings);
+            var l2Split = _l2Language == null ? string.Empty : SplitText(l2WithTitle, _l2Language.Settings);
 
-            var xml = CreateTextXml(l1Split, l2Split, _l1Language.Settings, _l2Language.Settings);
+            var xml = CreateTextXml(l1Split, l2Split);
 
             var result = ClassTerms(xml);
             xml = CreateStats(result.Item1, result.Item2);
@@ -80,6 +85,8 @@ namespace ReadingTool.Services
 
         private string SplitText(string text, LanguageSettings settings)
         {
+            if(string.IsNullOrEmpty(text) || settings == null) return string.Empty;
+
             //text = text.Replace("\r\n", "\n").Replace("\t", " ").Trim();
             text = text.Replace("\r\n", "\n").Replace("\n", "¶").Replace("\t", " ").Trim();
 
@@ -143,8 +150,11 @@ namespace ReadingTool.Services
             //}
         }
 
-        protected XDocument CreateTextXml(string text, string parallelText, LanguageSettings l1Settings, LanguageSettings l2Settings)
+        protected XDocument CreateTextXml(string text, string parallelText)
         {
+            var l1Settings = _l1Language.Settings;
+            var l2Settings = _l2Language == null ? null : _l2Language.Settings;
+
             XDocument document = new XDocument();
             var rootNode = new XElement("root");
             rootNode.SetAttributeValue("title", _text.Title);

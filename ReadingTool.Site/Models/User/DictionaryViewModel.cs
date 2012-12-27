@@ -9,8 +9,7 @@ namespace ReadingTool.Site.Models.User
 {
     public class DictionaryViewModel
     {
-        [ReadOnly(true)]
-        [ScaffoldColumn(false)]
+        [HiddenInput(DisplayValue = false)]
         public Guid Id { get; set; }
 
         [ReadOnly(true)]

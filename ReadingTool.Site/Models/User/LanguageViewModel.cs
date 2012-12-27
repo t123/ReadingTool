@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using ReadingTool.Core.Attributes;
 using ReadingTool.Site.Attributes;
 
@@ -11,8 +12,7 @@ namespace ReadingTool.Site.Models.User
 {
     public class LanguageViewModel
     {
-        [ReadOnly(true)]
-        [ScaffoldColumn(false)]
+        [HiddenInput(DisplayValue = false)]
         public Guid Id { get; set; }
 
         [Required]

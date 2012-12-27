@@ -5,7 +5,9 @@
     string[] scripts = new[]
         {
             @"<script src=""" + Url.Content("~/Scripts/reading/audio.js") + @""" type=""text/javascript""></script>", 
-            @"<script src=""" + Url.Content("~/Scripts/reading/reading.js") + @""" type=""text/javascript""></script>", 
+            @"<script src=""" + Url.Content("~/Scripts/reading/settings.js") + @""" type=""text/javascript""></script>", 
+            @"<script src=""" + Url.Content("~/Scripts/reading/modal.js") + @""" type=""text/javascript""></script>", 
+            @"<script src=""" + Url.Content("~/Scripts/reading/readingui.js") + @""" type=""text/javascript""></script>", 
         };
 
     if(!Html.IsDebug())

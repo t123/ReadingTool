@@ -33,7 +33,12 @@ namespace ReadingTool.Site
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts/other/head", bundle => bundle.PageLocation = "head");
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts/other/footer", bundle => bundle.PageLocation = "body");
 
-            bundles.AddPerSubDirectory<StylesheetBundle>("Content/themes/");
+            bundles.AddPerSubDirectory<StylesheetBundle>("Content/themes/",
+                                                         new FileSearch()
+                                                             {
+                                                                 Pattern = "common.less;site.less;bootstrap.css"
+                                                             }
+                );
 
             bundles.AddPerSubDirectory<StylesheetBundle>("Scripts/other/", bundle => bundle.PageLocation = "head");
         }

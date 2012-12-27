@@ -182,7 +182,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="Attributes\ValidEmailAddress.cs" />
     <Compile Include="CassetteConfiguration.cs" />
-    <Compile Include="Controllers\User\Reading.cs" />
+    <Compile Include="Controllers\User\ReadingController.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -336,7 +336,6 @@
     <Content Include="Scripts\other\footer\spectrum\spectrum.css" />
     <Content Include="Scripts\other\footer\spectrum\spectrum.js" />
     <TypeScriptCompile Include="Scripts\reading\readingui.ts" />
-    <TypeScriptCompile Include="Scripts\reading\reading.ts" />
     <TypeScriptCompile Include="Scripts\reading\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\reading\audio.ts" />
     <Content Include="Scripts\reading\audio.js">
@@ -348,17 +347,25 @@
     <Content Include="Scripts\reading\jquery.d.js">
       <DependentUpon>jquery.d.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\reading\reading.js">
-      <DependentUpon>reading.ts</DependentUpon>
+    <TypeScriptCompile Include="Scripts\reading\modal.ts" />
+    <Content Include="Scripts\reading\modal.js">
+      <DependentUpon>modal.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\reading\reading.min.js">
-      <DependentUpon>reading.ts</DependentUpon>
+    <Content Include="Scripts\reading\modal.min.js">
+      <DependentUpon>modal.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\reading\readingui.js">
       <DependentUpon>readingui.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\reading\readingui.min.js">
       <DependentUpon>readingui.ts</DependentUpon>
+    </Content>
+    <TypeScriptCompile Include="Scripts\reading\settings.ts" />
+    <Content Include="Scripts\reading\settings.js">
+      <DependentUpon>settings.ts</DependentUpon>
+    </Content>
+    <Content Include="Scripts\reading\settings.min.js">
+      <DependentUpon>settings.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\required\bootstrap.js" />
     <Content Include="Scripts\required\jquery-1.8.3.js" />

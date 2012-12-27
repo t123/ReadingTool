@@ -1,18 +1,27 @@
-﻿@model ReadingTool.Site.Models.User.ReadViewModel
+﻿@using ReadingTool.Core.Formatters
+@model ReadingTool.Site.Models.User.ReadViewModel
 <div id="textArea">
     <div id="textContent" dir="@Model.Language.Settings.Direction.ToString().ToLowerInvariant()">
         @Html.Raw(Model.ParsedText)
     </div>
-    <div>
-        <div class="clr50"></div>
-        <button class="btn" id="reviewUnknownWords">Review unknown words</button>
-        <div class="clr10"></div>
-        <button class="btn" id="markRemainingAsKnown">Mark the remaining words as known</button>
-        <div id="markRemainingAsKnownProgress" class="warning" style="display: none"></div>
-        <div class="clr100"></div>
-    </div>
 </div>
-    
+<div class="clr50"></div>
+<ul class="nav nav-pills nav-stacked" id="readingbuttons">
+    <li>
+        Read <span class="label label-info" id="timesRead">@(string.Format("{0} ({1} words)", Model.Text.TimesRead ?? 0, Model.Text.WordsRead ?? 0))</span> time(s)
+        <a href="#" id="minusRead" style="display: inline"><i class="icon-minus"> </i></a>
+        <a href="#" id="plusRead" style="display: inline"><i class="icon-plus"> </i></a>
+    </li>
+    <li>
+        Listened <span class="label label-info" id="timesListened">@(string.Format("{0} ({1})", Model.Text.TimesListened ?? 0, DateFormatter.SecondsToHourMinuteSeconds(Model.Text.ListenLength)))</span> time(s)
+        <a href="#" id="minusListened" style="display: inline"><i class="icon-minus"> </i></a>
+        <a href="#" id="plusListened" style="display: inline"><i class="icon-plus"> </i></a>
+    </li>
+    <li><button class="btn" id="reviewUnknownWords">Review unknown words</button></li>
+    <li><button class="btn" id="markRemainingAsKnown">Mark the remaining words as known</button></li>
+</ul>
+<div id="markRemainingAsKnownProgress" class="warning" style="display: none"></div>
+<div class="clr100"></div>
 <div class=" navbar-fixed-bottom">
     <div class="navbar-inner">
         <div class="row-fluid">

@@ -138,7 +138,7 @@ namespace ReadingTool.Site.Controllers.User
 
             ViewBag.Languages = _languageService.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]

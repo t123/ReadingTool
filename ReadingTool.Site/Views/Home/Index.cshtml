@@ -2,6 +2,8 @@
 @{
     Layout = "";
     var user = HttpContext.Current.User.Identity as UserIdentity;
+    Bundles.Reference("Content/themes/common.less");
+    
     if(user == null)
     {
         Bundles.Reference("Content/themes/default/bootstrap.css");

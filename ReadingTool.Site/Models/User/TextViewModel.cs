@@ -4,13 +4,13 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ReadingTool.Site.Models.User
 {
     public class TextViewModel
     {
-        [ScaffoldColumn(false)]
-        [ReadOnly(true)]
+        [HiddenInput(DisplayValue = false)]
         public Guid Id { get; set; }
 
         [Required]

@@ -1,65 +1,11 @@
-/// <reference path="reading.ts"/>
+/// <reference path="settings.ts"/>
 /// <reference path="jquery.d.ts"/>
 /// <reference path="audio.ts"/>
+/// <reference path="modal.ts"/>
 
 /// see http://typescript.codeplex.com/SourceControl/changeset/view/92d9e637f6e1#typings/jquery.d.ts
 
 declare var ui: ReadingToolUi;
-
-class Class {
-    knownClass: string;
-    unknownClass: string;
-    ignoredClass: string;
-    notseenClass: string;
-    spaceClass: string;
-    punctuationClass: string;
-    multiClass: string;
-}
-
-class Dictionary {
-    id: number;
-    url: string;
-    name: string;
-    windowName: string;
-    urlEncoding: string;
-    parameter: string;
-    autoOpen: bool;
-    displayOrder: number;
-
-    constructor() {
-    }
-}
-
-
-class KeyBindings {
-    autoPause: bool;
-    controlsEnabled: bool;
-
-    constructor() {
-        this.autoPause = true;
-        this.controlsEnabled = true;
-    }
-}
-
-class Settings {
-    classes: Class;
-    keyBindings: KeyBindings;
-
-    hasAudio: bool;
-    audioUrl: string;
-    textId: number;
-    languageId: number;
-    modalBehaviour: string;
-    ajaxUrl: string;
-    quickmode: bool;
-
-    dictionaries: Dictionary[];
-
-    constructor() {
-        this.classes = new Class();
-        this.keyBindings = new KeyBindings();
-    }
-}
 
 class ReadingToolUi {
     isPlaying: bool;
@@ -67,7 +13,6 @@ class ReadingToolUi {
     hasChanged: bool;
     modalVisible: bool;
 
-    reading: Reading;
     settings: Settings;
 
     audio: IAudioPlayer;
@@ -76,11 +21,12 @@ class ReadingToolUi {
         this.isPlaying = false;
         this.wasPlaying = false;
         this.hasChanged = false;
+        this.modalVisible = false;
 
         this.settings = settings;
 
         if (settings.hasAudio) {
-            this.audio = new AudioPlayer();
+            this.audio = new AudioPlayer(this.settings);
         } else {
             this.audio = new NullAudioPlayer();
         }
@@ -125,6 +71,32 @@ class ReadingToolUi {
         } else {
             li.removeClass('active');
         }
+    }
+
+    changeRead(direction: number) {
+        var words = $('#totalWords').data('value');
+        $.post(this.settings.ajaxUrl + '/change-read',
+        {
+            textId: this.settings.textId,
+            direction: direction,
+            words: words
+        }, function (data) => {
+            if (data.Result == "OK") {
+                $('#timesRead').html(data.Message);
+            }
+        });
+    }
+
+    changeListened(direction: number) {
+        $.post(this.settings.ajaxUrl + '/change-listened',
+        {
+            textId: this.settings.textId,
+            direction: direction
+        }, function (data) => {
+            if (data.Result == "OK") {
+                $('#timesListened').html(data.Message);
+            }
+        });
     }
 
     openTextModal(isClick: bool, event: any) {
@@ -172,8 +144,6 @@ class ReadingToolUi {
             }
 
             if (this.settings.quickmode) {
-                this.reading = new Reading($(this), this.settings);
-
                 if ($(this).hasClass(this.settings.classes.notseenClass)) {
                     //reader.quicksave($(this), settings.unknownClass);
                 } else {
@@ -192,60 +162,12 @@ class ReadingToolUi {
             this.audio.pauseAudio();
         }
 
-        this.reading = new Reading($(this), this.settings);
-        selectedWord = new SelectedWord(event.srcElement);
+        selectedWord = new SelectedWord(this.settings, event.srcElement);
         modal.modal('show');
     }
 
     closeTextModal() {
         modal.modal('hide');
-    }
-}
-
-class SelectedWord {
-    element: any;
-    selectedWord: string;
-    sentence: string;
-    baseTerm: string;
-    romanisation: string;
-    definition: string;
-    tags: string;
-    length: number;
-
-    constructor(element) {
-        this.element = element;
-        this.length = length;
-
-        this.init();
-        this.updateModalDisplay();
-    }
-
-    private init() {
-        this.selectedWord = $(this.element).html();
-    }
-
-    private updateModalDisplay() {
-        $('#selectedWord').html(this.selectedWord);
-    }
-
-    public saveChanges() {
-        console.log('save changes');
-    }
-
-    public resetWord() {
-        console.log('reset word');
-    }
-
-    public refreshSentence() {
-        console.log('refresh sentence');
-    }
-
-    public increaseWord() {
-        console.log('increase word');
-    }
-
-    public decreaseWord() {
-        console.log('decrease word');
     }
 }
 
@@ -257,9 +179,20 @@ $('#btnReset').click(function () { selectedWord.resetWord(); });
 $('#btnRefresh').click(function () { selectedWord.refreshSentence(); });
 $('#increaseWord').click(function () { selectedWord.increaseWord(); });
 $('#decreaseWord').click(function () { selectedWord.decreaseWord(); });
+$('#minusRead').click(function () { ui.changeRead(-1); return false; });
+$('#plusRead').click(function () { ui.changeRead(+1); return false; });
+$('#minusListened').click(function () { ui.changeListened(-1); return false; });
+$('#plusListened').click(function () { ui.changeListened(+1); return false; });
 
 var modal;
 var selectedWord: SelectedWord;
+
+$.fn.animateHighlight = function (highlightColor, duration) {
+    var highlightBg = highlightColor || "#FFFF9C";
+    var animateMs = duration || 1500;
+    var originalBg = this.css("backgroundColor");
+    this.stop().css("background-color", highlightBg).animate({ backgroundColor: originalBg }, animateMs);
+};
 
 $(function () {
     //Bind the mouse rollover to the spans
@@ -277,11 +210,9 @@ $(function () {
 
     modal.on("show", function () {
         ui.modalVisible = true;
-        modal.show();
     });
 
     modal.on("hide", function () {
-        console.log('hide');
         modal.hide();
         ui.modalVisible = false;
         ui.audio.resumeAudio(ui.settings.keyBindings.autoPause, ui.wasPlaying);

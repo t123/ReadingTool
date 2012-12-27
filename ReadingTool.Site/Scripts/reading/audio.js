@@ -1,9 +1,19 @@
 var AudioPlayer = (function () {
-    function AudioPlayer() {
+    function AudioPlayer(settings) {
+        var _this = this;
+        this.settings = settings;
         this.audioPlayer = document.getElementById('audioPlayer');
         if(this.audioPlayer == null) {
             throw "Audio player could not be initialised";
         }
+        this.audioPlayer.addEventListener("loadedmetadata", function (e) {
+            var duration = _this.audioPlayer.duration;
+            $.post(_this.settings.ajaxUrl + '/save-audio-length', {
+                textId: _this.settings.textId,
+                length: duration
+            }, function () {
+            });
+        });
     }
     AudioPlayer.prototype.pauseAudio = function () {
         this.audioPlayer.pause();

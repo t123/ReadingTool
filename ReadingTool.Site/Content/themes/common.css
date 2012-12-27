@@ -102,3 +102,9 @@
 #myModal .control-group .controls {
   margin-left: 120px;
 }
+#readingbuttons {
+  width: 400px;
+}
+#readingbuttons li {
+  padding: 8px 0px 8px 0px;
+}

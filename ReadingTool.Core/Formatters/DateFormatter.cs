@@ -4,6 +4,22 @@ namespace ReadingTool.Core.Formatters
 {
     public static class DateFormatter
     {
+        public static string SecondsToHourMinuteSeconds(long? seconds)
+        {
+            if(seconds == null)
+            {
+                return "00h00m00s";
+            }
+
+            return SecondsToHourMinuteSeconds(seconds.Value);
+        }
+
+        public static string SecondsToHourMinuteSeconds(long seconds)
+        {
+            TimeSpan ts = TimeSpan.FromSeconds(seconds);
+            return string.Format("{0:D2}h:{1:D2}m:{2:D2}s", ts.Hours, ts.Minutes, ts.Seconds);
+        }
+
         public static string ToHumanAgo(this DateTime date)
         {
             return (DateTime.Now - date).ToHumanAgo();

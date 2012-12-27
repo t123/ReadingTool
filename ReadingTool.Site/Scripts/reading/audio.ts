@@ -1,3 +1,6 @@
+/// <reference path="jquery.d.ts"/>
+/// <reference path="settings.ts"/>
+
 interface IAudioPlayer {
     pauseAudio();
     resumeAudio(autoPause: bool, wasPlaying: bool);
@@ -14,12 +17,26 @@ interface IAudioPlayer {
 
 class AudioPlayer implements IAudioPlayer {
     private audioPlayer: HTMLAudioElement;
+    private settings: Settings;
 
-    constructor() {
+    constructor(settings: Settings) {
+        this.settings = settings;
         this.audioPlayer = <HTMLAudioElement>document.getElementById('audioPlayer');
         if (this.audioPlayer == null) {
             throw "Audio player could not be initialised";
         }
+
+        this.audioPlayer.addEventListener("loadedmetadata", function (e) => {
+            var duration = this.audioPlayer.duration;
+
+            $.post(this.settings.ajaxUrl + '/save-audio-length',
+                {
+                    textId: this.settings.textId,
+                    length: duration
+                }, function () {
+                }
+            );
+        });
     }
 
     public pauseAudio() {

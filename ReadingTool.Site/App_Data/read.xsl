@@ -130,7 +130,11 @@
             <tr>
               <td>Total Words</td>
               <td>
-                <xsl:value-of select="./totalWords" />
+                <xsl:attribute name="id">totalWords</xsl:attribute>
+                <xsl:attribute name="data-value">
+                  <xsl:value-of select="./totalWords" />
+                </xsl:attribute>
+                  <xsl:value-of select="./totalWords" />
               </td>
               <td>
                 <xsl:value-of select="./totalWords/@percent" />%

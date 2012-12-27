@@ -11,12 +11,6 @@
     <div class="modal-body">
         <form class="form-horizontal pull-left">
             <div class="control-group">
-                <label class="control-label" for="baseTerm">Base term</label>
-                <div class="controls">
-                    <input type="text" id="baseTerm" placeholder="base term" class="input-xxlarge" />
-                </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label" for="state">Current State</label>
                 <div class="controls">
                     <input type="radio" name="state" id="knownState" class="radio inline" value="@Constants.TermStates.KNOWN"/>known
@@ -25,6 +19,26 @@
                     <input type="radio" name="state" id="ignoredState" class="radio inline" value="@Constants.TermStates.IGNORED"/>ignored
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label" for="baseTerm">Base term</label>
+                <div class="controls">
+                    <input type="text" id="baseTerm" placeholder="base term" class="input-xxlarge" />
+                </div>
+            </div>
+            @if(Model.Language.Settings.ShowRomanisation)
+            {
+                <div class="control-group">
+                    <label class="control-label" for="romanisation">Romanisation</label>
+                    <div class="controls">
+                        <input type="text" id="romanisation" placeholder="romanisation" class="input-xxlarge" />
+                    </div>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" name="romanisation" />
+            }
+
             <div class="control-group">
                 <label class="control-label" for="sentence">Sentence</label>
                 <div class="controls">
@@ -63,7 +77,10 @@
         </div>
     </div>
     <div class="modal-footer">
-        <span class="badge pull-left"><span id="currentBox">new</span></span>
+        <span class="pull-left">
+            <span class="badge" id="currentBox">new</span>
+            <span id="modalMessage"></span>
+        </span>
         <button class="btn btn-success" title="ctrl-enter to save & close" id="btnSaveAndClose">Save & Close</button>
         <button class="btn btn-danger btn-mini" id="btnReset">Reset</button>
         <button class="btn btn-link" data-dismiss="modal" aria-hidden="true" title="escape to close without saving">or close without saving</button>

@@ -101,7 +101,7 @@ namespace ReadingTool.Site.Controllers.User
                 return RedirectToAction("Edit", new { id = id });
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -212,7 +212,7 @@ namespace ReadingTool.Site.Controllers.User
                 return RedirectToAction("EditDictionary", new { id = id, dictionaryId = dictionaryId });
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
