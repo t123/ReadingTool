@@ -1,12 +1,17 @@
-﻿@model Tuple<ReadingTool.Site.Models.User.ProfileViewModel,ReadingTool.Site.Models.User.PasswordChangeViewModel>
+﻿@model Tuple<ReadingTool.Site.Models.User.ProfileViewModel, ReadingTool.Site.Models.User.PasswordChangeViewModel>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "My Account";
+    var themes = new Dictionary<string, string>
+        {
+            {"cosmo", "Cosmo"}, {"cybord", "Cyborg"}, {"slate", "Slate"}
+        }
+        .OrderBy(x => x.Value);
 }
 
 @using(Html.BeginForm("Index", "MyAccount", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(x=>x.Item1.Id)
+    @Html.HiddenFor(x => x.Item1.Id)
     <div class="media">
         <a class="pull-left" href="#">
             @Html.Gravatar(Model.Item1.EmailAddress, Model.Item1.DisplayName, classes: "media-object")
@@ -23,15 +28,18 @@
     <div class="clr10"></div>
     <fieldset>
         <legend>Your Profile</legend>
-        @Html.EditorFor(x=>x.Item1)
+        @Html.BootstrapFormItem(x => x.Item1.Username)
+        @Html.BootstrapFormItem(x => x.Item1.DisplayName)
+        @Html.BootstrapFormItem(x => x.Item1.EmailAddress)
+        @Html.BootstrapFormDropDown(x => x.Item1.Theme, new SelectList(themes, "Key", "Value"), "Default")
     </fieldset>
     <fieldset>
         <legend>Password</legend>
         <div class="alert alert-info">This section is only required if you want to change your password.</div>
-        @Html.EditorFor(x=>x.Item2)
+        @Html.EditorFor(x => x.Item2)
         <div class="buttons">
-            <input type="submit" class="btn btn-primary" value="save profile"/>
-            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { },new{@class="btn btn-link"})
+            <input type="submit" class="btn btn-primary" value="save profile" />
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
         </div>
     </fieldset>
 }

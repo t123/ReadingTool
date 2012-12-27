@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using ReadingTool.Core;
 using ReadingTool.Entities;
 using ServiceStack.OrmLite;
 
@@ -14,10 +15,10 @@ namespace ReadingTool.Services
     {
         void Save(Text text);
         void Delete(Text text);
-        void Delete(long id);
-        Text Find(long id);
+        void Delete(Guid id);
+        Text Find(Guid id);
         IEnumerable<Text> FindAll();
-        Tuple<long?, long?> FindPagedTexts(Text text);
+        Tuple<Guid?, Guid?> FindPagedTexts(Text text);
     }
 
     public class TextService : ITextService
@@ -33,10 +34,11 @@ namespace ReadingTool.Services
 
         public void Save(Text text)
         {
-            if(text.Id == 0)
+            if(text.Id == Guid.Empty)
             {
                 text.Created = DateTime.Now;
                 text.Owner = _identity.UserId;
+                text.Id = SequentialGuid.NewGuid();
             }
 
             text.Modified = DateTime.Now;
@@ -54,12 +56,12 @@ namespace ReadingTool.Services
             _db.DeleteById<Text>(text.Id);
         }
 
-        public void Delete(long id)
+        public void Delete(Guid id)
         {
             Delete(Find(id));
         }
 
-        public Text Find(long id)
+        public Text Find(Guid id)
         {
             return _db.Select<Text>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
         }
@@ -69,26 +71,26 @@ namespace ReadingTool.Services
             return _db.Select<Text>(x => x.Owner == _identity.UserId);
         }
 
-        public Tuple<long?, long?> FindPagedTexts(Text text)
+        public Tuple<Guid?, Guid?> FindPagedTexts(Text text)
         {
-            if(text == null) return new Tuple<long?, long?>(null, null);
-            if(string.IsNullOrWhiteSpace(text.CollectionName)) return new Tuple<long?, long?>(null, null);
-            if(!text.CollectionNo.HasValue) return new Tuple<long?, long?>(null, null);
+            if(text == null) return new Tuple<Guid?, Guid?>(null, null);
+            if(string.IsNullOrWhiteSpace(text.CollectionName)) return new Tuple<Guid?, Guid?>(null, null);
+            if(!text.CollectionNo.HasValue) return new Tuple<Guid?, Guid?>(null, null);
 
-            long? previousId = FindPreviousId(text);
-            long? nextId = FindNextId(text);
+            Guid? previousId = FindPreviousId(text);
+            Guid? nextId = FindNextId(text);
 
-            return new Tuple<long?, long?>(previousId, nextId);
+            return new Tuple<Guid?, Guid?>(previousId, nextId);
         }
 
-        private long? FindPreviousId(Text text)
+        private Guid? FindPreviousId(Text text)
         {
-            return 1;
+            return null;
         }
 
-        private long? FindNextId(Text text)
+        private Guid? FindNextId(Text text)
         {
-            return 1;
+            return null;
         }
     }
 }

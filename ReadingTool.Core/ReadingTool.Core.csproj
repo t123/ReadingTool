@@ -48,6 +48,7 @@
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Formatters\EnumFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SequentialGuid.cs" />
     <Compile Include="Splitter.cs" />
     <Compile Include="String.cs" />
     <Compile Include="TagHelper.cs" />

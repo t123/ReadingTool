@@ -40,7 +40,8 @@ namespace ReadingTool.Site.Controllers.User
                         DisplayName = user.DisplayName,
                         EmailAddress = user.EmailAddress,
                         Id = user.Id,
-                        Username = user.Username
+                        Username = user.Username,
+                        Theme = user.Theme
                     },
                 new PasswordChangeViewModel()
                     {
@@ -103,6 +104,7 @@ namespace ReadingTool.Site.Controllers.User
                 user.DisplayName = profile.DisplayName;
                 user.Username = profile.Username;
                 user.EmailAddress = profile.EmailAddress;
+                user.Theme = profile.Theme;
 
                 _userService.Save(user, changePassword ? passwordChange.NewPassword : "");
 

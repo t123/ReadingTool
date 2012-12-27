@@ -37,7 +37,7 @@ namespace ReadingTool.Site.Controllers.Admin
         [ValidateAntiForgeryToken]
         public ActionResult Import(HttpPostedFileBase file)
         {
-            if(file!=null && file.ContentLength>0)
+            if(file != null && file.ContentLength > 0)
             {
                 int count = 0;
                 const short CodeColumnNo = 0;
@@ -85,6 +85,7 @@ namespace ReadingTool.Site.Controllers.Admin
 
                         languages.Add(new SystemLanguage()
                         {
+                            Id = SequentialGuid.NewGuid(),
                             Code = code,
                             Name = split[LanguageNameColumnNo]
                         });
@@ -92,7 +93,7 @@ namespace ReadingTool.Site.Controllers.Admin
                         count++;
                     }
 
-                    _systemLanguageService.Save(languages);
+                    _systemLanguageService.Save(languages.OrderBy(x => x.Name).ToArray());
 
                     this.FlashSuccess("{0} languages imported", count);
 

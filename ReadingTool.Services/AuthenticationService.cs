@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
+using Newtonsoft.Json;
 using ReadingTool.Entities;
 
 namespace ReadingTool.Services
@@ -14,19 +15,19 @@ namespace ReadingTool.Services
     {
         User Authenticate(string username, string password);
         HttpCookie CreateAuthenticationTicket(User user);
-        Dictionary<string, string> GetUserData(string userData);
-        UserPrincipal ConstructUserPrincipal(IIdentity identity, string displayName, string roles);
+        UserPrincipal ConstructUserPrincipal(IIdentity identity, string authTicket);
     }
 
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IUserService _userService;
-        private const int INDEX_USERID = 0;
-        private const int INDEX_DISPLAYNAME = 1;
-        private const int INDEX_ROLES = 2;
-        public const string USER_ID = @"USER_ID";
-        public const string DISPLAYNAME = @"DISPLAYNAME";
-        public const string ROLES = @"ROLES";
+
+        internal class UserTicketData
+        {
+            public string DisplayName { get; set; }
+            public string Roles { get; set; }
+            public string Theme { get; set; }
+        }
 
         public AuthenticationService(IUserService userService)
         {
@@ -35,27 +36,14 @@ namespace ReadingTool.Services
 
         private string ConstructUserData(User user)
         {
-            string userData = string.Format(
-                //UserID,DisplayName,Roles
-                    @"{0};{1};{2}",
-                    user.Id,
-                    user.DisplayName,
-                    user.Roles
-                    );
+            UserTicketData data = new UserTicketData()
+                {
+                    DisplayName = user.DisplayName,
+                    Theme = (user.Theme ?? "default"),
+                    Roles = user.Roles
+                };
 
-            return userData;
-        }
-
-        public Dictionary<string, string> GetUserData(string userData)
-        {
-            var d = new Dictionary<string, string>();
-            var split = userData.Split(';');
-
-            d[USER_ID] = split[INDEX_USERID];
-            d[DISPLAYNAME] = split[INDEX_DISPLAYNAME];
-            d[ROLES] = split[INDEX_ROLES];
-
-            return d;
+            return JsonConvert.SerializeObject(data);
         }
 
         public User Authenticate(string username, string password)
@@ -76,20 +64,22 @@ namespace ReadingTool.Services
 #endif
         }
 
-        public UserPrincipal ConstructUserPrincipal(IIdentity identity, string displayName, string roles)
+        public UserPrincipal ConstructUserPrincipal(IIdentity identity, string authTicket)
         {
-            var userId = GetUserIdFromIdentity(identity);
-
             try
             {
+                var userId = GetUserIdFromIdentity(identity);
+                UserTicketData data = JsonConvert.DeserializeObject<UserTicketData>(authTicket);
+
                 UserIdentity newIdentity = new UserIdentity(
-                    userId,
-                    identity.IsAuthenticated,
-                    displayName,
-                    roles,
-                    "",
-                    identity.AuthenticationType
-                    );
+                   userId,
+                   identity.IsAuthenticated,
+                   data.DisplayName,
+                   data.Roles,
+                   "",
+                   data.Theme,
+                   identity.AuthenticationType
+                   );
 
                 IPrincipal userPrincipal = new UserPrincipal(newIdentity);
 
@@ -102,9 +92,9 @@ namespace ReadingTool.Services
             }
         }
 
-        protected long GetUserIdFromIdentity(IIdentity identity)
+        protected Guid GetUserIdFromIdentity(IIdentity identity)
         {
-            return long.Parse(identity.Name);
+            return Guid.Parse(identity.Name);
         }
 
         public HttpCookie CreateAuthenticationTicket(User user)

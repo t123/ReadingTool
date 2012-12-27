@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -46,7 +47,6 @@ namespace ReadingTool.Site.Controllers
                     }
 
                     return RedirectToAction("Index", "~~User.MyAccount");
-                    //return RedirectToAction("Index", "MyAccount", new { __routecontext = "User" });
                 }
 
                 this.FlashError("Either your username or password is incorrect");
@@ -65,10 +65,17 @@ namespace ReadingTool.Site.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SignUp(SignInViewModel model)
         {
+            if((_userService.UserExists(model.Username)))
+            {
+                this.FlashError("Sorry, that username has already been used.");
+                ModelState.AddModelError("Username", "Please choose another username");
+            }
+
             if(ModelState.IsValid)
             {
                 _userService.Create(model.Username, model.Password);
 
+                this.FlashSuccess("Thank you for signing up. Please sign in with your username ({0}) and password below.", model.Username);
                 return RedirectToAction("SignIn");
             }
 

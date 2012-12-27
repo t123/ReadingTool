@@ -14,7 +14,7 @@ namespace ReadingTool.Site.Models.User
     {
         [ReadOnly(true)]
         [ScaffoldColumn(false)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(30)]
@@ -37,21 +37,9 @@ namespace ReadingTool.Site.Models.User
         [ReadOnly(true)]
         [ScaffoldColumn(false)]
         public DateTime Created { get; set; }
-    }
 
-    public class PasswordChangeViewModel
-    {
-        [Display(Name = "Current Password", Order = 1)]
-        [DataType(DataType.Password)]
-        public string CurrentPassword { get; set; }
-
-        [Display(Name = "New Password", Order = 2)]
-        [DataType(DataType.Password)]
-        public string NewPassword { get; set; }
-
-        [Display(Name = "Confirm New Password", Order = 3)]
-        [DataType(DataType.Password)]
-        [Compare("NewPassword")]
-        public string ConfirmNewPassword { get; set; }
+        [StringLength(10)]
+        [Display(Name = "Theme", Order = 4)]
+        public string Theme { get; set; }
     }
 }

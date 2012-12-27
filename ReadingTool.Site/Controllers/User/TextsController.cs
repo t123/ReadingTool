@@ -81,7 +81,7 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult Edit(long id)
+        public ActionResult Edit(Guid id)
         {
             Text text = _textService.Find(id);
 
@@ -110,7 +110,7 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(long id, TextViewModel model)
+        public ActionResult Edit(Guid id, TextViewModel model)
         {
             if(!string.IsNullOrWhiteSpace(model.L2Text) && model.L2Id == null)
             {
@@ -143,7 +143,7 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(long id)
+        public ActionResult Delete(Guid id)
         {
             _textService.Delete(_textService.Find(id));
             this.FlashSuccess("Text deleted");
@@ -151,7 +151,7 @@ namespace ReadingTool.Site.Controllers.User
             return RedirectToAction("Index");
         }
 
-        public ActionResult Read(long id)
+        public ActionResult Read(Guid id)
         {
             Text text = _textService.Find(id);
 
@@ -164,7 +164,7 @@ namespace ReadingTool.Site.Controllers.User
             return View(Create(text, false));
         }
 
-        public ActionResult ReadInParallel(long id)
+        public ActionResult ReadInParallel(Guid id)
         {
             Text text = _textService.Find(id);
 
@@ -180,7 +180,7 @@ namespace ReadingTool.Site.Controllers.User
         private ReadViewModel Create(Text text, bool asParallel)
         {
             var l1Language = _languageService.Find(text.L1Id);
-            var l2Language = _languageService.Find(text.L2Id ?? -1);
+            var l2Language = _languageService.Find(text.L2Id ?? Guid.Empty);
             var terms = _termService.FindAllForParsing(l1Language);
             var parsed = _parserService.Parse(asParallel, l1Language, l2Language, terms, text);
 

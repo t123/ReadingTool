@@ -185,6 +185,12 @@ var SelectedWord = (function () {
     SelectedWord.prototype.refreshSentence = function () {
         console.log('refresh sentence');
     };
+    SelectedWord.prototype.increaseWord = function () {
+        console.log('increase word');
+    };
+    SelectedWord.prototype.decreaseWord = function () {
+        console.log('decrease word');
+    };
     return SelectedWord;
 })();
 $('#toggleL1').click(function () {
@@ -208,6 +214,12 @@ $('#btnReset').click(function () {
 });
 $('#btnRefresh').click(function () {
     selectedWord.refreshSentence();
+});
+$('#increaseWord').click(function () {
+    selectedWord.increaseWord();
+});
+$('#decreaseWord').click(function () {
+    selectedWord.decreaseWord();
 });
 var modal;
 var selectedWord;

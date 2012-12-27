@@ -48,7 +48,7 @@ namespace ReadingTool.Site.Controllers.User
                         {
                             Colour = model.Colour,
                             Name = model.Name,
-                            SystemLanguageId = sl == null ? (long?)null : sl.Id,
+                            SystemLanguageId = sl == null ? (Guid?)null : sl.Id,
                             Settings = Mapper.Map<LanguageSettings>(model.Settings)
                         }
                     );
@@ -61,7 +61,7 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult Edit(long id)
+        public ActionResult Edit(Guid id)
         {
             var language = _languageService.Find(id);
 
@@ -84,14 +84,14 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(long id, LanguageViewModel model)
+        public ActionResult Edit(Guid id, LanguageViewModel model)
         {
             var language = _languageService.Find(id);
 
             if(ModelState.IsValid)
             {
                 var sl = _systemLanguageService.FindByName(model.SystemLanguage);
-                language.SystemLanguageId = sl == null ? (long?)null : sl.Id;
+                language.SystemLanguageId = sl == null ? (Guid?)null : sl.Id;
                 language.Name = model.Name;
                 language.Colour = model.Colour;
                 language.Settings = Mapper.Map<LanguageSettings>(model.Settings);
@@ -106,7 +106,7 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(long id)
+        public ActionResult Delete(Guid id)
         {
             Language l = _languageService.Find(id);
             _languageService.Delete(l);
@@ -116,7 +116,7 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult Dictionaries(long id)
+        public ActionResult Dictionaries(Guid id)
         {
             Language language = _languageService.Find(id);
 
@@ -130,7 +130,7 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult AddDictionary(long id)
+        public ActionResult AddDictionary(Guid id)
         {
             Language language = _languageService.Find(id);
 
@@ -145,7 +145,7 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddDictionary(long id, DictionaryViewModel model)
+        public ActionResult AddDictionary(Guid id, DictionaryViewModel model)
         {
             Language language = _languageService.Find(id);
 
@@ -165,7 +165,7 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult EditDictionary(long id, Guid dictionaryId)
+        public ActionResult EditDictionary(Guid id, Guid dictionaryId)
         {
             Language language = _languageService.Find(id);
 
@@ -191,7 +191,7 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditDictionary(long id, Guid dictionaryId, DictionaryViewModel model)
+        public ActionResult EditDictionary(Guid id, Guid dictionaryId, DictionaryViewModel model)
         {
             Language language = _languageService.Find(id);
 
@@ -217,7 +217,7 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteDictionary(long id, Guid dictionaryId)
+        public ActionResult DeleteDictionary(Guid id, Guid dictionaryId)
         {
             Language language = _languageService.Find(id);
 

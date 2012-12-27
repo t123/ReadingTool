@@ -1,9 +1,19 @@
 ﻿@using ReadingTool.Entities
 @using ReadingTool.Site.Helpers
 @{
-    var user = HttpContext.Current.User.Identity as IUserIdentity;
-    Bundles.Reference("Content/less/bootstrap/bootstrap.less");
-    Bundles.Reference("Content/less/required/site.less");
+    var user = HttpContext.Current.User.Identity as UserIdentity;
+    
+    if(user==null)
+    {
+        Bundles.Reference("Content/themes/default/bootstrap.css");
+        Bundles.Reference("Content/themes/default/site.less");
+    }
+    else
+    {
+        Bundles.Reference("Content/themes/" + user.Theme + "/bootstrap.css");
+        Bundles.Reference("Content/themes/" + user.Theme + "/site.less");
+    }
+    
     Bundles.Reference("Scripts/required/jquery-1.8.3.js");
     Bundles.AddInlineScript(
         @<script type="text/javascript">

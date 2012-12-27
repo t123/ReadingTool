@@ -11,11 +11,11 @@ namespace ReadingTool.Site.Models.User
     {
         [ScaffoldColumn(false)]
         [ReadOnly(true)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [Display(Name = "L1 Langauge", Order = 1)]
-        public long L1Id { get; set; }
+        public Guid L1Id { get; set; }
 
         [StringLength(250)]
         [Display(Name = "Audio URL", Order = 2)]
@@ -40,7 +40,7 @@ namespace ReadingTool.Site.Models.User
         public string L1Text { get; set; }
 
         [Display(Name = "L2 Langauge", Order = 7)]
-        public long? L2Id { get; set; }
+        public Guid? L2Id { get; set; }
 
         [StringLength(40000)]
         [Display(Name = "L2 Text", Order = 8)]

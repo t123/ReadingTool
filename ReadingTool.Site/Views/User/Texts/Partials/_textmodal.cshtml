@@ -3,8 +3,10 @@
 
 <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" title="close without saving">×</button>
-    <h3 id="selectedWord"></h3>
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true" title="close without saving">×</button>
+      <h3 style="display:inline" id="selectedWord"></h3>
+      <a href="#" id="increaseWord" class="pull-right" style="padding: 0px 10px 0px 10px"><i class="icon-plus"> </i></a>
+      <a href="#" id="decreaseWord" class="pull-right" style="padding: 0px 10px 0px 10px"><i class="icon-minus"> </i></a>
   </div>
     <div class="modal-body">
         <form class="form-horizontal pull-left">
@@ -43,16 +45,17 @@
                 </div>
             </div>
         </form>
-        <div class="pull-right">
+        <div class="pull-right" style="width: 80px;">
             <ul class="nav nav-stacked" id="dictionaries">
                 @foreach(var dictionary in Model.Language.Dictionaries.OrderBy(x=>x.DisplayOrder))
                 {
-                    <li><a href=""
+                    <li><a 
                            target="@(string.IsNullOrEmpty(dictionary.WindowName) ? "_blank" : dictionary.WindowName)"
                            class="dictionary" 
-                           data-parameter="@dictionary.Parameter.ToString().ToLowerInvariant()"
-                           data-urlencode="@dictionary.UrlEncoding.ToLowerInvariant()"
-                           data-url="@dictionary.Url"
+                           data-id="@dictionary.Id" 
+                           data-parameter="@dictionary.Parameter.ToString().ToLowerInvariant()" 
+                           data-urlencode="@(string.IsNullOrEmpty(dictionary.UrlEncoding) ? "false": "true")" 
+                           data-url="@dictionary.Url" 
                            data-autoOpen="@dictionary.AutoOpen.ToString().ToLowerInvariant()"
                         >@dictionary.Name</a></li>
                 }

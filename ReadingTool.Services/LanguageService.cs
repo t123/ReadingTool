@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using ReadingTool.Core;
 using ReadingTool.Entities;
 using ServiceStack.OrmLite;
 
@@ -14,8 +15,8 @@ namespace ReadingTool.Services
     {
         void Save(Language language);
         void Delete(Language language);
-        void Delete(long id);
-        Language Find(long id);
+        void Delete(Guid id);
+        Language Find(Guid id);
         IEnumerable<Language> FindAll();
         Language FindByName(string name);
     }
@@ -33,8 +34,9 @@ namespace ReadingTool.Services
 
         public void Save(Language language)
         {
-            if(language.Id == 0)
+            if(language.Id == Guid.Empty)
             {
+                language.Id = SequentialGuid.NewGuid();
                 language.Created = DateTime.Now;
                 language.Owner = _identity.UserId;
             }
@@ -54,12 +56,12 @@ namespace ReadingTool.Services
             _db.DeleteById<Language>(language.Id);
         }
 
-        public void Delete(long id)
+        public void Delete(Guid id)
         {
             Delete(Find(id));
         }
 
-        public Language Find(long id)
+        public Language Find(Guid id)
         {
             return _db.Select<Language>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
         }

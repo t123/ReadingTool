@@ -10,7 +10,7 @@ namespace ReadingTool.Site.Models.User
     {
         public bool AsParallel { get; set; }
         public string ParsedText { get; set; }
-        public Tuple<long?, long?> PagedTexts { get; set; }
+        public Tuple<Guid?, Guid?> PagedTexts { get; set; }
 
         public Language Language { get; set; }
         public Entities.User User { get; set; }

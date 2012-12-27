@@ -14,8 +14,8 @@ namespace ReadingTool.Services
     {
         void Save(Term term);
         void Delete(Term term);
-        void Delete(long id);
-        Term Find(long id);
+        void Delete(Guid id);
+        Term Find(Guid id);
         IEnumerable<Term> FindAll();
         Tuple<Term[], Term[]> FindAllForParsing(Language language);
     }
@@ -41,12 +41,12 @@ namespace ReadingTool.Services
             throw new NotImplementedException();
         }
 
-        public void Delete(long id)
+        public void Delete(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Term Find(long id)
+        public Term Find(Guid id)
         {
             throw new NotImplementedException();
         }

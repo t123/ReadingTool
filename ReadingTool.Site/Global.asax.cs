@@ -69,7 +69,9 @@ namespace ReadingTool.Site
             //connection.DropAndCreateTable<SystemLanguage>();
             //connection.DropAndCreateTable<Language>();
             //connection.DropAndCreateTable<LanguageSettings>();
-            //connection.DropAndCreateTables(typeof(User));
+            //connection.DropAndCreateTable<User>();
+            connection.DropAndCreateTable<Term>();
+            connection.DropAndCreateTable<IndividualTerm>();
         }
 
         private void Application_BeginRequest()
@@ -95,15 +97,8 @@ namespace ReadingTool.Site
                 var authenticationService = DependencyResolver.Current.GetService<IAuthenticationService>();
 
                 FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-                var userData = authenticationService.GetUserData(authTicket.UserData);
-
                 IIdentity identity = HttpContext.Current.User.Identity;
-                UserPrincipal newUser = authenticationService.ConstructUserPrincipal(
-                    identity,
-                    userData[AuthenticationService.DISPLAYNAME],
-                    userData[AuthenticationService.ROLES]
-                    );
-
+                UserPrincipal newUser = authenticationService.ConstructUserPrincipal(identity, authTicket.UserData);
                 Context.User = newUser;
                 System.Threading.Thread.CurrentPrincipal = HttpContext.Current.User;
             }

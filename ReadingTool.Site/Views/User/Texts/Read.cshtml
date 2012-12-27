@@ -32,8 +32,8 @@
 
                      settings.hasAudio = @(!string.IsNullOrEmpty(Model.Text.AudioUrl) ? "true" : "false");
                      settings.audioUrl = '@Model.Text.AudioUrl';
-                     settings.textId = @Model.Text.Id;
-                     settings.languageId = @Model.Language.Id;
+                     settings.textId = '@Model.Text.Id';
+                     settings.languageId = '@Model.Language.Id';
                      settings.modalBehaviour = '@Model.Language.Settings.ModalBehaviour';
                      settings.ajaxUrl = '@Url.Action("Index", "Reading")';
                      

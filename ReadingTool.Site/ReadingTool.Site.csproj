@@ -69,6 +69,9 @@
       <HintPath>..\packages\Elmah.MVC.2.0.2\lib\net40\Elmah.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Helpers.Mvc.2.0.20710.0\lib\net40\Microsoft.Web.Helpers.dll</HintPath>
+    </Reference>
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.2.0.2\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
@@ -116,6 +119,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20715.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -152,10 +159,6 @@
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20710.0\lib\net40\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -202,6 +205,7 @@
     <Compile Include="Models\User\DictionaryViewModel.cs" />
     <Compile Include="Models\User\LanguageSettingsViewModel.cs" />
     <Compile Include="Models\User\LanguageViewModel.cs" />
+    <Compile Include="Models\User\PasswordChangeViewModel.cs" />
     <Compile Include="Models\User\ProfileViewModel.cs" />
     <Compile Include="Models\User\ReadViewModel.cs" />
     <Compile Include="Models\User\TextViewModel.cs" />
@@ -216,11 +220,33 @@
     <Content Include="Content\img\glyphicons-halflings-white.png" />
     <Content Include="Content\img\glyphicons-halflings.png" />
     <Content Include="Content\img\ui-anim_basic_16x16.gif" />
-    <Content Include="Content\less\required\DroidSans-webfont.svg" />
-    <Content Include="Content\less\required\site.css">
+    <Content Include="Content\fonts\DroidSans-webfont.svg" />
+    <Content Include="Content\themes\cosmo\bootstrap.css" />
+    <Content Include="Content\themes\cosmo\site.css">
       <DependentUpon>site.less</DependentUpon>
     </Content>
-    <Content Include="Content\less\required\site.min.css">
+    <Content Include="Content\themes\cosmo\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\cyborg\bootstrap.css" />
+    <Content Include="Content\themes\cyborg\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\cyborg\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\default\bootstrap.css" />
+    <Content Include="Content\themes\default\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\default\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\slate\bootstrap.css" />
+    <Content Include="Content\themes\slate\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\slate\site.min.css">
       <DependentUpon>site.less</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
@@ -320,49 +346,6 @@
     <Content Include="Views\Home\Denied.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\less\bootstrap\accordion.less" />
-    <Content Include="Content\less\bootstrap\alerts.less" />
-    <Content Include="Content\less\bootstrap\bootstrap.less" />
-    <Content Include="Content\less\bootstrap\breadcrumbs.less" />
-    <Content Include="Content\less\bootstrap\button-groups.less" />
-    <Content Include="Content\less\bootstrap\buttons.less" />
-    <Content Include="Content\less\bootstrap\carousel.less" />
-    <Content Include="Content\less\bootstrap\close.less" />
-    <Content Include="Content\less\bootstrap\code.less" />
-    <Content Include="Content\less\bootstrap\component-animations.less" />
-    <Content Include="Content\less\bootstrap\dropdowns.less" />
-    <Content Include="Content\less\bootstrap\forms.less" />
-    <Content Include="Content\less\bootstrap\grid.less" />
-    <Content Include="Content\less\bootstrap\hero-unit.less" />
-    <Content Include="Content\less\bootstrap\labels-badges.less" />
-    <Content Include="Content\less\bootstrap\layouts.less" />
-    <Content Include="Content\less\bootstrap\media.less" />
-    <Content Include="Content\less\bootstrap\mixins.less" />
-    <Content Include="Content\less\bootstrap\modals.less" />
-    <Content Include="Content\less\bootstrap\navbar.less" />
-    <Content Include="Content\less\bootstrap\navs.less" />
-    <Content Include="Content\less\bootstrap\pager.less" />
-    <Content Include="Content\less\bootstrap\pagination.less" />
-    <Content Include="Content\less\bootstrap\popovers.less" />
-    <Content Include="Content\less\bootstrap\progress-bars.less" />
-    <Content Include="Content\less\bootstrap\reset.less" />
-    <Content Include="Content\less\bootstrap\responsive-1200px-min.less" />
-    <Content Include="Content\less\bootstrap\responsive-767px-max.less" />
-    <Content Include="Content\less\bootstrap\responsive-768px-979px.less" />
-    <Content Include="Content\less\bootstrap\responsive-navbar.less" />
-    <Content Include="Content\less\bootstrap\responsive-utilities.less" />
-    <Content Include="Content\less\bootstrap\responsive.less" />
-    <Content Include="Content\less\bootstrap\scaffolding.less" />
-    <Content Include="Content\less\bootstrap\sprites.less" />
-    <Content Include="Content\less\bootstrap\tables.less" />
-    <Content Include="Content\less\bootstrap\thumbnails.less" />
-    <Content Include="Content\less\bootstrap\tooltip.less" />
-    <Content Include="Content\less\bootstrap\type.less" />
-    <Content Include="Content\less\bootstrap\utilities.less" />
-    <Content Include="Content\less\bootstrap\variables.less" />
-    <Content Include="Content\less\bootstrap\wells.less" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Account\SignIn.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -370,9 +353,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Account\SignUp.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\less\required\site.less" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\User\MyAccount\Index.cshtml" />
@@ -387,10 +367,14 @@
     <Content Include="Views\Admin\Home\Partials\_menu.cshtml" />
     <Content Include="Views\Admin\Home\Import.cshtml" />
     <Content Include="App_Code\ViewHelpers.cshtml" />
-    <Content Include="Content\less\required\DroidSans-webfont.eot" />
-    <Content Include="Content\less\required\DroidSans-webfont.ttf" />
-    <Content Include="Content\less\required\DroidSans-webfont.woff" />
-    <Content Include="Content\less\required\DroidSans.ttf" />
+    <Content Include="Content\fonts\DroidSans-webfont.eot" />
+    <Content Include="Content\fonts\DroidSans-webfont.ttf" />
+    <Content Include="Content\fonts\DroidSans-webfont.woff" />
+    <Content Include="Content\fonts\DroidSans.ttf" />
+    <Content Include="Content\themes\cyborg\site.less" />
+    <Content Include="Content\themes\cosmo\site.less" />
+    <Content Include="Content\themes\slate\site.less" />
+    <Content Include="Content\themes\default\site.less" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <None Include="Views\User\Languages\Add.cshtml" />

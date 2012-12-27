@@ -24,10 +24,7 @@
             @foreach(var l in Model)
             {
                 <tr>
-                    <td>
-                        <div style="width: 15px; height: 15px; display: inline-block; background-color: @l.Colour">&nbsp;</div>
-                        @l.Name
-                    </td>
+                    <td>@ViewHelpers.FormatLanguage(l)</td>
                     <td>@Html.EditButton(Url.Action("Edit", new { id=l.Id}))</td>
                     <td>@Html.GenericButton("Dictionaries", Url.Action("Dictionaries", new { id=l.Id}), "btn btn-mini")</td>
                     <td>@Html.DeleteButton(Url.Action("Delete", new { id=l.Id}))</td>

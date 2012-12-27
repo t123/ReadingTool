@@ -239,6 +239,14 @@ class SelectedWord {
     public refreshSentence() {
         console.log('refresh sentence');
     }
+
+    public increaseWord() {
+        console.log('increase word');
+    }
+
+    public decreaseWord() {
+        console.log('decrease word');
+    }
 }
 
 $('#toggleL1').click(function () { ui.toggleL1(); return false; });
@@ -247,6 +255,8 @@ $('#quickmode').click(function () { ui.toggleQuickmode(); return false; });
 $('#btnSaveAndClose').click(function () { selectedWord.saveChanges(); ui.closeTextModal(); });
 $('#btnReset').click(function () { selectedWord.resetWord(); });
 $('#btnRefresh').click(function () { selectedWord.refreshSentence(); });
+$('#increaseWord').click(function () { selectedWord.increaseWord(); });
+$('#decreaseWord').click(function () { selectedWord.decreaseWord(); });
 
 var modal;
 var selectedWord: SelectedWord;

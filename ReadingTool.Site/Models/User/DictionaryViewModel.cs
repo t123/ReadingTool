@@ -15,7 +15,7 @@ namespace ReadingTool.Site.Models.User
 
         [ReadOnly(true)]
         [HiddenInput(DisplayValue = false)]
-        public long LanguageId { get; set; }
+        public Guid LanguageId { get; set; }
 
         [Display(Name = "Dictionary Name", Order = 1)]
         [Tip("This is your name for the dictionary.")]

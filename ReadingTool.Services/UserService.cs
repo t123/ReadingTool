@@ -15,9 +15,10 @@ namespace ReadingTool.Services
         void Create(string username, string password);
         void Save(User user, string newPassword = "");
         void Delete(User user);
-        void Delete(long id);
-        User Find(long id);
+        void Delete(Guid id);
+        User Find(Guid id);
         User FindUserByUsername(string username);
+        bool UserExists(string username);
         bool VerifyPassword(string attemptedPassword, string currentPassword);
     }
 
@@ -34,13 +35,14 @@ namespace ReadingTool.Services
         {
             var user = new User()
                 {
+                    Id = SequentialGuid.NewGuid(),
                     Created = DateTime.Now,
-                    DisplayName = username,
+                    DisplayName = (username ?? "").Trim(),
                     EmailAddress = string.Empty,
                     Modified = DateTime.Now,
                     Password = BCrypt.Net.BCrypt.HashString(password),
                     Roles = Constants.Roles.WEB,
-                    Username = username
+                    Username = (username ?? "").Trim()
                 };
 
             _db.Save(user);
@@ -70,19 +72,25 @@ namespace ReadingTool.Services
             throw new NotImplementedException();
         }
 
-        public void Delete(long id)
+        public void Delete(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public User Find(long id)
+        public User Find(Guid id)
         {
-            return id > 0 ? _db.GetById<User>(id) : null;
+            return id == Guid.Empty ? null : _db.GetById<User>(id);
         }
 
         public User FindUserByUsername(string username)
         {
+            username = (username ?? "").Trim();
             return _db.QuerySingle<User>(new { Username = username });
+        }
+
+        public bool UserExists(string username)
+        {
+            return FindUserByUsername(username) != null;
         }
 
         public bool VerifyPassword(string attemptedPassword, string currentPassword)

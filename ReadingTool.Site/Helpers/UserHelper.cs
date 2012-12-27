@@ -9,9 +9,9 @@ namespace ReadingTool.Site.Helpers
 {
     public class UserHelper
     {
-        public const long NOT_LOGGED_IN_ID = -1;
+        public static readonly Guid NOT_LOGGED_IN_ID = Guid.Empty;
 
-        public static long CurrentUserId(HttpContext context)
+        public static Guid CurrentUserId(HttpContext context)
         {
             if(
                 context == null ||
@@ -27,7 +27,7 @@ namespace ReadingTool.Site.Helpers
             return identity.UserId;
         }
 
-        public static long CurrentUserId(HttpContextBase context)
+        public static Guid CurrentUserId(HttpContextBase context)
         {
             if(
                 context == null ||
@@ -46,7 +46,7 @@ namespace ReadingTool.Site.Helpers
 
     public static class HttpContextHelper
     {
-        public static long CurrentUserId(this System.Web.HttpContext context)
+        public static Guid CurrentUserId(this System.Web.HttpContext context)
         {
             return UserHelper.CurrentUserId(context);
         }
@@ -54,7 +54,7 @@ namespace ReadingTool.Site.Helpers
 
     public static class HttpContextBaseHelper
     {
-        public static long CurrentUserId(this System.Web.HttpContextBase context)
+        public static Guid CurrentUserId(this System.Web.HttpContextBase context)
         {
             return UserHelper.CurrentUserId(context);
         }
@@ -62,7 +62,7 @@ namespace ReadingTool.Site.Helpers
 
     public static class ControllerHelper
     {
-        public static long CurrentUserId(this Controller controller)
+        public static Guid CurrentUserId(this Controller controller)
         {
             if(controller == null) return UserHelper.NOT_LOGGED_IN_ID;
             return UserHelper.CurrentUserId(controller.HttpContext);

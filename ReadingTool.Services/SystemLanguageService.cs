@@ -15,8 +15,8 @@ namespace ReadingTool.Services
         void Save(SystemLanguage language);
         void Save(IList<SystemLanguage> languages);
         void Delete(SystemLanguage language);
-        void Delete(long id);
-        SystemLanguage Find(long id);
+        void Delete(Guid id);
+        SystemLanguage Find(Guid id);
         IEnumerable<SystemLanguage> FindAll();
         IEnumerable<SystemLanguage> FindAllStartingWith(string term);
         SystemLanguage FindByName(string name);
@@ -46,12 +46,12 @@ namespace ReadingTool.Services
             throw new NotImplementedException();
         }
 
-        public void Delete(long id)
+        public void Delete(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public SystemLanguage Find(long id)
+        public SystemLanguage Find(Guid id)
         {
             return _db.GetById<SystemLanguage>(id);
         }

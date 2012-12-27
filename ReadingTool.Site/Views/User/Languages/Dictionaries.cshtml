@@ -13,6 +13,8 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>Url</th>
+            <th>Send</th>
             <th class="button">&nbsp;</th>
             <th class="button">&nbsp;</th>
         </tr>
@@ -22,6 +24,8 @@
         {
             <tr>
                 <td>@l.Name</td>
+                <td><a target="_blank" href="@l.Url">@l.Url</a></td>
+                <td>@l.Parameter</td>
                 <td>@Html.EditButton(Url.Action("EditDictionary", new { id=Model.Id, dictionaryId=l.Id }))</td>
                 <td>@Html.DeleteButton(Url.Action("DeleteDictionary", new { id=Model.Id, dictionaryId=l.Id }))</td>
             </tr>
