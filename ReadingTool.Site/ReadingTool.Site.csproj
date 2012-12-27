@@ -221,6 +221,26 @@
     <Content Include="Content\img\glyphicons-halflings.png" />
     <Content Include="Content\img\ui-anim_basic_16x16.gif" />
     <Content Include="Content\fonts\DroidSans-webfont.svg" />
+    <Content Include="Content\themes\amelia\bootstrap.css" />
+    <Content Include="Content\themes\amelia\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\amelia\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\cerulean\bootstrap.css" />
+    <Content Include="Content\themes\cerulean\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\cerulean\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\common.css">
+      <DependentUpon>common.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\common.min.css">
+      <DependentUpon>common.less</DependentUpon>
+    </Content>
     <Content Include="Content\themes\cosmo\bootstrap.css" />
     <Content Include="Content\themes\cosmo\site.css">
       <DependentUpon>site.less</DependentUpon>
@@ -242,11 +262,60 @@
     <Content Include="Content\themes\default\site.min.css">
       <DependentUpon>site.less</DependentUpon>
     </Content>
+    <Content Include="Content\themes\journal\bootstrap.css" />
+    <Content Include="Content\themes\journal\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\journal\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\readable\bootstrap.css" />
+    <Content Include="Content\themes\readable\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\readable\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\simplex\bootstrap.css" />
+    <Content Include="Content\themes\simplex\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\simplex\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
     <Content Include="Content\themes\slate\bootstrap.css" />
     <Content Include="Content\themes\slate\site.css">
       <DependentUpon>site.less</DependentUpon>
     </Content>
     <Content Include="Content\themes\slate\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\spacelab\bootstrap.css" />
+    <Content Include="Content\themes\spacelab\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\spacelab\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\spruce\bootstrap.css" />
+    <Content Include="Content\themes\spruce\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\spruce\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\superhero\bootstrap.css" />
+    <Content Include="Content\themes\superhero\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\superhero\site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\united\bootstrap.css" />
+    <Content Include="Content\themes\united\site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\themes\united\site.min.css">
       <DependentUpon>site.less</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
@@ -371,10 +440,20 @@
     <Content Include="Content\fonts\DroidSans-webfont.ttf" />
     <Content Include="Content\fonts\DroidSans-webfont.woff" />
     <Content Include="Content\fonts\DroidSans.ttf" />
-    <Content Include="Content\themes\cyborg\site.less" />
-    <Content Include="Content\themes\cosmo\site.less" />
-    <Content Include="Content\themes\slate\site.less" />
     <Content Include="Content\themes\default\site.less" />
+    <Content Include="Content\themes\common.less" />
+    <Content Include="Content\themes\amelia\site.less" />
+    <Content Include="Content\themes\cerulean\site.less" />
+    <Content Include="Content\themes\cosmo\site.less" />
+    <Content Include="Content\themes\cyborg\site.less" />
+    <Content Include="Content\themes\journal\site.less" />
+    <Content Include="Content\themes\readable\site.less" />
+    <Content Include="Content\themes\simplex\site.less" />
+    <Content Include="Content\themes\slate\site.less" />
+    <Content Include="Content\themes\spacelab\site.less" />
+    <Content Include="Content\themes\spruce\site.less" />
+    <Content Include="Content\themes\superhero\site.less" />
+    <Content Include="Content\themes\united\site.less" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <None Include="Views\User\Languages\Add.cshtml" />

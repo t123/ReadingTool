@@ -40,6 +40,7 @@ namespace ReadingTool.Site.Models.User
 
         [StringLength(10)]
         [Display(Name = "Theme", Order = 4)]
+        [Tip("Themes are provided by http://bootswatch.com/")]
         public string Theme { get; set; }
     }
 }

@@ -5,11 +5,13 @@
     
     if(user==null)
     {
+        Bundles.Reference("Content/themes/common.less");
         Bundles.Reference("Content/themes/default/bootstrap.css");
         Bundles.Reference("Content/themes/default/site.less");
     }
     else
     {
+        Bundles.Reference("Content/themes/common.less");
         Bundles.Reference("Content/themes/" + user.Theme + "/bootstrap.css");
         Bundles.Reference("Content/themes/" + user.Theme + "/site.less");
     }

@@ -39,7 +39,7 @@ namespace ReadingTool.Services
             UserTicketData data = new UserTicketData()
                 {
                     DisplayName = user.DisplayName,
-                    Theme = (user.Theme ?? "default"),
+                    Theme = string.IsNullOrWhiteSpace(user.Theme) ? "default" : user.Theme,
                     Roles = user.Roles
                 };
 

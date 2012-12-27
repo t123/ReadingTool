@@ -15,10 +15,12 @@ namespace ReadingTool.Site.Controllers.User
     public class MyAccountController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public MyAccountController(IUserService userService)
+        public MyAccountController(IUserService userService, IAuthenticationService authenticationService)
         {
             _userService = userService;
+            _authenticationService = authenticationService;
         }
 
         [HttpGet]
@@ -101,14 +103,20 @@ namespace ReadingTool.Site.Controllers.User
 
             if(ModelState.IsValid)
             {
+                string originalTheme = (user.Theme ?? "");
                 user.DisplayName = profile.DisplayName;
                 user.Username = profile.Username;
                 user.EmailAddress = profile.EmailAddress;
                 user.Theme = profile.Theme;
-
                 _userService.Save(user, changePassword ? passwordChange.NewPassword : "");
 
                 this.FlashSuccess("Your profile has been saved");
+
+                if(!originalTheme.Equals(profile.Theme, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    UpdateUser(user);
+                }
+
                 return RedirectToAction("Index");
             }
 
@@ -131,6 +139,12 @@ namespace ReadingTool.Site.Controllers.User
                 );
 
             return View(tuple);
+        }
+
+        private void UpdateUser(Entities.User user)
+        {
+            var cookie = _authenticationService.CreateAuthenticationTicket(user);
+            Response.Cookies.Add(cookie);
         }
     }
 }

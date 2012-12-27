@@ -1,9 +1,17 @@
 ﻿@using ReadingTool.Entities
 @{
     Layout = "";
-    var user = HttpContext.Current.User.Identity as IUserIdentity;
-    Bundles.Reference("Content/themes/default/bootstrap.css");
-    Bundles.Reference("Content/themes/default/site.less");
+    var user = HttpContext.Current.User.Identity as UserIdentity;
+    if(user == null)
+    {
+        Bundles.Reference("Content/themes/default/bootstrap.css");
+        Bundles.Reference("Content/themes/default/site.less");
+    }
+    else
+    {
+        Bundles.Reference("Content/themes/" + user.Theme + "/bootstrap.css");
+        Bundles.Reference("Content/themes/" + user.Theme + "/site.less");
+    }
     Bundles.Reference("Scripts/required/jquery-1.8.3.js");
 }
 <!DOCTYPE html>
