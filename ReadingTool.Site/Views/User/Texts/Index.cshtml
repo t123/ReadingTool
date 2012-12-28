@@ -3,8 +3,10 @@
     ViewBag.Title = "Index";
 }
 
-@Html.ActionLink("add a new text", "Add", new { }, new { @class = "btn btn-primary" })
-
+@section Menu
+{
+    @Html.Partial("Partials/_menu", null, ViewData)
+}
 
 @if(Model.Any())
 {
@@ -42,3 +44,5 @@ else
     <div class="alert alert-info">You do not have any texts yet.</div>
     </text>
 }
+
+@Html.ActionLink("add a new text", "Add", new { }, new { @class = "btn btn-primary" })

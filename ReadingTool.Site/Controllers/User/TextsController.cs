@@ -76,7 +76,7 @@ namespace ReadingTool.Site.Controllers.User
 
                 if(!string.IsNullOrEmpty(saveread))
                 {
-                    return RedirectToAction("Read", new { id = id });
+                    return RedirectToAction("Read", new { id = t.Id });
                 }
 
                 return RedirectToAction("Index");

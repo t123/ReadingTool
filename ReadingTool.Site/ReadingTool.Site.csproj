@@ -338,6 +338,7 @@
     <TypeScriptCompile Include="Scripts\reading\readingui.ts" />
     <TypeScriptCompile Include="Scripts\reading\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\reading\audio.ts" />
+    <Content Include="Scripts\other\head\handlebars\handlebars-1.0.rc.1.js" />
     <Content Include="Scripts\reading\audio.js">
       <DependentUpon>audio.ts</DependentUpon>
     </Content>
@@ -381,7 +382,6 @@
   <ItemGroup>
     <Folder Include="Common\" />
     <Folder Include="Scripts\other\footer\codemirror\theme\" />
-    <Folder Include="Scripts\other\head\" />
     <Folder Include="Views\Admin\Shared\" />
     <Folder Include="Views\Shared\DisplayTemplates\" />
     <Folder Include="Views\Shared\Partials\" />
@@ -461,6 +461,9 @@
     <Content Include="Content\themes\spruce\site.less" />
     <Content Include="Content\themes\superhero\site.less" />
     <Content Include="Content\themes\united\site.less" />
+    <Content Include="Scripts\reading\readingui.min.js.map">
+      <DependentUpon>readingui.js</DependentUpon>
+    </Content>
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <Content Include="Views\Shared\_Navigation.cshtml" />
@@ -476,6 +479,7 @@
     <Content Include="Views\User\Texts\Read.cshtml" />
     <Content Include="Views\User\Texts\Partials\_textarea.cshtml" />
     <Content Include="Views\User\Texts\Partials\_textmodal.cshtml" />
+    <Content Include="Views\User\Texts\Partials\_templates.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

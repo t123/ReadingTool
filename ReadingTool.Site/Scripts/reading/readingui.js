@@ -16,14 +16,22 @@ var ReadingToolUi = (function () {
         if(li.hasClass('active')) {
             li.removeClass('active');
             this.closeTextModal();
-            if($('#textContent td.s').length > 0) {
-                $('#textContent table td.f span').hide();
+            if(this.settings.asParallel) {
+                if($('#textContent td.s').length > 0) {
+                    $('#textContent table td.f span').hide();
+                } else {
+                    $('#textContent p span').hide();
+                }
             } else {
                 $('#textContent p span').hide();
             }
         } else {
             li.addClass('active');
-            $('td.f p span').show();
+            if(this.settings.asParallel) {
+                $('td.f p span').show();
+            } else {
+                $('#textContent p span').show();
+            }
         }
     };
     ReadingToolUi.prototype.toggleL2 = function () {

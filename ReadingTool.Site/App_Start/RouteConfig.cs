@@ -24,28 +24,6 @@ namespace ReadingTool.Site
                     }
                 );
 
-            //routes.MapCodeRoutes(
-            //    baseRoute: "account",
-            //    rootController: typeof(Controllers.AccountController),
-            //    settings: new CodeRoutingSettings
-            //    {
-            //        UseImplicitIdToken = true,
-            //        RouteFormatter = args => Regex.Replace(args.OriginalSegment, @"([a-z])([A-Z])", "$1-$2").ToLowerInvariant()
-            //    }
-            //    );
-
-            //routes.MapCodeRoutes(
-            //    baseRoute: "user",
-            //    rootController: typeof(Controllers.User.MyAccountController),
-            //    settings: new CodeRoutingSettings
-            //    {
-            //        UseImplicitIdToken = true,
-            //        RouteFormatter = args => Regex.Replace(args.OriginalSegment, @"([a-z])([A-Z])", "$1-$2").ToLowerInvariant()
-            //    }
-            //    );
-
-
-
             ViewEngines.Engines.EnableCodeRouting();
         }
     }

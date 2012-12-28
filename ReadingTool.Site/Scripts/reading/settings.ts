@@ -44,6 +44,7 @@ class Settings {
     modalBehaviour: string;
     ajaxUrl: string;
     quickmode: bool;
+    asParallel: bool;
 
     dictionaries: Dictionary[];
 

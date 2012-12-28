@@ -24,7 +24,7 @@ namespace ReadingTool.Site.Models.User
 
         [Display(Name = "Dictionary URL", Order = 2)]
         [Required]
-        [Url]
+        //[Url]
         [StringLength(250)]
         [DataType(DataType.Url)]
         public string Url { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using ReadingTool.Core;
@@ -15,6 +16,7 @@ namespace ReadingTool.Site.Controllers.User
     {
         private readonly ITextService _textService;
         private readonly ITermService _termService;
+        private readonly ILanguageService _languageService;
         public const string OK = "OK";
         public const string FAIL = "FAIL";
 
@@ -30,10 +32,11 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
-        public ReadingController(ITextService textService, ITermService termService)
+        public ReadingController(ITextService textService, ITermService termService, ILanguageService languageService)
         {
             _textService = textService;
             _termService = termService;
+            _languageService = languageService;
         }
 
         [HttpPost]
@@ -151,6 +154,36 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        public JsonResult EncodeTerm(Guid languageId, Guid dictionaryId, string input)
+        {
+            try
+            {
+                var language = _languageService.Find(languageId);
+
+                if(language == null)
+                {
+                    throw new Exception("Language is null");
+                }
+
+                var dictionary = language.Dictionaries.FirstOrDefault(x => x.Id == dictionaryId);
+
+                if(dictionary == null)
+                {
+                    throw new Exception("Dictionary is null");
+                }
+
+                var encoder = Encoding.GetEncoding(dictionary.UrlEncoding);
+                string encoded = HttpUtility.UrlEncode(input, encoder);
+                string result = dictionary.Url.Replace("###", encoded);
+
+                return new JsonResult() { Data = new ResponseMessage(OK) { Message = result } };
+            }
+            catch
+            {
+                return new JsonResult() { Data = new ResponseMessage(FAIL) };
+            }
+        }
+
         public JsonResult FindTerm(Guid languageId, string termPhrase)
         {
             var term = _termService.Find(languageId, termPhrase);
@@ -158,7 +191,7 @@ namespace ReadingTool.Site.Controllers.User
             return new JsonResult() { Data = term };
         }
 
-        public JsonResult Quicksave(Guid languageId, Guid textId, string term, string sentence, string state)
+        public JsonResult Quicksave(Guid languageId, Guid textId, string termPhrase, string sentence, string state)
         {
             throw new NotImplementedException();
         }

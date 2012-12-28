@@ -8,7 +8,7 @@ var SelectedWord = (function () {
     SelectedWord.prototype.init = function () {
         var _this = this;
         this.selectedWord = $(this.element).html();
-        this.sentence = this.getCurrentSentence();
+        this.selectedSentence = this.getCurrentSentence();
         $('#currentBox').removeClass().addClass('badge');
         $.post(this.settings.ajaxUrl + '/find-term', {
             languageId: this.settings.languageId,
@@ -21,7 +21,7 @@ var SelectedWord = (function () {
                 $('#romanisation').val('');
                 $('#definition').val('');
                 $('#tags').val('');
-                $('#sentence').val('');
+                $('#sentence').val(_this.selectedSentence);
                 $('#modalMessage').removeClass().addClass('label label-warning').html('new word, defaulted to unknown');
             } else {
             }
@@ -30,7 +30,7 @@ var SelectedWord = (function () {
     };
     SelectedWord.prototype.updateModalDisplay = function () {
         $('#selectedWord').text(this.selectedWord);
-        $('#sentence').val(this.sentence);
+        this.refreshDictionaryLinks();
     };
     SelectedWord.prototype.saveChanges = function () {
         $.post(this.settings.ajaxUrl + '/save-term', {
@@ -69,6 +69,41 @@ var SelectedWord = (function () {
         }
         this.length--;
         this.changePhrase();
+    };
+    SelectedWord.prototype.refreshDictionaryLinks = function () {
+        var _this = this;
+        $('.dictionary').each(function (index, a) {
+            var anchor = $(a);
+            var id = anchor.data('id');
+            var parameter = anchor.data('parameter');
+            var urlEncode = anchor.data('urlencode');
+            var url = anchor.data('url');
+            var auto = anchor.data('autoopen');
+            var input = parameter == 'sentence' ? _this.selectedSentence : _this.selectedWord;
+            if(auto == undefined) {
+                auto = false;
+            }
+            if(urlEncode) {
+                $.post(_this.settings.ajaxUrl + '/encode-term', {
+                    languageId: _this.settings.languageId,
+                    dictionaryId: id,
+                    input: input
+                }, function (data) {
+                    if(data.Result == "OK") {
+                        anchor.attr('href', data.Message);
+                        if(auto) {
+                            anchor[0].click();
+                            console.log(auto);
+                        }
+                    }
+                });
+            } else {
+                anchor.attr('href', url.replace('###', input));
+                if(auto) {
+                    anchor[0].click();
+                }
+            }
+        });
     };
     SelectedWord.prototype.changePhrase = function () {
         var currentWord = '';

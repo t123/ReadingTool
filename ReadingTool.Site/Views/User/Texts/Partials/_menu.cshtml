@@ -3,13 +3,9 @@
 }
 
 <div class="clr10"></div>
-<div class="btn-group">
-    <button class="btn btn-small">More options</button>
-    <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-        <li><a href="@Url.Action("Index", new { id = Model })">view all of your texts</a></li>
+<div class="submenu">
+    <ul class="nav nav-pills">
+        <li><a href="@Url.Action("Index", new { id = Model })">your texts</a></li>
         <li><a href="@Url.Action("Add", new { id = Model })">add a new text</a></li>
         @if(Model is Guid)
         {
@@ -18,4 +14,3 @@
         }
     </ul>
 </div>
-<div class="clr10"></div>

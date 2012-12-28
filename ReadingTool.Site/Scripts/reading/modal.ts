@@ -4,7 +4,11 @@
 class SelectedWord {
     settings: Settings;
     element: any;
+
+    /// The word the user has clicked on
     selectedWord: string;
+    selectedSentence: string;
+
     sentence: string;
     baseTerm: string;
     romanisation: string;
@@ -22,7 +26,7 @@ class SelectedWord {
 
     private init() {
         this.selectedWord = $(this.element).html();
-        this.sentence = this.getCurrentSentence();
+        this.selectedSentence = this.getCurrentSentence();
         $('#currentBox').removeClass().addClass('badge');
 
         $.post(
@@ -39,7 +43,7 @@ class SelectedWord {
                     $('#romanisation').val('');
                     $('#definition').val('');
                     $('#tags').val('');
-                    $('#sentence').val('');
+                    $('#sentence').val(this.selectedSentence);
 
                     $('#modalMessage').removeClass().addClass('label label-warning').html('new word, defaulted to unknown');
                 } else {
@@ -51,7 +55,8 @@ class SelectedWord {
 
     private updateModalDisplay() {
         $('#selectedWord').text(this.selectedWord);
-        $('#sentence').val(this.sentence);
+
+        this.refreshDictionaryLinks();
     }
 
     public saveChanges() {
@@ -94,6 +99,46 @@ class SelectedWord {
         if (this.length <= 1) return;
         this.length--;
         this.changePhrase();
+    }
+
+    private refreshDictionaryLinks() {
+        $('.dictionary').each(function (index, a) => {
+            var anchor = $(a);
+            var id = anchor.data('id');
+            var parameter = anchor.data('parameter');
+            var urlEncode = anchor.data('urlencode');
+            var url = anchor.data('url');
+            var auto = anchor.data('autoopen');
+            var input = parameter=='sentence' ? this.selectedSentence : this.selectedWord;
+            
+            if(auto==undefined) auto = false;
+            
+            if (urlEncode) {
+                $.post(
+                    this.settings.ajaxUrl + '/encode-term',
+                    {
+                        languageId: this.settings.languageId,
+                        dictionaryId: id,
+                        input: input
+                    },
+                    function(data) {
+                        if (data.Result == "OK") {
+                            anchor.attr('href', data.Message);
+                            
+                            if(auto) {
+                                anchor[0].click();
+                                console.log(auto);
+                            }
+                        }
+                    }
+                );
+            } else {
+                anchor.attr('href', url.replace('###', input));
+                if(auto) {
+                    anchor[0].click();
+                }
+            }
+        });
     }
 
     private changePhrase() {
