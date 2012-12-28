@@ -7,6 +7,7 @@ using ReadingTool.Core.Enums;
 
 namespace ReadingTool.Site.Models.User
 {
+    [Description("Dictionary")]
     public class DictionaryViewModel
     {
         [HiddenInput(DisplayValue = false)]

@@ -71,6 +71,7 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<ILanguageService>().To<LanguageService>();
             kernel.Bind<ITextService>().To<TextService>();
             kernel.Bind<ISystemLanguageService>().To<SystemLanguageService>();
+            kernel.Bind<IDeleteService>().To<DeleteService>();
             kernel.Bind<IDbConnection>().ToMethod(x => ContextPerRequest.Current);
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
 

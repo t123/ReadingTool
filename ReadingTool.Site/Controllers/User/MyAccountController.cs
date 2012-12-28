@@ -120,6 +120,8 @@ namespace ReadingTool.Site.Controllers.User
                 return RedirectToAction("Index");
             }
 
+            this.FlashError(Constants.Messages.FORM_FAIL);
+
             var tuple = new Tuple<ProfileViewModel, PasswordChangeViewModel>
                 (
                 new ProfileViewModel()
@@ -139,6 +141,31 @@ namespace ReadingTool.Site.Controllers.User
                 );
 
             return View(tuple);
+        }
+
+        [HttpGet]
+        public ActionResult Delete()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(DeleteAccountModel model)
+        {
+            var user = _userService.Find(this.CurrentUserId());
+            if(!string.IsNullOrEmpty(model.Password) && _userService.VerifyPassword(model.Password, user.Password))
+            {
+                _userService.Delete(user);
+                this.FlashSuccess("Your account and all your data has been deleted.");
+                FormsAuthentication.SignOut();
+
+                return RedirectToAction("", "~~Home");
+            }
+
+            this.FlashError(Constants.Messages.FORM_FAIL);
+
+            return View();
         }
 
         private void UpdateUser(Entities.User user)

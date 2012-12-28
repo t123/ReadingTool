@@ -25,10 +25,12 @@ namespace ReadingTool.Services
     public class UserService : IUserService
     {
         private readonly IDbConnection _db;
+        private readonly IDeleteService _deleteService;
 
-        public UserService(IDbConnection db)
+        public UserService(IDbConnection db, IDeleteService deleteService)
         {
             _db = db;
+            _deleteService = deleteService;
         }
 
         public void Create(string username, string password)
@@ -69,12 +71,12 @@ namespace ReadingTool.Services
 
         public void Delete(User user)
         {
-            throw new NotImplementedException();
+            _deleteService.DeleteUser(user);
         }
 
         public void Delete(Guid id)
         {
-            throw new NotImplementedException();
+            Delete(Find(id));
         }
 
         public User Find(Guid id)
@@ -95,7 +97,11 @@ namespace ReadingTool.Services
 
         public bool VerifyPassword(string attemptedPassword, string currentPassword)
         {
+#if DEBUG
+            return true;
+#else
             return BCrypt.Net.BCrypt.Verify(attemptedPassword, currentPassword);
+#endif
         }
     }
 }

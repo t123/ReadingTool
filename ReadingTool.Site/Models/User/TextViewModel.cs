@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace ReadingTool.Site.Models.User
 {
+    [Description("Text")]
     public class TextViewModel
     {
         [HiddenInput(DisplayValue = false)]

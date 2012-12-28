@@ -24,11 +24,13 @@ namespace ReadingTool.Services
     public class TextService : ITextService
     {
         private readonly IDbConnection _db;
+        private readonly IDeleteService _deleteService;
         private readonly IUserIdentity _identity;
 
-        public TextService(IDbConnection db, IPrincipal principal)
+        public TextService(IDbConnection db, IPrincipal principal, IDeleteService deleteService)
         {
             _db = db;
+            _deleteService = deleteService;
             _identity = principal.Identity as IUserIdentity;
         }
 
@@ -55,12 +57,7 @@ namespace ReadingTool.Services
 
         public void Delete(Text text)
         {
-            if(text == null)
-            {
-                return;
-            }
-
-            _db.DeleteById<Text>(text.Id);
+            _deleteService.DeleteText(text);
         }
 
         public void Delete(Guid id)

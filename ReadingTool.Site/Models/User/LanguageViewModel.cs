@@ -10,6 +10,7 @@ using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Models.User
 {
+    [Description("Language")]
     public class LanguageViewModel
     {
         [HiddenInput(DisplayValue = false)]

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ReadingTool.Core;
+using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Helpers;
@@ -72,7 +73,7 @@ namespace ReadingTool.Site.Controllers.User
 
                 _textService.Save(t);
 
-                this.FlashSuccess("Text added");
+                this.FlashSuccess(Constants.Messages.FORM_ADD, DescriptionFormatter.GetDescription(model));
 
                 if(!string.IsNullOrEmpty(saveread))
                 {
@@ -83,6 +84,7 @@ namespace ReadingTool.Site.Controllers.User
             }
 
             ViewBag.Languages = _languageService.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
+            this.FlashError(Constants.Messages.FORM_FAIL);
 
             return View();
         }
@@ -94,7 +96,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(text == null)
             {
-                this.FlashError("Text not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Text>());
                 return RedirectToAction("Index");
             }
 
@@ -139,7 +141,7 @@ namespace ReadingTool.Site.Controllers.User
                 text.Title = model.Title;
 
                 _textService.Save(text);
-                this.FlashSuccess("Text updated");
+                this.FlashSuccess(Constants.Messages.FORM_UPDATE, DescriptionFormatter.GetDescription(model));
 
                 if(!string.IsNullOrEmpty(saveread))
                 {
@@ -150,6 +152,7 @@ namespace ReadingTool.Site.Controllers.User
             }
 
             ViewBag.Languages = _languageService.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
+            this.FlashError(Constants.Messages.FORM_FAIL);
 
             return View(model);
         }
@@ -159,7 +162,7 @@ namespace ReadingTool.Site.Controllers.User
         public ActionResult Delete(Guid id)
         {
             _textService.Delete(_textService.Find(id));
-            this.FlashSuccess("Text deleted");
+            this.FlashSuccess(Constants.Messages.FORM_DELETE, DescriptionFormatter.GetDescription<Text>());
 
             return RedirectToAction("Index");
         }
@@ -170,7 +173,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(text == null)
             {
-                this.FlashError("Text not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Text>());
                 return RedirectToAction("Index");
             }
 
@@ -183,7 +186,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(text == null)
             {
-                this.FlashError("Text not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Text>());
                 return RedirectToAction("Index");
             }
 

@@ -1,0 +1,25 @@
+﻿@model ReadingTool.Site.Models.User.DeleteAccountModel
+@{
+    ViewBag.Title = "Delete";
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+@Html.FlashMessage("This will permanently delete your account along with all your languages, texts and terms. There is no recovery.", FlashHelper.Level.Alert)
+
+@using(Html.BeginForm("Delete", "MyAccount", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Delete your account</legend>
+        @Html.EditorForModel()
+        <div class="buttons">
+            @Html.ActionLink("No thanks, take me back to my profile", "Index", new {}, new { @class = "btn btn-primary btn-large" })
+            <div class="clr20"></div>
+            <input type="submit" class="btn btn-danger" value="I'm sure, perrmanently delete my account" />
+        </div>
+    </fieldset>
+}

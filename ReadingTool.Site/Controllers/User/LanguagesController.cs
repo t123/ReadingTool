@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using ReadingTool.Core;
+using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Helpers;
@@ -53,10 +54,11 @@ namespace ReadingTool.Site.Controllers.User
                         }
                     );
 
-                this.FlashSuccess("Language saved");
+                this.FlashSuccess(Constants.Messages.FORM_ADD, DescriptionFormatter.GetDescription(model));
                 return RedirectToAction("Index");
             }
 
+            this.FlashError(Constants.Messages.FORM_FAIL);
             return View();
         }
 
@@ -67,7 +69,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(language == null)
             {
-                this.FlashError("Language not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Language>());
                 return RedirectToAction("Index");
             }
 
@@ -97,10 +99,11 @@ namespace ReadingTool.Site.Controllers.User
                 language.Settings = Mapper.Map<LanguageSettings>(model.Settings);
                 _languageService.Save(language);
 
-                this.FlashSuccess("Language updated");
+                this.FlashSuccess(Constants.Messages.FORM_UPDATE, DescriptionFormatter.GetDescription(model));
                 return RedirectToAction("Edit", new { id = id });
             }
 
+            this.FlashError(Constants.Messages.FORM_FAIL);
             return View(model);
         }
 
@@ -111,7 +114,7 @@ namespace ReadingTool.Site.Controllers.User
             Language l = _languageService.Find(id);
             _languageService.Delete(l);
 
-            this.FlashSuccess("Language {0} deleted", l.Name);
+            this.FlashSuccess(Constants.Messages.FORM_DELETE, DescriptionFormatter.GetDescription<Language>() + " " + l.Name);
             return RedirectToAction("Index");
         }
 
@@ -122,7 +125,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(language == null)
             {
-                this.FlashError("Lannguage not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Language>());
                 return RedirectToAction("Index");
             }
 
@@ -136,7 +139,8 @@ namespace ReadingTool.Site.Controllers.User
 
             if(language == null)
             {
-                this.FlashError("Lannguage not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Language>());
+
                 return RedirectToAction("Index");
             }
 
@@ -157,9 +161,11 @@ namespace ReadingTool.Site.Controllers.User
 
                 _languageService.Save(language);
 
-                this.FlashSuccess("Dictionary added");
+                this.FlashSuccess(Constants.Messages.FORM_ADD, DescriptionFormatter.GetDescription(model));
                 return RedirectToAction("Dictionaries", new { id = id });
             }
+
+            this.FlashError(Constants.Messages.FORM_FAIL);
 
             return View(new DictionaryViewModel() { LanguageId = language.Id });
         }
@@ -171,7 +177,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(language == null)
             {
-                this.FlashError("Lannguage not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Language>());
                 return RedirectToAction("Index");
             }
 
@@ -179,7 +185,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(dictionary == null)
             {
-                this.FlashError("Dictionary not found");
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<LanguageDictionary>());
                 return RedirectToAction("Dictionaries", new { id = id });
             }
 
@@ -208,9 +214,11 @@ namespace ReadingTool.Site.Controllers.User
                 language.UpdateDictionary(dictionary);
                 _languageService.Save(language);
 
-                this.FlashSuccess("Dictionary updated");
+                this.FlashSuccess(Constants.Messages.FORM_UPDATE, DescriptionFormatter.GetDescription(model));
                 return RedirectToAction("EditDictionary", new { id = id, dictionaryId = dictionaryId });
             }
+
+            this.FlashError(Constants.Messages.FORM_FAIL);
 
             return View(model);
         }
@@ -227,7 +235,7 @@ namespace ReadingTool.Site.Controllers.User
                 _languageService.Save(language);
             }
 
-            this.FlashSuccess("Dictionary deleted");
+            this.FlashSuccess(Constants.Messages.FORM_DELETE, DescriptionFormatter.GetDescription<LanguageDictionary>());
             return RedirectToAction("Dictionaries", new { id = id });
         }
 

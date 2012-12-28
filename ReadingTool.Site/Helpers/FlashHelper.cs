@@ -132,7 +132,7 @@ namespace ReadingTool.Site.Helpers
         }
 
         /// <summary>
-        /// Renders the flash message(s) as HTML
+        /// Renders all the flash message(s) as HTML
         /// </summary>
         /// <param name="helper"></param>
         /// <returns></returns>
@@ -153,31 +153,46 @@ namespace ReadingTool.Site.Helpers
             {
                 foreach(var flashMessage in grouping)
                 {
-                    TagBuilder div = new TagBuilder("div");
-                    div.AddCssClass("flash-message");
-                    div.AddCssClass("alert");
-                    div.AddCssClass("alert-" + flashMessage.Level.ToString().ToLowerInvariant());
-
-                    TagBuilder a = new TagBuilder("a");
-                    a.AddCssClass("close");
-                    a.Attributes.Add("href", "#");
-                    a.Attributes.Add("onclick", "$(this).parent('.flash-message').fadeOut(); return false;");
-                    a.InnerHtml = "&times";
-
-                    TagBuilder p1 = new TagBuilder("p");
-                    TagBuilder p2 = new TagBuilder("p");
-                    TagBuilder span = new TagBuilder("span");
-                    span.SetInnerText(flashMessage.Message);
-
-                    p2.InnerHtml = span.ToString();
-                    div.InnerHtml = a.ToString() + p1.ToString() + p2.ToString();
-
-                    sb.Append(div.ToString());
+                    sb.Append(ConstructHtml(flashMessage.Message, flashMessage.Level));
                 }
             }
 
             sb.Append(clr10.ToString());
             return new MvcHtmlString(sb.ToString());
+        }
+
+        public static MvcHtmlString FlashMessage(this HtmlHelper helper, string message, Level level = Level.Info)
+        {
+            return ConstructHtml(message, level, false);
+        }
+
+        private static MvcHtmlString ConstructHtml(string message, Level level, bool includeClose = true)
+        {
+            TagBuilder div = new TagBuilder("div");
+            div.AddCssClass("flash-message");
+            div.AddCssClass("alert");
+            div.AddCssClass("alert-" + level.ToString().ToLowerInvariant());
+
+            if(includeClose)
+            {
+                TagBuilder a = new TagBuilder("a");
+                a.AddCssClass("close");
+                a.Attributes.Add("href", "#");
+                a.Attributes.Add("onclick", "$(this).parent('.flash-message').fadeOut(); return false;");
+                a.InnerHtml = "&times";
+
+                div.InnerHtml = a.ToString();
+            }
+
+            TagBuilder p1 = new TagBuilder("p");
+            TagBuilder p2 = new TagBuilder("p");
+            TagBuilder span = new TagBuilder("span");
+            span.SetInnerText(message);
+
+            p2.InnerHtml = span.ToString();
+            div.InnerHtml += p1.ToString() + p2.ToString();
+
+            return new MvcHtmlString(div.ToString());
         }
     }
 }

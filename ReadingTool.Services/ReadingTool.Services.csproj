@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationService.cs" />
+    <Compile Include="DeleteService.cs" />
     <Compile Include="TermService.cs" />
     <Compile Include="IParserService.cs" />
     <Compile Include="TextService.cs" />

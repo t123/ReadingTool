@@ -5,6 +5,15 @@ namespace ReadingTool.Core
 {
     public class Constants
     {
+        public class Messages
+        {
+            public const string FORM_FAIL = "Please correct the errors in the form below";
+            public const string FORM_ADD = "{0} saved";
+            public const string FORM_UPDATE = "{0} saved";
+            public const string FORM_DELETE = "{0} deleted";
+            public const string FORM_NOT_FOUND= "{0} not found";
+        }
+
         public class Roles
         {
             public const string ADMIN = "ADMIN";

@@ -52,5 +52,8 @@
 @Html.Partial("Partials/_templates", Model, ViewData)
 
 <script language="javascript" type="text/javascript">
-    
+    var source   = $("#test-template").html();
+    var template = Handlebars.compile(source);
+    var html     = template({ name: 'bob' });
+    console.log(html);
 </script>

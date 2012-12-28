@@ -202,6 +202,7 @@
     <Compile Include="Mappings\RegisterMappings.cs" />
     <Compile Include="Models\Account\SignInViewModel.cs" />
     <Compile Include="Models\Account\SignUpViewModel.cs" />
+    <Compile Include="Models\User\DeleteAccountModel.cs" />
     <Compile Include="Models\User\DictionaryViewModel.cs" />
     <Compile Include="Models\User\LanguageSettingsViewModel.cs" />
     <Compile Include="Models\User\LanguageViewModel.cs" />
@@ -464,6 +465,7 @@
     <Content Include="Scripts\reading\readingui.min.js.map">
       <DependentUpon>readingui.js</DependentUpon>
     </Content>
+    <Content Include="App_Data\dummy.sql" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <Content Include="Views\Shared\_Navigation.cshtml" />
@@ -480,6 +482,8 @@
     <Content Include="Views\User\Texts\Partials\_textarea.cshtml" />
     <Content Include="Views\User\Texts\Partials\_textmodal.cshtml" />
     <Content Include="Views\User\Texts\Partials\_templates.cshtml" />
+    <Content Include="Views\User\MyAccount\Partials\_menu.cshtml" />
+    <Content Include="Views\User\MyAccount\Delete.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

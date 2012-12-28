@@ -24,11 +24,13 @@ namespace ReadingTool.Services
     public class LanguageService : ILanguageService
     {
         private readonly IDbConnection _db;
+        private readonly IDeleteService _deleteService;
         private readonly IUserIdentity _identity;
 
-        public LanguageService(IDbConnection db, IPrincipal principal)
+        public LanguageService(IDbConnection db, IPrincipal principal, IDeleteService deleteService)
         {
             _db = db;
+            _deleteService = deleteService;
             _identity = principal.Identity as IUserIdentity;
         }
 
@@ -48,12 +50,7 @@ namespace ReadingTool.Services
 
         public void Delete(Language language)
         {
-            if(language == null)
-            {
-                return;
-            }
-
-            _db.DeleteById<Language>(language.Id);
+            _deleteService.DeleteLanguage(language);
         }
 
         public void Delete(Guid id)

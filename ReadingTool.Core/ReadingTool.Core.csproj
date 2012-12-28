@@ -45,6 +45,7 @@
     <Compile Include="Enums\LanguageDirection.cs" />
     <Compile Include="Enums\ModalBehaviour.cs" />
     <Compile Include="Enums\TermState.cs" />
+    <Compile Include="Formatters\DescriptionFormatter.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Formatters\EnumFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

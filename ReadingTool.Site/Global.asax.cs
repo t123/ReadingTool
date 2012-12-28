@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -65,14 +67,70 @@ namespace ReadingTool.Site
             RegisterMappings.Register();
 
             var connection = ContextPerRequest.Current;
-            //connection.DropAndCreateTable<Text>();
-            //connection.DropAndCreateTable<Tag>();
             //connection.DropAndCreateTable<SystemLanguage>();
-            //connection.DropAndCreateTable<Language>();
-            //connection.DropAndCreateTable<LanguageSettings>();
-            //connection.DropAndCreateTable<User>();
-            connection.DropAndCreateTable<Term>();
-            connection.DropAndCreateTable<IndividualTerm>();
+
+            if(connection.TableExists("LanguageSettings"))
+            {
+                connection.DeleteAll<LanguageSettings>();
+                connection.DropTable<LanguageSettings>();
+            }
+
+            if(connection.TableExists("Tag"))
+            {
+                connection.DeleteAll<Tag>();
+                connection.DropTable<Tag>();
+            }
+
+            if(connection.TableExists("Text"))
+            {
+                connection.DeleteAll<Text>();
+                connection.DropTable<Text>();
+            }
+
+            if(connection.TableExists("Language"))
+            {
+                connection.DeleteAll<Language>();
+                connection.DropTable<Language>();
+            }
+
+            if(connection.TableExists("Term"))
+            {
+                connection.DeleteAll<Term>();
+                connection.DropTable<Term>();
+            }
+
+            if(connection.TableExists("IndividualTerm"))
+            {
+                connection.DeleteAll<IndividualTerm>();
+                connection.DropTable<IndividualTerm>();
+            }
+
+            if(connection.TableExists("User"))
+            {
+                connection.DeleteAll<User>();
+                connection.DropTable<User>();
+            }
+
+            connection.CreateTable<User>();
+            connection.CreateTable<Language>();
+            connection.CreateTable<Text>();
+            connection.CreateTable<Term>();
+            connection.CreateTable<IndividualTerm>();
+            connection.CreateTable<Tag>();
+
+            using(StreamReader sr = new StreamReader(Path.Combine(Server.MapPath("~/App_Data"), "dummy.sql"), Encoding.UTF8))
+            {
+                while(!sr.EndOfStream)
+                {
+                    var line = sr.ReadLine();
+                    if(string.IsNullOrEmpty(line))
+                    {
+                        continue;
+                    }
+
+                    connection.ExecuteSql(line);
+                }
+            }
         }
 
         private void Application_BeginRequest()
