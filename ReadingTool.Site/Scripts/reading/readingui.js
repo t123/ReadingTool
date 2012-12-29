@@ -188,9 +188,6 @@ $('#btnSave').click(function () {
 $('#btnReset').click(function () {
     selectedWord.resetWord();
 });
-$('#btnRefresh').click(function () {
-    selectedWord.refreshSentence();
-});
 $('#increaseWord').click(function () {
     selectedWord.increaseWord();
 });

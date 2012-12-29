@@ -84,12 +84,13 @@ var SelectedWord = (function () {
     SelectedWord.prototype.resetWord = function () {
         console.log('reset word');
     };
-    SelectedWord.prototype.refreshSentence = function () {
+    SelectedWord.prototype.refreshSentence = function (element) {
         console.log('refresh sentence');
         this.sentence = this.getCurrentSentence();
-        if(!$('#sentence').parent('div').parent('div').hasClass('warning')) {
-            $('#sentence').parent('div').parent('div').addClass('warning');
+        if(!$(element).hasClass('refresh')) {
+            $(element).addClass('refresh');
         }
+        $(element).val(this.sentence);
         this.updateModalDisplay();
     };
     SelectedWord.prototype.increaseWord = function () {

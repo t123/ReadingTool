@@ -43,6 +43,7 @@ namespace ReadingTool.Services
             }
 
             term.TermPhrase = term.TermPhrase.Trim();
+            term.Length = (short)term.TermPhrase.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
             _db.Save(term);
 
             foreach(var it in term.IndividualTerms)
@@ -51,27 +52,27 @@ namespace ReadingTool.Services
             }
         }
 
-        private void Save(Guid termId, IndividualTerm term)
+        private void Save(Guid termId, IndividualTerm individual)
         {
-            if(term.Id == Guid.Empty)
+            if(individual.Id == Guid.Empty)
             {
-                term.TermId = termId;
-                term.Id = SequentialGuid.NewGuid();
-                term.Created = DateTime.Now;
+                individual.TermId = termId;
+                individual.Id = SequentialGuid.NewGuid();
+                individual.Created = DateTime.Now;
             }
 
-            term.Modified = DateTime.Now;
-            term.BaseTerm = term.BaseTerm.Trim();
-            term.Definition = term.Definition.Trim();
-            term.Sentence = term.Sentence.Trim();
-            term.Romanisation = term.Romanisation.Trim();
-            term.Tags = term.Tags.Trim().ToLowerInvariant();
+            individual.Modified = DateTime.Now;
+            individual.BaseTerm = individual.BaseTerm.Trim();
+            individual.Definition = individual.Definition.Trim();
+            individual.Sentence = individual.Sentence.Trim();
+            individual.Romanisation = individual.Romanisation.Trim();
+            individual.Tags = individual.Tags.Trim().ToLowerInvariant();
 
-            _db.Save(term);
+            _db.Save(individual);
 
-            var tags = TagHelper.Split(term.Tags);
-            _db.Delete<Tag>(x => x.TermId == term.Id);
-            _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = term.Id, TextId = null, Value = x }));
+            var tags = TagHelper.Split(individual.Tags);
+            _db.Delete<Tag>(x => x.TermId == individual.Id);
+            _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = individual.Id, TextId = null, Value = x }));
         }
 
         public void Delete(Term term)

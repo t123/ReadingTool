@@ -39,20 +39,6 @@ class SelectedWord {
                 termPhrase: this.selectedWord,
             }, function (data) => {
                 console.log(data);
-                //if (data == null) {
-                //    //new word
-                //    $('#unknownState').attr('checked', true);
-                //    $('#baseTerm').val('');
-                //    $('#romanisation').val('');
-                //    $('#definition').val('');
-                //    $('#tags').val('');
-                //    $('#sentence').val(this.selectedSentence);
-
-                //    $('#modalMessage').removeClass().addClass('label label-warning').html('new word, defaulted to unknown');
-                //} else {
-                //    this.selectedTermId = data.id;
-                //}
-
                 this.createTemplate(data);
                 this.updateModalDisplay();
             });
@@ -133,13 +119,15 @@ class SelectedWord {
         console.log('reset word');
     }
 
-    public refreshSentence() {
+    public refreshSentence(element) {
         console.log('refresh sentence');
         this.sentence = this.getCurrentSentence();
 
-        if (!$('#sentence').parent('div').parent('div').hasClass('warning')) {
-            $('#sentence').parent('div').parent('div').addClass('warning');
+        if (!$(element).hasClass('refresh')) {
+            $(element).addClass('refresh');
         }
+
+        $(element).val(this.sentence);
 
         this.updateModalDisplay();
     }

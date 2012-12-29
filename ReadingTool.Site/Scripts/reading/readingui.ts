@@ -184,7 +184,6 @@ $('#toggleL2').click(function () { ui.toggleL2(); return false; });
 $('#quickmode').click(function () { ui.toggleQuickmode(); return false; });
 $('#btnSave').click(function () { selectedWord.saveChanges(); });
 $('#btnReset').click(function () { selectedWord.resetWord(); });
-$('#btnRefresh').click(function () { selectedWord.refreshSentence(); });
 $('#increaseWord').click(function () { selectedWord.increaseWord(); });
 $('#decreaseWord').click(function () { selectedWord.decreaseWord(); });
 $('#minusRead').click(function () { ui.changeRead(-1); return false; });

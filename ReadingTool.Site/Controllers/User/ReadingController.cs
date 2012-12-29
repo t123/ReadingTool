@@ -213,7 +213,7 @@ namespace ReadingTool.Site.Controllers.User
                 if(Id == Guid.Empty)
                 {
                     Title = "New definition";
-                    Message = "new definition, defaulted to UNKNOWN";
+                    Message = "new definition";
                 }
                 else
                 {
