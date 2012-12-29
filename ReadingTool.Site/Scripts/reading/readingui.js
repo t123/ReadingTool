@@ -78,6 +78,9 @@ var ReadingToolUi = (function () {
         });
     };
     ReadingToolUi.prototype.openTextModal = function (isClick, event) {
+        if(this.modalVisible && this.settings.modalBehaviour == 'Rollover') {
+            return;
+        }
         if(!isClick && this.settings.modalBehaviour != 'Rollover') {
             return;
         }
@@ -225,14 +228,14 @@ var termDivTemplate = Handlebars.compile($("#term-div-template").html());
 var termMessageTemplate = Handlebars.compile($("#term-message-template").html());
 $(function () {
     if(ui.settings.modalBehaviour == 'Rollover') {
-        $('#textContent p span span').on('mouseenter', function (event) {
+        $(document).on('mouseenter', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function (event) {
             ui.openTextModal(false, event);
         });
     } else {
-        $('#textContent p span span').bind("contextmenu", function (event) {
+        $(document).on('contextmenu', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function (event) {
             return ui.settings.modalBehaviour != 'RightClick';
         });
-        $('#textContent p span span').on('mousedown', function (event) {
+        $(document).on('mousedown', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function (event) {
             ui.openTextModal(true, event);
         });
     }
@@ -241,6 +244,7 @@ $(function () {
         ui.modalVisible = true;
     });
     modal.on("hide", function () {
+        selectedWord.blankModal();
         modal.hide();
         ui.modalVisible = false;
         ui.audio.resumeAudio(ui.settings.keyBindings.autoPause, ui.wasPlaying);

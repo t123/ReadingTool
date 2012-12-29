@@ -249,19 +249,39 @@ namespace ReadingTool.Site.Controllers.User
 
         public JsonResult FindTerm(Guid languageId, string termPhrase)
         {
-            var term = _termService.Find(languageId, termPhrase);
-
-            if(term == null)
+            try
             {
-                term = new Term()
+                var term = _termService.Find(languageId, termPhrase);
+
+                if (term == null)
+                {
+                    term = new Term()
+                        {
+                            State = TermState.Unknown,
+                        };
+                }
+
+                term.AddIndividualTerm(new IndividualTerm() {Id = Guid.Empty, Created = DateTime.Now.AddYears(1)}, true);
+
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(FAIL)
                     {
-                        State = TermState.Unknown,
-                    };
+                        Message = "Could not find word",
+                        Data = new JsonTermResult(term)
+                    }
+                };
             }
-
-            term.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
-
-            return new JsonNetResult() { Data = new JsonTermResult(term) };
+            catch(Exception e)
+            {
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(FAIL)
+                    {
+                        Message = "Could not find word",
+                    }
+                };
+            }
         }
 
         public JsonResult Quicksave(Guid languageId, Guid textId, string termPhrase, string sentence, string state)
@@ -281,64 +301,81 @@ namespace ReadingTool.Site.Controllers.User
 
         public JsonResult SaveTerm(Guid languageId, Guid textId, Guid termId, string state, string termPhrase, JsonSaveTerm[] model)
         {
-            Term term = _termService.Find(languageId, termPhrase);
+            try
+            {
+                Term term = _termService.Find(languageId, termPhrase);
 
-            if(term == null)
-            {
-                term = new Term();
-                term.Box = 1;
-                term.Id = Guid.Empty;
-                term.LanguageId = languageId;
-                term.Length = 1;
-                term.NextReview = null;
-                term.State = Constants.ClassToTermStates[state];
-                term.TermPhrase = termPhrase;
-            }
-            else
-            {
-                term.State = Constants.ClassToTermStates[state];
-            }
-
-            foreach(var it in model ?? new JsonSaveTerm[] { })
-            {
-                if(it.Id == Guid.Empty)
+                if(term == null)
                 {
-                    term.AddIndividualTerm(new IndividualTerm()
-                        {
-                            BaseTerm = it.BaseTerm,
-                            Definition = it.Definition,
-                            Romanisation = it.Romanisation,
-                            Sentence = it.Sentence,
-                            Tags = it.Tags,
-                            TextId = textId
-                        });
+                    term = new Term();
+                    term.Box = 1;
+                    term.Id = Guid.Empty;
+                    term.LanguageId = languageId;
+                    term.Length = 1;
+                    term.NextReview = null;
+                    term.State = Constants.ClassToTermStates[state];
+                    term.TermPhrase = termPhrase;
                 }
                 else
                 {
-                    term.UpdateIndividualTerm(it.Id, new IndividualTerm()
-                    {
-                        BaseTerm = it.BaseTerm,
-                        Definition = it.Definition,
-                        Romanisation = it.Romanisation,
-                        Sentence = it.Sentence,
-                        Tags = it.Tags
-                    });
+                    term.State = Constants.ClassToTermStates[state];
                 }
-            }
 
-            _termService.Save(term);
-
-            Term newTerm = _termService.Find(languageId, termPhrase);
-            newTerm.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
-
-            return new JsonNetResult()
+                foreach(var it in model ?? new JsonSaveTerm[] { })
                 {
-                    Data = new ResponseMessage(OK)
-                        {
-                            Message = "Saved, state is " + term.State.ToDescription().ToUpperInvariant(),
-                            Data = new JsonTermResult(newTerm)
-                        }
+                    if(it.Id == Guid.Empty)
+                    {
+                        term.AddIndividualTerm(new IndividualTerm()
+                            {
+                                BaseTerm = it.BaseTerm,
+                                Definition = it.Definition,
+                                Romanisation = it.Romanisation,
+                                Sentence = it.Sentence,
+                                Tags = it.Tags,
+                                TextId = textId
+                            });
+                    }
+                    else
+                    {
+                        term.UpdateIndividualTerm(it.Id, new IndividualTerm()
+                            {
+                                BaseTerm = it.BaseTerm,
+                                Definition = it.Definition,
+                                Romanisation = it.Romanisation,
+                                Sentence = it.Sentence,
+                                Tags = it.Tags
+                            });
+                    }
+                }
+
+                _termService.Save(term);
+
+                Term newTerm = _termService.Find(languageId, termPhrase);
+                newTerm.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
+
+                return new JsonNetResult()
+                    {
+                        Data = new ResponseMessage(OK)
+                            {
+                                Message = "Saved, state is " + term.State.ToDescription().ToUpperInvariant(),
+                                Data = new
+                                    {
+                                        termPhrase = term.TermPhrase.ToLowerInvariant(), 
+                                        term = new JsonTermResult(newTerm)
+                                    }
+                            }
+                    };
+            }
+            catch
+            {
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(FAIL)
+                    {
+                        Message = "Save failed"
+                    }
                 };
+            }
         }
     }
 }

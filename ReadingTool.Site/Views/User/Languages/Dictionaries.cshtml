@@ -39,7 +39,7 @@
     <button class="btn" onclick="updateOrder('.table');">
         Save dictionary order
     </button>
-    <i id="result" class="icon-ok-sign" style="display: none"> </i>
+    <i id="result" class="icon-ok-circle" style="display: none"> </i>
     
     if(Model.Dictionaries.Count()>1)
     {
@@ -62,7 +62,7 @@
                      '@Url.Action("UpdateOrder", new { id=Model.Id})', { ids: ids },
                      function (result) {
                          if(result=="OK") {
-                             $('#result').removeClass().addClass('icon-ok-sign').show().fadeOut(2000);
+                             $('#result').removeClass().addClass('icon-ok-circle').show().fadeOut(2000);
                          } else {
                              $('#result').removeClass().addClass('icon-exclamation-sign').show().fadeOut(2000);
                          }

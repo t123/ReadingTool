@@ -3,7 +3,11 @@ var SelectedWord = (function () {
         this.settings = settings;
         this.element = element;
         this.length = 1;
-        this.selectedWord = $(this.element).html();
+        if($(this.element).hasClass(this.settings.classes.multiClass)) {
+            this.selectedWord = $(this.element).data('phrase');
+        } else {
+            this.selectedWord = $(this.element).html();
+        }
         this.selectedSentence = this.getCurrentSentence();
         this.findTerm();
     }
@@ -14,9 +18,8 @@ var SelectedWord = (function () {
             languageId: this.settings.languageId,
             termPhrase: this.selectedWord
         }, function (data) {
-            console.log(data);
             _this.updateModalDisplay();
-            _this.createTemplate(data);
+            _this.createTemplate(data.data);
         });
     };
     SelectedWord.prototype.createTemplate = function (data) {
@@ -71,16 +74,45 @@ var SelectedWord = (function () {
         if(currentIndex < 0) {
             currentIndex = 1;
         }
+        $('.modal-footer').removeClass('failed');
+        $('#iconResult').hide();
         $.post(this.settings.ajaxUrl + '/save-term', $('#formTerms').serialize(), function (data) {
+            console.log('saving term changes');
+            console.log(data);
             if(data.result == "OK") {
                 $('#termMessage').removeClass('label-info').addClass('label-success').html(data.message);
-                _this.createTemplate(data.data);
+                _this.createTemplate(data.data.term);
                 ($('#tabTermDefintions a')).eq(currentIndex).tab('show');
                 _this.updateModalDisplay();
+                $('#iconResult').removeClass().addClass('icon-ok-circle').show().fadeOut(2000);
+                _this.updateTermClasses(data.data.termPhrase, data.data.term);
             } else {
-                $('#termMessage').removeClass('label-info').addClass('label-error').html(data.message);
+                $('#termMessage').removeClass().addClass('label label-important').html(data.message);
+                $('.modal-footer').addClass('failed');
+                $('#iconResult').removeClass().addClass('icon-exclamation-sign icon-white').show().fadeOut(2000);
             }
         });
+    };
+    SelectedWord.prototype.updateTermClasses = function (termPhrase, term) {
+        if(term.length == 1) {
+            $('#textContent .' + termPhrase).removeClass(this.settings.classes.knownClass + ' ' + this.settings.classes.unknownClass + ' ' + this.settings.classes.ignoredClass + ' ' + this.settings.classes.notseenClass + ' box1 box2 box3 box4 box5 box6 box7 box8 box9').addClass(term.stateClass == this.settings.classes.unknownClass ? 'box' + term.box : term.stateClass);
+        } else {
+            var toPrepend = $(this.element).prev('span');
+            if(toPrepend.length == 0) {
+                toPrepend = $(this.element).parent();
+                var prependString = '&nbsp;<sup><span';
+                prependString += ' class="' + term.id + ' ' + this.settings.classes.multiClass + ' ' + term.stateClass + '"';
+                prependString += ' data-id="' + term.id + '"';
+                prependString += ' data-phrase="' + termPhrase + '"';
+                prependString += '>' + term.length + '</span></sup>';
+                console.log(prependString);
+                toPrepend.prepend(prependString);
+            } else {
+                console.log('&nbsp;<sup><span class="' + this.settings.classes.multiClass + ' ' + term.stateClass + '">' + term.length + '</span></sup>');
+                toPrepend.prepend('&nbsp;<sup><span class="' + this.settings.classes.multiClass + ' ' + term.stateClass + '">' + term.length + '</span></sup>');
+            }
+            $('#textContent sup .' + term.id).removeClass(this.settings.classes.knownClass + ' ' + this.settings.classes.unknownClass + ' ' + this.settings.classes.ignoredClass + ' ' + this.settings.classes.notseenClass + ' box1 box2 box3 box4 box5 box6 box7 box8 box9').addClass(term.stateClass == this.settings.classes.unknownClass ? 'box' + term.box : term.stateClass);
+        }
     };
     SelectedWord.prototype.resetWord = function () {
         console.log('reset word');
@@ -131,11 +163,10 @@ var SelectedWord = (function () {
                     dictionaryId: id,
                     input: input
                 }, function (data) {
-                    if(data.Result == "OK") {
-                        anchor.attr('href', data.Message);
+                    if(data.result == "OK") {
+                        anchor.attr('href', data.message);
                         if(auto) {
                             anchor[0].click();
-                            console.log(auto);
                         }
                     }
                 });
@@ -198,6 +229,14 @@ var SelectedWord = (function () {
             sentence += nodeContent;
         });
         return $.trim(sentence);
+    };
+    SelectedWord.prototype.blankModal = function () {
+        $('#termId').val('');
+        $('#termPhrase').val('');
+        $('#tabTermDefintions').html('');
+        $('#tabContent').html('');
+        $('#termMessages').html('');
+        $('#selectedWord').html('');
     };
     return SelectedWord;
 })();

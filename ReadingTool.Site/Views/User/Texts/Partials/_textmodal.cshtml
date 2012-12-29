@@ -27,8 +27,8 @@
         </div>
         <div>
             <form class="form-horizontal" id="formTerms">
-                <input type="hidden" name="LanguageId" value="@Model.Language.Id"/>
-                <input type="hidden" name="TextId" value="@Model.Text.Id"/>
+                <input type="hidden" name="LanguageId" id="languageId" value="@Model.Language.Id"/>
+                <input type="hidden" name="TextId" id="textId" value="@Model.Text.Id"/>
                 <input type="hidden" name="TermId" id="termId" />
                 <input type="hidden" name="TermPhrase" id="termPhrase" />
                 <ul id="tabTermDefintions" class="nav nav-tabs">
@@ -49,6 +49,7 @@
     </div>
     <div class="modal-footer">
         <div class="pull-left" id="termMessages"></div>
+        <i class="" style="display: none" id="iconResult"> </i>
         <button class="btn btn-success" title="ctrl-enter to save & close" id="btnSave">Save</button>
         <button class="btn btn-danger btn-mini" id="btnReset">Reset</button>
         <button class="btn btn-link" data-dismiss="modal" aria-hidden="true" title="escape to close without saving">close without saving</button>

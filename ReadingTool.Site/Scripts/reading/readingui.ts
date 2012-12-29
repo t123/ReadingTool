@@ -108,6 +108,7 @@ class ReadingToolUi {
     }
 
     openTextModal(isClick: bool, event: any) {
+        if (this.modalVisible && this.settings.modalBehaviour == 'Rollover') return;
         if (!isClick && this.settings.modalBehaviour != 'Rollover') return;
         if (this.settings.quickmode) return;
 
@@ -205,16 +206,18 @@ var termUlTemplate = Handlebars.compile($("#term-ul-template").html());
 var termDivTemplate = Handlebars.compile($("#term-div-template").html());
 var termMessageTemplate = Handlebars.compile($("#term-message-template").html());
 
+
+
 $(function () {
     //Bind the mouse rollover to the spans
     if (ui.settings.modalBehaviour == 'Rollover') {
-        $('#textContent p span span').on('mouseenter', function (event) { ui.openTextModal(false, event); });
+        $(document).on('mouseenter', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function(event) {  ui.openTextModal(false, event); });
     } else {
         //Stop the context menu on rightclick
-        $('#textContent p span span').bind("contextmenu", function (event) { return ui.settings.modalBehaviour != 'RightClick'; });
+        $(document).on('contextmenu', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function(event) { return ui.settings.modalBehaviour != 'RightClick'; });
 
         //Bind the clicks
-        $('#textContent p span span').on('mousedown', function (event) { ui.openTextModal(true, event); });
+        $(document).on('mousedown', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function(event) { ui.openTextModal(true, event); });
     }
 
     modal = $("#myModal");
@@ -224,6 +227,7 @@ $(function () {
     });
 
     modal.on("hide", function () {
+        selectedWord.blankModal();
         modal.hide();
         ui.modalVisible = false;
         ui.audio.resumeAudio(ui.settings.keyBindings.autoPause, ui.wasPlaying);
