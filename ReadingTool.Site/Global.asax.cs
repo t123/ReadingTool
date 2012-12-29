@@ -111,12 +111,19 @@ namespace ReadingTool.Site
                 connection.DropTable<User>();
             }
 
-            connection.CreateTable<User>();
-            connection.CreateTable<Language>();
-            connection.CreateTable<Text>();
-            connection.CreateTable<Term>();
-            connection.CreateTable<IndividualTerm>();
-            connection.CreateTable<Tag>();
+            if(connection.TableExists("Sequence"))
+            {
+                connection.DeleteAll<Sequence>();
+                connection.DropTable<Sequence>();
+            }
+
+            connection.CreateTable<User>(true);
+            connection.CreateTable<Language>(true);
+            connection.CreateTable<Text>(true);
+            connection.CreateTable<Term>(true);
+            connection.CreateTable<IndividualTerm>(true);
+            connection.CreateTable<Tag>(true);
+            connection.CreateTable<Sequence>(true);
 
             using(StreamReader sr = new StreamReader(Path.Combine(Server.MapPath("~/App_Data"), "dummy.sql"), Encoding.UTF8))
             {

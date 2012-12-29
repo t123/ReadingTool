@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
@@ -18,11 +19,13 @@ namespace ReadingTool.Site.Controllers.User
     {
         private readonly ILanguageService _languageService;
         private readonly ISystemLanguageService _systemLanguageService;
+        private readonly ISequenceService _sequenceService;
 
-        public LanguagesController(ILanguageService languageService, ISystemLanguageService systemLanguageService)
+        public LanguagesController(ILanguageService languageService, ISystemLanguageService systemLanguageService, ISequenceService sequenceService)
         {
             _languageService = languageService;
             _systemLanguageService = systemLanguageService;
+            _sequenceService = sequenceService;
         }
 
         public ActionResult Index()
@@ -157,6 +160,7 @@ namespace ReadingTool.Site.Controllers.User
             {
                 LanguageDictionary ld = Mapper.Map<DictionaryViewModel, LanguageDictionary>(model);
                 ld.Id = Guid.NewGuid();
+                ld.DisplayOrder = _sequenceService.Next();
                 language.AddDictionary(ld);
 
                 _languageService.Save(language);
@@ -248,7 +252,46 @@ namespace ReadingTool.Site.Controllers.User
                     suggestions = l.Select(x => x.Name).ToArray()
                 };
 
-            return new JsonResult() { Data = response };
+            return new JsonNetResult() { Data = response };
+        }
+
+        public JsonResult UpdateOrder(Guid id, IEnumerable<Guid> ids)
+        {
+            try
+            {
+                //if(!string.IsNullOrEmpty(ids))
+                if(ids != null && ids.Any())
+                {
+                    var l = _languageService.Find(id);
+
+                    if(l == null)
+                    {
+                        throw new Exception("Language is null");
+                    }
+
+                    //Guid[] guids = JsonConvert.DeserializeObject<Guid[]>(ids);
+                    int counter = 1;
+                    foreach(var did in ids)
+                    {
+                        var dictionary = l.Dictionaries.FirstOrDefault(x => x.Id == did);
+
+                        if(dictionary == null)
+                        {
+                            continue;
+                        }
+
+                        dictionary.DisplayOrder = counter++;
+                    }
+
+                    _languageService.Save(l);
+                }
+
+                return new JsonNetResult() { Data = "OK", JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
+            catch
+            {
+                return new JsonNetResult() { Data = "FAIL", JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
         }
     }
 }

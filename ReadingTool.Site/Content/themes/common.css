@@ -103,8 +103,23 @@
   margin-left: 120px;
 }
 #readingbuttons {
-  width: 400px;
+  width: 600px;
 }
 #readingbuttons li {
   padding: 8px 0px 8px 0px;
+}
+.submenu {
+  margin-left: 20px;
+}
+.submenu .nav {
+  margin-bottom: 0px;
+}
+.submenu .ul {
+  margin: 0 0 0 25px;
+}
+#dictionaries {
+  margin-bottom: 0px;
+}
+#formTerms .control-group {
+  margin-bottom: 10px;
 }

@@ -40,9 +40,7 @@
 }
 else
 {
-    <text>
-    <div class="alert alert-info">You do not have any texts yet.</div>
-    </text>
+    @Html.FlashMessage("You have not added any texts yet")
 }
 
 @Html.ActionLink("add a new text", "Add", new { }, new { @class = "btn btn-primary" })

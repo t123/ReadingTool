@@ -1,6 +1,8 @@
 /// <reference path="settings.ts"/>
 /// <reference path="jquery.d.ts"/>
 
+declare var Handlebars;
+
 class SelectedWord {
     settings: Settings;
     element: any;
@@ -8,6 +10,7 @@ class SelectedWord {
     /// The word the user has clicked on
     selectedWord: string;
     selectedSentence: string;
+    selectedTermId: string;
 
     sentence: string;
     baseTerm: string;
@@ -36,21 +39,54 @@ class SelectedWord {
                 termPhrase: this.selectedWord,
             }, function (data) => {
                 console.log(data);
-                if (data == null) {
-                    //new word
-                    $('#unknownState').attr('checked', true);
-                    $('#baseTerm').val('');
-                    $('#romanisation').val('');
-                    $('#definition').val('');
-                    $('#tags').val('');
-                    $('#sentence').val(this.selectedSentence);
+                //if (data == null) {
+                //    //new word
+                //    $('#unknownState').attr('checked', true);
+                //    $('#baseTerm').val('');
+                //    $('#romanisation').val('');
+                //    $('#definition').val('');
+                //    $('#tags').val('');
+                //    $('#sentence').val(this.selectedSentence);
 
-                    $('#modalMessage').removeClass().addClass('label label-warning').html('new word, defaulted to unknown');
-                } else {
-                }
+                //    $('#modalMessage').removeClass().addClass('label label-warning').html('new word, defaulted to unknown');
+                //} else {
+                //    this.selectedTermId = data.id;
+                //}
 
+                this.createTemplate(data);
                 this.updateModalDisplay();
             });
+    }
+
+    private createTemplate(data) {
+        var ulSource = $("#term-ul-template").html();
+        var ulTemplate = Handlebars.compile(ulSource);
+        var ulHtml = ulTemplate(data);
+
+        var divSource = $("#term-div-template").html();
+        var divTemplate = Handlebars.compile(divSource);
+        var divHtml = divTemplate(data);
+
+        var messageSource = $("#term-message-template").html();
+        var messageTemplate = Handlebars.compile(messageSource);
+        var messageHtml = messageTemplate(data);
+
+        $('#tabTermDefintions').html(ulHtml);
+        $('#tabContent').html(divHtml);
+        $('#termMessages').html(messageHtml);
+        $('#currentBox').html(data.box);
+        $('#termMessage').html(data.message);
+        
+        if (data.id == '00000000-0000-0000-0000-000000000000') {
+            $('#termMessage').removeClass('label-info').addClass('label-warning');
+        }
+
+        for (var i = 0; i < data.individualTerms.length; i++) {
+            var it = data.individualTerms[i];
+        }
+
+        (<any>$('#tabTermDefintions a:first')).tab('show');
+        $('#itermMessage0').show();
     }
 
     private updateModalDisplay() {
@@ -63,7 +99,7 @@ class SelectedWord {
         $.post(this.settings.ajaxUrl + '/save-term',
             {
             }, function (data) {
-                if (data.Result == "OK") {
+                if (data.result == "OK") {
                     $('#modalMessage').removeClass().addClass('label label-success').html(data.Message);
                     $('#currentBox').removeClass().addClass('badge badge-success').html(data.Data.Box);
                 } else {
@@ -79,7 +115,7 @@ class SelectedWord {
     public refreshSentence() {
         console.log('refresh sentence');
         this.sentence = this.getCurrentSentence();
-        
+
         if (!$('#sentence').parent('div').parent('div').hasClass('warning')) {
             $('#sentence').parent('div').parent('div').addClass('warning');
         }
@@ -109,10 +145,10 @@ class SelectedWord {
             var urlEncode = anchor.data('urlencode');
             var url = anchor.data('url');
             var auto = anchor.data('autoopen');
-            var input = parameter=='sentence' ? this.selectedSentence : this.selectedWord;
-            
-            if(auto==undefined) auto = false;
-            
+            var input = parameter == 'sentence' ? this.selectedSentence : this.selectedWord;
+
+            if (auto == undefined) auto = false;
+
             if (urlEncode) {
                 $.post(
                     this.settings.ajaxUrl + '/encode-term',
@@ -121,11 +157,11 @@ class SelectedWord {
                         dictionaryId: id,
                         input: input
                     },
-                    function(data) {
+                    function (data) {
                         if (data.Result == "OK") {
                             anchor.attr('href', data.Message);
-                            
-                            if(auto) {
+
+                            if (auto) {
                                 anchor[0].click();
                                 console.log(auto);
                             }
@@ -134,7 +170,7 @@ class SelectedWord {
                 );
             } else {
                 anchor.attr('href', url.replace('###', input));
-                if(auto) {
+                if (auto) {
                     anchor[0].click();
                 }
             }
@@ -164,7 +200,7 @@ class SelectedWord {
         this.updateModalDisplay();
     }
 
-    private getCurrentSentence() : string {
+    private getCurrentSentence(): string {
         console.log('get current sentence');
 
         var sentenceNode = $(this.element).parent();
@@ -190,7 +226,7 @@ class SelectedWord {
         return sentence;
     }
 
-    private buildSentence(elements: any) : string {
+    private buildSentence(elements: any): string {
         var sentence = '';
         elements.each(function (index, node) {
             if (node.nodeName == 'SUP') return;

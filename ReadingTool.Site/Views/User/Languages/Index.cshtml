@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(var l in Model)
+            @foreach(var l in Model.OrderBy(x=>x.Name, StringComparer.InvariantCultureIgnoreCase))
             {
                 <tr>
                     <td>@ViewHelpers.FormatLanguage(l)</td>
@@ -35,9 +35,7 @@
 }
 else
 {
-    <text>
-    <div class="alert alert-info">You do not have any languages defined yet.</div>
-    </text>
+    @Html.FlashMessage("You have not added any languages yet")
 }
 
 @Html.ActionLink("add a new language", "Add", new { }, new { @class = "btn btn-primary" })

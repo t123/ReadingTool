@@ -1,34 +1,15 @@
-var Class = (function () {
-    function Class() { }
-    return Class;
-})();
-var Dictionary = (function () {
-    function Dictionary() {
-    }
-    return Dictionary;
-})();
-var KeyBindings = (function () {
-    function KeyBindings() {
-        this.autoPause = true;
-        this.controlsEnabled = true;
-    }
-    return KeyBindings;
-})();
-var Settings = (function () {
-    function Settings() {
-        this.classes = new Class();
-        this.keyBindings = new KeyBindings();
-    }
-    return Settings;
-})();
+var _this = this;
 var ReadingToolUi = (function () {
     function ReadingToolUi(settings) {
         this.isPlaying = false;
         this.wasPlaying = false;
         this.hasChanged = false;
+        this.modalVisible = false;
         this.settings = settings;
-        this.reading = new Reading();
         if(settings.hasAudio) {
+            this.audio = new AudioPlayer(this.settings);
+        } else {
+            this.audio = new NullAudioPlayer();
         }
     }
     ReadingToolUi.prototype.toggleL1 = function () {
@@ -36,12 +17,22 @@ var ReadingToolUi = (function () {
         if(li.hasClass('active')) {
             li.removeClass('active');
             this.closeTextModal();
-            $('td.f p span').hide();
-            $('#textContent p span').hide();
+            if(this.settings.asParallel) {
+                if($('#textContent td.s').length > 0) {
+                    $('#textContent table td.f span').hide();
+                } else {
+                    $('#textContent p span').hide();
+                }
+            } else {
+                $('#textContent p span').hide();
+            }
         } else {
             li.addClass('active');
-            $('td.f p span').show();
-            $('#textContent p span').show();
+            if(this.settings.asParallel) {
+                $('td.f p span').show();
+            } else {
+                $('#textContent p span').show();
+            }
         }
     };
     ReadingToolUi.prototype.toggleL2 = function () {
@@ -64,82 +55,118 @@ var ReadingToolUi = (function () {
             li.removeClass('active');
         }
     };
-    ReadingToolUi.prototype.openTextModal = function (isClick) {
+    ReadingToolUi.prototype.changeRead = function (direction) {
+        var words = $('#totalWords').data('value');
+        $.post(this.settings.ajaxUrl + '/change-read', {
+            textId: this.settings.textId,
+            direction: direction,
+            words: words
+        }, function (data) {
+            if(data.result == "OK") {
+                $('#timesRead').html(data.message);
+            }
+        });
+    };
+    ReadingToolUi.prototype.changeListened = function (direction) {
+        $.post(this.settings.ajaxUrl + '/change-listened', {
+            textId: this.settings.textId,
+            direction: direction
+        }, function (data) {
+            if(data.result == "OK") {
+                $('#timesListened').html(data.message);
+            }
+        });
+    };
+    ReadingToolUi.prototype.openTextModal = function (isClick, event) {
         if(!isClick && this.settings.modalBehaviour != 'Rollover') {
             return;
         }
         if(this.settings.quickmode) {
             return;
         }
-        if($('#textModal').is(":visible")) {
+        if(this.modalVisible) {
             this.closeTextModal();
             return;
         }
         if($(this).hasClass(this.settings.classes.punctuationClass) || $(this).hasClass(this.settings.classes.spaceClass)) {
             return;
         }
+        if(isClick) {
+            switch(this.settings.modalBehaviour) {
+                case 'LeftClick': {
+                    if(event.which != 1) {
+                        return;
+                    }
+                    if(event.altKey || event.shiftKey || event.ctrlKey) {
+                        return;
+                    }
+                    break;
+
+                }
+                case 'CtrlLeftClick': {
+                    if(event.which != 1 || !event.ctrlKey) {
+                        return;
+                    }
+                    if(event.altKey || event.shiftKey) {
+                        return;
+                    }
+                    break;
+
+                }
+                case 'ShiftLeftClick': {
+                    if(event.which != 1 || !event.shiftKey) {
+                        return;
+                    }
+                    if(event.altKey || event.ctrlKey) {
+                        return;
+                    }
+                    break;
+
+                }
+                case 'MiddleClick': {
+                    if(event.which != 2) {
+                        return;
+                    }
+                    if(event.altKey || event.shiftKey || event.ctrlKey) {
+                        return;
+                    }
+                    break;
+
+                }
+                case 'RightClick': {
+                    if(event.which != 3) {
+                        return;
+                    }
+                    if(event.altKey || event.shiftKey || event.ctrlKey) {
+                        return;
+                    }
+                    break;
+
+                }
+                default: {
+                    return;
+
+                }
+            }
+            if(this.settings.quickmode) {
+                if($(this).hasClass(this.settings.classes.notseenClass)) {
+                } else {
+                }
+                ; ;
+                return;
+            }
+        }
         if(this.isPlaying) {
             this.wasPlaying = true;
         }
         if(this.isPlaying && this.settings.keyBindings.autoPause) {
-            this.audioPlayer.pause();
+            this.audio.pauseAudio();
         }
+        selectedWord = new SelectedWord(this.settings, event.srcElement);
+        modal.modal('show');
     };
     ReadingToolUi.prototype.closeTextModal = function () {
-    };
-    ReadingToolUi.prototype.pauseAudio = function () {
-        if(this.audioPlayer == null) {
-            return;
-        }
-        this.audioPlayer.pause();
-    };
-    ReadingToolUi.prototype.resumeAudio = function () {
-        if(this.audioPlayer == null) {
-            return;
-        }
-        if(this.settings.keyBindings.autoPause && this.wasPlaying) {
-            this.audioPlayer.currentTime = this.audioPlayer.currentTime - 0.5;
-            this.audioPlayer.play();
-        }
-    };
-    ReadingToolUi.prototype.increaseVolume = function () {
-        if(this.audioPlayer == null) {
-            return;
-        }
-        if(this.audioPlayer.volume < 1) {
-            this.audioPlayer.volume = this.audioPlayer.volume + 0.1;
-        }
-    };
-    ReadingToolUi.prototype.decreaseVolume = function () {
-        if(this.audioPlayer == null) {
-            return;
-        }
-        if(this.audioPlayer.volume > 0) {
-            this.audioPlayer.volume = this.audioPlayer.volume - 0.1;
-        }
-    };
-    ReadingToolUi.prototype.speedUpAudio = function () {
-        if(this.audioPlayer == null) {
-            return;
-        }
-        if(this.audioPlayer.playbackRate < 2) {
-            this.audioPlayer.playbackRate = this.audioPlayer.playbackRate + 0.1;
-        }
-    };
-    ReadingToolUi.prototype.slowDownAudio = function () {
-        if(this.audioPlayer == null) {
-            return;
-        }
-        if(this.audioPlayer.playbackRate > 0) {
-            this.audioPlayer.playbackRate = this.audioPlayer.playbackRate - 0.1;
-        }
-    };
-    ReadingToolUi.prototype.restartAudio = function () {
-        if(this.audioPlayer == null) {
-            return;
-        }
-        this.audioPlayer.currentTime = 0;
-        this.audioPlayer.play();
+        modal.modal('hide');
     };
     return ReadingToolUi;
 })();
@@ -155,12 +182,92 @@ $('#quickmode').click(function () {
     ui.toggleQuickmode();
     return false;
 });
-$('#textContent p span span').bind("contextmenu", function (event) {
-    return ui.settings.modalBehaviour != 'RightClick';
+$('#btnSave').click(function () {
+    selectedWord.saveChanges();
 });
-$('#textContent p span span').on('mousedown', function (event) {
-    ui.openTextModal(true);
+$('#btnReset').click(function () {
+    selectedWord.resetWord();
 });
-$('#textContent p span span').on('mouseenter', function (event) {
-    ui.openTextModal(false);
+$('#btnRefresh').click(function () {
+    selectedWord.refreshSentence();
+});
+$('#increaseWord').click(function () {
+    selectedWord.increaseWord();
+});
+$('#decreaseWord').click(function () {
+    selectedWord.decreaseWord();
+});
+$('#minusRead').click(function () {
+    ui.changeRead(-1);
+    return false;
+});
+$('#plusRead').click(function () {
+    ui.changeRead(1);
+    return false;
+});
+$('#minusListened').click(function () {
+    ui.changeListened(-1);
+    return false;
+});
+$('#plusListened').click(function () {
+    ui.changeListened(1);
+    return false;
+});
+var modal;
+var selectedWord;
+$.fn.animateHighlight = function (highlightColor, duration) {
+    var highlightBg = highlightColor || "#FFFF9C";
+    var animateMs = duration || 1500;
+    var originalBg = this.css("backgroundColor");
+    this.stop().css("background-color", highlightBg).animate({
+        backgroundColor: originalBg
+    }, animateMs);
+};
+$(function () {
+    if(ui.settings.modalBehaviour == 'Rollover') {
+        $('#textContent p span span').on('mouseenter', function (event) {
+            ui.openTextModal(false, event);
+        });
+    } else {
+        $('#textContent p span span').bind("contextmenu", function (event) {
+            return ui.settings.modalBehaviour != 'RightClick';
+        });
+        $('#textContent p span span').on('mousedown', function (event) {
+            ui.openTextModal(true, event);
+        });
+    }
+    modal = $("#myModal");
+    modal.on("show", function () {
+        ui.modalVisible = true;
+    });
+    modal.on("hide", function () {
+        modal.hide();
+        ui.modalVisible = false;
+        ui.audio.resumeAudio(ui.settings.keyBindings.autoPause, ui.wasPlaying);
+    });
+    modal.modal({
+        show: false,
+        keyboard: true,
+        backdrop: false
+    });
+});
+$(document).keyup(function (event) {
+    var code = (event.keyCode ? event.keyCode : event.which);
+    if(ui.modalVisible) {
+        if(code == 27) {
+            ui.closeTextModal();
+        } else {
+            if((event).ctrlKey && code == 13) {
+                selectedWord.saveChanges();
+                ui.closeTextModal();
+            }
+        }
+    }
+});
+$('#tabTermDefintions').on("click", "li", function (e) {
+    e.preventDefault();
+    ($(_this)).tab('show');
+    var message = $(e.target).data('messageid');
+    $('.itermMessage').hide();
+    $('#' + message).show();
 });

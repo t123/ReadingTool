@@ -74,6 +74,7 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<IDeleteService>().To<DeleteService>();
             kernel.Bind<IDbConnection>().ToMethod(x => ContextPerRequest.Current);
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
+            kernel.Bind<ISequenceService>().To<SequenceService>();
 
             kernel.Bind<OrmLiteConnectionFactory>().ToMethod
                 (

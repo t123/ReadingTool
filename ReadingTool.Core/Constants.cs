@@ -35,7 +35,7 @@ namespace ReadingTool.Core
             public static string SPACE = @"wsx";
         }
 
-        public static readonly Dictionary<TermState, string> TermStatesToNames = new Dictionary<TermState, string>()
+        public static readonly Dictionary<TermState, string> TermStatesToClass = new Dictionary<TermState, string>()
             {
                 {TermState.Unknown, Constants.TermStates.UNKNOWN},
                 {TermState.Known, Constants.TermStates.KNOWN},

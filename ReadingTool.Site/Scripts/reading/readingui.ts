@@ -89,8 +89,8 @@ class ReadingToolUi {
             direction: direction,
             words: words
         }, function (data) => {
-            if (data.Result == "OK") {
-                $('#timesRead').html(data.Message);
+            if (data.result == "OK") {
+                $('#timesRead').html(data.message);
             }
         });
     }
@@ -101,8 +101,8 @@ class ReadingToolUi {
             textId: this.settings.textId,
             direction: direction
         }, function (data) => {
-            if (data.Result == "OK") {
-                $('#timesListened').html(data.Message);
+            if (data.result == "OK") {
+                $('#timesListened').html(data.message);
             }
         });
     }
@@ -239,4 +239,12 @@ $(document).keyup(function (event) {
             ui.closeTextModal();
         }
     }
+});
+
+$('#tabTermDefintions').on("click", "li", function (e) => {
+    e.preventDefault();
+    (<any>$(this)).tab('show');
+    var message = $(e.target).data('messageid');
+    $('.itermMessage').hide();
+    $('#' + message).show();
 });

@@ -99,7 +99,7 @@ namespace ReadingTool.Services
 
             text = text.Replace("{", "[").Replace("}", "]");
 
-            foreach(var replacement in settings.CharacterSubstitutions.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach(var replacement in (settings.CharacterSubstitutions ?? string.Empty).Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
             {
                 var fromTo = replacement.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -116,7 +116,7 @@ namespace ReadingTool.Services
                 //text = Regex.Replace(text, @"(" + settings.ExceptionSplitSentences + @")\s", "$1‧"); //$s = preg_replace('/(' . $noSentenceEnd . ')\s/u', '$1‧', $s);
             }
 
-            text = Regex.Replace(text, @"([" + settings.RegexSplitSentences + @"¶])\s", "$1\n");
+            text = Regex.Replace(text, @"([" + (settings.RegexSplitSentences ?? string.Empty) + @"¶])\s", "$1\n");
             //$s = preg_replace('/([' . $splitSentence . '¶])\s/u', "$1\n", $s);
 
             //text = text.Replace("¶", "\n");
@@ -266,12 +266,12 @@ namespace ReadingTool.Services
 
             var toTake = (int)Math.Ceiling(totalWords / 1000f) * 20;
 
-            var knownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToNames[TermState.Known]);
-            var unknownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToNames[TermState.Unknown]);
-            var notseenCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToNames[TermState.NotSeen]);
+            var knownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToClass[TermState.Known]);
+            var unknownCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToClass[TermState.Unknown]);
+            var notseenCount = document.Descendants("t").Count(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToClass[TermState.NotSeen]);
             var newWords = document
                 .Descendants("t")
-                .Where(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToNames[TermState.NotSeen])
+                .Where(x => x.Attribute("type").Value == "term" && x.Attribute("state").Value == Constants.TermStatesToClass[TermState.NotSeen])
                 .Select(x => x.Attribute("value").Value)
                 .GroupBy(x => x, StringComparer.InvariantCultureIgnoreCase)
                 .Select(y => new { Word = y, Count = y.Count() })

@@ -1,3 +1,4 @@
+var _this = this;
 var SelectedWord = (function () {
     function SelectedWord(settings, element) {
         this.settings = settings;
@@ -15,18 +16,33 @@ var SelectedWord = (function () {
             termPhrase: this.selectedWord
         }, function (data) {
             console.log(data);
-            if(data == null) {
-                $('#unknownState').attr('checked', true);
-                $('#baseTerm').val('');
-                $('#romanisation').val('');
-                $('#definition').val('');
-                $('#tags').val('');
-                $('#sentence').val(_this.selectedSentence);
-                $('#modalMessage').removeClass().addClass('label label-warning').html('new word, defaulted to unknown');
-            } else {
-            }
+            _this.createTemplate(data);
             _this.updateModalDisplay();
         });
+    };
+    SelectedWord.prototype.createTemplate = function (data) {
+        var ulSource = $("#term-ul-template").html();
+        var ulTemplate = Handlebars.compile(ulSource);
+        var ulHtml = ulTemplate(data);
+        var divSource = $("#term-div-template").html();
+        var divTemplate = Handlebars.compile(divSource);
+        var divHtml = divTemplate(data);
+        var messageSource = $("#term-message-template").html();
+        var messageTemplate = Handlebars.compile(messageSource);
+        var messageHtml = messageTemplate(data);
+        $('#tabTermDefintions').html(ulHtml);
+        $('#tabContent').html(divHtml);
+        $('#termMessages').html(messageHtml);
+        $('#currentBox').html(data.box);
+        $('#termMessage').html(data.message);
+        if(data.id == '00000000-0000-0000-0000-000000000000') {
+            $('#termMessage').removeClass('label-info').addClass('label-warning');
+        }
+        for(var i = 0; i < data.individualTerms.length; i++) {
+            var it = data.individualTerms[i];
+        }
+        ($('#tabTermDefintions a:first')).tab('show');
+        $('#itermMessage0').show();
     };
     SelectedWord.prototype.updateModalDisplay = function () {
         $('#selectedWord').text(this.selectedWord);
@@ -35,7 +51,7 @@ var SelectedWord = (function () {
     SelectedWord.prototype.saveChanges = function () {
         $.post(this.settings.ajaxUrl + '/save-term', {
         }, function (data) {
-            if(data.Result == "OK") {
+            if(data.result == "OK") {
                 $('#modalMessage').removeClass().addClass('label label-success').html(data.Message);
                 $('#currentBox').removeClass().addClass('badge badge-success').html(data.Data.Box);
             } else {

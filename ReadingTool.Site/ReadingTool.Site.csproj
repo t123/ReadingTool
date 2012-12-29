@@ -78,6 +78,10 @@
     <Reference Include="MvcCodeRouting">
       <HintPath>..\packages\MvcCodeRouting.1.0.2\lib\net40\MvcCodeRouting.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
@@ -135,9 +139,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
     </Reference>
@@ -199,6 +200,7 @@
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\FlashHelper.cs" />
     <Compile Include="Helpers\GravatarHelper.cs" />
+    <Compile Include="JsonNetResult.cs" />
     <Compile Include="Mappings\RegisterMappings.cs" />
     <Compile Include="Models\Account\SignInViewModel.cs" />
     <Compile Include="Models\Account\SignUpViewModel.cs" />
@@ -330,6 +332,7 @@
     <Content Include="Scripts\other\footer\codemirror\mode\javascript\index.html" />
     <Content Include="Scripts\other\footer\codemirror\mode\javascript\javascript.js" />
     <Content Include="Scripts\other\footer\codemirror\mode\javascript\typescript.html" />
+    <Content Include="Scripts\other\footer\html5sortable\jquery.sortable.js" />
     <Content Include="Scripts\other\footer\jQuery-Autocomplete\jquery.autocomplete.js" />
     <Content Include="Scripts\other\footer\reading\readingutil.js" />
     <Content Include="Scripts\other\footer\reading\reading.css" />

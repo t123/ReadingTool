@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using ReadingTool.Core;
+using ReadingTool.Core.Enums;
 using ReadingTool.Core.Formatters;
+using ReadingTool.Entities;
 using ReadingTool.Services;
 using ServiceStack;
 
@@ -17,6 +20,8 @@ namespace ReadingTool.Site.Controllers.User
         private readonly ITextService _textService;
         private readonly ITermService _termService;
         private readonly ILanguageService _languageService;
+        private readonly IUserIdentity _identity;
+
         public const string OK = "OK";
         public const string FAIL = "FAIL";
 
@@ -32,11 +37,12 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
-        public ReadingController(ITextService textService, ITermService termService, ILanguageService languageService)
+        public ReadingController(ITextService textService, ITermService termService, ILanguageService languageService, IPrincipal principal)
         {
             _textService = textService;
             _termService = termService;
             _languageService = languageService;
+            _identity = principal.Identity as IUserIdentity;
         }
 
         [HttpPost]
@@ -59,11 +65,11 @@ namespace ReadingTool.Site.Controllers.User
                 text.AudioLength = length.HasValue ? (int?)Math.Ceiling(length.Value) : null;
                 _textService.Save(text, ignoreModificationTime: true);
 
-                return new JsonResult() { Data = new ResponseMessage(OK) };
+                return new JsonNetResult() { Data = new ResponseMessage(OK) };
             }
             catch
             {
-                return new JsonResult() { Data = new ResponseMessage(FAIL) };
+                return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
             }
         }
 
@@ -94,7 +100,7 @@ namespace ReadingTool.Site.Controllers.User
 
                 _textService.Save(text, ignoreModificationTime: true);
 
-                return new JsonResult()
+                return new JsonNetResult()
                 {
                     Data = new ResponseMessage(OK)
                     {
@@ -107,7 +113,7 @@ namespace ReadingTool.Site.Controllers.User
             }
             catch
             {
-                return new JsonResult() { Data = new ResponseMessage(FAIL) };
+                return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
             }
         }
 
@@ -137,7 +143,7 @@ namespace ReadingTool.Site.Controllers.User
                 if(text.ListenLength < 0) text.ListenLength = 0;
                 _textService.Save(text, ignoreModificationTime: true);
 
-                return new JsonResult()
+                return new JsonNetResult()
                     {
                         Data = new ResponseMessage(OK)
                             {
@@ -150,7 +156,7 @@ namespace ReadingTool.Site.Controllers.User
             }
             catch
             {
-                return new JsonResult() { Data = new ResponseMessage(FAIL) };
+                return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
             }
         }
 
@@ -176,11 +182,66 @@ namespace ReadingTool.Site.Controllers.User
                 string encoded = HttpUtility.UrlEncode(input, encoder);
                 string result = dictionary.Url.Replace("###", encoded);
 
-                return new JsonResult() { Data = new ResponseMessage(OK) { Message = result } };
+                return new JsonNetResult() { Data = new ResponseMessage(OK) { Message = result } };
             }
             catch
             {
-                return new JsonResult() { Data = new ResponseMessage(FAIL) };
+                return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
+            }
+        }
+
+        internal class JsonIndividualTermResult
+        {
+            public Guid Id { get; set; }
+            public string BaseTerm { get; set; }
+            public string Definition { get; set; }
+            public string Romanisation { get; set; }
+            public string Tags { get; set; }
+            public string Title { get; set; }
+            public string Message { get; set; }
+
+            public JsonIndividualTermResult(IndividualTerm i)
+            {
+                Id = i.Id;
+                BaseTerm = i.BaseTerm;
+                Definition = i.Definition;
+                Romanisation = i.Romanisation;
+                Tags = i.Tags;
+
+                if(Id == Guid.Empty)
+                {
+                    Title = "New definition";
+                    Message = "new word, defaulted to unknown";
+                }
+                else
+                {
+                    Message = string.Format("last changed {0} ago", i.Modified.ToHumanAgo());
+                    Title = i.BaseTerm;
+                }
+            }
+        }
+
+        internal class JsonTermResult
+        {
+            public Guid Id { get; set; }
+            public int Length { get; set; }
+            public string StateClass { get; set; }
+            public string Box { get; set; }
+            public string Message { get; set; }
+
+            public JsonIndividualTermResult[] IndividualTerms { get; set; }
+
+            public JsonTermResult(Term term)
+            {
+                Id = term.Id;
+                Length = term.Length;
+                StateClass = Constants.TermStatesToClass[term.State];
+                Box = term.Box.HasValue ? term.Box.Value.ToString() : "new";
+                Message = term.NextReview.HasValue
+                              ? "review due in " + (term.NextReview.Value - DateTime.Now).ToHumanAgo()
+                              : "no review due";
+
+                IndividualTerms = term.IndividualTerms.Select(t => new JsonIndividualTermResult(t)).ToArray();
             }
         }
 
@@ -188,7 +249,48 @@ namespace ReadingTool.Site.Controllers.User
         {
             var term = _termService.Find(languageId, termPhrase);
 
-            return new JsonResult() { Data = term };
+            term = new Term()
+                {
+                    Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                    LanguageId = languageId,
+                    Owner = _identity.UserId,
+                    Length = 1,
+                    TermPhrase = "lorem",
+                    State = TermState.Known,
+                    Box = 2,
+                    NextReview = DateTime.Now.AddDays(3)
+                };
+
+            for(int i = 1; i <= 3; i++)
+            {
+                term.AddIndividualTerm(new IndividualTerm()
+                    {
+                        BaseTerm = "lorem base" + i,
+                        Created = DateTime.Now.AddDays(-3),
+                        Modified = DateTime.Now.AddDays(-3).AddHours(i * 18),
+                        Id = new Guid(i + "0000000-0000-0000-0000-000000000000"),
+                        Definition = "Definition " + i,
+                        Romanisation = "Romanisation" + i,
+                        Sentence = "Sentence " + i,
+                        Tags = "tag" + i + "-1 ",
+                        TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
+                        TermId = new Guid("00000000-0000-0000-0000-000000000001"),
+                    }
+                    );
+            }
+
+            term.AddIndividualTerm(new IndividualTerm()
+                {
+                    BaseTerm = "",
+                    Sentence = "",
+                    Romanisation = "",
+                    Tags = "",
+                    TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
+                    TermId = new Guid("00000000-0000-0000-0000-000000000001"),
+                    Id = Guid.Empty,
+                });
+
+            return new JsonNetResult() { Data = new JsonTermResult(term) };
         }
 
         public JsonResult Quicksave(Guid languageId, Guid textId, string termPhrase, string sentence, string state)
@@ -198,7 +300,7 @@ namespace ReadingTool.Site.Controllers.User
 
         public JsonResult SaveTerm()
         {
-            return new JsonResult()
+            return new JsonNetResult()
                 {
                     Data = new ResponseMessage(OK)
                         {
