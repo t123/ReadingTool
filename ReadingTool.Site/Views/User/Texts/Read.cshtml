@@ -51,18 +51,3 @@
 @Html.Partial("Partials/_textmodal", Model, ViewData)
 @Html.Partial("Partials/_templates", Model, ViewData)
 
-@{
-    Bundles.AddInlineScript(
-        @<text>
-             <script language="javascript" type="text/javascript">
-                 //var source = $("#term-template").html();
-                 //var template = Handlebars.compile(source);
-                 //var html = template({ "id": "00000000-0000-0000-0000-000000000001", "languageId": "ad519721-f469-b23b-c082-39beeeadae88", "owner": "3dbbb92b-2d70-a471-9931-39beeea9a2ff", "termPhrase": "lorem", "length": 1, "individualTerms": [{ "id": "10000000-0000-0000-0000-000000000000", "created": "2012-12-28T20:31:20.3924633+00:00", "modified": "2012-12-28T20:31:20.3924633+00:00", "textId": "7dc4a5f7-43ef-6509-c16b-39bef0a24203", "termId": "00000000-0000-0000-0000-000000000001", "baseTerm": "lorem base1", "sentence": "Sentence 1", "definition": "Definition 1", "romanisation": "Romanisation1", "tags": "tag1-1 " }, { "id": "20000000-0000-0000-0000-000000000000", "created": "2012-12-28T20:31:20.3934633+00:00", "modified": "2012-12-28T20:31:20.3934633+00:00", "textId": "7dc4a5f7-43ef-6509-c16b-39bef0a24203", "termId": "00000000-0000-0000-0000-000000000001", "baseTerm": "lorem base2", "sentence": "Sentence 2", "definition": "Definition 2", "romanisation": "Romanisation2", "tags": "tag2-1 " }, { "id": "30000000-0000-0000-0000-000000000000", "created": "2012-12-28T20:31:20.3934633+00:00", "modified": "2012-12-28T20:31:20.3934633+00:00", "textId": "7dc4a5f7-43ef-6509-c16b-39bef0a24203", "termId": "00000000-0000-0000-0000-000000000001", "baseTerm": "lorem base3", "sentence": "Sentence 3", "definition": "Definition 3", "romanisation": "Romanisation3", "tags": "tag3-1 " }] });
-                 //var html = template({"id":"00000000-0000-0000-0000-000000000001","length":1,"individualTerms":[{"id":"10000000-0000-0000-0000-000000000000","baseTerm":"lorem base1","definition":"Definition 1","romanisation":"Romanisation1","tags":"tag1-1 ","title":"lorem base1"},{"id":"20000000-0000-0000-0000-000000000000","baseTerm":"lorem base2","definition":"Definition 2","romanisation":"Romanisation2","tags":"tag2-1 ","title":"lorem base2"},{"id":"30000000-0000-0000-0000-000000000000","baseTerm":"lorem base3","definition":"Definition 3","romanisation":"Romanisation3","tags":"tag3-1 ","title":"lorem base3"},{"id":"00000000-0000-0000-0000-000000000000","baseTerm":"","definition":null,"romanisation":"","tags":"","title":"New definition"}]});
-                 //$('#formTerms').html(html);
-                 //console.log(html);
-                 
-                 //$('#tabTermDefintions a:first').tab('show');
-             </script>
-         </text>, "body");
-}

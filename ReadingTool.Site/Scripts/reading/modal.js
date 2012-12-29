@@ -1,4 +1,3 @@
-var _this = this;
 var SelectedWord = (function () {
     function SelectedWord(settings, element) {
         this.settings = settings;
@@ -35,27 +34,50 @@ var SelectedWord = (function () {
         $('#termMessages').html(messageHtml);
         $('#currentBox').html(data.box);
         $('#termMessage').html(data.message);
+        $('#termId').val(data.id);
         if(data.id == '00000000-0000-0000-0000-000000000000') {
             $('#termMessage').removeClass('label-info').addClass('label-warning');
         }
+        if(data.stateClass == this.settings.classes.knownClass) {
+            $('#knownState').attr('checked', true);
+        } else {
+            if(data.stateClass == this.settings.classes.unknownClass) {
+                $('#unknownState').attr('checked', true);
+            } else {
+                if(data.stateClass == this.settings.classes.ignoredClass) {
+                    $('#ignoredState').attr('checked', true);
+                } else {
+                    $('#notseenState').attr('checked', true);
+                }
+            }
+        }
         for(var i = 0; i < data.individualTerms.length; i++) {
             var it = data.individualTerms[i];
+            $('#sentence' + it.id).val(it.sentence);
+            $('#baseTerm' + it.id).val(it.baseTerm);
+            $('#romanisation' + it.id).val(it.romanisation);
+            $('#definition' + it.id).val(it.definition);
+            $('#tags' + it.id).val(it.tags);
+            if(it.id == '00000000-0000-0000-0000-000000000000') {
+                $('#itermMessage' + i).removeClass('label-info').addClass('label-important');
+                $('#sentence' + it.id).val(this.selectedSentence);
+            }
         }
         ($('#tabTermDefintions a:first')).tab('show');
         $('#itermMessage0').show();
     };
     SelectedWord.prototype.updateModalDisplay = function () {
         $('#selectedWord').text(this.selectedWord);
+        $('#termPhrase').val(this.selectedWord);
         this.refreshDictionaryLinks();
     };
     SelectedWord.prototype.saveChanges = function () {
-        $.post(this.settings.ajaxUrl + '/save-term', {
-        }, function (data) {
+        $.post(this.settings.ajaxUrl + '/save-term', $('#formTerms').serialize(), function (data) {
             if(data.result == "OK") {
-                $('#modalMessage').removeClass().addClass('label label-success').html(data.Message);
-                $('#currentBox').removeClass().addClass('badge badge-success').html(data.Data.Box);
+                $('#termMessage').removeClass('label-info').addClass('label-success').html(data.message);
+                $('#currentBox').removeClass().addClass('badge badge-success').html(data.data.box);
             } else {
-                $('#modalMessage').removeClass().addClass('label label-error').html(data.Message);
+                $('#termMessage').removeClass('label-info').addClass('label-error').html(data.message);
             }
         });
     };

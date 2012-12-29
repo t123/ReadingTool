@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using ReadingTool.Core;
 using ReadingTool.Entities;
 using ServiceStack.OrmLite;
 
@@ -35,7 +36,42 @@ namespace ReadingTool.Services
         #region basic
         public void Save(Term term)
         {
-            throw new NotImplementedException();
+            if(term.Id == Guid.Empty)
+            {
+                term.Id = SequentialGuid.NewGuid();
+                term.Owner = _identity.UserId;
+            }
+
+            term.TermPhrase = term.TermPhrase.Trim();
+            _db.Save(term);
+
+            foreach(var it in term.IndividualTerms)
+            {
+                Save(term.Id, it);
+            }
+        }
+
+        private void Save(Guid termId, IndividualTerm term)
+        {
+            if(term.Id == Guid.Empty)
+            {
+                term.TermId = termId;
+                term.Id = SequentialGuid.NewGuid();
+                term.Created = DateTime.Now;
+            }
+
+            term.Modified = DateTime.Now;
+            term.BaseTerm = term.BaseTerm.Trim();
+            term.Definition = term.Definition.Trim();
+            term.Sentence = term.Sentence.Trim();
+            term.Romanisation = term.Romanisation.Trim();
+            term.Tags = term.Tags.Trim().ToLowerInvariant();
+
+            _db.Save(term);
+
+            var tags = TagHelper.Split(term.Tags);
+            _db.Delete<Tag>(x => x.TermId == term.Id);
+            _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = term.Id, TextId = null, Value = x }));
         }
 
         public void Delete(Term term)

@@ -43,7 +43,7 @@ namespace ReadingTool.Core
                 {TermState.Ignored, Constants.TermStates.IGNORED}
             };
 
-        public static readonly Dictionary<string, TermState> NamesToTermStates = new Dictionary<string, TermState>()
+        public static readonly Dictionary<string, TermState> ClassToTermStates = new Dictionary<string, TermState>()
             {
                 {Constants.TermStates.KNOWN, TermState.Known},
                 {Constants.TermStates.UNKNOWN, TermState.Unknown},

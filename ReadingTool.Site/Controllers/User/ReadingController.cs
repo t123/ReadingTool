@@ -199,6 +199,7 @@ namespace ReadingTool.Site.Controllers.User
             public string Tags { get; set; }
             public string Title { get; set; }
             public string Message { get; set; }
+            public string Sentence { get; set; }
 
             public JsonIndividualTermResult(IndividualTerm i)
             {
@@ -207,11 +208,12 @@ namespace ReadingTool.Site.Controllers.User
                 Definition = i.Definition;
                 Romanisation = i.Romanisation;
                 Tags = i.Tags;
+                Sentence = i.Sentence;
 
                 if(Id == Guid.Empty)
                 {
                     Title = "New definition";
-                    Message = "new word, defaulted to unknown";
+                    Message = "new definition, defaulted to UNKNOWN";
                 }
                 else
                 {
@@ -249,46 +251,56 @@ namespace ReadingTool.Site.Controllers.User
         {
             var term = _termService.Find(languageId, termPhrase);
 
-            term = new Term()
-                {
-                    Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                    LanguageId = languageId,
-                    Owner = _identity.UserId,
-                    Length = 1,
-                    TermPhrase = "lorem",
-                    State = TermState.Known,
-                    Box = 2,
-                    NextReview = DateTime.Now.AddDays(3)
-                };
-
-            for(int i = 1; i <= 3; i++)
+            if(term == null)
             {
-                term.AddIndividualTerm(new IndividualTerm()
+                term = new Term()
                     {
-                        BaseTerm = "lorem base" + i,
-                        Created = DateTime.Now.AddDays(-3),
-                        Modified = DateTime.Now.AddDays(-3).AddHours(i * 18),
-                        Id = new Guid(i + "0000000-0000-0000-0000-000000000000"),
-                        Definition = "Definition " + i,
-                        Romanisation = "Romanisation" + i,
-                        Sentence = "Sentence " + i,
-                        Tags = "tag" + i + "-1 ",
-                        TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
-                        TermId = new Guid("00000000-0000-0000-0000-000000000001"),
-                    }
-                    );
+                        State = TermState.Unknown,
+                    };
             }
 
-            term.AddIndividualTerm(new IndividualTerm()
-                {
-                    BaseTerm = "",
-                    Sentence = "",
-                    Romanisation = "",
-                    Tags = "",
-                    TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
-                    TermId = new Guid("00000000-0000-0000-0000-000000000001"),
-                    Id = Guid.Empty,
-                });
+            term.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty }, true);
+
+            //term = new Term()
+            //    {
+            //        Id = new Guid("00000000-0000-0000-0000-000000000001"),
+            //        LanguageId = languageId,
+            //        Owner = _identity.UserId,
+            //        Length = 1,
+            //        TermPhrase = "lorem",
+            //        State = TermState.Known,
+            //        Box = 2,
+            //        NextReview = DateTime.Now.AddDays(3)
+            //    };
+
+            //for(int i = 1; i <= 3; i++)
+            //{
+            //    term.AddIndividualTerm(new IndividualTerm()
+            //        {
+            //            BaseTerm = "lorem base" + i,
+            //            Created = DateTime.Now.AddDays(-3),
+            //            Modified = DateTime.Now.AddDays(-3).AddHours(i * 18),
+            //            Id = new Guid(i + "0000000-0000-0000-0000-000000000000"),
+            //            Definition = "Definition " + i,
+            //            Romanisation = "Romanisation" + i,
+            //            Sentence = "Sentence " + i,
+            //            Tags = "tag" + i + "-1 tag" + i + "-2 tag" + i + "-3",
+            //            TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
+            //            TermId = new Guid("00000000-0000-0000-0000-000000000001"),
+            //        }
+            //        );
+            //}
+
+            //term.AddIndividualTerm(new IndividualTerm()
+            //    {
+            //        BaseTerm = "",
+            //        Sentence = "",
+            //        Romanisation = "",
+            //        Tags = "",
+            //        TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
+            //        TermId = new Guid("00000000-0000-0000-0000-000000000001"),
+            //        Id = Guid.Empty,
+            //    });
 
             return new JsonNetResult() { Data = new JsonTermResult(term) };
         }
@@ -298,16 +310,73 @@ namespace ReadingTool.Site.Controllers.User
             throw new NotImplementedException();
         }
 
-        public JsonResult SaveTerm()
+        public class JsonSaveTerm
         {
+            public Guid Id { get; set; }
+            public string BaseTerm { get; set; }
+            public string Romanisation { get; set; }
+            public string Definition { get; set; }
+            public string Tags { get; set; }
+            public string Sentence { get; set; }
+        }
+
+        public JsonResult SaveTerm(Guid languageId, Guid textId, Guid termId, string state, string termPhrase, JsonSaveTerm[] model)
+        {
+            Term term = _termService.Find(languageId, termPhrase);
+
+            if(term == null)
+            {
+                term = new Term();
+                term.Box = 1;
+                term.Id = Guid.Empty;
+                term.LanguageId = languageId;
+                term.Length = 1;
+                term.NextReview = null;
+                term.State = Constants.ClassToTermStates[state];
+                term.TermPhrase = termPhrase;
+            }
+            else
+            {
+                term.State = Constants.ClassToTermStates[state];
+            }
+
+            foreach(var it in model ?? new JsonSaveTerm[] { })
+            {
+                if(it.Id == Guid.Empty)
+                {
+                    term.AddIndividualTerm(new IndividualTerm()
+                        {
+                            BaseTerm = it.BaseTerm,
+                            Definition = it.Definition,
+                            Romanisation = it.Romanisation,
+                            Sentence = it.Sentence,
+                            Tags = it.Tags,
+                            TextId = textId
+                        });
+                }
+                else
+                {
+                    term.UpdateIndividualTerm(it.Id, new IndividualTerm()
+                    {
+                        BaseTerm = it.BaseTerm,
+                        Definition = it.Definition,
+                        Romanisation = it.Romanisation,
+                        Sentence = it.Sentence,
+                        Tags = it.Tags
+                    });
+                }
+            }
+
+            _termService.Save(term);
+
             return new JsonNetResult()
                 {
                     Data = new ResponseMessage(OK)
                         {
-                            Message = "Saved, state is UNKNOWN",
+                            Message = "Saved, state is " + term.State.ToDescription().ToUpperInvariant(),
                             Data = new
                                 {
-                                    Box = 1
+                                    Box = term.Box.HasValue ? term.Box.Value.ToString() : "NA"
                                 }
                         }
                 };

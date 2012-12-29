@@ -14,30 +14,21 @@
         <script id="term-div-template" type="text/html">
             {{#each individualTerms}}
             <div class="tab-pane" id="tab{{@@index}}">
-                <input type="hidden" name="it.Index" value="{{id}}" />
+                <input type="hidden" name="model.Index" value="{{id}}" />
+                <input type="hidden" name="model[{{id}}].Id" value="{{id}}" />
 
                 <div class="control-group">
-                    <label class="control-label" for="state">Current State</label>
+                    <label class="control-label" for="sentence.{{id}}">Sentence</label>
                     <div class="controls">
-                        <input type="radio" name="state" id="knownState" class="radio inline" value="@Constants.TermStates.KNOWN"/>known
-                        <input type="radio" name="state" id="unknownState" class="radio inline" value="@Constants.TermStates.UNKNOWN"/><span class="nkx">unknown</span>
-                        <input type="radio" name="state" id="notseenState" class="radio inline" value="@Constants.TermStates.NOTSEEN"/><span class="nsx">not seen</span>
-                        <input type="radio" name="state" id="ignoredState" class="radio inline" value="@Constants.TermStates.IGNORED"/>ignored
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" for="sentence[{{id}}]">Sentence</label>
-                    <div class="controls">
-                        <input type="text" id="sentence[{{id}}]" placeholder="Sentence" class="input-xxlarge" />
+                        <input type="text" id="sentence{{id}}" name="model[{{id}}].Sentence" placeholder="Sentence" class="input-xxlarge" />
                         <a href="#" id="btnRefresh"><i class="icon-repeat"></i></a>
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="baseTerm[{{id}}]">Base term</label>
+                    <label class="control-label" for="{{id}}">Base term</label>
                     <div class="controls">
-                        <input type="text" id="baseTerm[{{id}}]" placeholder="base term" class="input-xxlarge" />
+                        <input type="text" id="baseTerm{{id}}" name="model[{{id}}].BaseTerm" placeholder="base term" class="input-xxlarge" />
                     </div>
                 </div>
 
@@ -45,27 +36,27 @@
                 @if(Model.Language.Settings.ShowRomanisation)
                 {
                     <div class="control-group">
-                        <label class="control-label" for="romanisation[{{id}}]">Romanisation</label>
+                        <label class="control-label" for="romanisation{{id}}">Romanisation</label>
                         <div class="controls">
-                            <input type="text" id="romanisation[{{id}}]" placeholder="romanisation" class="input-xxlarge" />
+                            <input type="text" id="romanisation{{id}}" name="model[{{id}}].Romanisation" placeholder="romanisation" class="input-xxlarge" />
                         </div>
                     </div>
                 }
                 else
                 {
-                    <input type="hidden" name="romanisation[{{id}}]" value="" />
+                    <input type="hidden" id="romanisation{{id}}" name="model[{{id}}].Romanisation" value="" />
                 }
 
                 <div class="control-group">
-                    <label class="control-label" for="definition[{{id}}]">Definition</label>
+                    <label class="control-label" for="definition{{id}}">Definition</label>
                     <div class="controls">
-                        <textarea id="definition[{{id}}]" class="input-xxlarge" placeholder="Definition"></textarea>
+                        <textarea id="definition{{id}}" name="model[{{id}}].Definition" class="input-xxlarge" placeholder="Definition"></textarea>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="tags[{{id}}]">Tags</label>
+                    <label class="control-label" for="tags{{id}}">Tags</label>
                     <div class="controls">
-                        <input type="text" id="tags[{{id}}]" placeholder="Tags" class="input-xxlarge" />
+                        <input type="text" id="tags{{id}}" name="model[{{id}}].Tags" placeholder="Tags" class="input-xxlarge" />
                     </div>
                 </div>
             </div>
@@ -79,59 +70,5 @@
                 <span style="font-size: 11px; display: none;" class="itermMessage label label-info" id="itermMessage{{@@index}}">{{message}}</span>
             {{/each}}
         </script>
-
-        <script id="temp-template" type="text/html">
-        <div class="control-group">
-            <label class="control-label" for="state">Current State</label>
-            <div class="controls">
-                <input type="radio" name="state" id="knownState" class="radio inline" value="@Constants.TermStates.KNOWN"/>known
-                    <input type="radio" name="state" id="unknownState" class="radio inline" value="@Constants.TermStates.UNKNOWN"/><span class="nkx">unknown</span>
-                <input type="radio" name="state" id="notseenState" class="radio inline" value="@Constants.TermStates.NOTSEEN"/><span class="nsx">not seen</span>
-                <input type="radio" name="state" id="ignoredState" class="radio inline" value="@Constants.TermStates.IGNORED"/>ignored
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="sentence">Sentence</label>
-            <div class="controls">
-                <input type="text" id="sentence" placeholder="Sentence" class="input-xxlarge" />
-                <a href="#" id="btnRefresh"><i class="icon-repeat"></i></a>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="baseTerm">Base term</label>
-            <div class="controls">
-                <input type="text" id="baseTerm" placeholder="base term" class="input-xxlarge" />
-            </div>
-        </div>
-
-        @if(Model.Language.Settings.ShowRomanisation)
-        {
-            <div class="control-group">
-                <label class="control-label" for="romanisation">Romanisation</label>
-                <div class="controls">
-                    <input type="text" id="romanisation" placeholder="romanisation" class="input-xxlarge" />
-                </div>
-            </div>
-        }
-        else
-        {
-            <input type="hidden" name="romanisation" />
-        }
-
-        <div class="control-group">
-            <label class="control-label" for="definition">Definition</label>
-            <div class="controls">
-                <textarea id="definition" class="input-xxlarge" placeholder="Definition"></textarea>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="tags">Tags</label>
-            <div class="controls">
-                <input type="text" id="tags" placeholder="Tags" class="input-xxlarge" />
-            </div>
-        </div>
-    </script>
     </text>
 }

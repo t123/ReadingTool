@@ -1,4 +1,5 @@
-﻿@model ReadingTool.Site.Models.User.ReadViewModel
+﻿@using ReadingTool.Core
+@model ReadingTool.Site.Models.User.ReadViewModel
 
 <div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
     <div class="modal-header">
@@ -26,8 +27,21 @@
         </div>
         <div>
             <form class="form-horizontal" id="formTerms">
+                <input type="hidden" name="LanguageId" value="@Model.Language.Id"/>
+                <input type="hidden" name="TextId" value="@Model.Text.Id"/>
+                <input type="hidden" name="TermId" id="termId" />
+                <input type="hidden" name="TermPhrase" id="termPhrase" />
                 <ul id="tabTermDefintions" class="nav nav-tabs">
                 </ul>
+                <div class="control-group">
+                    <label class="control-label" for="state">Current State</label>
+                    <div class="controls">
+                        <input type="radio" name="state" id="knownState" class="radio inline" value="@Constants.TermStates.KNOWN"/>known
+                        <input type="radio" name="state" id="unknownState" class="radio inline" value="@Constants.TermStates.UNKNOWN"/><span class="nkx">unknown</span>
+                        <input type="radio" name="state" id="notseenState" class="radio inline" value="@Constants.TermStates.NOTSEEN"/><span class="nsx">not seen</span>
+                        <input type="radio" name="state" id="ignoredState" class="radio inline" value="@Constants.TermStates.IGNORED"/>ignored
+                    </div>
+                </div>
                 <div id="tabContent" class="tab-content">
                 </div>
             </form>
