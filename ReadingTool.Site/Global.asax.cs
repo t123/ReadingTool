@@ -81,6 +81,18 @@ namespace ReadingTool.Site
                 connection.DropTable<Tag>();
             }
 
+            if(connection.TableExists("IndividualTerm"))
+            {
+                connection.DeleteAll<IndividualTerm>();
+                connection.DropTable<IndividualTerm>();
+            }
+
+            if(connection.TableExists("Term"))
+            {
+                connection.DeleteAll<Term>();
+                connection.DropTable<Term>();
+            }
+
             if(connection.TableExists("Text"))
             {
                 connection.DeleteAll<Text>();
@@ -93,17 +105,7 @@ namespace ReadingTool.Site
                 connection.DropTable<Language>();
             }
 
-            if(connection.TableExists("Term"))
-            {
-                connection.DeleteAll<Term>();
-                connection.DropTable<Term>();
-            }
-
-            if(connection.TableExists("IndividualTerm"))
-            {
-                connection.DeleteAll<IndividualTerm>();
-                connection.DropTable<IndividualTerm>();
-            }
+            
 
             if(connection.TableExists("User"))
             {

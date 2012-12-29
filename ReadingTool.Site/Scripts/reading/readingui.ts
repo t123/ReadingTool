@@ -201,6 +201,10 @@ $.fn.animateHighlight = function (highlightColor, duration) {
     this.stop().css("background-color", highlightBg).animate({ backgroundColor: originalBg }, animateMs);
 };
 
+var termUlTemplate = Handlebars.compile($("#term-ul-template").html());
+var termDivTemplate = Handlebars.compile($("#term-div-template").html());
+var termMessageTemplate = Handlebars.compile($("#term-message-template").html());
+
 $(function () {
     //Bind the mouse rollover to the spans
     if (ui.settings.modalBehaviour == 'Rollover') {

@@ -3,32 +3,26 @@ var SelectedWord = (function () {
         this.settings = settings;
         this.element = element;
         this.length = 1;
-        this.init();
-    }
-    SelectedWord.prototype.init = function () {
-        var _this = this;
         this.selectedWord = $(this.element).html();
         this.selectedSentence = this.getCurrentSentence();
+        this.findTerm();
+    }
+    SelectedWord.prototype.findTerm = function () {
+        var _this = this;
         $('#currentBox').removeClass().addClass('badge');
         $.post(this.settings.ajaxUrl + '/find-term', {
             languageId: this.settings.languageId,
             termPhrase: this.selectedWord
         }, function (data) {
             console.log(data);
-            _this.createTemplate(data);
             _this.updateModalDisplay();
+            _this.createTemplate(data);
         });
     };
     SelectedWord.prototype.createTemplate = function (data) {
-        var ulSource = $("#term-ul-template").html();
-        var ulTemplate = Handlebars.compile(ulSource);
-        var ulHtml = ulTemplate(data);
-        var divSource = $("#term-div-template").html();
-        var divTemplate = Handlebars.compile(divSource);
-        var divHtml = divTemplate(data);
-        var messageSource = $("#term-message-template").html();
-        var messageTemplate = Handlebars.compile(messageSource);
-        var messageHtml = messageTemplate(data);
+        var ulHtml = termUlTemplate(data);
+        var divHtml = termDivTemplate(data);
+        var messageHtml = termMessageTemplate(data);
         $('#tabTermDefintions').html(ulHtml);
         $('#tabContent').html(divHtml);
         $('#termMessages').html(messageHtml);
@@ -72,10 +66,17 @@ var SelectedWord = (function () {
         this.refreshDictionaryLinks();
     };
     SelectedWord.prototype.saveChanges = function () {
+        var _this = this;
+        var currentIndex = ($('#tabTermDefintions li.active')).index();
+        if(currentIndex < 0) {
+            currentIndex = 1;
+        }
         $.post(this.settings.ajaxUrl + '/save-term', $('#formTerms').serialize(), function (data) {
             if(data.result == "OK") {
                 $('#termMessage').removeClass('label-info').addClass('label-success').html(data.message);
-                $('#currentBox').removeClass().addClass('badge badge-success').html(data.data.box);
+                _this.createTemplate(data.data);
+                ($('#tabTermDefintions a')).eq(currentIndex).tab('show');
+                _this.updateModalDisplay();
             } else {
                 $('#termMessage').removeClass('label-info').addClass('label-error').html(data.message);
             }
@@ -100,6 +101,7 @@ var SelectedWord = (function () {
         }
         this.length++;
         this.changePhrase();
+        this.findTerm();
     };
     SelectedWord.prototype.decreaseWord = function () {
         console.log('decrease word');
@@ -108,6 +110,7 @@ var SelectedWord = (function () {
         }
         this.length--;
         this.changePhrase();
+        this.findTerm();
     };
     SelectedWord.prototype.refreshDictionaryLinks = function () {
         var _this = this;

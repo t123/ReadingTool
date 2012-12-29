@@ -220,6 +220,9 @@ $.fn.animateHighlight = function (highlightColor, duration) {
         backgroundColor: originalBg
     }, animateMs);
 };
+var termUlTemplate = Handlebars.compile($("#term-ul-template").html());
+var termDivTemplate = Handlebars.compile($("#term-div-template").html());
+var termMessageTemplate = Handlebars.compile($("#term-message-template").html());
 $(function () {
     if(ui.settings.modalBehaviour == 'Rollover') {
         $('#textContent p span span').on('mouseenter', function (event) {

@@ -259,48 +259,7 @@ namespace ReadingTool.Site.Controllers.User
                     };
             }
 
-            term.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty }, true);
-
-            //term = new Term()
-            //    {
-            //        Id = new Guid("00000000-0000-0000-0000-000000000001"),
-            //        LanguageId = languageId,
-            //        Owner = _identity.UserId,
-            //        Length = 1,
-            //        TermPhrase = "lorem",
-            //        State = TermState.Known,
-            //        Box = 2,
-            //        NextReview = DateTime.Now.AddDays(3)
-            //    };
-
-            //for(int i = 1; i <= 3; i++)
-            //{
-            //    term.AddIndividualTerm(new IndividualTerm()
-            //        {
-            //            BaseTerm = "lorem base" + i,
-            //            Created = DateTime.Now.AddDays(-3),
-            //            Modified = DateTime.Now.AddDays(-3).AddHours(i * 18),
-            //            Id = new Guid(i + "0000000-0000-0000-0000-000000000000"),
-            //            Definition = "Definition " + i,
-            //            Romanisation = "Romanisation" + i,
-            //            Sentence = "Sentence " + i,
-            //            Tags = "tag" + i + "-1 tag" + i + "-2 tag" + i + "-3",
-            //            TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
-            //            TermId = new Guid("00000000-0000-0000-0000-000000000001"),
-            //        }
-            //        );
-            //}
-
-            //term.AddIndividualTerm(new IndividualTerm()
-            //    {
-            //        BaseTerm = "",
-            //        Sentence = "",
-            //        Romanisation = "",
-            //        Tags = "",
-            //        TextId = new Guid("7dc4a5f7-43ef-6509-c16b-39bef0a24203"),
-            //        TermId = new Guid("00000000-0000-0000-0000-000000000001"),
-            //        Id = Guid.Empty,
-            //    });
+            term.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
 
             return new JsonNetResult() { Data = new JsonTermResult(term) };
         }
@@ -369,15 +328,15 @@ namespace ReadingTool.Site.Controllers.User
 
             _termService.Save(term);
 
+            Term newTerm = _termService.Find(languageId, termPhrase);
+            newTerm.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
+
             return new JsonNetResult()
                 {
                     Data = new ResponseMessage(OK)
                         {
                             Message = "Saved, state is " + term.State.ToDescription().ToUpperInvariant(),
-                            Data = new
-                                {
-                                    Box = term.Box.HasValue ? term.Box.Value.ToString() : "NA"
-                                }
+                            Data = new JsonTermResult(newTerm)
                         }
                 };
         }

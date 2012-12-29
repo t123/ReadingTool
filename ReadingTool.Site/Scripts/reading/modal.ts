@@ -2,6 +2,9 @@
 /// <reference path="jquery.d.ts"/>
 
 declare var Handlebars;
+declare var termUlTemplate;
+declare var termDivTemplate;
+declare var termMessageTemplate;
 
 class SelectedWord {
     settings: Settings;
@@ -24,12 +27,13 @@ class SelectedWord {
         this.element = element;
         this.length = 1;
 
-        this.init();
-    }
-
-    private init() {
         this.selectedWord = $(this.element).html();
         this.selectedSentence = this.getCurrentSentence();
+
+        this.findTerm();
+    }
+
+    private findTerm() {
         $('#currentBox').removeClass().addClass('badge');
 
         $.post(
@@ -39,23 +43,20 @@ class SelectedWord {
                 termPhrase: this.selectedWord,
             }, function (data) => {
                 console.log(data);
-                this.createTemplate(data);
                 this.updateModalDisplay();
+                this.createTemplate(data);
             });
     }
 
     private createTemplate(data) {
-        var ulSource = $("#term-ul-template").html();
-        var ulTemplate = Handlebars.compile(ulSource);
-        var ulHtml = ulTemplate(data);
+        //var ulTemplate = Handlebars.compile($("#term-ul-template").html());
+        var ulHtml = termUlTemplate(data);
 
-        var divSource = $("#term-div-template").html();
-        var divTemplate = Handlebars.compile(divSource);
-        var divHtml = divTemplate(data);
+        //var divTemplate = Handlebars.compile($("#term-div-template").html());
+        var divHtml = termDivTemplate(data);
 
-        var messageSource = $("#term-message-template").html();
-        var messageTemplate = Handlebars.compile(messageSource);
-        var messageHtml = messageTemplate(data);
+        //var messageTemplate = Handlebars.compile($("#term-message-template").html());
+        var messageHtml = termMessageTemplate(data);
 
         $('#tabTermDefintions').html(ulHtml);
         $('#tabContent').html(divHtml);
@@ -103,12 +104,17 @@ class SelectedWord {
     }
 
     public saveChanges() {
+        var currentIndex = (<any>$('#tabTermDefintions li.active')).index();
+        if (currentIndex < 0) currentIndex = 1;
+        
         $.post(this.settings.ajaxUrl + '/save-term', 
             $('#formTerms').serialize(),
-            function (data) {
+            function (data) => {
                 if (data.result == "OK") {
                     $('#termMessage').removeClass('label-info').addClass('label-success').html(data.message);
-                    $('#currentBox').removeClass().addClass('badge badge-success').html(data.data.box);
+                    this.createTemplate(data.data);
+                    (<any>$('#tabTermDefintions a')).eq(currentIndex).tab('show');
+                    this.updateModalDisplay();
                 } else {
                     $('#termMessage').removeClass('label-info').addClass('label-error').html(data.message);
                 }
@@ -137,6 +143,7 @@ class SelectedWord {
         if (this.length >= 7) return;
         this.length++;
         this.changePhrase();
+        this.findTerm();
     }
 
     public decreaseWord() {
@@ -144,6 +151,7 @@ class SelectedWord {
         if (this.length <= 1) return;
         this.length--;
         this.changePhrase();
+        this.findTerm();
     }
 
     private refreshDictionaryLinks() {
