@@ -1,0 +1,34 @@
+{
+  "Defaults": {
+    "L1LanguageName": "",
+    "L2LanguageName": "",
+    "CollectionName": "",
+    "AutoNumberCollection": false,
+    "StartCollectionWithNumber": null,
+    "Tags": ""
+  },
+  "Items": [
+    {
+      "L1LanguageName": "",
+      "L2LanguageName": "",
+      "Title": null,
+      "AudioUrl": null,
+      "CollectionName": null,
+      "CollectionNo": null,
+      "L1Text": null,
+      "L2Text": null,
+      "Tags": null
+    },
+    {
+      "L1LanguageName": "",
+      "L2LanguageName": "",
+      "Title": null,
+      "AudioUrl": null,
+      "CollectionName": null,
+      "CollectionNo": null,
+      "L1Text": null,
+      "L2Text": null,
+      "Tags": null
+    }
+  ]
+}

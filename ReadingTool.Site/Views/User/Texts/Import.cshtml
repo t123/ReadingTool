@@ -1,0 +1,51 @@
+﻿@model ReadingTool.Site.Models.User.TextImportModel
+@{
+    ViewBag.Title = "Import";
+    var languages = ViewBag.Languages as string[];
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+@if(languages.Any())
+{
+    <div class="alert alert-info">
+        You can import a single text or multiple texts from a <a href="http://en.wikipedia.org/wiki/JSON" target="_blank">JSON file</a>. 
+        Your file must be UTF-8 encoded, otherwise it may not be imported correctly. You can download 
+        <a href="@Url.Content("~/content/sample.json")">an example file here</a>. Remember that your language <strong>must match</strong>
+        the name of one of your languages:
+        <div class="clr10"></div>
+        <ul class="unstyled">
+            @foreach(var language in languages)
+            {
+                <li><strong>@language</strong></li>
+            }
+        </ul>
+    </div>
+    using(Html.BeginForm("Import", "Texts", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <fieldset>
+            <legend>Import Texts</legend>
+            @Html.BootstrapFormCustomHtml(x => x.File, @"<input type=""file"" name=""file"" />")
+
+            <div class="buttons">
+                <input type="submit" class="btn btn-primary" name="save" value="import these texts" />
+                @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
+            </div>
+        </fieldset>
+    }
+    <hr />
+    <h5>Sample JSON file with 2 items</h5>
+    @Html.FlashMessage(
+    "None of the defaults are necessary, however if you leave an item empty in the <strong>Items</strong> section, "+
+    "the default will be used. You can have as many items as you want in the <strong>Items</strong> section.", htmlEncode:false)
+
+    <pre>@Html.Raw(ViewBag.SampleJson)</pre>
+}
+else
+{
+    @Html.FlashMessage("You must first add some languages before you can import any texts", FlashHelper.Level.Alert)
+}

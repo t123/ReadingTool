@@ -40,7 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\TipAttribute.cs" />
+    <Compile Include="Comparers\CaseInsensitiveComparer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DictionaryHelper.cs" />
     <Compile Include="Enums\DictionaryParameter.cs" />
     <Compile Include="Enums\LanguageDirection.cs" />
     <Compile Include="Enums\ModalBehaviour.cs" />

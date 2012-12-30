@@ -7,7 +7,7 @@
     @Html.Partial("Partials/_menu")
 }
 
-@using(Html.BeginForm("ImportExport", "MyAccount", FormMethod.Post, new { @class = "form-horizontal" }))
+@using(Html.BeginForm("ImportExport", "MyAccount", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 

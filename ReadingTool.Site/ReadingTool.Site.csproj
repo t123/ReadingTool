@@ -216,6 +216,7 @@
     <Compile Include="Models\User\PasswordChangeViewModel.cs" />
     <Compile Include="Models\User\ProfileViewModel.cs" />
     <Compile Include="Models\User\ReadViewModel.cs" />
+    <Compile Include="Models\User\TextImportModel.cs" />
     <Compile Include="Models\User\TextViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -476,6 +477,7 @@
     <Content Include="App_Data\dummy.sql" />
     <Content Include="Views\Admin\Home\AddPublicLanguage.cshtml" />
     <Content Include="Views\Admin\Home\EditPublicLanguage.cshtml" />
+    <Content Include="Content\sample.json" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <Content Include="Views\Shared\_Navigation.cshtml" />
@@ -499,6 +501,7 @@
     <None Include="Views\Admin\Home\PublicLanguages.cshtml" />
     <Content Include="Views\User\MyAccount\Controls.cshtml" />
     <Content Include="Views\User\MyAccount\ImportExport.cshtml" />
+    <Content Include="Views\User\Texts\Import.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

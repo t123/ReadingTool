@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
@@ -207,6 +211,78 @@ namespace ReadingTool.Site.Controllers.User
             }
 
             return View("Read", Create(text, true));
+        }
+
+        [HttpGet]
+        public ActionResult Import()
+        {
+            var languages = _languageService.FindAll().Select(x => x.Name).OrderBy(x => x).ToArray();
+            var languageName = languages.Length > 0 ? languages[0] : string.Empty;
+
+            TextImport ti = new TextImport()
+                {
+                    Defaults = new TextImport.JsonDefaults()
+                        {
+                            L1LanguageName = languageName,
+                            L2LanguageName = languageName,
+                        },
+                    Items = new TextImport.JsonTextItem[2]
+                        {
+                            new TextImport.JsonTextItem() { L1LanguageName = languageName, L2LanguageName = languageName},
+                            new TextImport.JsonTextItem() { L1LanguageName = languageName, L2LanguageName = languageName},
+                        }
+                };
+
+            ViewBag.SampleJson = JsonConvert.SerializeObject(ti, Formatting.Indented);
+            ViewBag.Languages = languages;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Import(TextImportModel model)
+        {
+            if(ModelState.IsValid && model.File != null && model.File.ContentLength > 0)
+            {
+                //TODO allow zip
+
+                try
+                {
+                    TextImport json;
+                    using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
+
+                        if(json == null) throw new Exception("File is empty");
+                        if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
+                    }
+
+                    int imported = _textService.Import(json);
+
+                    this.FlashSuccess("{0} texts were imported", imported);
+                    return this.RedirectToAction("Import");
+                }
+                catch(JsonReaderException e)
+                {
+                    this.FlashError("Invalid JSON file");
+                }
+                catch(Exception e)
+                {
+                    this.FlashError(e.Message);
+                }
+                finally
+                {
+                    ViewBag.Languages = _languageService.FindAll().Select(x => x.Name).OrderBy(x => x);
+                }
+
+                return View(model);
+            }
+
+            ViewBag.Languages = _languageService.FindAll().Select(x => x.Name).OrderBy(x => x);
+            this.FlashError(Constants.Messages.FORM_FAIL);
+            return View(model);
         }
 
         private ReadViewModel Create(Text text, bool asParallel)
