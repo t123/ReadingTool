@@ -1,0 +1,22 @@
+﻿@model ReadingTool.Site.Models.User.JsonSampleModel
+@{
+    var languages = (ViewBag.Languages as string[]).ToDictionary(x => x, x => x);
+}
+@using(Html.BeginForm("CreateSample", "Texts", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Create a sample JSON file for import</legend>
+        @Html.BootstrapFormItem(x=>x.NumberOfItems)
+        @Html.BootstrapFormDropDown(x=>x.L1Name, new SelectList(languages, "Key", "Value"), "")
+        @Html.BootstrapFormDropDown(x=>x.L2Name, new SelectList(languages, "Key", "Value"), "")
+        @Html.BootstrapFormItem(x=>x.CollectionName)
+        @Html.BootstrapFormItem(x=>x.AutoNumberCollection)
+        @Html.BootstrapFormItem(x=>x.StartCollectionWithNumber)
+        @Html.BootstrapFormItem(x=>x.Tags)
+        <div class="buttons">
+            <input type="submit" class="btn btn-primary" name="save" value="create sample file" />
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
+        </div>
+    </fieldset>
+}

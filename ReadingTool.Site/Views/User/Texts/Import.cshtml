@@ -1,7 +1,10 @@
-﻿@model ReadingTool.Site.Models.User.TextImportModel
+﻿@using ReadingTool.Site.Models.User
+@model ReadingTool.Site.Models.User.TextImportModel
 @{
     ViewBag.Title = "Import";
     var languages = ViewBag.Languages as string[];
+    var sampleModel = ViewBag.SampleJsonModel as JsonSampleModel;
+    var sampleJson = ViewBag.SampleJson as string;
 }
 
 @section Menu
@@ -12,10 +15,7 @@
 @if(languages.Any())
 {
     <div class="alert alert-info">
-        You can import a single text or multiple texts from a <a href="http://en.wikipedia.org/wiki/JSON" target="_blank">JSON file</a>. 
-        Your file must be UTF-8 encoded, otherwise it may not be imported correctly. You can download 
-        <a href="@Url.Content("~/content/sample.json")">an example file here</a>. Remember that your language <strong>must match</strong>
-        the name of one of your languages:
+        The languages <strong>must match</strong> the names of your languages:
         <div class="clr10"></div>
         <ul class="unstyled">
             @foreach(var language in languages)
@@ -37,13 +37,13 @@
             </div>
         </fieldset>
     }
-    <hr />
-    <h5>Sample JSON file with 2 items</h5>
-    @Html.FlashMessage(
-    "None of the defaults are necessary, however if you leave an item empty in the <strong>Items</strong> section, "+
-    "the default will be used. You can have as many items as you want in the <strong>Items</strong> section.", htmlEncode:false)
+    <div class="clr20"></div>
+    @Html.Partial("Partials/_createsample", sampleModel, ViewData)
 
-    <pre>@Html.Raw(ViewBag.SampleJson)</pre>
+    if(!string.IsNullOrEmpty(sampleJson))
+    {
+        <pre>@ViewBag.SampleJson</pre>
+    }
 }
 else
 {

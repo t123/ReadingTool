@@ -210,6 +210,7 @@
     <Compile Include="Models\User\DeleteAccountModel.cs" />
     <Compile Include="Models\User\DictionaryViewModel.cs" />
     <Compile Include="Models\User\ExportModel.cs" />
+    <Compile Include="Models\User\JsonSampleModel.cs" />
     <Compile Include="Models\User\KeyBindingsModel.cs" />
     <Compile Include="Models\User\LanguageSettingsViewModel.cs" />
     <Compile Include="Models\User\LanguageViewModel.cs" />
@@ -502,6 +503,7 @@
     <Content Include="Views\User\MyAccount\Controls.cshtml" />
     <Content Include="Views\User\MyAccount\ImportExport.cshtml" />
     <Content Include="Views\User\Texts\Import.cshtml" />
+    <Content Include="Views\User\Texts\Partials\_createsample.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

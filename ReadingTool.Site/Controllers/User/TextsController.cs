@@ -217,26 +217,56 @@ namespace ReadingTool.Site.Controllers.User
         public ActionResult Import()
         {
             var languages = _languageService.FindAll().Select(x => x.Name).OrderBy(x => x).ToArray();
-            var languageName = languages.Length > 0 ? languages[0] : string.Empty;
-
-            TextImport ti = new TextImport()
-                {
-                    Defaults = new TextImport.JsonDefaults()
-                        {
-                            L1LanguageName = languageName,
-                            L2LanguageName = languageName,
-                        },
-                    Items = new TextImport.JsonTextItem[2]
-                        {
-                            new TextImport.JsonTextItem() { L1LanguageName = languageName, L2LanguageName = languageName},
-                            new TextImport.JsonTextItem() { L1LanguageName = languageName, L2LanguageName = languageName},
-                        }
-                };
-
-            ViewBag.SampleJson = JsonConvert.SerializeObject(ti, Formatting.Indented);
             ViewBag.Languages = languages;
+            ViewBag.SampleJson = TempData["SampleJson"] ?? "";
+            ViewBag.SampleJsonModel = TempData["SampleJsonModel"] ?? null;
 
             return View();
+        }
+
+        public ActionResult CreateSample(JsonSampleModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                TextImport ti = new TextImport()
+                    {
+                        Defaults = new TextImport.JsonDefaults()
+                            {
+                                AutoNumberCollection = model.AutoNumberCollection,
+                                CollectionName = model.CollectionName,
+                                L1LanguageName = model.L1Name,
+                                L2LanguageName = model.L2Name,
+                                StartCollectionWithNumber = model.StartCollectionWithNumber,
+                                Tags = model.Tags
+                            },
+                    };
+
+                ti.Items = new TextImport.JsonTextItem[model.NumberOfItems ?? 1];
+                for(int i = 0; i < (model.NumberOfItems ?? 1); i++)
+                {
+                    ti.Items[i] = new TextImport.JsonTextItem()
+                        {
+                            L1LanguageName = "",
+                            L2LanguageName = "",
+                            Title = "",
+                            AudioUrl = "",
+                            CollectionName = "",
+                            Tags = "",
+                            L1Text = "",
+                            L2Text = "",
+                        };
+                };
+
+                TempData["SampleJson"] = JsonConvert.SerializeObject(ti, Formatting.Indented);
+                this.FlashSuccess("Your sample is below. Please make sure your editor has UTF-8 encoding.");
+            }
+            else
+            {
+                this.FlashError(Constants.Messages.FORM_FAIL);
+            }
+
+            TempData["SampleJsonModel"] = model;
+            return RedirectToAction("Import");
         }
 
         [HttpPost]
