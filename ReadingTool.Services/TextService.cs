@@ -96,11 +96,12 @@ namespace ReadingTool.Services
         {
             var languages = _languageService.FindAll();
             var languageNameToId = languages.ToDictionary(x => x.Name.ToLowerInvariant(), x => x.Id, new CaseInsensitiveComparer());
+            var ltrWithSpaces = _languageService.FindByName("Left to Right, with spaces", publicLanguage: true);
 
             dynamic defaults = new
                 {
                     L1Id = Guid.Empty,
-                    L2Id = Guid.Empty,
+                    L2Id = (Guid?)Guid.Empty,
                     AutoNumberCollection = (bool?)null,
                     CollectionName = "",
                     StartCollectionWithNumber = (int?)null,
@@ -127,7 +128,7 @@ namespace ReadingTool.Services
                         throw new Exception(string.Format("The language name {0} in the defaults is not in your language list", import.Defaults.L2LanguageName));
                     }
 
-                    defaults.L1Id = languageNameToId[import.Defaults.L1LanguageName];
+                    defaults.L2Id = languageNameToId[import.Defaults.L2LanguageName];
                 }
                 #endregion
 
@@ -156,21 +157,10 @@ namespace ReadingTool.Services
                     }
                 }
 
-                //text.L1Id = language == null ? Guid.Empty : language.Id;
-
-                if(!languageNameToId.ContainsKey(text.L2LanguageName ?? "") && defaults.L1Id == Guid.Empty)
+                if(!string.IsNullOrEmpty(text.L2LanguageName) && !languageNameToId.ContainsKey(text.L2LanguageName))
                 {
-                    if(string.IsNullOrEmpty(text.L2LanguageName))
-                    {
-                        errors.AppendFormat("The language '<b>{0}</b>' was not found in the text items, and no default was specified for item {1}<br/>", text.L2LanguageName ?? "none", counter);
-                    }
-                    else
-                    {
-                        errors.AppendFormat("No language or default was specified for item {0}<br/>", counter);
-                    }
+                    errors.AppendFormat("The language '<b>{0}</b>' was not found in the text items, and no default was specified for item {1}<br/>", text.L2LanguageName, counter);
                 }
-
-                //text.L2Id = language == null ? Guid.Empty : language.Id;
                 #endregion
 
                 if(string.IsNullOrEmpty(text.Title))
@@ -205,13 +195,37 @@ namespace ReadingTool.Services
                     AudioUrl = text.AudioUrl,
                     CollectionName = string.IsNullOrEmpty(text.CollectionName) ? defaults.CollectionName : text.CollectionName,
                     Owner = _identity.UserId,
-                    L1Id = languageNameToId.GetValueOrDefault(text.L1LanguageName, (Guid)defaults.LanguageId),
-                    L2Id = languageNameToId.GetValueOrDefault(text.L2LanguageName, (Guid)defaults.LanguageId),
+                    L1Id = languageNameToId.GetValueOrDefault(text.L1LanguageName, (Guid)defaults.L1Id),
+                    //L2Id = languageNameToId.GetValueOrDefault(text.L2LanguageName, (Guid)defaults.L2Id),
                     L1Text = text.L1Text,
                     L2Text = text.L2Text,
                     Title = text.Title ?? "Import " + imported,
-                    Tags = TagHelper.Merge(defaults.Tags, text.Tags),
+                    Tags = TagHelper.ToString(TagHelper.Merge(defaults.Tags, text.Tags)),
                 };
+
+
+                if(string.IsNullOrEmpty(text.L2LanguageName))
+                {
+                    if(defaults.L2Id == null || defaults.L2Id == Guid.Empty)
+                    {
+                        if(newText.IsParallel)
+                        {
+                            newText.L2Id = ltrWithSpaces.Id;
+                        }
+                        else
+                        {
+                            newText.L2Id = null;
+                        }
+                    }
+                    else
+                    {
+                        newText.L2Id = ((Guid?)defaults.L2Id).Value;
+                    }
+                }
+                else
+                {
+                    newText.L2Id = languageNameToId[text.L2LanguageName];
+                }
 
                 if(text.CollectionNo != null)
                 {

@@ -38,7 +38,7 @@
         </fieldset>
     }
     <div class="clr20"></div>
-    @Html.Partial("Partials/_createsample", sampleModel, ViewData)
+    @Html.Partial("Partials/_createsample", sampleModel ?? new JsonSampleModel(), ViewData)
 
     if(!string.IsNullOrEmpty(sampleJson))
     {

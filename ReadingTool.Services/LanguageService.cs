@@ -19,7 +19,7 @@ namespace ReadingTool.Services
         Language Find(Guid id);
         IEnumerable<Language> FindAll();
         IEnumerable<Language> FindAllIncludePublic();
-        Language FindByName(string name);
+        Language FindByName(string name, bool? publicLanguage = false);
     }
 
     public class LanguageService : ILanguageService
@@ -99,9 +99,16 @@ namespace ReadingTool.Services
             return _db.Select<Language>(x => x.Owner == _identity.UserId || x.IsPublic);
         }
 
-        public Language FindByName(string name)
+        public Language FindByName(string name, bool? publicLanguage = false)
         {
-            return _db.Select<Language>(x => x.Name == name).FirstOrDefault();
+            if(publicLanguage == null)
+            {
+                return _db.Select<Language>(x => x.Name == name).FirstOrDefault();
+            }
+            else
+            {
+                return _db.Select<Language>(x => x.Name == name && x.IsPublic == publicLanguage.Value).FirstOrDefault();
+            }
         }
     }
 }

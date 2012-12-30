@@ -273,6 +273,8 @@ namespace ReadingTool.Site.Controllers.User
         [ValidateAntiForgeryToken]
         public ActionResult Import(TextImportModel model)
         {
+            ViewBag.Languages = _languageService.FindAll().Select(x => x.Name).OrderBy(x => x).ToArray();
+
             if(ModelState.IsValid && model.File != null && model.File.ContentLength > 0)
             {
                 //TODO allow zip
@@ -302,15 +304,10 @@ namespace ReadingTool.Site.Controllers.User
                 {
                     this.FlashError(e.Message);
                 }
-                finally
-                {
-                    ViewBag.Languages = _languageService.FindAll().Select(x => x.Name).OrderBy(x => x);
-                }
 
                 return View(model);
             }
 
-            ViewBag.Languages = _languageService.FindAll().Select(x => x.Name).OrderBy(x => x);
             this.FlashError(Constants.Messages.FORM_FAIL);
             return View(model);
         }
