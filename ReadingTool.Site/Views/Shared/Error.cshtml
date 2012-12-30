@@ -32,18 +32,8 @@
     <div class="container-fluid">
         @Html.Partial("_Navigation")
         @Html.Flash()
-        <div class="clr10"></div>
-        @Html.ActionLink("reimport", "ReimportData")
-        
-        <ul>
-            <li>Move L1 and L2 to files</li>
-            <li>Grid and searching for texts & words</li>
-            <li>Clicking multi number and increasing is broken.</li>
-            <li>next & previous links</li>
-            <li>check audio/controls</li>
-            <li>import from lwt/mongo</li>
-            <li>import from file</li>
-        </ul>
+        <h1>Error Page</h1>
+        @Html.ActionLink("Back to 500", "TestInternal", "~~Error")
         <div class="clr50"></div>
         <div class="navbar navbar-fixed-bottom navbar-inverse">
             <div class="navbar-inner">

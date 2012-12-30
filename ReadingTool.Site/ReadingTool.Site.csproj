@@ -184,6 +184,7 @@
     <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\ValidEmailAddress.cs" />
     <Compile Include="CassetteConfiguration.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\User\ReadingController.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
@@ -205,8 +206,11 @@
     <Compile Include="Mappings\RegisterMappings.cs" />
     <Compile Include="Models\Account\SignInViewModel.cs" />
     <Compile Include="Models\Account\SignUpViewModel.cs" />
+    <Compile Include="Models\Admin\PublicLanguageViewModel.cs" />
     <Compile Include="Models\User\DeleteAccountModel.cs" />
     <Compile Include="Models\User\DictionaryViewModel.cs" />
+    <Compile Include="Models\User\ExportModel.cs" />
+    <Compile Include="Models\User\KeyBindingsModel.cs" />
     <Compile Include="Models\User\LanguageSettingsViewModel.cs" />
     <Compile Include="Models\User\LanguageViewModel.cs" />
     <Compile Include="Models\User\PasswordChangeViewModel.cs" />
@@ -470,9 +474,13 @@
       <DependentUpon>readingui.js</DependentUpon>
     </Content>
     <Content Include="App_Data\dummy.sql" />
+    <Content Include="Views\Admin\Home\AddPublicLanguage.cshtml" />
+    <Content Include="Views\Admin\Home\EditPublicLanguage.cshtml" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <Content Include="Views\Shared\_Navigation.cshtml" />
+    <Content Include="Views\Shared\_NotFound.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
     <None Include="Views\User\Languages\Add.cshtml" />
     <Content Include="Views\User\Languages\Edit.cshtml" />
     <Content Include="Views\User\Languages\Dictionaries.cshtml" />
@@ -488,6 +496,9 @@
     <Content Include="Views\User\Texts\Partials\_templates.cshtml" />
     <Content Include="Views\User\MyAccount\Partials\_menu.cshtml" />
     <Content Include="Views\User\MyAccount\Delete.cshtml" />
+    <None Include="Views\Admin\Home\PublicLanguages.cshtml" />
+    <Content Include="Views\User\MyAccount\Controls.cshtml" />
+    <Content Include="Views\User\MyAccount\ImportExport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -56,6 +56,12 @@ namespace ReadingTool.Site.Controllers.User
                 ModelState.AddModelError("L2Id", "Please choose a language");
             }
 
+            var l1 = _languageService.Find(model.L1Id);
+            if(l1 != null && l1.IsPublic)
+            {
+                ModelState.AddModelError("L1Id", "Please choose a language");
+            }
+
             if(ModelState.IsValid)
             {
                 Text t = new Text()
@@ -100,7 +106,9 @@ namespace ReadingTool.Site.Controllers.User
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Languages = _languageService.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
+            var languages = _languageService.FindAllIncludePublic();
+            ViewBag.L1Languages = languages.Where(x => !x.IsPublic).OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
+            ViewBag.L2Languages = languages.OrderByDescending(x => x.IsPublic).ThenBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
 
             return View(new TextViewModel()
                 {
@@ -124,6 +132,12 @@ namespace ReadingTool.Site.Controllers.User
             if(!string.IsNullOrWhiteSpace(model.L2Text) && model.L2Id == null)
             {
                 ModelState.AddModelError("L2Id", "Please choose a language");
+            }
+
+            var l1 = _languageService.Find(model.L1Id);
+            if(l1 != null && l1.IsPublic)
+            {
+                ModelState.AddModelError("L1Id", "Please choose a language");
             }
 
             if(ModelState.IsValid)
@@ -151,7 +165,9 @@ namespace ReadingTool.Site.Controllers.User
                 return RedirectToAction("Edit", new { id = id });
             }
 
-            ViewBag.Languages = _languageService.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
+            var languages = _languageService.FindAllIncludePublic();
+            ViewBag.L1Languages = languages.Where(x => !x.IsPublic).OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
+            ViewBag.L2Languages = languages.OrderByDescending(x => x.IsPublic).ThenBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
             this.FlashError(Constants.Messages.FORM_FAIL);
 
             return View(model);

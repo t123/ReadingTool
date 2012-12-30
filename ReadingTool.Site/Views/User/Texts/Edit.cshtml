@@ -71,7 +71,7 @@
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Edit Text</legend>
-        @Html.BootstrapFormDropDown(x=>x.L1Id, new SelectList(ViewBag.Languages as Dictionary<Guid,string>, "Key", "Value"), "Please choose")
+        @Html.BootstrapFormDropDown(x=>x.L1Id, new SelectList(ViewBag.L1Languages as Dictionary<Guid,string>, "Key", "Value"), "Please choose")
         @Html.BootstrapFormTextbox(x=>x.AudioUrl, new { @type="url", @class="input-xxlarge"})
         @Html.BootstrapFormTextbox(x=>x.CollectionName, new { @class="input-xxlarge" })
         @Html.BootstrapFormItem(x=>x.CollectionNo)
@@ -91,7 +91,7 @@
           </div>
         </div>
 
-        @Html.BootstrapFormDropDown(x=>x.L2Id, new SelectList(ViewBag.Languages as Dictionary<Guid,string>, "Key", "Value"), "None")
+        @Html.BootstrapFormDropDown(x=>x.L2Id, new SelectList(ViewBag.L2Languages as Dictionary<Guid,string>, "Key", "Value"), "None")
         @Html.BootstrapFormCustomHtml(x=>x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l2modal"">change L2 text</a>")
         <div id="l2modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
           <div class="modal-header">

@@ -18,6 +18,9 @@
     <td>
       <xsl:attribute name="class">f</xsl:attribute>
       <p>
+        <xsl:attribute name="dir">
+          <xsl:value-of select="@dir" />
+        </xsl:attribute>
         <xsl:apply-templates select="s"/>
       </p>
     </td>
@@ -27,6 +30,9 @@
     <td>
       <xsl:attribute name="class">s</xsl:attribute>
       <p>
+        <xsl:attribute name="dir">
+          <xsl:value-of select="@dir" />
+        </xsl:attribute>
         <xsl:apply-templates select="s"/>
       </p>
     </td>

@@ -1,7 +1,7 @@
 ﻿@using ReadingTool.Core.Formatters
 @model ReadingTool.Site.Models.User.ReadViewModel
 <div id="textArea">
-    <div id="textContent" dir="@Model.Language.Settings.Direction.ToString().ToLowerInvariant()">
+    <div id="textContent">
         @Html.Raw(Model.ParsedText)
     </div>
 </div>
@@ -32,7 +32,7 @@
     <li><button class="btn" id="reviewUnknownWords">Review unknown words</button></li>
     <li><button class="btn" id="markRemainingAsKnown">Mark the remaining words as known</button></li>
 </ul>
-<div id="markRemainingAsKnownProgress" class="warning" style="display: none"></div>
+<div id="altMessageArea" style="display: none"></div>
 <div class="clr100"></div>
 <div class=" navbar-fixed-bottom">
     <div class="navbar-inner">

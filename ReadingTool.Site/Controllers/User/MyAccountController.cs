@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using AutoMapper;
+using Newtonsoft.Json;
 using ReadingTool.Core;
+using ReadingTool.Core.Formatters;
+using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Helpers;
 using ReadingTool.Site.Models.User;
@@ -16,11 +21,26 @@ namespace ReadingTool.Site.Controllers.User
     {
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly ILanguageService _languageService;
+        private readonly ITermService _termService;
+        private readonly ITextService _textService;
+        private readonly ISystemLanguageService _systemLanguageService;
 
-        public MyAccountController(IUserService userService, IAuthenticationService authenticationService)
+        public MyAccountController(
+            IUserService userService,
+            IAuthenticationService authenticationService,
+            ILanguageService languageService,
+            ITermService termService,
+            ITextService textService,
+            ISystemLanguageService systemLanguageService
+            )
         {
             _userService = userService;
             _authenticationService = authenticationService;
+            _languageService = languageService;
+            _termService = termService;
+            _textService = textService;
+            _systemLanguageService = systemLanguageService;
         }
 
         [HttpGet]
@@ -166,6 +186,80 @@ namespace ReadingTool.Site.Controllers.User
             this.FlashError(Constants.Messages.FORM_FAIL);
 
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult Controls()
+        {
+            var user = _userService.Find(this.CurrentUserId());
+            var mapped = Mapper.Map<KeyBindings, KeyBindingsModel>(user.KeyBindings ?? new KeyBindings());
+            return View(mapped);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Controls(KeyBindingsModel model)
+        {
+            var user = _userService.Find(this.CurrentUserId());
+
+            if(ModelState.IsValid)
+            {
+                var kb = user.KeyBindings ?? new KeyBindings();
+                kb = Mapper.Map<KeyBindingsModel, KeyBindings>(model);
+
+                user.KeyBindings = kb;
+                _userService.Save(user);
+
+                this.FlashSuccess(Constants.Messages.FORM_UPDATE, DescriptionFormatter.GetDescription(model));
+                return RedirectToAction("Controls");
+            }
+
+            this.FlashError(Constants.Messages.FORM_FAIL);
+            return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult ImportExport()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ImportExport(string export)
+        {
+            switch(export)
+            {
+                case "export your account data":
+                    var user = _userService.Find(this.CurrentUserId());
+                    var languages = _languageService.FindAll().ToList();
+                    user.Password = string.Empty;
+
+                    var exportModel = new ExportModel()
+                    {
+                        User = user,
+                        Languages = languages,
+                        Terms = _termService.FindAll().ToList(),
+                        Texts = _textService.FindAll().ToList(),
+                    };
+
+                    foreach(var l in languages.Where(x => x.SystemLanguageId != null))
+                    {
+                        var sl = _systemLanguageService.Find(l.SystemLanguageId.Value);
+                        if(sl != null)
+                        {
+                            exportModel.SystemLanguages.Add(sl);
+                        }
+                    }
+
+                    var jsonString = JsonConvert.SerializeObject(exportModel);
+
+                    //TODO zip this up
+                    return File(Encoding.UTF8.GetBytes(jsonString), "application/json", "account.json");
+            }
+
+            this.FlashError(Constants.Messages.FORM_FAIL);
+            return RedirectToAction("ImportExport");
         }
 
         private void UpdateUser(Entities.User user)

@@ -1,9 +1,10 @@
 var _this = this;
 var SelectedWord = (function () {
-    function SelectedWord(settings, element) {
+    function SelectedWord(settings, element, quicksave) {
         this.settings = settings;
         this.element = element;
         this.length = 1;
+        $('.modal-footer').removeClass('failed');
         if(element.nodeName == 'A') {
             this.element = $(element).parent();
         }
@@ -13,7 +14,11 @@ var SelectedWord = (function () {
             this.selectedWord = $(this.element).text();
         }
         this.selectedSentence = this.getCurrentSentence();
-        this.findTerm();
+        if(quicksave) {
+            this.quicksave();
+        } else {
+            this.findTerm();
+        }
     }
     SelectedWord.prototype.findTerm = function () {
         var _this = this;
@@ -72,13 +77,24 @@ var SelectedWord = (function () {
         $('#termPhrase').val(this.selectedWord);
         this.refreshDictionaryLinks();
     };
+    SelectedWord.prototype.quicksave = function () {
+        var _this = this;
+        $.post(this.settings.ajaxUrl + '/quicksave', {
+            languageId: this.settings.languageId,
+            termPhrase: this.selectedWord
+        }, function (data) {
+            console.log('quicksaving');
+            if(data.result == "OK") {
+                _this.updateTermClasses(data.data.termPhrase, data.data.term);
+            }
+        });
+    };
     SelectedWord.prototype.saveChanges = function () {
         var _this = this;
         var currentIndex = ($('#tabTermDefintions li.active')).index();
         if(currentIndex < 0) {
             currentIndex = 1;
         }
-        $('.modal-footer').removeClass('failed');
         $('#iconResult').hide();
         $.post(this.settings.ajaxUrl + '/save-term', $('#formTerms').serialize(), function (data) {
             console.log('saving term changes');
@@ -154,8 +170,32 @@ var SelectedWord = (function () {
             });
         }
     };
-    SelectedWord.prototype.resetWord = function () {
-        console.log('reset word');
+    SelectedWord.prototype.resetTerm = function () {
+        var _this = this;
+        var currentIndex = ($('#tabTermDefintions li.active')).index();
+        if(currentIndex < 0) {
+            currentIndex = 1;
+        }
+        $('#iconResult').hide();
+        $.post(this.settings.ajaxUrl + '/reset-term', {
+            languageId: this.settings.languageId,
+            termPhrase: this.selectedWord
+        }, function (data) {
+            console.log('reset term');
+            console.log(data);
+            if(data.result == "OK") {
+                $('#termMessage').removeClass('label-info').addClass('label-success').html(data.message);
+                _this.createTemplate(data.data.term);
+                ($('#tabTermDefintions a')).eq(currentIndex).tab('show');
+                _this.updateModalDisplay();
+                $('#iconResult').removeClass().addClass('icon-ok-circle').show().fadeOut(2000);
+                _this.updateTermClasses(data.data.termPhrase, data.data.term);
+            } else {
+                $('#termMessage').removeClass().addClass('label label-important').html(data.message);
+                $('.modal-footer').addClass('failed');
+                $('#iconResult').removeClass().addClass('icon-exclamation-sign icon-white').show().fadeOut(2000);
+            }
+        });
     };
     SelectedWord.prototype.refreshSentence = function (element) {
         console.log('refresh sentence');

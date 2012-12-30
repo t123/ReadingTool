@@ -18,6 +18,7 @@ namespace ReadingTool.Services
         void Delete(Guid id);
         Language Find(Guid id);
         IEnumerable<Language> FindAll();
+        IEnumerable<Language> FindAllIncludePublic();
         Language FindByName(string name);
     }
 
@@ -36,11 +37,16 @@ namespace ReadingTool.Services
 
         public void Save(Language language)
         {
+            if(language.IsPublic && !_identity.IsInRole(Constants.Roles.ADMIN))
+            {
+                return;
+            }
+
             if(language.Id == Guid.Empty)
             {
                 language.Id = SequentialGuid.NewGuid();
                 language.Created = DateTime.Now;
-                language.Owner = _identity.UserId;
+                language.Owner = language.IsPublic ? User.DummyOwner : _identity.UserId;
             }
 
             language.Modified = DateTime.Now;
@@ -50,6 +56,11 @@ namespace ReadingTool.Services
 
         public void Delete(Language language)
         {
+            if(language.IsPublic && !_identity.IsInRole(Constants.Roles.ADMIN))
+            {
+                return;
+            }
+
             _deleteService.DeleteLanguage(language);
         }
 
@@ -60,12 +71,32 @@ namespace ReadingTool.Services
 
         public Language Find(Guid id)
         {
-            return _db.Select<Language>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
+            var language = _db.Select<Language>(x => x.Id == id).FirstOrDefault();
+
+            if(language == null)
+            {
+                return null;
+            }
+
+            if(
+                (language.Owner == _identity.UserId) ||
+                (language.IsPublic && _identity.IsInRole(Constants.Roles.ADMIN))
+                )
+            {
+                return language;
+            }
+
+            return null;
         }
 
         public IEnumerable<Language> FindAll()
         {
             return _db.Select<Language>(x => x.Owner == _identity.UserId);
+        }
+
+        public IEnumerable<Language> FindAllIncludePublic()
+        {
+            return _db.Select<Language>(x => x.Owner == _identity.UserId || x.IsPublic);
         }
 
         public Language FindByName(string name)

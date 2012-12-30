@@ -157,6 +157,17 @@ namespace ReadingTool.Site.Helpers
             string control = string.Format(controlHtml.ToString(), customHtml);
             return new MvcHtmlString(control);
         }
+
+        public static MvcHtmlString BootstrapFormCustomHtml<TModel, TValue>(
+            this HtmlHelper<TModel> helper,
+            Expression<Func<TModel, TValue>> expression,
+            MvcHtmlString customHtml
+            )
+        {
+            var controlHtml = BootstrapControl(helper, expression);
+            string control = string.Format(controlHtml.ToString(), customHtml);
+            return new MvcHtmlString(control);
+        }
         #endregion
 
         #region textbox

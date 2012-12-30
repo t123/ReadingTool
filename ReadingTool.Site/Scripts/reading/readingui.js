@@ -85,6 +85,7 @@ var ReadingToolUi = (function () {
             return;
         }
         if(this.settings.quickmode) {
+            selectedWord = new SelectedWord(this.settings, event.srcElement, true);
             return;
         }
         if(this.modalVisible) {
@@ -151,13 +152,6 @@ var ReadingToolUi = (function () {
 
                 }
             }
-            if(this.settings.quickmode) {
-                if($(this).hasClass(this.settings.classes.notseenClass)) {
-                } else {
-                }
-                ; ;
-                return;
-            }
         }
         if(this.isPlaying) {
             this.wasPlaying = true;
@@ -165,11 +159,65 @@ var ReadingToolUi = (function () {
         if(this.isPlaying && this.settings.keyBindings.autoPause) {
             this.audio.pauseAudio();
         }
-        selectedWord = new SelectedWord(this.settings, event.srcElement);
+        selectedWord = new SelectedWord(this.settings, event.srcElement, false);
         modal.modal('show');
     };
     ReadingToolUi.prototype.closeTextModal = function () {
         modal.modal('hide');
+    };
+    ReadingToolUi.prototype.markRemainingAsKnown = function () {
+        var _this = this;
+        if(this.modalVisible) {
+            return;
+        }
+        $('#altMessageArea').removeClass().addClass('alert alert-info').html('saving....').show();
+        var terms = [];
+        $('#textContent .' + this.settings.classes.notseenClass).each(function (i, elem) {
+            if($(_this).is('sup')) {
+                return;
+            }
+            terms.push($(elem).text());
+        });
+        $.post(this.settings.ajaxUrl + '/mark-remaining-as-known', {
+            languageId: this.settings.languageId,
+            terms: terms,
+            textId: this.settings.textId
+        }, function (data) {
+            if(data.result == 'OK') {
+                $('#altMessageArea').addClass('alert alert-success');
+                $('#textContent .nsx').removeClass('nsx').addClass('knx');
+            } else {
+                $('#altMessageArea').addClass('alert alert-error');
+            }
+            $('#altMessageArea').html(data.message);
+        });
+    };
+    ReadingToolUi.prototype.reviewUnknown = function () {
+        var _this = this;
+        if(this.modalVisible) {
+            return;
+        }
+        $('#altMessageArea').removeClass().addClass('alert alert-info').html('review unknown words....').show();
+        var terms = [];
+        $('#textContent .' + this.settings.classes.unknownClass).each(function (i, elem) {
+            if($(_this).is('sup')) {
+                return;
+            }
+            terms.push($(elem).text());
+        });
+        $.post(this.settings.ajaxUrl + '/review-unknown', {
+            languageId: this.settings.languageId,
+            terms: terms,
+            textId: this.settings.textId
+        }, function (data) {
+            if(data.result == 'OK') {
+                $('#altMessageArea').addClass('alert alert-success');
+                $('#textContent .nsx').removeClass('nsx').addClass('knx');
+            } else {
+                $('#altMessageArea').addClass('alert alert-error');
+            }
+            $('#altMessageArea').html(data.message);
+        });
     };
     return ReadingToolUi;
 })();
@@ -185,6 +233,14 @@ $('#quickmode').click(function () {
     ui.toggleQuickmode();
     return false;
 });
+$('#reviewUnknownWords').click(function () {
+    ui.reviewUnknown();
+    return false;
+});
+$('#markRemainingAsKnown').click(function () {
+    ui.markRemainingAsKnown();
+    return false;
+});
 $('#btnSave').click(function () {
     selectedWord.saveChanges();
 });
@@ -193,7 +249,7 @@ $('#btnSaveClose').click(function () {
     ui.closeTextModal();
 });
 $('#btnReset').click(function () {
-    selectedWord.resetWord();
+    selectedWord.resetTerm();
 });
 $('#increaseWord').click(function () {
     selectedWord.increaseWord();

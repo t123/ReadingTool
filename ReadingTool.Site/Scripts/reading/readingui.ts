@@ -35,11 +35,11 @@ class ReadingToolUi {
     toggleL1() {
         var li = $('#toggleL1').parent('li');
 
-        if(li.hasClass('active')) {
+        if (li.hasClass('active')) {
             li.removeClass('active');
             this.closeTextModal();
-            
-            if(this.settings.asParallel) {
+
+            if (this.settings.asParallel) {
                 if ($('#textContent td.s').length > 0) {
                     $('#textContent table td.f span').hide();
                 } else {
@@ -110,7 +110,11 @@ class ReadingToolUi {
     openTextModal(isClick: bool, event: any) {
         if (this.modalVisible && this.settings.modalBehaviour == 'Rollover') return;
         if (!isClick && this.settings.modalBehaviour != 'Rollover') return;
-        if (this.settings.quickmode) return;
+
+        if (this.settings.quickmode) {
+            selectedWord = new SelectedWord(this.settings, event.srcElement, true);
+            return;
+        }
 
         if (this.modalVisible) {
             this.closeTextModal();
@@ -151,16 +155,6 @@ class ReadingToolUi {
 
                 default: return;
             }
-
-            if (this.settings.quickmode) {
-                if ($(this).hasClass(this.settings.classes.notseenClass)) {
-                    //reader.quicksave($(this), settings.unknownClass);
-                } else {
-                    //reader.quicksave($(this), settings.notseenClass);
-                };
-
-                return;
-            }
         }
 
         if (this.isPlaying) {
@@ -171,21 +165,83 @@ class ReadingToolUi {
             this.audio.pauseAudio();
         }
 
-        selectedWord = new SelectedWord(this.settings, event.srcElement);
+        selectedWord = new SelectedWord(this.settings, event.srcElement, false);
         modal.modal('show');
     }
 
     closeTextModal() {
         modal.modal('hide');
     }
+
+    public markRemainingAsKnown() {
+        if (this.modalVisible) return;
+        
+        $('#altMessageArea').removeClass().addClass('alert alert-info').html('saving....').show();
+
+        var terms = [];
+        $('#textContent .' + this.settings.classes.notseenClass).each(function (i, elem) => {
+            if ($(this).is('sup')) return;
+            terms.push($(elem).text());
+        });
+
+        $.post(
+            this.settings.ajaxUrl + '/mark-remaining-as-known',
+            {
+                languageId: this.settings.languageId,
+                terms: terms,
+                textId: this.settings.textId
+            }, function (data) {
+                if (data.result == 'OK') {
+                    $('#altMessageArea').addClass('alert alert-success');
+                    $('#textContent .nsx').removeClass('nsx').addClass('knx');
+                } else {
+                    $('#altMessageArea').addClass('alert alert-error');
+                }
+
+                $('#altMessageArea').html(data.message);
+            }
+        );
+    }
+
+    public reviewUnknown() {
+        if (this.modalVisible) return;
+        
+        $('#altMessageArea').removeClass().addClass('alert alert-info').html('review unknown words....').show();
+
+        var terms = [];
+        $('#textContent .' + this.settings.classes.unknownClass).each(function (i, elem) => {
+            if ($(this).is('sup')) return;
+            terms.push($(elem).text());
+        });
+
+        $.post(
+            this.settings.ajaxUrl + '/review-unknown',
+            {
+                languageId: this.settings.languageId,
+                terms: terms,
+                textId: this.settings.textId
+            }, function (data) {
+                if (data.result == 'OK') {
+                    $('#altMessageArea').addClass('alert alert-success');
+                    $('#textContent .nsx').removeClass('nsx').addClass('knx');
+                } else {
+                    $('#altMessageArea').addClass('alert alert-error');
+                }
+
+                $('#altMessageArea').html(data.message);
+            }
+        );
+    }
 }
 
 $('#toggleL1').click(function () { ui.toggleL1(); return false; });
 $('#toggleL2').click(function () { ui.toggleL2(); return false; });
 $('#quickmode').click(function () { ui.toggleQuickmode(); return false; });
+$('#reviewUnknownWords').click(function () { ui.reviewUnknown(); return false; });
+$('#markRemainingAsKnown').click(function () { ui.markRemainingAsKnown(); return false; });
 $('#btnSave').click(function () { selectedWord.saveChanges(); });
 $('#btnSaveClose').click(function () { selectedWord.saveChanges(); ui.closeTextModal(); });
-$('#btnReset').click(function () { selectedWord.resetWord(); });
+$('#btnReset').click(function () { selectedWord.resetTerm(); });
 $('#increaseWord').click(function () { selectedWord.increaseWord(); });
 $('#decreaseWord').click(function () { selectedWord.decreaseWord(); });
 $('#minusRead').click(function () { ui.changeRead(-1); return false; });
@@ -212,13 +268,13 @@ var termMessageTemplate = Handlebars.compile($("#term-message-template").html())
 $(function () {
     //Bind the mouse rollover to the spans
     if (ui.settings.modalBehaviour == 'Rollover') {
-        $(document).on('mouseenter', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function(event) {  ui.openTextModal(false, event); });
+        $(document).on('mouseenter', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function (event) { ui.openTextModal(false, event); });
     } else {
         //Stop the context menu on rightclick
-        $(document).on('contextmenu', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function(event) { return ui.settings.modalBehaviour != 'RightClick'; });
+        $(document).on('contextmenu', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function (event) { return ui.settings.modalBehaviour != 'RightClick'; });
 
         //Bind the clicks
-        $(document).on('mousedown', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function(event) { ui.openTextModal(true, event); });
+        $(document).on('mousedown', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function (event) { ui.openTextModal(true, event); });
     }
 
     modal = $("#myModal");

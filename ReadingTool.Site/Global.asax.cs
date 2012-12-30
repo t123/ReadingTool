@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
@@ -11,10 +12,12 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
+using Elmah;
 using Ninject;
 using Ninject.Web.Common;
 using ReadingTool.Entities;
 using ReadingTool.Services;
+using ReadingTool.Site.Controllers.User;
 using ReadingTool.Site.Mappings;
 using ServiceStack.DataAccess;
 using ServiceStack.OrmLite;
@@ -67,6 +70,37 @@ namespace ReadingTool.Site
             RegisterMappings.Register();
         }
 
+        void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)
+        {
+            var exception = e.Exception.GetBaseException();
+            var httpException = exception as HttpException;
+            if(httpException != null)
+            {
+                if(httpException.GetHttpCode() == (int)HttpStatusCode.NotFound)
+                {
+                    string url = ((HttpContext)e.Context).Request.RawUrl;
+
+                    if(url.EndsWith(".php"))
+                    {
+                        e.Dismiss();
+                    }
+                    else if(url.StartsWith("/apple-touch"))
+                    {
+                        e.Dismiss();
+                    }
+                    else
+                    {
+                        switch(url)
+                        {
+                            case "/favicon.ico":
+                                e.Dismiss();
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
         private void Application_BeginRequest()
         {
         }
@@ -80,6 +114,32 @@ namespace ReadingTool.Site
                 connection.Dispose();
             }
         }
+
+        //protected void Application_Error(object sender, EventArgs e)
+        //{
+        //    Exception exception = Server.GetLastError();
+        //    HttpException httpException = exception as HttpException;
+
+        //    if(httpException != null)
+        //    {
+        //        switch(httpException.GetHttpCode())
+        //        {
+        //            case 404:
+        //                Response.Clear();
+
+        //                var rd = new RouteData();
+        //                rd.Values["controller"] = "Error";
+        //                rd.Values["action"] = "NotFound";
+
+        //                Server.ClearError();
+        //                Response.TrySkipIisCustomErrors = true;
+
+        //                IController c = new Controllers.ErrorController();
+        //                c.Execute(new RequestContext(new HttpContextWrapper(Context), rd));
+        //                break;
+        //        }
+        //    }
+        //}
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {

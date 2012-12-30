@@ -19,6 +19,11 @@ namespace ReadingTool.Site.Mappings
 
             Mapper.CreateMap<DictionaryViewModel, LanguageDictionary>();
             Mapper.CreateMap<LanguageDictionary, DictionaryViewModel>();
+
+            Mapper.CreateMap<KeyBindings, KeyBindingsModel>();
+            Mapper.CreateMap<KeyBindingsModel, KeyBindings>();
+            Mapper.CreateMap<KeyModel, Key>();
+            Mapper.CreateMap<Key, KeyModel>();
         }
     }
 }

@@ -12,6 +12,10 @@
 
   <xsl:template match="p[@side='first']">
     <p>
+      <xsl:attribute name="dir">
+        <xsl:value-of select="@dir" />
+      </xsl:attribute>
+      
       <xsl:apply-templates select="s"/>
     </p>
   </xsl:template>

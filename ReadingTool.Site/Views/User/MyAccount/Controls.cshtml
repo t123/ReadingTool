@@ -1,0 +1,58 @@
+﻿@model ReadingTool.Site.Models.User.KeyBindingsModel
+@{
+    ViewBag.Title = "My Account";
+
+    Bundles.AddInlineScript(
+        @<script language="javascript" type="text/javascript">
+             $('input.keycode').keydown(function(event) {
+                 switch (event.which) {
+                 case 8:
+                 case 9:
+                 case 13:
+                 case 116:
+                     return;
+                 default:
+                     var hidden = $(this).next();
+                     $(hidden).val(event.which);
+                     //$(this).val(event.charCode);
+                     break;
+                 }
+             });
+         </script>, "body");
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+@using(Html.BeginForm("KeyBindings", "MyAccount", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Key Bindings</legend>
+        @Html.BootstrapFormItem(x=>x.IsEnabled)
+        @Html.BootstrapFormItem(x=>x.AutoPause)
+        @Html.BootstrapFormItem(x=>x.SecondsToRewind)
+        
+        @Html.BootstrapFormCustomHtml(x=>x.Reset, Html.TextBoxFor(x=>x.Reset.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.Reset.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.SpeedUp, Html.TextBoxFor(x=>x.SpeedUp.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.SpeedUp.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.SpeedDown, Html.TextBoxFor(x=>x.SpeedDown.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.SpeedDown.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.Known, Html.TextBoxFor(x=>x.Known.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.Known.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.NotKnown, Html.TextBoxFor(x=>x.NotKnown.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.NotKnown.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.Ignored, Html.TextBoxFor(x=>x.Ignored.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.Ignored.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.NotSeen, Html.TextBoxFor(x=>x.NotSeen.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.NotSeen.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.VolumeUp, Html.TextBoxFor(x=>x.VolumeUp.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.VolumeUp.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.VolumeDown, Html.TextBoxFor(x=>x.VolumeDown.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.VolumeDown.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.RewindToBeginning, Html.TextBoxFor(x=>x.RewindToBeginning.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.RewindToBeginning.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.Rewind, Html.TextBoxFor(x=>x.Rewind.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.Rewind.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.PlayPause, Html.TextBoxFor(x=>x.PlayPause.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.PlayPause.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.Stop, Html.TextBoxFor(x=>x.Stop.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.Stop.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+        @Html.BootstrapFormCustomHtml(x=>x.FastForward, Html.TextBoxFor(x=>x.FastForward.Character, new { @class="input-mini keycode", maxlength="1" }).ToString() + Html.TextBoxFor(x=>x.FastForward.KeyCode, new { @class="input-mini", @readonly="readonly"}).ToString())
+
+        <div class="buttons">
+            <input type="submit" class="btn btn-primary" value="save" />
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
+        </div>
+    </fieldset>
+}

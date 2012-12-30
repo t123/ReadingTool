@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ReadingTool.Entities.Language>
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Menu
+{
+    @Html.Partial("Partials/_menu", null, ViewData)
+}
+
+@if(Model.Any())
+{
+    <table class="table table-striped table-bordered table-condensed table-hover">
+        <caption>A list of the public languages</caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="button">&nbsp;</th>
+                <th class="button">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var l in Model.OrderBy(x=>x.Name, StringComparer.InvariantCultureIgnoreCase))
+            {
+                <tr>
+                    <td>@l.Name</td>
+                    <td>@Html.EditButton(Url.Action("EditPublicLanguage", new { id = l.Id }))</td>
+                    <td>@Html.DeleteButton(Url.Action("Delete", new { id = l.Id }))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    @Html.FlashMessage("There are no public languages.")
+}
+
+@Html.ActionLink("add a new public language", "AddPublicLanguage", new { }, new { @class = "btn btn-primary" })

@@ -1,4 +1,6 @@
-﻿using System.Web;
+﻿using System;
+using System.IO;
+using System.Web;
 using System.Web.Mvc;
 
 namespace ReadingTool.Site
@@ -7,7 +9,11 @@ namespace ReadingTool.Site
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            //filters.Add(new HandleErrorAttribute()
+            //    {
+            //        ExceptionType = typeof(Exception),
+            //        View = "~/Views/Error/Index.cshtml"
+            //    });
         }
     }
 }

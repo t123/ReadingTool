@@ -29,11 +29,12 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.Item1.Id)
     <div class="media">
-        <a class="pull-left" href="#">
+        <div class="pull-left">
             @Html.Gravatar(Model.Item1.EmailAddress, Model.Item1.DisplayName, classes: "media-object")
-            <div class="clearfix"></div>
+            <div class="clr5"></div>
             <a href="http://www.gravatar.com" target="_blank">(change)</a>
-        </a>
+        </div>
+        
         <div class="media-body">
             <h4 class="media-heading">@Model.Item1.Username</h4>
             <div class="media">

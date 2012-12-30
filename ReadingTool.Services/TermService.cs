@@ -6,6 +6,8 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using ReadingTool.Core;
+using ReadingTool.Core.Enums;
+using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ServiceStack.OrmLite;
 
@@ -20,6 +22,8 @@ namespace ReadingTool.Services
         Term Find(Guid languageId, string term);
         IEnumerable<Term> FindAll();
         Tuple<Term[], Term[]> FindAllForParsing(Language language);
+        IEnumerable<Term> FindAll(Guid languageId);
+        Tuple<bool,string> ReviewTerm(Term term, Review review);
     }
 
     public class TermService : ITermService
@@ -82,17 +86,22 @@ namespace ReadingTool.Services
 
         public void Delete(Guid id)
         {
-            throw new NotImplementedException();
+            Delete(Find(id));
         }
 
         public Term Find(Guid id)
         {
-            throw new NotImplementedException();
+            return _db.Select<Term>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
         }
 
         public IEnumerable<Term> FindAll()
         {
-            throw new NotImplementedException();
+            return _db.Select<Term>(x => x.Owner == _identity.UserId);
+        }
+
+        public IEnumerable<Term> FindAll(Guid languageId)
+        {
+            return _db.Select<Term>(x => x.LanguageId == languageId && x.Owner == _identity.UserId);
         }
 
         public bool Exists(Guid languageId, string termPhrase)
@@ -114,6 +123,76 @@ namespace ReadingTool.Services
         #endregion
 
         #region reading
+        public Tuple<bool, string> ReviewTerm(Term term, Review review)
+        {
+            if(term == null) return new Tuple<bool, string>(false, string.Empty);
+            if(term.State != TermState.Unknown) return new Tuple<bool, string>(false, string.Empty);
+            if(term.NextReview.HasValue && DateTime.Now < term.NextReview) return new Tuple<bool, string>(false, string.Empty);
+
+            if(review == null)
+            {
+                review = Review.Default;
+            }
+
+            term.Box++;
+
+            if(term.Box > (review.KnownAfterBox ?? Review.MAX_BOXES))
+            {
+                term.State = TermState.Known;
+            }
+            else
+            {
+                term.NextReview = GetNextReview(review, term.Box);
+            }
+
+            Save(term);
+
+            return new Tuple<bool, string>(true, string.Format("<strong>{0}<strong>: box {1}, due in {2}", term.TermPhrase, term.Box, (term.NextReview.Value-DateTime.Now).ToHumanAgo()));
+        }
+
+        private DateTime GetNextReview(Review review, int? currentLevel)
+        {
+            if(review == null) review = Review.Default;
+
+            if(currentLevel == null)
+            {
+                currentLevel = 1;
+            }
+
+            switch(currentLevel)
+            {
+                case 1:
+                    return DateTime.Now.AddMinutes(review.Box1Minutes ?? Review.Default.Box1Minutes.Value);
+
+                case 2:
+                    return DateTime.Now.AddMinutes(review.Box2Minutes ?? Review.Default.Box2Minutes.Value);
+
+                case 3:
+                    return DateTime.Now.AddMinutes(review.Box3Minutes ?? Review.Default.Box3Minutes.Value);
+
+                case 4:
+                    return DateTime.Now.AddMinutes(review.Box4Minutes ?? Review.Default.Box4Minutes.Value);
+
+                case 5:
+                    return DateTime.Now.AddMinutes(review.Box5Minutes ?? Review.Default.Box5Minutes.Value);
+
+                case 6:
+                    return DateTime.Now.AddMinutes(review.Box6Minutes ?? Review.Default.Box6Minutes.Value);
+
+                case 7:
+                    return DateTime.Now.AddMinutes(review.Box7Minutes ?? Review.Default.Box7Minutes.Value);
+
+                case 8:
+                    return DateTime.Now.AddMinutes(review.Box8Minutes ?? Review.Default.Box8Minutes.Value);
+
+                case 9:
+                    return DateTime.Now.AddMinutes(review.Box9Minutes ?? Review.Default.Box9Minutes.Value);
+
+                default:
+                    return DateTime.Now.AddMinutes(review.Box9Minutes ?? Review.Default.Box9Minutes.Value);
+            }
+        }
+
         public Term Find(Guid languageId, string termPhrase)
         {
             Term term = _db.Select<Term>(x => x.TermPhrase == termPhrase && x.LanguageId == languageId && x.Owner == _identity.UserId).FirstOrDefault();

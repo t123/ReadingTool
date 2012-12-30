@@ -37,7 +37,11 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
-        public ReadingController(ITextService textService, ITermService termService, ILanguageService languageService, IPrincipal principal)
+        public ReadingController(
+            ITextService textService,
+            ITermService termService,
+            ILanguageService languageService,
+            IPrincipal principal)
         {
             _textService = textService;
             _termService = termService;
@@ -67,8 +71,9 @@ namespace ReadingTool.Site.Controllers.User
 
                 return new JsonNetResult() { Data = new ResponseMessage(OK) };
             }
-            catch
+            catch(Exception e)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
                 return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
             }
         }
@@ -111,8 +116,9 @@ namespace ReadingTool.Site.Controllers.User
                     }
                 };
             }
-            catch
+            catch(Exception e)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
                 return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
             }
         }
@@ -154,8 +160,9 @@ namespace ReadingTool.Site.Controllers.User
                             }
                     };
             }
-            catch
+            catch(Exception e)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
                 return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
             }
         }
@@ -184,8 +191,9 @@ namespace ReadingTool.Site.Controllers.User
 
                 return new JsonNetResult() { Data = new ResponseMessage(OK) { Message = result } };
             }
-            catch
+            catch(Exception e)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
                 return new JsonNetResult() { Data = new ResponseMessage(FAIL) };
             }
         }
@@ -276,6 +284,8 @@ namespace ReadingTool.Site.Controllers.User
             }
             catch(Exception e)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
+
                 return new JsonNetResult()
                 {
                     Data = new ResponseMessage(FAIL)
@@ -286,9 +296,84 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
-        public JsonResult Quicksave(Guid languageId, Guid textId, string termPhrase, string sentence, string state)
+        private Term NewTerm(Guid languageId, string termPhrase, TermState state = TermState.Unknown)
         {
-            throw new NotImplementedException();
+
+            var term = new Term()
+                {
+                    Id = Guid.Empty,
+                    LanguageId = languageId,
+                    Length = 1,
+                    State = state,
+                    TermPhrase = termPhrase
+                };
+
+            return BoxAndReviewReset(term);
+        }
+
+        private Term BoxAndReviewReset(Term term)
+        {
+            var langauge = _languageService.Find(term.LanguageId);
+            var review = langauge.Review ?? Review.Default;
+            term.Box = 1;
+            term.NextReview = DateTime.Now.AddMinutes(review.Box1Minutes ?? Review.Default.Box1Minutes.Value);
+            return term;
+        }
+
+        public JsonResult Quicksave(Guid languageId, string termPhrase)
+        {
+            try
+            {
+                Term term = _termService.Find(languageId, termPhrase);
+
+                if(term == null)
+                {
+                    term = NewTerm(languageId, termPhrase);
+                }
+                else
+                {
+                    switch(term.State)
+                    {
+                        case TermState.NotSeen:
+                            BoxAndReviewReset(term);
+                            term.State = TermState.Unknown;
+                            break;
+
+                        case TermState.Unknown:
+                            term.State = TermState.Known;
+                            break;
+
+                        case TermState.Known:
+                            term.State = TermState.NotSeen;
+                            break;
+                    }
+                }
+
+                _termService.Save(term);
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(OK)
+                    {
+                        Message = "Saved, state is " + term.State.ToDescription().ToUpperInvariant(),
+                        Data = new
+                        {
+                            termPhrase = term.TermPhrase.ToLowerInvariant(),
+                            term = new JsonTermResult(term)
+                        }
+                    }
+                };
+            }
+            catch(Exception e)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
+                return new JsonNetResult()
+                    {
+                        Data = new ResponseMessage(FAIL)
+                            {
+                                Message = "Save failed"
+                            }
+                    };
+            }
         }
 
         public class JsonSaveTerm
@@ -309,18 +394,18 @@ namespace ReadingTool.Site.Controllers.User
 
                 if(term == null)
                 {
-                    term = new Term();
-                    term.Box = 1;
-                    term.Id = Guid.Empty;
-                    term.LanguageId = languageId;
-                    term.Length = 1;
-                    term.NextReview = null;
-                    term.State = Constants.ClassToTermStates[state];
-                    term.TermPhrase = termPhrase;
+                    term = NewTerm(languageId, termPhrase, Constants.ClassToTermStates[state]);
                 }
                 else
                 {
-                    term.State = Constants.ClassToTermStates[state];
+                    var newState = Constants.ClassToTermStates[state];
+
+                    if(term.State != TermState.Unknown && newState == TermState.Unknown)
+                    {
+                        term = BoxAndReviewReset(term);
+                    }
+
+                    term.State = newState;
                 }
 
                 foreach(var it in model ?? new JsonSaveTerm[] { })
@@ -368,8 +453,165 @@ namespace ReadingTool.Site.Controllers.User
                             }
                     };
             }
-            catch
+            catch(Exception e)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(FAIL)
+                    {
+                        Message = "Save failed"
+                    }
+                };
+            }
+        }
+
+        public JsonResult ResetTerm(Guid languageId, string termPhrase)
+        {
+            try
+            {
+                Term term = _termService.Find(languageId, termPhrase);
+
+                if(term == null)
+                {
+                    return new JsonNetResult()
+                    {
+                        Data = new ResponseMessage(FAIL)
+                        {
+                            Message = "Cannot reset new term"
+                        }
+                    };
+                }
+
+                BoxAndReviewReset(term);
+                term.State = TermState.Unknown;
+                _termService.Save(term);
+
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(OK)
+                    {
+                        Message = "Reset, state is " + term.State.ToDescription().ToUpperInvariant(),
+                        Data = new
+                        {
+                            termPhrase = term.TermPhrase.ToLowerInvariant(),
+                            term = new JsonTermResult(term)
+                        }
+                    }
+                };
+            }
+            catch(Exception e)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(FAIL)
+                    {
+                        Message = "Save failed"
+                    }
+                };
+            }
+        }
+
+        public JsonResult MarkRemainingAsKnown(Guid languageId, Guid textId, IEnumerable<string> terms)
+        {
+            try
+            {
+                int count = 0;
+                if(terms != null && terms.Any())
+                {
+                    terms = terms.Select(x => (x ?? "").Trim()).Where(x => x.Length > 0).Distinct(StringComparer.InvariantCultureIgnoreCase);
+
+                    var currentTerms = _termService.FindAll(languageId).ToDictionary(x => x.TermPhrase.ToLowerInvariant(), x => x);
+
+                    foreach(var t in terms)
+                    {
+                        if(currentTerms.ContainsKey(t.ToLowerInvariant()))
+                        {
+                            if(currentTerms[t.ToLowerInvariant()].State == TermState.NotSeen)
+                            {
+                                //Terms can be explicitlity marked as not seen
+                                var updateTerm = currentTerms[t.ToLowerInvariant()];
+                                updateTerm.State = TermState.Known;
+                                _termService.Save(updateTerm);
+                                count++;
+                            }
+
+                            continue;
+                        }
+
+                        //TODO fix me, bulk insert
+                        Term term = NewTerm(languageId, t, TermState.Known);
+                        _termService.Save(term);
+                        count++;
+                    }
+                }
+
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(OK)
+                    {
+                        Message = string.Format("{0} words marked as known", count)
+                    }
+                };
+            }
+            catch(Exception e)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(FAIL)
+                    {
+                        Message = "Save failed"
+                    }
+                };
+            }
+        }
+
+        public JsonResult ReviewUnknown(Guid languageId, Guid textId, IEnumerable<string> terms)
+        {
+            try
+            {
+                int supplied = 0;
+                int bumped = 0;
+                List<string> message = new List<string>();
+
+                if(terms != null && terms.Any())
+                {
+                    var review = _languageService.Find(languageId).Review ?? Review.Default;
+                    terms = terms.Select(x => (x ?? "").Trim()).Where(x => x.Length > 0).Distinct(StringComparer.InvariantCultureIgnoreCase);
+
+                    foreach(var t in terms)
+                    {
+                        var term = _termService.Find(languageId, t);
+
+                        if(term == null)
+                        {
+                            continue;
+                        }
+
+                        supplied++;
+                        var result = _termService.ReviewTerm(term, review);
+
+                        if(result.Item1)
+                        {
+                            bumped++;
+                            message.Add(result.Item2);
+                        }
+                    }
+                }
+
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(OK)
+                    {
+                        Message = string.Format("{0} terms supplied, {1} moved up a box<br/>{2}", supplied, bumped, string.Join("<br/>", message))
+                    }
+                };
+            }
+            catch(Exception e)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
                 return new JsonNetResult()
                 {
                     Data = new ResponseMessage(FAIL)

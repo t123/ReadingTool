@@ -187,6 +187,8 @@ namespace ReadingTool.Services
         protected XElement CreateParagraph(string paragraph, bool asParallel, LanguageSettings settings, Splitter splitter)
         {
             var thisParagraph = new XElement("p");
+            thisParagraph.SetAttributeValue("dir", settings.Direction.ToString().ToLowerInvariant());
+
             string[] sentences = paragraph.Split(new[] { "\n" }, StringSplitOptions.None);
 
             for(int i = 0; i < sentences.Length; i++)

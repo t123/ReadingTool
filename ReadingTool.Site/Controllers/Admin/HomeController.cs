@@ -5,11 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using AutoMapper;
 using ReadingTool.Core;
+using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Attributes;
 using ReadingTool.Site.Helpers;
+using ReadingTool.Site.Models.Admin;
+using ReadingTool.Site.Models.User;
 
 namespace ReadingTool.Site.Controllers.Admin
 {
@@ -17,15 +21,98 @@ namespace ReadingTool.Site.Controllers.Admin
     public class HomeController : Controller
     {
         private readonly ISystemLanguageService _systemLanguageService;
+        private readonly ILanguageService _languageService;
 
-        public HomeController(ISystemLanguageService systemLanguageService)
+        public HomeController(ISystemLanguageService systemLanguageService, ILanguageService languageService)
         {
             _systemLanguageService = systemLanguageService;
+            _languageService = languageService;
         }
 
         public ActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult PublicLanguages()
+        {
+            return View(_languageService.FindAllIncludePublic().Where(x => x.IsPublic).OrderBy(x => x.Name));
+        }
+
+        [HttpGet]
+        public ActionResult AddPublicLanguage()
+        {
+            return View(new PublicLanguageViewModel { Settings = LanguageSettingsViewModel.Default });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddPublicLanguage(PublicLanguageViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var sl = _systemLanguageService.FindByName(model.Name);
+
+                _languageService.Save(
+                    new Language()
+                    {
+                        Colour = "",
+                        Name = model.Name,
+                        IsPublic = true,
+                        SystemLanguageId = sl == null ? (Guid?)null : sl.Id,
+                        Settings = Mapper.Map<LanguageSettings>(model.Settings)
+                    }
+                    );
+
+                this.FlashSuccess(Constants.Messages.FORM_ADD, DescriptionFormatter.GetDescription(model));
+                return RedirectToAction("Index");
+            }
+
+            this.FlashError(Constants.Messages.FORM_FAIL);
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult EditPublicLanguage(Guid id)
+        {
+            var language = _languageService.Find(id);
+
+            if(language == null)
+            {
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Language>());
+                return RedirectToAction("Index");
+            }
+
+            return View(new PublicLanguageViewModel
+                {
+                    Id = language.Id,
+                    Name = language.Name,
+                    Settings = Mapper.Map<LanguageSettings, LanguageSettingsViewModel>(language.Settings)
+                }
+                );
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPublicLanguage(Guid id, PublicLanguageViewModel model)
+        {
+            var language = _languageService.Find(id);
+
+            if(ModelState.IsValid)
+            {
+                language.SystemLanguageId = null;
+                language.Name = model.Name;
+                language.IsPublic = true;
+                language.Settings = Mapper.Map<LanguageSettings>(model.Settings);
+                _languageService.Save(language);
+
+                this.FlashSuccess(Constants.Messages.FORM_UPDATE, DescriptionFormatter.GetDescription(model));
+                return RedirectToAction("EditPublicLanguage", new { id = id });
+            }
+
+            this.FlashError(Constants.Messages.FORM_FAIL);
+            return View(model);
         }
 
         [HttpGet]
