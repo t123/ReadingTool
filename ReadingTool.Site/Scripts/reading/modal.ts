@@ -27,10 +27,14 @@ class SelectedWord {
         this.element = element;
         this.length = 1;
 
+        if (element.nodeName == 'A') {
+            this.element = $(element).parent();
+        }
+
         if ($(this.element).hasClass(this.settings.classes.multiClass)) {
             this.selectedWord = $(this.element).data('phrase');
         } else {
-            this.selectedWord = $(this.element).html();
+            this.selectedWord = $(this.element).text();
         }
 
         this.selectedSentence = this.getCurrentSentence();
@@ -62,7 +66,7 @@ class SelectedWord {
         $('#currentBox').html(data.box);
         $('#termMessage').html(data.message);
         $('#termId').val(data.id);
-        
+
         if (data.id == '00000000-0000-0000-0000-000000000000') {
             $('#termMessage').removeClass('label-info').addClass('label-warning');
         }
@@ -86,7 +90,7 @@ class SelectedWord {
             $('#tags' + it.id).val(it.tags);
 
             if (it.id == '00000000-0000-0000-0000-000000000000') {
-                $('#itermMessage'+i).removeClass('label-info').addClass('label-important');
+                $('#itermMessage' + i).removeClass('label-info').addClass('label-important');
                 $('#sentence' + it.id).val(this.selectedSentence);
             }
         }
@@ -107,7 +111,7 @@ class SelectedWord {
         $('.modal-footer').removeClass('failed');
         $('#iconResult').hide();
 
-        $.post(this.settings.ajaxUrl + '/save-term', 
+        $.post(this.settings.ajaxUrl + '/save-term',
             $('#formTerms').serialize(),
             function (data) => {
                 console.log('saving term changes');
@@ -137,24 +141,61 @@ class SelectedWord {
                     this.settings.classes.notseenClass +
                     ' box1 box2 box3 box4 box5 box6 box7 box8 box9'
                 )
-                .addClass(term.stateClass == this.settings.classes.unknownClass ? 'box' + term.box : term.stateClass);
+                .addClass(term.stateClass == this.settings.classes.unknownClass ? 'box' + term.box + ' ' + term.stateClass : term.stateClass);
+
+            $('#textContent .' + termPhrase).each(function (index, elem) => {
+                var currentWord = $(elem).text();
+                $(elem).html(
+                (term.definition.length > 0 ? '<a title="' + term.definition + '">' : '') + currentWord + (term.definition.length > 0 ? '</a>' : '')
+            );
+            });
         } else {
-            var toPrepend = $(this.element).prev('span');
+            var elem = $(this.element);
+            var prependString = '<span';
+                    prependString += ' class="' + term.id + ' ' + this.settings.classes.multiClass + ' ' + term.stateClass + '"';
+                    prependString += ' data-id="' + term.id + '"';
+                    prependString += ' data-phrase="' + termPhrase + '"';
+                    prependString += '>' + term.length + '</span>';
 
-            if (toPrepend.length == 0) {
-                toPrepend = $(this.element).parent();
+            if (elem.prev().length == 0) {
+                console.log('beginning of sentence or sup');
 
-                var prependString = '&nbsp;<sup><span'; 
-                prependString += ' class="' + term.id + ' ' + this.settings.classes.multiClass + ' ' + term.stateClass + '"';
-                prependString += ' data-id="' + term.id + '"';
-                prependString += ' data-phrase="' + termPhrase + '"';
-                prependString += '>' + term.length + '</span></sup>';
+                if (elem.text() == term.length) {
+                    console.log('replacing span');
+                    $(elem).parent().html(prependString);
+                } else {
+                    console.log('adding sup');
+                    $(elem).parent().prepend('<sup>' + prependString + '</sup>');
+                }
+            } else if (elem.prev().length > 0) {
+                var found = false;
+                var temp = elem.prev();
 
-                console.log(prependString);
-                toPrepend.prepend(prependString);
-            } else {
-                console.log('&nbsp;<sup><span class="' + this.settings.classes.multiClass + ' ' + term.stateClass + '">' + term.length + '</span></sup>');
-                toPrepend.prepend('&nbsp;<sup><span class="' + this.settings.classes.multiClass + ' ' + term.stateClass + '">' + term.length + '</span></sup>');
+                while (temp.length > 0 && !found) {
+                    if (temp.text() == term.length) {
+                        found = true;
+                        break;
+                    }
+
+                    temp = temp.prev();
+                }
+
+                console.log('has previous sup');
+
+                if (found) {
+                    console.log("update existing sup ", temp.text());
+                    $(temp).html(prependString);
+                } else {
+                    console.log('prepend new');
+
+                    if (elem.prev()[0].nodeName == 'SUP') {
+                        console.log('prepend new sup');
+                        $(elem).prev().before('<sup>' + prependString + '</sup>');
+                    } else {
+                        console.log('prepend new no sup');
+                        $(elem).before('<sup>' + prependString + '</sup>');
+                    }
+                }
             }
 
             $('#textContent sup .' + term.id).removeClass(
@@ -165,6 +206,13 @@ class SelectedWord {
                     ' box1 box2 box3 box4 box5 box6 box7 box8 box9'
                 )
                 .addClass(term.stateClass == this.settings.classes.unknownClass ? 'box' + term.box : term.stateClass);
+
+            $('#textContent sup .' + term.id).each(function (index, elem) => {
+                var currentWord = $(elem).text();
+                $(elem).html(
+                (term.definition.length > 0 ? '<a title="' + term.definition + '">' : '') + currentWord + (term.definition.length > 0 ? '</a>' : '')
+            );
+            });
         }
     }
 
@@ -266,7 +314,7 @@ class SelectedWord {
     private getCurrentSentence(): string {
         console.log('get current sentence');
 
-        var sentenceNode = $(this.element).parent();
+        var sentenceNode = $(this.element).closest('.sentence');
 
         var children = sentenceNode.children();
         var sentence = this.buildSentence(children);
@@ -287,6 +335,7 @@ class SelectedWord {
             }
         }
 
+        console.log('get current sentence: ', sentence);
         return sentence;
     }
 

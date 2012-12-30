@@ -104,7 +104,12 @@ namespace ReadingTool.Services
         #region parsing
         public Tuple<Term[], Term[]> FindAllForParsing(Language language)
         {
-            return new Tuple<Term[], Term[]>(new Term[] { }, new Term[] { });
+            var singleTerms = _db.Select<Term>(x => x.Length == 1 && x.LanguageId == language.Id && x.Owner == _identity.UserId);
+            singleTerms.ForEach(x => x.AddIndividualTerms(_db.Select<IndividualTerm>(y => y.TermId == x.Id)));
+            var multiTerms = _db.Select<Term>(x => x.Length > 1 && x.LanguageId == language.Id && x.Owner == _identity.UserId);
+            multiTerms.ForEach(x => x.AddIndividualTerms(_db.Select<IndividualTerm>(y => y.TermId == x.Id)));
+
+            return new Tuple<Term[], Term[]>(singleTerms.ToArray(), multiTerms.ToArray());
         }
         #endregion
 

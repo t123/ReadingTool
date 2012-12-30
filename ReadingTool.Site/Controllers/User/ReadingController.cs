@@ -230,6 +230,7 @@ namespace ReadingTool.Site.Controllers.User
             public string StateClass { get; set; }
             public string Box { get; set; }
             public string Message { get; set; }
+            public string Definition { get; set; }
 
             public JsonIndividualTermResult[] IndividualTerms { get; set; }
 
@@ -243,6 +244,7 @@ namespace ReadingTool.Site.Controllers.User
                               ? "review due in " + (term.NextReview.Value - DateTime.Now).ToHumanAgo()
                               : "no review due";
 
+                Definition = term.Definition;
                 IndividualTerms = term.IndividualTerms.Select(t => new JsonIndividualTermResult(t)).ToArray();
             }
         }
@@ -253,7 +255,7 @@ namespace ReadingTool.Site.Controllers.User
             {
                 var term = _termService.Find(languageId, termPhrase);
 
-                if (term == null)
+                if(term == null)
                 {
                     term = new Term()
                         {
@@ -261,7 +263,7 @@ namespace ReadingTool.Site.Controllers.User
                         };
                 }
 
-                term.AddIndividualTerm(new IndividualTerm() {Id = Guid.Empty, Created = DateTime.Now.AddYears(1)}, true);
+                term.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
 
                 return new JsonNetResult()
                 {
@@ -360,7 +362,7 @@ namespace ReadingTool.Site.Controllers.User
                                 Message = "Saved, state is " + term.State.ToDescription().ToUpperInvariant(),
                                 Data = new
                                     {
-                                        termPhrase = term.TermPhrase.ToLowerInvariant(), 
+                                        termPhrase = term.TermPhrase.ToLowerInvariant(),
                                         term = new JsonTermResult(newTerm)
                                     }
                             }

@@ -228,14 +228,14 @@ var termDivTemplate = Handlebars.compile($("#term-div-template").html());
 var termMessageTemplate = Handlebars.compile($("#term-message-template").html());
 $(function () {
     if(ui.settings.modalBehaviour == 'Rollover') {
-        $(document).on('mouseenter', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function (event) {
+        $(document).on('mouseenter', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function (event) {
             ui.openTextModal(false, event);
         });
     } else {
-        $(document).on('contextmenu', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function (event) {
+        $(document).on('contextmenu', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function (event) {
             return ui.settings.modalBehaviour != 'RightClick';
         });
-        $(document).on('mousedown', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function (event) {
+        $(document).on('mousedown', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function (event) {
             ui.openTextModal(true, event);
         });
     }

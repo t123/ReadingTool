@@ -89,11 +89,13 @@ namespace ReadingTool.Services
 
         private Guid? FindPreviousId(Text text)
         {
+            //TODO implement me
             return null;
         }
 
         private Guid? FindNextId(Text text)
         {
+            //TODO implement me
             return null;
         }
     }

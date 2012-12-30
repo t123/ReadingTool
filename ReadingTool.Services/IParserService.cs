@@ -356,7 +356,70 @@ namespace ReadingTool.Services
         {
             var totalTerms = document.Descendants("t").Count(x => x.Attribute("type").Value == "term");
 
+            //Multilength
+            foreach(var multi in _terms)
+            {
+                string lower = multi.TermPhrase.ToLowerInvariant();
 
+                var first = lower.Split(' ').First();
+                var partials = document
+                    .Descendants("t")
+                    .Where(x =>
+                        x.Attribute("type").Value == "term" &&
+                        x.Attribute("lower").Value.Equals(first, StringComparison.InvariantCultureIgnoreCase));
+
+                if(partials == null || !partials.Any()) continue;
+
+                foreach(var element in partials)
+                {
+                    var nodeString = element.Attribute("lower").Value + " " +
+                        string.Join(
+                            " ",
+                            (element.ElementsAfterSelf().Where(x => x.Attribute("type").Value == "term").Take(multi.Length - 1))
+                            .Select(x => x.Attribute("lower").Value)
+                            );
+
+                    if(!lower.Equals(nodeString, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var node = new XElement("multi");
+                    node.Value = multi.TermPhrase;
+
+                    if(multi.State == TermState.Unknown)
+                    {
+                        node.SetAttributeValue("box", "box" + multi.Box);
+                    }
+
+                    node.SetAttributeValue("length", multi.Length);
+                    node.SetAttributeValue("lower", lower);
+                    node.SetAttributeValue("state", Constants.TermStatesToClass[multi.State]);
+                    node.SetAttributeValue("id", multi.Id.ToString());
+                    node.SetAttributeValue("data", multi.Definition);
+
+                    element.Add(node);
+                }
+            }
+
+            var elements = document.Descendants("t").Where(x => x.Attribute("type").Value == "term");
+            var termsAsDict = _singleTerms.ToDictionary(x => x.TermPhrase.ToLowerInvariant(), x => new { State = x.State, FullDefinition = x.Definition, Box = x.Box });
+
+            foreach(var element in elements)
+            {
+                var lower = element.Attribute("lower").Value;
+
+                if(termsAsDict.ContainsKey(lower))
+                {
+                    if(termsAsDict[lower].State == TermState.Unknown)
+                    {
+                        element.SetAttributeValue("box", "box" + termsAsDict[lower].Box);
+                    }
+
+                    element.SetAttributeValue("state", Constants.TermStatesToClass[termsAsDict[lower].State]);
+                    element.SetAttributeValue("data", termsAsDict[lower].FullDefinition);
+                }
+            }
 
             return new Tuple<int, XDocument>(totalTerms, document);
         }

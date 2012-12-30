@@ -211,13 +211,13 @@ var termMessageTemplate = Handlebars.compile($("#term-message-template").html())
 $(function () {
     //Bind the mouse rollover to the spans
     if (ui.settings.modalBehaviour == 'Rollover') {
-        $(document).on('mouseenter', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function(event) {  ui.openTextModal(false, event); });
+        $(document).on('mouseenter', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function(event) {  ui.openTextModal(false, event); });
     } else {
         //Stop the context menu on rightclick
-        $(document).on('contextmenu', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function(event) { return ui.settings.modalBehaviour != 'RightClick'; });
+        $(document).on('contextmenu', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function(event) { return ui.settings.modalBehaviour != 'RightClick'; });
 
         //Bind the clicks
-        $(document).on('mousedown', '#textContent .knx, .nkx, .nsx, .igx, .mxx', function(event) { ui.openTextModal(true, event); });
+        $(document).on('mousedown', '#textContent .knx, #textContent .nkx, #textContent .nsx, #textContent .igx, #textContent .mxx', function(event) { ui.openTextModal(true, event); });
     }
 
     modal = $("#myModal");
