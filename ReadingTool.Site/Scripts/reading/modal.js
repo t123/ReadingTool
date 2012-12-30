@@ -1,3 +1,4 @@
+var _this = this;
 var SelectedWord = (function () {
     function SelectedWord(settings, element) {
         this.settings = settings;

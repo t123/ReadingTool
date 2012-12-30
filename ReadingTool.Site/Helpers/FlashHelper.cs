@@ -153,7 +153,7 @@ namespace ReadingTool.Site.Helpers
             {
                 foreach(var flashMessage in grouping)
                 {
-                    sb.Append(ConstructHtml(flashMessage.Message, flashMessage.Level));
+                    sb.Append(ConstructHtml(flashMessage.Message, flashMessage.Level, htmlEncode: false));
                 }
             }
 
@@ -161,12 +161,12 @@ namespace ReadingTool.Site.Helpers
             return new MvcHtmlString(sb.ToString());
         }
 
-        public static MvcHtmlString FlashMessage(this HtmlHelper helper, string message, Level level = Level.Info)
+        public static MvcHtmlString FlashMessage(this HtmlHelper helper, string message, Level level = Level.Info, bool htmlEncode = true)
         {
-            return ConstructHtml(message, level, false);
+            return ConstructHtml(message, level, false, htmlEncode);
         }
 
-        private static MvcHtmlString ConstructHtml(string message, Level level, bool includeClose = true)
+        private static MvcHtmlString ConstructHtml(string message, Level level, bool includeClose = true, bool htmlEncode = true)
         {
             TagBuilder div = new TagBuilder("div");
             div.AddCssClass("flash-message");
@@ -187,7 +187,15 @@ namespace ReadingTool.Site.Helpers
             TagBuilder p1 = new TagBuilder("p");
             TagBuilder p2 = new TagBuilder("p");
             TagBuilder span = new TagBuilder("span");
-            span.SetInnerText(message);
+
+            if(htmlEncode)
+            {
+                span.SetInnerText(message);
+            }
+            else
+            {
+                span.InnerHtml = message;
+            }
 
             p2.InnerHtml = span.ToString();
             div.InnerHtml += p1.ToString() + p2.ToString();

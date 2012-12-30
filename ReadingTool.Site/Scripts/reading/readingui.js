@@ -188,6 +188,10 @@ $('#quickmode').click(function () {
 $('#btnSave').click(function () {
     selectedWord.saveChanges();
 });
+$('#btnSaveClose').click(function () {
+    selectedWord.saveChanges();
+    ui.closeTextModal();
+});
 $('#btnReset').click(function () {
     selectedWord.resetWord();
 });

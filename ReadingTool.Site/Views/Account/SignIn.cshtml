@@ -3,6 +3,8 @@
     ViewBag.Title = "SignIn";
 }
 
+@Html.FlashMessage("If you have an account please sign in below otherwise " + Html.ActionLink("please create an account first", "SignUp") + ".", htmlEncode:false)
+
 @using(Html.BeginForm("SignIn", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     @Html.AntiForgeryToken()

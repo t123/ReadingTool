@@ -8,11 +8,12 @@ using System.Web.Mvc;
 using ReadingTool.Core;
 using ReadingTool.Entities;
 using ReadingTool.Services;
+using ReadingTool.Site.Attributes;
 using ReadingTool.Site.Helpers;
 
 namespace ReadingTool.Site.Controllers.Admin
 {
-    [Authorize(Roles = Constants.Roles.ADMIN)]
+    [CustomAuthorize(Roles = Constants.Roles.ADMIN)]
     public class HomeController : Controller
     {
         private readonly ISystemLanguageService _systemLanguageService;

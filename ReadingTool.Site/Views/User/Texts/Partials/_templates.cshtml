@@ -21,7 +21,7 @@
                     <label class="control-label" for="sentence.{{id}}">Sentence</label>
                     <div class="controls">
                         <input type="text" id="sentence{{id}}" name="model[{{id}}].Sentence" placeholder="Sentence" class="input-xxlarge" />
-                        <a href="#" onclick="selectedWord.refreshSentence('#sentence{{id}}')"><i class="icon-repeat"></i></a>
+                        <a href="#" title="replace the definition sentence with the current one from the text" onclick="selectedWord.refreshSentence('#sentence{{id}}')"><i class="icon-repeat"></i></a>
                     </div>
                 </div>
 
@@ -64,7 +64,7 @@
         </script>
 
         <script id="term-message-template" type="text/html">
-            <span class="badge" id="currentBox"></span>
+            <span class="badge" id="currentBox" title="the current box of your term"></span>
             <span class="label label-info" id="termMessage" style="font-size: 11px"></span>
             {{#each individualTerms}}
                 <span style="font-size: 11px; display: none;" class="itermMessage label label-info" id="itermMessage{{@@index}}">{{message}}</span>
