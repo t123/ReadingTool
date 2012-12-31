@@ -352,6 +352,7 @@
     <TypeScriptCompile Include="Scripts\reading\readingui.ts" />
     <TypeScriptCompile Include="Scripts\reading\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\reading\audio.ts" />
+    <Content Include="Scripts\other\footer\webgrid\grid.js" />
     <Content Include="Scripts\other\head\handlebars\handlebars-1.0.rc.1.js" />
     <Content Include="Scripts\reading\audio.js">
       <DependentUpon>audio.ts</DependentUpon>
