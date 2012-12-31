@@ -63,7 +63,7 @@
                     <li>@Html.ActionLink("edit language", "Edit", "Languages", new { id = Model.Language.Id }, new { })</li>
                     @if(Model.PagedTexts.Item1.HasValue)
                     {
-                        <li>@Html.ActionLink("previous", "ReadInParallel", new { id = Model.PagedTexts.Item1 })</li>
+                        <li>@Html.ActionLink("previous", "Read", new { id = Model.PagedTexts.Item1 })</li>
                     }
 
                     @if(Model.PagedTexts.Item2.HasValue)

@@ -402,14 +402,26 @@ ORDER BY RowNumber
 
         private Guid? FindPreviousId(Text text)
         {
-            //TODO implement me
-            return null;
+            var found = _db.Select<Text>("SELECT TOP 1 Id FROM [Text] WHERE Owner={0} AND L1Id={1} AND CollectionName={2} AND CollectionNo IS NOT NULL AND CollectionNo<{3} ORDER BY CollectionNo DESC",
+                                         _identity.UserId,
+                                         text.L1Id,
+                                         text.CollectionName,
+                                         text.CollectionNo
+                ).FirstOrDefault();
+
+            return found == null ? (Guid?)null : found.Id;
         }
 
         private Guid? FindNextId(Text text)
         {
-            //TODO implement me
-            return null;
+            var found = _db.Select<Text>("SELECT TOP 1 Id FROM [Text] WHERE Owner={0} AND L1Id={1} AND CollectionName={2} AND CollectionNo IS NOT NULL AND CollectionNo>{3} ORDER BY CollectionNo ASC",
+                                         _identity.UserId,
+                                         text.L1Id,
+                                         text.CollectionName,
+                                         text.CollectionNo
+                ).FirstOrDefault();
+
+            return found == null ? (Guid?)null : found.Id;
         }
     }
 }

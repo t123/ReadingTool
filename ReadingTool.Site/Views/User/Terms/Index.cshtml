@@ -6,16 +6,18 @@
     @<text>
          <script language="javascript">
              var state;
-             
+             var storageKey = "term_filter";
+
              $(document).ready(function () {
-                 var jsonState = localStorage["term_filter"];
+                 var jsonState = localStorage[storageKey];
 
                  if (jsonState == null || jsonState == undefined) {
                      state = newState();
                  } else {
                      state = JSON.parse(jsonState);
                  }
-                
+
+                 $('#filter').val(state.filter);
                  $('#searchhelp').popover({html:true});
 
                  updateGrid();
@@ -43,7 +45,7 @@
              }
              
              function updateGrid() {
-                 localStorage["text_filter"] = JSON.stringify(state);
+                 localStorage[storageKey] = JSON.stringify(state);
                  
                  $.post(
                      '@Url.Action("IndexGrid")', {
