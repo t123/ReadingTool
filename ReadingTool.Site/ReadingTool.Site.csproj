@@ -218,6 +218,7 @@
     <Compile Include="Models\User\ProfileViewModel.cs" />
     <Compile Include="Models\User\ReadViewModel.cs" />
     <Compile Include="Models\User\TextImportModel.cs" />
+    <Compile Include="Models\User\TextListModel.cs" />
     <Compile Include="Models\User\TextViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -504,6 +505,7 @@
     <Content Include="Views\User\MyAccount\ImportExport.cshtml" />
     <Content Include="Views\User\Texts\Import.cshtml" />
     <Content Include="Views\User\Texts\Partials\_createsample.cshtml" />
+    <Content Include="Views\User\Texts\Partials\_list.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

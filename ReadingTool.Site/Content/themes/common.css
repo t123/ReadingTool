@@ -87,6 +87,9 @@
 .table thead tr th.button {
   width: 60px;
 }
+.table form {
+  margin: 0px;
+}
 .ui-autocomplete-loading {
   background: #ffffff url('/content/img/ui-anim_basic_16x16.gif') right center no-repeat;
 }
@@ -125,4 +128,10 @@
 }
 #formTerms .nav {
   margin-bottom: 10px;
+}
+.hidden {
+  display: none;
+}
+.filterbar a {
+  margin-left: 12px;
 }

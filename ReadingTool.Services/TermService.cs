@@ -15,7 +15,7 @@ namespace ReadingTool.Services
 {
     public interface ITermService
     {
-        void Save(Term term);
+        void Save(Term term, bool audit = true);
         void Delete(Term term);
         void Delete(Guid id);
         Term Find(Guid id);
@@ -23,7 +23,7 @@ namespace ReadingTool.Services
         IEnumerable<Term> FindAll();
         Tuple<Term[], Term[]> FindAllForParsing(Language language);
         IEnumerable<Term> FindAll(Guid languageId);
-        Tuple<bool,string> ReviewTerm(Term term, Review review);
+        Tuple<bool, string> ReviewTerm(Term term, Review review);
     }
 
     public class TermService : ITermService
@@ -38,10 +38,12 @@ namespace ReadingTool.Services
         }
 
         #region basic
-        public void Save(Term term)
+        public void Save(Term term, bool audit = true)
         {
+            bool isNew = false;
             if(term.Id == Guid.Empty)
             {
+                isNew = true;
                 term.Id = SequentialGuid.NewGuid();
                 term.Owner = _identity.UserId;
             }
@@ -53,6 +55,20 @@ namespace ReadingTool.Services
             foreach(var it in term.IndividualTerms)
             {
                 Save(term.Id, it);
+            }
+
+            if(audit)
+            {
+                _db.Save(new TermLog()
+                    {
+                        Date = DateTime.Now,
+                        State = term.State,
+                        TermId = term.Id,
+                        LanguageId = term.LanguageId,
+                        Onwer = term.Owner,
+                        IsNew = isNew,
+                        StateChange = term.StateHasChanged
+                    });
             }
         }
 
@@ -147,7 +163,7 @@ namespace ReadingTool.Services
 
             Save(term);
 
-            return new Tuple<bool, string>(true, string.Format("<strong>{0}<strong>: box {1}, due in {2}", term.TermPhrase, term.Box, (term.NextReview.Value-DateTime.Now).ToHumanAgo()));
+            return new Tuple<bool, string>(true, string.Format("<strong>{0}<strong>: box {1}, due in {2}", term.TermPhrase, term.Box, (term.NextReview.Value - DateTime.Now).ToHumanAgo()));
         }
 
         private DateTime GetNextReview(Review review, int? currentLevel)

@@ -28,6 +28,12 @@ namespace ReadingTool.Site.Controllers
             var connection = ContextPerRequest.Current;
             //connection.DropAndCreateTable<SystemLanguage>();
 
+            if(connection.TableExists("TermLog"))
+            {
+                connection.DeleteAll<TermLog>();
+                connection.DropTable<TermLog>();
+            }
+
             if(connection.TableExists("LanguageSettings"))
             {
                 connection.DeleteAll<LanguageSettings>();
@@ -83,6 +89,7 @@ namespace ReadingTool.Site.Controllers
             connection.CreateTable<IndividualTerm>(true);
             connection.CreateTable<Tag>(true);
             connection.CreateTable<Sequence>(true);
+            connection.CreateTable<TermLog>(true);
 
             using(StreamReader sr = new StreamReader(Path.Combine(Server.MapPath("~/App_Data"), "dummy.sql"), Encoding.UTF8))
             {

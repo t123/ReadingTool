@@ -8,8 +8,10 @@ using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using ReadingTool.Core;
+using ReadingTool.Core.Enums;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
+using ReadingTool.Entities.Search;
 using ReadingTool.Services;
 using ReadingTool.Site.Helpers;
 using ReadingTool.Site.Models.User;
@@ -41,7 +43,48 @@ namespace ReadingTool.Site.Controllers.User
 
         public ActionResult Index()
         {
-            return View(_textService.FindAll());
+            return View();
+        }
+
+        public ActionResult IndexGrid(string sort, GridSortDirection sortDir, int? page, string filter, int? perPage)
+        {
+            var searchResult = _textService.FilterTexts(new SearchOptions()
+                {
+                    Filter = filter,
+                    Page = page ?? 1,
+                    RowsPerPage = perPage ?? 15,
+                    Sort = sort ?? "language",
+                    Direction = sortDir
+                });
+
+            IList<TextListModel> textViewList = new List<TextListModel>();
+            var languages = _languageService.FindAll().ToDictionary(x => x.Id);
+            searchResult.Results.ToList().ForEach(x => textViewList.Add(
+                new TextListModel
+                    {
+                        Id = x.Id,
+                        CollectionName = x.CollectionName,
+                        CollectionNo = x.CollectionNo,
+                        HasAudio = !string.IsNullOrEmpty(x.AudioUrl),
+                        IsParallel = x.IsParallel,
+                        Language = languages.GetValueOrDefault(x.L1Id, new Language() { Name = "NA" }).Name,
+                        LastSeen = x.LastSeen,
+                        Title = x.Title,
+                        LanguageColour = languages.GetValueOrDefault(x.L1Id, new Language() { Colour = "#FFFFFF" }).Colour,
+                        Tags = x.Tags
+                    }));
+
+            SearchGridResult<TextListModel> result = new SearchGridResult<TextListModel>()
+                {
+                    Items = textViewList,
+                    Page = page.Value,
+                    Sort = sort,
+                    Direction = sortDir,
+                    RowsPerPage = perPage ?? 15,
+                    TotalRows = searchResult.TotalRows
+                };
+
+            return PartialView("Partials/_list", result);
         }
 
         [HttpGet]
