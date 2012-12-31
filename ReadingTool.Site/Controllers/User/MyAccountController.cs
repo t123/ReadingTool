@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -25,6 +26,7 @@ namespace ReadingTool.Site.Controllers.User
         private readonly ITermService _termService;
         private readonly ITextService _textService;
         private readonly ISystemLanguageService _systemLanguageService;
+        private readonly ILwtImportService _lwtImportService;
 
         public MyAccountController(
             IUserService userService,
@@ -32,7 +34,8 @@ namespace ReadingTool.Site.Controllers.User
             ILanguageService languageService,
             ITermService termService,
             ITextService textService,
-            ISystemLanguageService systemLanguageService
+            ISystemLanguageService systemLanguageService,
+            ILwtImportService lwtImportService
             )
         {
             _userService = userService;
@@ -41,6 +44,7 @@ namespace ReadingTool.Site.Controllers.User
             _termService = termService;
             _textService = textService;
             _systemLanguageService = systemLanguageService;
+            _lwtImportService = lwtImportService;
         }
 
         [HttpGet]
@@ -226,10 +230,40 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ImportExport(string export)
+        public ActionResult ImportExport(string export, LwtImport model, HttpPostedFileBase file)
         {
             switch(export)
             {
+                case "import your LWT account data":
+                    try
+                    {
+                        if(file != null && file.InputStream != null && file.ContentLength > 0)
+                        {
+                            string jsonData;
+                            using(var sr = new StreamReader(file.InputStream, Encoding.UTF8))
+                            {
+                                jsonData = sr.ReadToEnd();
+                            }
+
+                            _lwtImportService.ImportJson(model.TestMode, model.MediaUrl, jsonData);
+                            if(model.TestMode)
+                            {
+                                this.FlashSuccess("The test was successful.");
+                            }
+                            else
+                            {
+                                this.FlashSuccess("Your data has been imported.");
+                            }
+
+                            return RedirectToAction("ImportExport");
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        this.FlashError(e.Message);
+                    }
+                    break;
+
                 case "export your account data":
                     var user = _userService.Find(this.CurrentUserId());
                     var languages = _languageService.FindAll().ToList();
@@ -256,9 +290,12 @@ namespace ReadingTool.Site.Controllers.User
 
                     //TODO zip this up
                     return File(Encoding.UTF8.GetBytes(jsonString), "application/json", "account.json");
+
+                default:
+                    this.FlashError(Constants.Messages.FORM_FAIL);
+                    break;
             }
 
-            this.FlashError(Constants.Messages.FORM_FAIL);
             return RedirectToAction("ImportExport");
         }
 

@@ -234,6 +234,7 @@
     <Content Include="Content\img\glyphicons-halflings.png" />
     <Content Include="Content\img\ui-anim_basic_16x16.gif" />
     <Content Include="Content\fonts\DroidSans-webfont.svg" />
+    <Content Include="Content\jsonexport.php.txt" />
     <Content Include="Content\themes\amelia\bootstrap.css" />
     <Content Include="Content\themes\amelia\site.css">
       <DependentUpon>site.less</DependentUpon>

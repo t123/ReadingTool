@@ -75,6 +75,7 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<IDbConnection>().ToMethod(x => ContextPerRequest.Current);
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
             kernel.Bind<ISequenceService>().To<SequenceService>();
+            kernel.Bind<ILwtImportService>().To<LwtImportService>();
 
             kernel.Bind<OrmLiteConnectionFactory>().ToMethod
                 (

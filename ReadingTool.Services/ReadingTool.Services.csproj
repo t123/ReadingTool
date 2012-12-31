@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="AuthenticationService.cs" />
     <Compile Include="DeleteService.cs" />
+    <Compile Include="LwtImportService.cs" />
     <Compile Include="SequenceService.cs" />
     <Compile Include="TermService.cs" />
     <Compile Include="IParserService.cs" />
