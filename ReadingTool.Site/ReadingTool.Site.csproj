@@ -186,6 +186,7 @@
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\User\ReadingController.cs" />
+    <Compile Include="Controllers\User\TermsController.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="Models\User\PasswordChangeViewModel.cs" />
     <Compile Include="Models\User\ProfileViewModel.cs" />
     <Compile Include="Models\User\ReadViewModel.cs" />
+    <Compile Include="Models\User\TermListModel.cs" />
     <Compile Include="Models\User\TextImportModel.cs" />
     <Compile Include="Models\User\TextListModel.cs" />
     <Compile Include="Models\User\TextViewModel.cs" />
@@ -506,6 +508,9 @@
     <Content Include="Views\User\Texts\Import.cshtml" />
     <Content Include="Views\User\Texts\Partials\_createsample.cshtml" />
     <Content Include="Views\User\Texts\Partials\_list.cshtml" />
+    <Content Include="Views\User\Terms\Index.cshtml" />
+    <Content Include="Views\User\Terms\Partials\_menu.cshtml" />
+    <Content Include="Views\User\Terms\Partials\_list.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

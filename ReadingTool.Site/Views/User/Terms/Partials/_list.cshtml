@@ -1,0 +1,63 @@
+﻿@model ReadingTool.Entities.Search.SearchGridResult<ReadingTool.Site.Models.User.TermListModel> 
+@{
+    WebGrid grid = new WebGrid(Model.Items, rowsPerPage: @Model.RowsPerPage);
+}
+
+@grid.GetHtml(
+    tableStyle: "table table-striped table-bordered table-condensed table-hover",
+    numericLinksCount: 0,
+    mode: WebGridPagerModes.Numeric,
+    footerStyle: "hidden",
+    
+    columns: new[] { 
+        grid.Column("Language", format: @<text>
+                                             @ViewHelpers.FormatLanguage(@item.Language, @item.LanguageColour)
+                                         </text>),
+        grid.Column("State", header: "State"),
+        grid.Column("TermPhrase", header: "Term Phrase", format:@<text>
+                                              @if(!string.IsNullOrEmpty(item.Tags))
+                                            {
+                                                <i class="icon-tags" title="@item.Tags"> </i>
+                                            }
+                                            @item.TermPhrase
+                                          </text>),
+        grid.Column("Box", header: "Box"),
+        grid.Column("Next Review" , header: "Next Review", format:@<text>
+                                            @Html.FormatDateHumanAgo((DateTime?)@item.NextReview, prepend:"in")
+                                        </text>),
+        
+    }
+    )
+
+
+<div class="pagination pagination-centered">
+    <ul>
+        @if(Model.Page==1)
+        {
+            <li class="active"><a href="#">previous</a></li>
+        }
+        else
+        {
+            <li><a href="#" data-page="@(Model.Page-1)">previous</a></li>
+        }
+        @for(int i = 1; i <= Model.TotalPages; i++)
+        {
+            if(i == Model.Page)
+            {
+                <li class="active"><a href="#">@i</a></li>
+            }
+            else
+            {
+                <li><a href="#" data-page="@i">@i</a></li>
+            }
+        }
+        @if(Model.Page==Model.TotalPages)
+        {
+            <li class="active"><a href="#">next</a></li>
+        }
+        else
+        {
+            <li><a href="#" data-page="@(Model.Page+1)">next</a></li>
+        }
+    </ul>
+</div>

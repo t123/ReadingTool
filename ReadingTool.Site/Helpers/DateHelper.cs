@@ -9,19 +9,19 @@ namespace ReadingTool.Site.Helpers
 {
     public static class DateHelper
     {
-        public static string FormatTimespan(this HtmlHelper helper, TimeSpan timespan, string append = "")
+        public static string FormatTimespan(this HtmlHelper helper, TimeSpan timespan, string append = "", string prepend = "")
         {
-            return timespan.ToHumanAgo(append);
+            return timespan.ToHumanAgo(append: append, prepend: prepend);
         }
 
-        public static string FormatDateHumanAgo(this HtmlHelper helper, DateTime date, string append = "")
+        public static string FormatDateHumanAgo(this HtmlHelper helper, DateTime date, string append = "", string prepend = "")
         {
-            return date.ToHumanAgo(append);
+            return date.ToHumanAgo(append: append, prepend: prepend);
         }
 
-        public static string FormatDateHumanAgo(this HtmlHelper helper, DateTime? date, string append = "")
+        public static string FormatDateHumanAgo(this HtmlHelper helper, DateTime? date, string append = "", string prepend = "")
         {
-            return date.ToHumanAgo(append);
+            return date.ToHumanAgo(append: append, prepend: prepend);
         }
 
         public static string FormatDate(this HtmlHelper helper, DateTime date, string customFormat)

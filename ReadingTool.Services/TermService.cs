@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
+using ReadingTool.Core.FilterParser;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
+using ReadingTool.Entities.Search;
 using ServiceStack.OrmLite;
 
 namespace ReadingTool.Services
@@ -24,16 +26,19 @@ namespace ReadingTool.Services
         Tuple<Term[], Term[]> FindAllForParsing(Language language);
         IEnumerable<Term> FindAll(Guid languageId);
         Tuple<bool, string> ReviewTerm(Term term, Review review);
+        SearchResult<Term> FilterTerms(SearchOptions searchOptions = null);
     }
 
     public class TermService : ITermService
     {
         private readonly IDbConnection _db;
+        private readonly ILanguageService _languageService;
         private readonly IUserIdentity _identity;
 
-        public TermService(IDbConnection db, IPrincipal principal)
+        public TermService(IDbConnection db, IPrincipal principal, ILanguageService languageService)
         {
             _db = db;
+            _languageService = languageService;
             _identity = principal.Identity as IUserIdentity;
         }
 
@@ -164,6 +169,158 @@ namespace ReadingTool.Services
             Save(term);
 
             return new Tuple<bool, string>(true, string.Format("<strong>{0}<strong>: box {1}, due in {2}", term.TermPhrase, term.Box, (term.NextReview.Value - DateTime.Now).ToHumanAgo()));
+        }
+
+        public SearchResult<Term> FilterTerms(SearchOptions so = null)
+        {
+            if(so == null)
+            {
+                so = new SearchOptions();
+            }
+
+            #region ordering
+            string orderBy;
+            switch(so.Sort)
+            {
+                case "state":
+                    orderBy = string.Format("ORDER BY t.State {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+                    break;
+
+                case "nextreview":
+                    orderBy = string.Format("ORDER BY t.LastSeen {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+                    break;
+
+                case "termphrase":
+                    orderBy = string.Format("ORDER BY t.TermPhrase {0},l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+                    break;
+
+                case "box":
+                    orderBy = string.Format("ORDER BY t.Box {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+                    break;
+
+                case "language":
+                default:
+                    orderBy = string.Format("ORDER BY l.Name {0}, t.TermPhrase, t.State", so.Direction.ToString());
+                    break;
+            }
+            #endregion
+
+            #region create where clause
+            StringBuilder whereSql = new StringBuilder();
+
+            var options = FilterParser.Parse(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()), so.Filter, FilterParser.MagicTermTags);
+
+            #region magic
+            if(options.Magic.Count > 0)
+            {
+                string magicSql = "";
+                foreach(var o in options.Magic)
+                {
+                    if(o.StartsWith("box"))
+                    {
+                        magicSql += " AND t.Box=" + o.Substring(3, o.Length - 3) + " ";
+                    }
+                    else
+                    {
+                        switch(o)
+                        {
+                            //case @"new":
+                            //    magicSql += " AND t.Created>'" + DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+                            //    break;
+                            case @"known":
+                                magicSql += " AND t.State='" + TermState.Known.ToString() + "' ";
+                                break;
+                            case @"unknown":
+                                magicSql += " AND t.State='" + TermState.Unknown.ToString() + "' ";
+                                break;
+                            case @"ignored":
+                                magicSql += " AND t.State='" + TermState.Ignored.ToString() + "' ";
+                                break;
+                            case @"notseen":
+                                magicSql += " AND t.State='" + TermState.NotSeen.ToString() + "' ";
+                                break;
+                        }
+                    }
+                }
+
+                whereSql.Append(magicSql);
+            }
+            #endregion
+
+            #region languages
+            if(options.Languages.Count > 0)
+            {
+                string languageSql = string.Format("AND l.Name IN ( {0} )", string.Join(",", options.Languages.Select(x => "'" + x + "'")));
+                whereSql.Append(languageSql);
+            }
+            #endregion
+
+            #region other
+            if(options.Other.Count > 0)
+            {
+                string otherSql = string.Format("AND ( ");
+
+                foreach(var o in options.Other)
+                {
+                    otherSql += string.Format("t.TermPhrase LIKE '%{0}%' OR ", o); //TODO escape
+                }
+
+                otherSql = otherSql.Substring(0, otherSql.Length - 4);
+                otherSql += " )";
+                whereSql.Append(otherSql);
+            }
+            #endregion
+
+            #region tags
+            if(options.Tags.Count > 0)
+            {
+                string tagSql = string.Format("AND T.Id IN ( SELECT TermId FROM Tag WHERE Tag.Value IN ({0}))", string.Join(",", options.Tags.Select(x => "'" + x + "'")));
+                whereSql.Append(tagSql);
+            }
+            #endregion
+            #endregion
+
+            #region query creation
+            const string columns = "l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId";
+            string sql = string.Format(@"
+SELECT
+/*ROWNUMBER*/
+/*COLUMNS*/
+FROM [Term] t
+LEFT JOIN [Language] l ON t.LanguageId=l.Id
+WHERE t.Owner='{0}' /*WHERE*/
+", _identity.UserId);
+
+            string countQuery = sql.Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total").Replace("/*COLUMNS*/", "").Replace("/*WHERE*/", whereSql.ToString());
+
+            StringBuilder query = new StringBuilder();
+            query.AppendFormat(@"
+SELECT *
+FROM
+(
+{0}
+) AS RowConstrainedResult
+WHERE RowNumber BETWEEN {1} AND {2}
+ORDER BY RowNumber
+",
+                         sql.Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,").Replace("/*COLUMNS*/", columns).Replace("/*WHERE*/", whereSql.ToString()),
+                         (so.Page - 1) * so.RowsPerPage,
+                         (so.Page - 1) * so.RowsPerPage + so.RowsPerPage
+                );
+            #endregion
+
+            try
+            {
+                var texts = _db.Query<Term>(query.ToString());
+                var count = _db.Scalar<int>(countQuery);
+                return new SearchResult<Term> { Results = texts, TotalRows = count };
+            }
+            catch(Exception e)
+            {
+                var brokenSql = _db.GetLastSql();
+                var message = string.Format("Invalid text search SQL:\n\n{0}\n\n{1}\n\n{2}", brokenSql, countQuery, query);
+                throw new Exception(message, e);
+            }
         }
 
         private DateTime GetNextReview(Review review, int? currentLevel)

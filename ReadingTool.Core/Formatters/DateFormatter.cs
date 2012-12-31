@@ -20,63 +20,66 @@ namespace ReadingTool.Core.Formatters
             return string.Format("{0:D2}h:{1:D2}m:{2:D2}s", ts.Hours, ts.Minutes, ts.Seconds);
         }
 
-        public static string ToHumanAgo(this DateTime date, string append = "")
+        public static string ToHumanAgo(this DateTime date, string append = "", string prepend = "")
         {
             return (DateTime.Now - date).ToHumanAgo(append);
         }
 
-        public static string ToHumanAgo(this DateTime? date, string append = "")
+        public static string ToHumanAgo(this DateTime? date, string append = "", string prepend = "")
         {
             return date.HasValue ? (DateTime.Now - date.Value).ToHumanAgo(append) : "never";
         }
 
-        public static string ToHumanAgo(this TimeSpan timespan, string append = "")
+        public static string ToHumanAgo(this TimeSpan timespan, string append = "", string prepend = "")
         {
+            if(!prepend.EndsWith(" ")) prepend += " ";
             if(!append.StartsWith(" ")) append = " " + append;
+            string formatted = prepend + "{0}" + append;
 
+            timespan = timespan.Duration();
             if(timespan.Days > 365)
             {
                 var years = Math.Floor(timespan.TotalDays / 365);
-                return years == 1 ? "1 year" : years + " years" + append;
+                return string.Format(formatted, years == 1 ? "1 year" : years + " years");
             }
 
             if(timespan.Days > 30)
             {
                 var months = Math.Floor(timespan.TotalDays / 30);
-                return months == 1 ? "1 month" : months + " months" + append;
+                return string.Format(formatted, months == 1 ? "1 month" : months + " months");
             }
 
             if(timespan.Days == 1)
             {
-                return "1 day" + append;
+                return string.Format(formatted, "1 day");
             }
 
             if(timespan.Days > 0)
             {
-                return Math.Floor(timespan.TotalDays) + " days" + append;
+                return string.Format(formatted, Math.Floor(timespan.TotalDays) + " days");
             }
 
             if(timespan.Hours == 1)
             {
-                return "1 hour" + append;
+                return string.Format(formatted, "1 hour");
             }
 
             if(timespan.Hours > 0)
             {
-                return Math.Floor(timespan.TotalHours) + " hours" + append;
+                return string.Format(formatted, Math.Floor(timespan.TotalHours) + " hours");
             }
 
             if(timespan.Minutes > 5)
             {
-                return Math.Floor(timespan.TotalMinutes) + " minutes" + append;
+                return string.Format(formatted, Math.Floor(timespan.TotalMinutes) + " minutes");
             }
 
             if(timespan.Minutes > 1)
             {
-                return "minutes" + append;
+                return string.Format(formatted, "minutes");
             }
 
-            return "seconds" + append;
+            return string.Format(formatted, "seconds");
         }
     }
 }

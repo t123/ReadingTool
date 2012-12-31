@@ -95,15 +95,15 @@ namespace ReadingTool.Services
             switch(so.Sort)
             {
                 case "title":
-                    orderBy = string.Format("ORDER BY t.Title {0}, l.Name {0}, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
+                    orderBy = string.Format("ORDER BY t.Title {0}, l.Name ASC, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
                     break;
 
                 case "lastseen":
-                    orderBy = string.Format("ORDER BY t.LastSeen {0}, l.Name {0}, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
+                    orderBy = string.Format("ORDER BY t.LastSeen {0}, l.Name ASC, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
                     break;
 
                 case "collectionname":
-                    orderBy = string.Format("ORDER BY t.CollectionName {0}, t.CollectionNo, t.Title, l.Name", so.Direction.ToString());
+                    orderBy = string.Format("ORDER BY t.CollectionName ASC, t.CollectionNo, t.Title, l.Name", so.Direction.ToString());
                     break;
 
                 case "language":

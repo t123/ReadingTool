@@ -12,6 +12,7 @@
                 <li><a href="@Url.Action("Index", "~~User.MyAccount")">my account</a></li>
                 <li><a href="@Url.Action("Index", "~~User.Languages")">my languages</a></li>
                 <li><a href="@Url.Action("Index", "~~User.Texts")">my texts</a></li>
+                <li><a href="@Url.Action("Index", "~~User.Terms")">my terms</a></li>
                 <li class="divider-vertical"></li>
                 if(HttpContext.Current.User.IsInRole(ReadingTool.Core.Constants.Roles.ADMIN))
                 {
