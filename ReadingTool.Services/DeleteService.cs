@@ -49,20 +49,28 @@ namespace ReadingTool.Services
                 return;
             }
 
-            _db.Select<Text>(x => x.L1Id == language.Id).ForEach(DeleteText);
             _db.Select<Term>(x => x.LanguageId == language.Id).ForEach(DeleteTerm);
+            _db.Select<Text>(x => x.L1Id == language.Id).ForEach(DeleteText);
+            _db.Update<Text>(new { L2Id = (Guid?)null }, x => x.L2Id == language.Id);
             _db.DeleteById<Language>(language.Id);
         }
 
         public void DeleteTerm(Term term)
         {
-            if(term == null || term.Id != _identity.UserId)
+            if(term == null || term.Owner != _identity.UserId)
             {
                 return;
             }
 
-            _db.Delete<Tag>(x => x.TermId == term.Id);
-            _db.DeleteById<Text>(term.Id);
+            var it = _db.Select<IndividualTerm>(x => x.TermId == term.Id);
+
+            foreach(var i in it)
+            {
+                _db.Delete<Tag>(x => x.TermId == i.Id);
+            }
+
+            _db.Delete<IndividualTerm>(x => x.TermId == term.Id);
+            _db.DeleteById<Term>(term.Id);
         }
 
         public void DeleteText(Text text)
@@ -72,18 +80,9 @@ namespace ReadingTool.Services
                 return;
             }
 
+            _db.Update<IndividualTerm>(new { TextId = (Guid?)null }, x => x.TextId == text.Id);
             _db.Delete<Tag>(x => x.TextId == text.Id);
             _db.DeleteById<Text>(text.Id);
         }
-
-        //public void DeleteTexts(IEnumerable<Text> texts)
-        //{
-        //    if(texts == null) return;
-        //    var toDelete = texts.Where(x => x.Owner == _identity.UserId);
-        //    var ids = toDelete.Select(x => x.Id).ToList();
-
-        //    _db.Delete<Tag>("TextId IN ({0})", ids);
-        //    _db.DeleteByIds<Text>(ids);
-        //}
     }
 }

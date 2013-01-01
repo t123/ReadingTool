@@ -76,6 +76,7 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
             kernel.Bind<ISequenceService>().To<SequenceService>();
             kernel.Bind<ILwtImportService>().To<LwtImportService>();
+            kernel.Bind<IUpgradeService>().To<UpgradeService>();
 
             kernel.Bind<OrmLiteConnectionFactory>().ToMethod
                 (

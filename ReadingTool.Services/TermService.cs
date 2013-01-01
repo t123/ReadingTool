@@ -18,6 +18,7 @@ namespace ReadingTool.Services
     public interface ITermService
     {
         void Save(Term term, bool audit = true);
+        void SaveAll(IEnumerable<Term> terms, bool audit = true);
         void Delete(Term term);
         void Delete(Guid id);
         Term Find(Guid id);
@@ -77,6 +78,79 @@ namespace ReadingTool.Services
                         IsNew = isNew,
                         StateChange = term.StateHasChanged
                     });
+            }
+        }
+
+        public void SaveAll(IEnumerable<Term> terms, bool audit = true)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            IList<IndividualTerm> its = new List<IndividualTerm>();
+
+            foreach(var term in terms)
+            {
+                bool isNew = false;
+                if(term.Id == Guid.Empty)
+                {
+                    term.Id = SequentialGuid.NewGuid();
+                    term.Owner = _identity.UserId;
+                    isNew = true;
+                }
+
+                term.TermPhrase = term.TermPhrase.Trim();
+                term.Length = (short)term.TermPhrase.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
+
+                foreach(var it in term.IndividualTerms)
+                {
+                    if(it.Id == Guid.Empty)
+                    {
+                        it.TermId = term.Id;
+                        it.Id = SequentialGuid.NewGuid();
+                        it.Created = DateTime.Now;
+                    }
+
+                    it.Modified = DateTime.Now;
+                    it.BaseTerm = it.BaseTerm.Trim();
+                    it.Definition = it.Definition.Trim();
+                    it.Sentence = it.Sentence.Trim();
+                    it.Romanisation = it.Romanisation.Trim();
+                    it.Tags = it.Tags.Trim().ToLowerInvariant();
+
+                    if(!isNew)
+                    {
+                        _db.Delete<Tag>(x => x.TermId == it.Id);
+                    }
+                }
+
+                its = its.Union(term.IndividualTerms).ToList();
+
+                if(audit)
+                {
+                    sb.AppendLine(new TermLog()
+                    {
+                        Date = DateTime.Now,
+                        State = term.State,
+                        TermId = term.Id,
+                        LanguageId = term.LanguageId,
+                        Owner = term.Owner,
+                        IsNew = isNew,
+                        StateChange = term.StateHasChanged
+                    }.ToString());
+                }
+            }
+
+            _db.InsertAll(terms);
+            _db.InsertAll(its);
+
+            foreach(var it in its)
+            {
+                var tags = TagHelper.Split(it.Tags);
+                _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = it.Id, TextId = null, Value = x }));
+            }
+
+            if(audit)
+            {
+                Logger.Info(sb.ToString());
             }
         }
 

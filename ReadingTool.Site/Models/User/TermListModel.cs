@@ -15,6 +15,7 @@ namespace ReadingTool.Site.Models.User
         public DateTime? NextReview { get; set; }
         public string State { get; set; }
         public IList<IndividualTerm> IndividualTerms { get; set; }
+        public string Definition { get; set; }
         public string Tags
         {
             get { return string.Join(" ", IndividualTerms.Select(x => x.Tags).Distinct(StringComparer.InvariantCultureIgnoreCase)); }

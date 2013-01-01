@@ -405,7 +405,6 @@
     <Folder Include="Scripts\other\footer\codemirror\theme\" />
     <Folder Include="Views\Admin\Shared\" />
     <Folder Include="Views\Shared\DisplayTemplates\" />
-    <Folder Include="Views\Shared\Partials\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -495,6 +494,7 @@
     <Content Include="Views\Shared\_Navigation.cshtml" />
     <Content Include="Views\Shared\_NotFound.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\Partials\_pager.cshtml" />
     <None Include="Views\User\Languages\Add.cshtml" />
     <Content Include="Views\User\Languages\Edit.cshtml" />
     <Content Include="Views\User\Languages\Dictionaries.cshtml" />
@@ -519,6 +519,7 @@
     <Content Include="Views\User\Terms\Index.cshtml" />
     <Content Include="Views\User\Terms\Partials\_menu.cshtml" />
     <Content Include="Views\User\Terms\Partials\_list.cshtml" />
+    <Content Include="Views\User\MyAccount\Upgrade.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using ReadingTool.Core;
@@ -535,17 +536,20 @@ namespace ReadingTool.Site.Controllers.User
                 {
                     terms = terms.Select(x => (x ?? "").Trim()).Where(x => x.Length > 0).Distinct(StringComparer.InvariantCultureIgnoreCase);
 
+                    var language = _languageService.Find(languageId);
                     var currentTerms = _termService.FindAll(languageId).ToDictionary(x => x.TermPhrase.ToLowerInvariant(), x => x);
+                    var termTest = new Regex(@"([" + language.Settings.RegexWordCharacters + @"])", RegexOptions.Compiled);
 
                     foreach(var t in terms)
                     {
+                        var state = termTest.Match(t).Success ? TermState.Known : TermState.Ignored;
                         if(currentTerms.ContainsKey(t.ToLowerInvariant()))
                         {
                             if(currentTerms[t.ToLowerInvariant()].State == TermState.NotSeen)
                             {
                                 //Terms can be explicitlity marked as not seen
                                 var updateTerm = currentTerms[t.ToLowerInvariant()];
-                                updateTerm.State = TermState.Known;
+                                updateTerm.State = state;
                                 _termService.Save(updateTerm);
                                 count++;
                             }
@@ -554,7 +558,7 @@ namespace ReadingTool.Site.Controllers.User
                         }
 
                         //TODO fix me, bulk insert
-                        Term term = NewTerm(languageId, t, TermState.Known);
+                        Term term = NewTerm(languageId, t, state);
                         _termService.Save(term);
                         count++;
                     }

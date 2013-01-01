@@ -1,4 +1,5 @@
-﻿@model ReadingTool.Entities.Search.SearchGridResult<ReadingTool.Site.Models.User.TextListModel> 
+﻿@using ReadingTool.Entities.Search
+@model ReadingTool.Entities.Search.SearchGridResult<ReadingTool.Site.Models.User.TextListModel> 
 @{
     WebGrid grid = new WebGrid(Model.Items, rowsPerPage: @Model.RowsPerPage);
 }
@@ -53,35 +54,12 @@
     }
     )
 
-
-<div class="pagination pagination-centered">
-    <ul>
-        @if(Model.Page==1)
-        {
-            <li class="active"><a href="#">previous</a></li>
-        }
-        else
-        {
-            <li><a href="#" data-page="@(Model.Page-1)">previous</a></li>
-        }
-        @for(int i = 1; i <= Model.TotalPages; i++)
-        {
-            if(i == Model.Page)
-            {
-                <li class="active"><a href="#">@i</a></li>
-            }
-            else
-            {
-                <li><a href="#" data-page="@i">@i</a></li>
-            }
-        }
-        @if(Model.Page==Model.TotalPages)
-        {
-            <li class="active"><a href="#">next</a></li>
-        }
-        else
-        {
-            <li><a href="#" data-page="@(Model.Page+1)">next</a></li>
-        }
-    </ul>
-</div>
+@Html.Partial("Partials/_pager", new SearchGridResult<int>
+    {
+        Direction = Model.Direction,
+        Items = null,
+        Page = Model.Page,
+        RowsPerPage = Model.RowsPerPage,
+        Sort = Model.Sort,
+        TotalRows = Model.TotalRows
+})

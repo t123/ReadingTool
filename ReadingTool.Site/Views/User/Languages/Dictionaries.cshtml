@@ -37,18 +37,19 @@
         </tbody>
     </table>
     
-    <button class="btn" onclick="updateOrder('.table');">
-        Save dictionary order
-    </button>
     <i id="result" class="icon-ok-circle" style="display: none"> </i>
     
             if(Model.Dictionaries.Count() > 1)
             {
-        <div class="clr20"></div>
-        @Html.FlashMessage("Drag the dictionaries to reorder them and then click the save order button");
+                <button class="btn" onclick="updateOrder('.table');">
+                    Save dictionary order
+                </button>
+                <div class="clr20"></div>
+                @Html.FlashMessage("Drag the dictionaries to reorder them and then click the save order button")
+                <div class="clr20"></div>
             }
 
-            Bundles.AddInlineScript(
+    Bundles.AddInlineScript(
         @<script type="text/javascript">
              $("table tbody").sortable({ handles: 'td:first' });
              

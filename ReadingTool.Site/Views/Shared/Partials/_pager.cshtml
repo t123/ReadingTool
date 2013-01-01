@@ -1,0 +1,49 @@
+﻿@model ReadingTool.Entities.Search.SearchGridResult<int> 
+<div class="pagination pagination-centered">
+    <ul>
+        @if(Model.Page==1)
+        {
+            <li class="active"><a href="#">first page</a></li>
+            <li class="active"><a href="#">previous</a></li>
+        }
+        else
+        {
+            <li><a href="#" data-page="1">first page</a></li>
+            <li><a href="#" data-page="@(Model.Page-1)">previous</a></li>
+        }
+        @{
+            int start = Model.Page - 10;
+            int end = Model.Page + 10;
+            
+            if(start < 1)
+            {
+                start = 1;
+            }
+            if(end > Model.TotalPages - 1)
+            {
+                end = Model.TotalPages - 1;
+            }
+        }
+        @for(int i = start; i <= end; i++)
+        {
+            if(i == Model.Page)
+            {
+                <li class="active"><a href="#">@i</a></li>
+            }
+            else
+            {
+                <li><a href="#" data-page="@i">@i</a></li>
+            }
+        }
+        @if(Model.Page==Model.TotalPages)
+        {
+            <li class="active"><a href="#">last page (@Model.TotalPages)</a></li>
+            <li class="active"><a href="#">next</a></li>
+        }
+        else
+        {
+            <li><a href="#" data-page="@(Model.TotalPages)">last page (@Model.TotalPages)</a></li>
+            <li><a href="#" data-page="@(Model.Page+1)">next</a></li>
+        }
+    </ul>
+</div>

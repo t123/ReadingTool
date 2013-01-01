@@ -1,0 +1,20 @@
+﻿
+@section Menu
+{
+    @Html.Partial("Partials/_menu")
+}
+
+
+    @using(Html.BeginForm("Upgrade", "MyAccount", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Id" value="1"/>
+        <fieldset>
+            <legend>Upgrade</legend>
+            <div class="buttons">
+                <input type="submit" class="btn btn-primary" name="save" value="upgrade account" />
+                @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
+            </div>
+        </fieldset>
+    }
+    

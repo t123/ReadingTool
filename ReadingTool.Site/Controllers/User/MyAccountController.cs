@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
 using Newtonsoft.Json;
 using ReadingTool.Core;
+using ReadingTool.Core.Enums;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Services;
@@ -27,6 +29,7 @@ namespace ReadingTool.Site.Controllers.User
         private readonly ITextService _textService;
         private readonly ISystemLanguageService _systemLanguageService;
         private readonly ILwtImportService _lwtImportService;
+        private readonly IUpgradeService _upgradeService;
 
         public MyAccountController(
             IUserService userService,
@@ -35,7 +38,8 @@ namespace ReadingTool.Site.Controllers.User
             ITermService termService,
             ITextService textService,
             ISystemLanguageService systemLanguageService,
-            ILwtImportService lwtImportService
+            ILwtImportService lwtImportService,
+            IUpgradeService upgradeService
             )
         {
             _userService = userService;
@@ -45,6 +49,7 @@ namespace ReadingTool.Site.Controllers.User
             _textService = textService;
             _systemLanguageService = systemLanguageService;
             _lwtImportService = lwtImportService;
+            _upgradeService = upgradeService;
         }
 
         [HttpGet]
@@ -297,6 +302,48 @@ namespace ReadingTool.Site.Controllers.User
             }
 
             return RedirectToAction("ImportExport");
+        }
+
+        [HttpGet]
+        public ActionResult Upgrade()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Upgrade(int id)
+        {
+            try
+            {
+                using(StreamReader sr = new StreamReader(Server.MapPath("~/App_Data/account.json"), Encoding.UTF8))
+                {
+                    string json = sr.ReadToEnd();
+                    _upgradeService.Upgrade(json);
+                }
+
+                var terms = _termService.FindAll();
+                var languages = _languageService.FindAll().ToDictionary(x => x.Id);
+
+                foreach(var term in terms)
+                {
+                    var l = languages[term.LanguageId];
+                    var termTest = new Regex(@"([" + l.Settings.RegexWordCharacters + @"])", RegexOptions.Compiled);
+
+                    if(!termTest.Match(term.TermPhrase).Success)
+                    {
+                        term.State = TermState.Ignored;
+                        _termService.Save(term, audit: false);
+                    }
+                }
+
+                this.FlashSuccess("Imported");
+            }
+            catch(Exception e)
+            {
+                this.FlashError(e.Message);
+            }
+
+            return RedirectToAction("Upgrade");
         }
 
         private void UpdateUser(Entities.User user)

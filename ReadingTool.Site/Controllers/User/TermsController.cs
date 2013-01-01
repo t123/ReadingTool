@@ -57,6 +57,7 @@ namespace ReadingTool.Site.Controllers.User
                         NextReview = x.NextReview,
                         TermPhrase = x.TermPhrase,
                         State = x.State.ToDescription(),
+                        Definition = x.Definition,
                         IndividualTerms = x.IndividualTerms.Select(y => new TermListModel.IndividualTerm()
                             {
                                 Id = y.Id,
