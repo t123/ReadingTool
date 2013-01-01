@@ -1,4 +1,3 @@
-var _this = this;
 var SelectedWord = (function () {
     function SelectedWord(settings, element, quicksave) {
         this.settings = settings;
@@ -23,7 +22,7 @@ var SelectedWord = (function () {
     SelectedWord.prototype.findTerm = function () {
         var _this = this;
         $('#currentBox').removeClass().addClass('badge');
-        $.post(this.settings.ajaxUrl + '/find-term', {
+        $.post(routes.reading.findTerm, {
             languageId: this.settings.languageId,
             termPhrase: this.selectedWord
         }, function (data) {
@@ -79,7 +78,7 @@ var SelectedWord = (function () {
     };
     SelectedWord.prototype.quicksave = function () {
         var _this = this;
-        $.post(this.settings.ajaxUrl + '/quicksave', {
+        $.post(routes.reading.quickSave, {
             languageId: this.settings.languageId,
             termPhrase: this.selectedWord
         }, function (data) {
@@ -96,7 +95,7 @@ var SelectedWord = (function () {
             currentIndex = 1;
         }
         $('#iconResult').hide();
-        $.post(this.settings.ajaxUrl + '/save-term', $('#formTerms').serialize(), function (data) {
+        $.post(routes.reading.saveTerm, $('#formTerms').serialize(), function (data) {
             console.log('saving term changes');
             console.log(data);
             if(data.result == "OK") {
@@ -177,7 +176,7 @@ var SelectedWord = (function () {
             currentIndex = 1;
         }
         $('#iconResult').hide();
-        $.post(this.settings.ajaxUrl + '/reset-term', {
+        $.post(routes.reading.resetTerm, {
             languageId: this.settings.languageId,
             termPhrase: this.selectedWord
         }, function (data) {
@@ -238,7 +237,7 @@ var SelectedWord = (function () {
                 auto = false;
             }
             if(urlEncode) {
-                $.post(_this.settings.ajaxUrl + '/encode-term', {
+                $.post(routes.reading.encodeTerm, {
                     languageId: _this.settings.languageId,
                     dictionaryId: id,
                     input: input

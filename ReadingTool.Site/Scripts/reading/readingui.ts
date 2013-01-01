@@ -6,6 +6,7 @@
 /// see http://typescript.codeplex.com/SourceControl/changeset/view/92d9e637f6e1#typings/jquery.d.ts
 
 declare var ui: ReadingToolUi;
+declare var routes: any;
 
 class ReadingToolUi {
     isPlaying: bool;
@@ -83,7 +84,7 @@ class ReadingToolUi {
 
     changeRead(direction: number) {
         var words = $('#totalWords').data('value');
-        $.post(this.settings.ajaxUrl + '/change-read',
+        $.post(routes.reading.changeRead,
         {
             textId: this.settings.textId,
             direction: direction,
@@ -96,7 +97,7 @@ class ReadingToolUi {
     }
 
     changeListened(direction: number) {
-        $.post(this.settings.ajaxUrl + '/change-listened',
+        $.post(routes.reading.changeListened,
         {
             textId: this.settings.textId,
             direction: direction
@@ -185,7 +186,7 @@ class ReadingToolUi {
         });
 
         $.post(
-            this.settings.ajaxUrl + '/mark-remaining-as-known',
+            routes.reading.markRemainingAsKnown,
             {
                 languageId: this.settings.languageId,
                 terms: terms,
@@ -215,7 +216,7 @@ class ReadingToolUi {
         });
 
         $.post(
-            this.settings.ajaxUrl + '/review-unknown',
+            routes.reading.reviewUnknown,
             {
                 languageId: this.settings.languageId,
                 terms: terms,

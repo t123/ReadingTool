@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Index";
     Bundles.Reference("Scripts/other/footer/html5sortable/jquery.sortable.js");
+    Bundles.AddInlineScript(@<text><script src="/routes/?c=user.languages" type="text/javascript"></script></text>, "head");
 }
 
 @section Menu
@@ -23,14 +24,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var l in Model.Dictionaries.OrderBy(x => x.DisplayOrder))
+            @foreach(var l in Model.Dictionaries.OrderBy(x => x.DisplayOrder))
             {
                 <tr id="@l.Id">
                     <td>@l.Name</td>
                     <td><a target="_blank" href="@l.Url">@l.Url</a></td>
                     <td>@l.Parameter</td>
-                    <td>@Html.EditButton(Url.Action("EditDictionary", new {id = Model.Id, dictionaryId = l.Id}))</td>
-                    <td>@Html.DeleteButton(Url.Action("DeleteDictionary", new {id = Model.Id, dictionaryId = l.Id}))</td>
+                    <td>@Html.EditButton(Url.Action("EditDictionary", new { id = Model.Id, dictionaryId = l.Id }))</td>
+                    <td>@Html.DeleteButton(Url.Action("DeleteDictionary", new { id = Model.Id, dictionaryId = l.Id }))</td>
                 </tr>
             }
         </tbody>
@@ -41,13 +42,13 @@
     </button>
     <i id="result" class="icon-ok-circle" style="display: none"> </i>
     
-    if(Model.Dictionaries.Count()>1)
-    {
+            if(Model.Dictionaries.Count() > 1)
+            {
         <div class="clr20"></div>
         @Html.FlashMessage("Drag the dictionaries to reorder them and then click the save order button");
-    }
-    
-    Bundles.AddInlineScript(
+            }
+
+            Bundles.AddInlineScript(
         @<script type="text/javascript">
              $("table tbody").sortable({ handles: 'td:first' });
              
@@ -59,7 +60,11 @@
                  });
 
                  $.post(
-                     '@Url.Action("UpdateOrder", new { id=Model.Id})', { ids: ids },
+                     routes.languages.updateOrder,
+                     {
+                         languageId: '@Model.Id',
+                         ids: ids
+                     },
                      function (result) {
                          if(result=="OK") {
                              $('#result').removeClass().addClass('icon-ok-circle').show().fadeOut(2000);

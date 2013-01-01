@@ -3,13 +3,14 @@
     ViewBag.Title = "Index";
 
     Bundles.Reference("Scripts/other/footer/webgrid/grid.js");
-    
+    Bundles.AddInlineScript(@<text><script src="/routes/?c=user.texts" type="text/javascript"></script></text>, "head");
+
     Bundles.AddInlineScript(
     @<text>
          <script language="javascript">
              var state;
              var storageKey = "text_filter";
-             var gridPostUrl = '@Url.Action("IndexGrid")';
+             var gridPostUrl = routes.texts.indexGrid;
              $(document).ready(function () {
                  var jsonState = localStorage[storageKey];
 
@@ -29,7 +30,7 @@
 }
 
 @{
-    var text  = @"Just type to start filtering by language, title and collection name. You can search for your own tags by 
+    var text = @"Just type to start filtering by language, title and collection name. You can search for your own tags by 
 using a # sign, or use some of these special tags: " + string.Join(", ", FilterParser.MagicTextTags.Select(x => "<strong>#" + x + "</strong>"));
 }
 <div class="filterbar">

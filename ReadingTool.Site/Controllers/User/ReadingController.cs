@@ -10,6 +10,7 @@ using ReadingTool.Core.Enums;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Services;
+using ReadingTool.Site.Attributes;
 using ServiceStack;
 
 namespace ReadingTool.Site.Controllers.User
@@ -55,6 +56,7 @@ namespace ReadingTool.Site.Controllers.User
             throw new NotSupportedException();
         }
 
+        [AjaxRoute]
         public JsonResult SaveAudioLength(Guid textId, double? length)
         {
             try
@@ -78,6 +80,7 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        [AjaxRoute]
         public JsonResult ChangeRead(Guid textId, int direction, int words)
         {
             try
@@ -123,6 +126,7 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        [AjaxRoute]
         public JsonResult ChangeListened(Guid textId, int direction)
         {
             try
@@ -167,6 +171,7 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        [AjaxRoute]
         public JsonResult EncodeTerm(Guid languageId, Guid dictionaryId, string input)
         {
             try
@@ -257,6 +262,7 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        [AjaxRoute]
         public JsonResult FindTerm(Guid languageId, string termPhrase)
         {
             try
@@ -320,6 +326,7 @@ namespace ReadingTool.Site.Controllers.User
             return term;
         }
 
+        [AjaxRoute]
         public JsonResult Quicksave(Guid languageId, string termPhrase)
         {
             try
@@ -386,6 +393,7 @@ namespace ReadingTool.Site.Controllers.User
             public string Sentence { get; set; }
         }
 
+        [AjaxRoute]
         public JsonResult SaveTerm(Guid languageId, Guid textId, Guid termId, string state, string termPhrase, JsonSaveTerm[] model)
         {
             try
@@ -466,6 +474,7 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        [AjaxRoute]
         public JsonResult ResetTerm(Guid languageId, string termPhrase)
         {
             try
@@ -513,6 +522,7 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        [AjaxRoute]
         public JsonResult MarkRemainingAsKnown(Guid languageId, Guid textId, IEnumerable<string> terms)
         {
             try
@@ -568,6 +578,7 @@ namespace ReadingTool.Site.Controllers.User
             }
         }
 
+        [AjaxRoute]
         public JsonResult ReviewUnknown(Guid languageId, Guid textId, IEnumerable<string> terms)
         {
             try

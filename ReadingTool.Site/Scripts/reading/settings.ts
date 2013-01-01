@@ -42,7 +42,6 @@ class Settings {
     textId: number;
     languageId: number;
     modalBehaviour: string;
-    ajaxUrl: string;
     quickmode: bool;
     asParallel: bool;
 

@@ -9,6 +9,7 @@ using ReadingTool.Core;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Services;
+using ReadingTool.Site.Attributes;
 using ReadingTool.Site.Helpers;
 using ReadingTool.Site.Models.User;
 
@@ -243,6 +244,7 @@ namespace ReadingTool.Site.Controllers.User
             return RedirectToAction("Dictionaries", new { id = id });
         }
 
+        [AjaxRoute]
         public JsonResult AutoCompleteSystemLanguage(string query)
         {
             var l = _systemLanguageService.FindAllStartingWith(query);
@@ -255,14 +257,15 @@ namespace ReadingTool.Site.Controllers.User
             return new JsonNetResult() { Data = response };
         }
 
-        public JsonResult UpdateOrder(Guid id, IEnumerable<Guid> ids)
+        [AjaxRoute]
+        public JsonResult UpdateOrder(Guid languageId, IEnumerable<Guid> ids)
         {
             try
             {
                 //if(!string.IsNullOrEmpty(ids))
                 if(ids != null && ids.Any())
                 {
-                    var l = _languageService.Find(id);
+                    var l = _languageService.Find(languageId);
 
                     if(l == null)
                     {

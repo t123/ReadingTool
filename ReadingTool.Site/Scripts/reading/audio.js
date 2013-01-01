@@ -1,4 +1,3 @@
-var _this = this;
 var AudioPlayer = (function () {
     function AudioPlayer(settings) {
         var _this = this;
@@ -9,7 +8,7 @@ var AudioPlayer = (function () {
         }
         this.audioPlayer.addEventListener("loadedmetadata", function (e) {
             var duration = _this.audioPlayer.duration;
-            $.post(_this.settings.ajaxUrl + '/save-audio-length', {
+            $.post(routes.reading.saveAudioLength, {
                 textId: _this.settings.textId,
                 length: duration
             }, function () {

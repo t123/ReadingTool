@@ -7,6 +7,7 @@ using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Entities.Search;
 using ReadingTool.Services;
+using ReadingTool.Site.Attributes;
 using ReadingTool.Site.Models.User;
 
 namespace ReadingTool.Site.Controllers.User
@@ -27,6 +28,7 @@ namespace ReadingTool.Site.Controllers.User
             return View();
         }
 
+        [AjaxRoute]
         public ActionResult IndexGrid(string sort, GridSortDirection sortDir, int? page, string filter, int? perPage)
         {
             var searchResult = _termService.FilterTerms(new SearchOptions()

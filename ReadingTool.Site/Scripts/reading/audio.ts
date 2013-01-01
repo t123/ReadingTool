@@ -1,6 +1,8 @@
 /// <reference path="jquery.d.ts"/>
 /// <reference path="settings.ts"/>
 
+declare var routes: any;
+
 interface IAudioPlayer {
     pauseAudio();
     resumeAudio(autoPause: bool, wasPlaying: bool);
@@ -29,7 +31,7 @@ class AudioPlayer implements IAudioPlayer {
         this.audioPlayer.addEventListener("loadedmetadata", function (e) => {
             var duration = this.audioPlayer.duration;
 
-            $.post(this.settings.ajaxUrl + '/save-audio-length',
+            $.post(routes.reading.saveAudioLength,
                 {
                     textId: this.settings.textId,
                     length: duration

@@ -57,7 +57,7 @@ var ReadingToolUi = (function () {
     };
     ReadingToolUi.prototype.changeRead = function (direction) {
         var words = $('#totalWords').data('value');
-        $.post(this.settings.ajaxUrl + '/change-read', {
+        $.post(routes.reading.changeRead, {
             textId: this.settings.textId,
             direction: direction,
             words: words
@@ -68,7 +68,7 @@ var ReadingToolUi = (function () {
         });
     };
     ReadingToolUi.prototype.changeListened = function (direction) {
-        $.post(this.settings.ajaxUrl + '/change-listened', {
+        $.post(routes.reading.changeListened, {
             textId: this.settings.textId,
             direction: direction
         }, function (data) {
@@ -178,7 +178,7 @@ var ReadingToolUi = (function () {
             }
             terms.push($(elem).text());
         });
-        $.post(this.settings.ajaxUrl + '/mark-remaining-as-known', {
+        $.post(routes.reading.markRemainingAsKnown, {
             languageId: this.settings.languageId,
             terms: terms,
             textId: this.settings.textId
@@ -205,7 +205,7 @@ var ReadingToolUi = (function () {
             }
             terms.push($(elem).text());
         });
-        $.post(this.settings.ajaxUrl + '/review-unknown', {
+        $.post(routes.reading.reviewUnknown, {
             languageId: this.settings.languageId,
             terms: terms,
             textId: this.settings.textId

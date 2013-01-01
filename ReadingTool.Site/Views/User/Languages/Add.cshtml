@@ -6,10 +6,12 @@
     Bundles.Reference("Scripts/other/footer/spectrum/spectrum.css");
     Bundles.Reference("Scripts/other/footer/jQuery-Autocomplete/jquery.autocomplete.js");
     
+    Bundles.AddInlineScript(@<text><script src="/routes/?c=user.languages" type="text/javascript"></script></text>, "head");
+
     Bundles.AddInlineScript(
         @<script type="text/javascript">
              $('.autocomplete').each(function (index, html) {
-                 var url = $(html).data('autocomplete');
+                 var url = routes.languages.autoCompleteSystemLanguage;
                  $(html).autocomplete({
                      minChars: 3,
                      type: 'POST',
@@ -25,7 +27,7 @@
                  showButtons: false
              });
          </script>
-        , "body");
+, "body");
 }
 
 @section Menu
@@ -40,12 +42,12 @@
     <fieldset>
         <legend>Add Language</legend>
         @Html.BootstrapFormTextbox(x => x.Name)
-        @Html.BootstrapFormTextbox(x => x.Colour, new RouteValueDictionary { {"class" ,"colourpicker"}} )
-        @Html.BootstrapFormTextbox(x => x.SystemLanguage, new RouteValueDictionary { {"class","autocomplete"}, { "data-autocomplete", Url.Action("AutoCompleteSystemLanguage") } })
-        @Html.EditorFor(x=>x.Settings)
+        @Html.BootstrapFormTextbox(x => x.Colour, new RouteValueDictionary { { "class", "colourpicker" } })
+        @Html.BootstrapFormTextbox(x => x.SystemLanguage, new RouteValueDictionary { { "class", "autocomplete" } })
+        @Html.EditorFor(x => x.Settings)
         <div class="buttons">
             <input type="submit" class="btn btn-primary" value="save"/>
-            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { },new{@class="btn btn-link"})
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
         </div>
     </fieldset>
 }

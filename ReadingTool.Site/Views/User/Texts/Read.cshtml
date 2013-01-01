@@ -17,6 +17,7 @@
 
     Bundles.Reference("Scripts/other/head/handlebars/handlebars-1.0.rc.1.js");
     Bundles.Reference("Scripts/other/footer/reading/reading.css");
+    Bundles.AddInlineScript(@<text><script src="/routes/?c=user.reading" type="text/javascript"></script></text>, "head");
 
     Bundles.AddInlineScript(
         @<text>
@@ -37,14 +38,13 @@
                      settings.textId = '@Model.Text.Id';
                      settings.languageId = '@Model.Language.Id';
                      settings.modalBehaviour = '@Model.Language.Settings.ModalBehaviour';
-                     settings.ajaxUrl = '@Url.Action("Index", "Reading")';
                      settings.asParallel = @Model.AsParallel.ToString().ToLowerInvariant();
                      ui = new ReadingToolUi(settings);
                  });
              </script>
              @Html.Raw(string.Join("\n", scripts))
          </text>
-        , "body");
+, "body");
 }
 
 @Html.Partial("Partials/_textarea", Model, ViewData)

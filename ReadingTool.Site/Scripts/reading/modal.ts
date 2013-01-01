@@ -5,6 +5,7 @@ declare var Handlebars;
 declare var termUlTemplate;
 declare var termDivTemplate;
 declare var termMessageTemplate;
+declare var routes: any;
 
 class SelectedWord {
     settings: Settings;
@@ -51,7 +52,7 @@ class SelectedWord {
         $('#currentBox').removeClass().addClass('badge');
 
         $.post(
-            this.settings.ajaxUrl + '/find-term',
+            routes.reading.findTerm,
             {
                 languageId: this.settings.languageId,
                 termPhrase: this.selectedWord,
@@ -112,7 +113,7 @@ class SelectedWord {
     }
 
     private quicksave() {
-        $.post(this.settings.ajaxUrl + '/quicksave',
+        $.post(routes.reading.quickSave,
             {
                 languageId: this.settings.languageId,
                 termPhrase: this.selectedWord
@@ -130,7 +131,7 @@ class SelectedWord {
         if (currentIndex < 0) currentIndex = 1;
         $('#iconResult').hide();
 
-        $.post(this.settings.ajaxUrl + '/save-term',
+        $.post(routes.reading.saveTerm,
             $('#formTerms').serialize(),
             function (data) => {
                 console.log('saving term changes');
@@ -240,7 +241,7 @@ class SelectedWord {
         if (currentIndex < 0) currentIndex = 1;
         $('#iconResult').hide();
 
-        $.post(this.settings.ajaxUrl + '/reset-term',
+        $.post(routes.reading.resetTerm,
             {
                 languageId: this.settings.languageId,
                 termPhrase: this.selectedWord
@@ -306,7 +307,7 @@ class SelectedWord {
 
             if (urlEncode) {
                 $.post(
-                    this.settings.ajaxUrl + '/encode-term',
+                    routes.reading.encodeTerm,
                     {
                         languageId: this.settings.languageId,
                         dictionaryId: id,
