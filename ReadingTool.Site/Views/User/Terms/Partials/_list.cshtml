@@ -19,7 +19,29 @@
                                             {
                                                 <i class="icon-tags" title="@item.Tags"> </i>
                                             }
-                                            @item.TermPhrase
+                                                                     @item.TermPhrase
+@if(item.IndividualTerms.Count>0)
+{
+    var tableId = "internal" + @item.Id;
+    <text>(<a href="#" onclick="$('#@tableId').toggle(); return false;">
+    @item.IndividualTerms.Count
+     definitions)</a></text>
+    <div class="clr"></div>
+    <table style="display: none;" id="@tableId">
+    @foreach(var it in @item.IndividualTerms)
+    {
+        <tr>
+            <td>@it.BaseTerm</td>
+            <td>@it.Romanisation</td>
+            <td>@it.Sentence</td>
+            <td>@it.Definition</td>
+            <td>@it.Tags</td>
+        </tr>
+    }
+    </table>
+}
+                                                                     
+
                                           </text>),
         grid.Column("Box", header: "Box"),
         grid.Column("Next Review" , header: "Next Review", format:@<text>

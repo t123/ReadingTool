@@ -27,6 +27,8 @@ namespace ReadingTool.Services
         IEnumerable<Term> FindAll(Guid languageId);
         Tuple<bool, string> ReviewTerm(Term term, Review review);
         SearchResult<Term> FilterTerms(SearchOptions searchOptions = null);
+        IEnumerable<IndividualTerm> FindIndividualTerms(Guid termId);
+        IEnumerable<IndividualTerm> FindIndividualTerms(Term term);
     }
 
     public class TermService : ITermService
@@ -34,6 +36,7 @@ namespace ReadingTool.Services
         private readonly IDbConnection _db;
         private readonly ILanguageService _languageService;
         private readonly IUserIdentity _identity;
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger("TermAuditLog");
 
         public TermService(IDbConnection db, IPrincipal principal, ILanguageService languageService)
         {
@@ -64,13 +67,13 @@ namespace ReadingTool.Services
 
             if(audit)
             {
-                _db.Save(new TermLog()
+                Logger.Info(new TermLog()
                     {
                         Date = DateTime.Now,
                         State = term.State,
                         TermId = term.Id,
                         LanguageId = term.LanguageId,
-                        Onwer = term.Owner,
+                        Owner = term.Owner,
                         IsNew = isNew,
                         StateChange = term.StateHasChanged
                     });
@@ -239,6 +242,10 @@ namespace ReadingTool.Services
                             case @"notseen":
                                 magicSql += " AND t.State='" + TermState.NotSeen.ToString() + "' ";
                                 break;
+
+                            case @"definitions":
+                                //TODO 
+                                break;
                         }
                     }
                 }
@@ -274,7 +281,7 @@ namespace ReadingTool.Services
             #region tags
             if(options.Tags.Count > 0)
             {
-                string tagSql = string.Format("AND T.Id IN ( SELECT TermId FROM Tag WHERE Tag.Value IN ({0}))", string.Join(",", options.Tags.Select(x => "'" + x + "'")));
+                string tagSql = string.Format("AND T.Id IN ( SELECT TermId FROM IndividualTerm WHERE Id IN ( SELECT TermId FROM Tag WHERE Value IN ({0})))", string.Join(",", options.Tags.Select(x => "'" + x + "'")));
                 whereSql.Append(tagSql);
             }
             #endregion
@@ -321,6 +328,21 @@ ORDER BY RowNumber
                 var message = string.Format("Invalid text search SQL:\n\n{0}\n\n{1}\n\n{2}", brokenSql, countQuery, query);
                 throw new Exception(message, e);
             }
+        }
+
+        public IEnumerable<IndividualTerm> FindIndividualTerms(Guid termId)
+        {
+            return FindIndividualTerms(Find(termId));
+        }
+
+        public IEnumerable<IndividualTerm> FindIndividualTerms(Term term)
+        {
+            if(term == null)
+            {
+                return new IndividualTerm[0];
+            }
+
+            return _db.Where<IndividualTerm>("TermId", term.Id);
         }
 
         private DateTime GetNextReview(Review review, int? currentLevel)

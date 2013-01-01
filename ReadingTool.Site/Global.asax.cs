@@ -50,6 +50,7 @@ namespace ReadingTool.Site
     // visit http://go.microsoft.com/?LinkId=9394801
     public class MvcApplication : HttpApplication
     {
+        private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //public static readonly OrmLiteConnectionFactory dbFactory = new OrmLiteConnectionFactory("Data Source=(local);Initial Catalog=Test;Persist Security Info=True;User ID=sa;Password=password", SqlServerOrmLiteDialectProvider.Instance)
         //    {
         //        ConnectionFilter = x => new ProfiledDbConnection((DbConnection)((IHasDbConnection)x).DbConnection, MiniProfiler.Current)
@@ -59,6 +60,9 @@ namespace ReadingTool.Site
 
         protected void Application_Start()
         {
+            log4net.Config.XmlConfigurator.Configure();
+            Logger.Debug("Application start");
+
             AreaRegistration.RegisterAllAreas();
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
@@ -114,32 +118,6 @@ namespace ReadingTool.Site
                 connection.Dispose();
             }
         }
-
-        //protected void Application_Error(object sender, EventArgs e)
-        //{
-        //    Exception exception = Server.GetLastError();
-        //    HttpException httpException = exception as HttpException;
-
-        //    if(httpException != null)
-        //    {
-        //        switch(httpException.GetHttpCode())
-        //        {
-        //            case 404:
-        //                Response.Clear();
-
-        //                var rd = new RouteData();
-        //                rd.Values["controller"] = "Error";
-        //                rd.Values["action"] = "NotFound";
-
-        //                Server.ClearError();
-        //                Response.TrySkipIisCustomErrors = true;
-
-        //                IController c = new Controllers.ErrorController();
-        //                c.Execute(new RequestContext(new HttpContextWrapper(Context), rd));
-        //                break;
-        //        }
-        //    }
-        //}
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {

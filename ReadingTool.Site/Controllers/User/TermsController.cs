@@ -40,6 +40,11 @@ namespace ReadingTool.Site.Controllers.User
                 Direction = sortDir
             });
 
+            foreach(var t in searchResult.Results)
+            {
+                t.AddIndividualTerms(_termService.FindIndividualTerms(t));
+            }
+
             IList<TermListModel> termViewList = new List<TermListModel>();
             var languages = _languageService.FindAll().ToDictionary(x => x.Id);
             searchResult.Results.ToList().ForEach(x => termViewList.Add(
@@ -51,8 +56,16 @@ namespace ReadingTool.Site.Controllers.User
                         LanguageColour = languages.GetValueOrDefault(x.LanguageId, new Language() { Colour = "#FFFFFF" }).Colour,
                         NextReview = x.NextReview,
                         TermPhrase = x.TermPhrase,
-                        Tags = "",
-                        State = x.State.ToDescription()
+                        State = x.State.ToDescription(),
+                        IndividualTerms = x.IndividualTerms.Select(y => new TermListModel.IndividualTerm()
+                            {
+                                Id = y.Id,
+                                BaseTerm = y.BaseTerm,
+                                Definition = y.Definition,
+                                Romanisation = y.Romanisation,
+                                Sentence = y.Sentence,
+                                Tags = y.Tags
+                            }).ToList()
                     }));
 
             SearchGridResult<TermListModel> result = new SearchGridResult<TermListModel>()

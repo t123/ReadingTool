@@ -68,6 +68,9 @@
     <Reference Include="Elmah.Mvc">
       <HintPath>..\packages\Elmah.MVC.2.0.2\lib\net40\Elmah.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.Helpers">
       <HintPath>..\packages\Microsoft.AspNet.Web.Helpers.Mvc.2.0.20710.0\lib\net40\Microsoft.Web.Helpers.dll</HintPath>
@@ -486,6 +489,7 @@
     <Content Include="Views\Admin\Home\AddPublicLanguage.cshtml" />
     <Content Include="Views\Admin\Home\EditPublicLanguage.cshtml" />
     <Content Include="Content\sample.json" />
+    <Content Include="log4net.config" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <Content Include="Views\Shared\_Navigation.cshtml" />

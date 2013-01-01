@@ -89,7 +89,7 @@ namespace ReadingTool.Site.Controllers
             connection.CreateTable<IndividualTerm>(true);
             connection.CreateTable<Tag>(true);
             connection.CreateTable<Sequence>(true);
-            connection.CreateTable<TermLog>(true);
+            //connection.CreateTable<TermLog>(true);
 
             using(StreamReader sr = new StreamReader(Path.Combine(Server.MapPath("~/App_Data"), "dummy.sql"), Encoding.UTF8))
             {
