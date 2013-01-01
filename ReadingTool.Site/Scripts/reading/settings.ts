@@ -27,6 +27,24 @@ class KeyBindings {
     autoPause: bool;
     controlsEnabled: bool;
 
+    volumeUp: number;
+    volumeDown: number;
+    speedUp: number;
+    slowDown: number;
+
+    secondsToRewind: number;
+    rewindToBeginning: number;
+    rewind: number;
+    playPause: number;
+    forward: number;
+    stop: number;
+
+    resetWord: number;
+    changeKnown: number;
+    changeNotKnown: number;
+    changeIgnored: number;
+    changeNotSeen: number;
+
     constructor() {
         this.autoPause = true;
         this.controlsEnabled = true;

@@ -36,10 +36,10 @@
                 <div class="control-group">
                     <label class="control-label" for="state">Current State</label>
                     <div class="controls">
-                        <input type="radio" name="state" id="knownState" class="radio inline" value="@Constants.TermStates.KNOWN"/>known
-                        <input type="radio" name="state" id="unknownState" class="radio inline" value="@Constants.TermStates.UNKNOWN"/><span class="nkx">unknown</span>
-                        <input type="radio" name="state" id="notseenState" class="radio inline" value="@Constants.TermStates.NOTSEEN"/><span class="nsx">not seen</span>
-                        <input type="radio" name="state" id="ignoredState" class="radio inline" value="@Constants.TermStates.IGNORED"/>ignored
+                        <input type="radio" name="state" id="knownState" class="radio inline" value="@Constants.TermStates.KNOWN"/><a href="#" onclick="$('#knownState').attr('checked', true); return false;"><span class="@Constants.TermStates.KNOWN">known</span></a>
+                        <input type="radio" name="state" id="unknownState" class="radio inline" value="@Constants.TermStates.UNKNOWN"/><a href="#" onclick="$('#unknownState').attr('checked', true); return false;"><span class="@Constants.TermStates.UNKNOWN">unknown</span></a>
+                        <input type="radio" name="state" id="notseenState" class="radio inline" value="@Constants.TermStates.NOTSEEN"/><a href="#" onclick="$('#notseenState').attr('checked', true); return false;"><span class="@Constants.TermStates.NOTSEEN">not seen</span></a>
+                        <input type="radio" name="state" id="ignoredState" class="radio inline" value="@Constants.TermStates.IGNORED"/><a href="#" onclick="$('#ignoredState').attr('checked', true); return false;"><span class="@Constants.TermStates.IGNORED">ignored</span></a>
                     </div>
                 </div>
                 <div id="tabContent" class="tab-content">

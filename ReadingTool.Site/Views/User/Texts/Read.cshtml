@@ -33,6 +33,27 @@
                      settings.classes.punctuationClass = '@Constants.TermStates.PUNCTUATION';
                      settings.classes.multiClass = 'mxx';
 
+                     settings.keyBindings.controlsEnabled = @Model.User.KeyBindings.IsEnabled.ToString().ToLowerInvariant();
+                     settings.keyBindings.autoPause = @Model.User.KeyBindings.AutoPause.ToString().ToLowerInvariant();
+                     
+                     settings.keyBindings.resetWord = @(Model.User.KeyBindings.Reset.KeyCode ?? -1);
+                     settings.keyBindings.changeKnown = @(Model.User.KeyBindings.Known.KeyCode ?? -1);
+                     settings.keyBindings.changeNotKnown = @(Model.User.KeyBindings.NotKnown.KeyCode ?? -1);
+                     settings.keyBindings.changeIgnored = @(Model.User.KeyBindings.Ignored.KeyCode ?? -1);
+                     settings.keyBindings.changeNotSeen = @(Model.User.KeyBindings.NotSeen.KeyCode ?? -1);
+                     
+                     settings.keyBindings.volumeUp = @(Model.User.KeyBindings.VolumeUp.KeyCode ?? -1);
+                     settings.keyBindings.volumeDown = @(Model.User.KeyBindings.VolumeDown.KeyCode ?? -1);
+                     settings.keyBindings.speedUp = @(Model.User.KeyBindings.SpeedUp.KeyCode ?? -1);
+                     settings.keyBindings.slowDown = @(Model.User.KeyBindings.SpeedDown.KeyCode ?? -1);
+                     
+                     settings.keyBindings.secondsToRewind = @(Model.User.KeyBindings.SecondsToRewind);
+                     settings.keyBindings.rewindToBeginning = @(Model.User.KeyBindings.RewindToBeginning.KeyCode ?? -1);
+                     settings.keyBindings.rewind = @(Model.User.KeyBindings.Rewind.KeyCode ?? -1);
+                     settings.keyBindings.playPause = @(Model.User.KeyBindings.PlayPause.KeyCode ?? -1);
+                     settings.keyBindings.forward = @(Model.User.KeyBindings.FastForward.KeyCode ?? -1);
+                     settings.keyBindings.stop = @(Model.User.KeyBindings.Stop.KeyCode ?? -1);
+
                      settings.hasAudio = @(!string.IsNullOrEmpty(Model.Text.AudioUrl) ? "true" : "false");
                      settings.audioUrl = '@Model.Text.AudioUrl';
                      settings.textId = '@Model.Text.Id';

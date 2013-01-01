@@ -126,6 +126,26 @@ class SelectedWord {
             });
     }
 
+    public changeState(state) {
+        switch (state) {
+            case 'known':
+                $('#knownState').attr('checked', true);
+                break;
+
+            case 'notknown':
+                $('#unknownState').attr('checked', true);
+                break;
+
+            case 'ignored':
+                $('#ignoredState').attr('checked', true);
+                break;
+
+            case 'notseen':
+                $('#notseenState').attr('checked', true);
+                break;
+        }
+    }
+
     public saveChanges() {
         var currentIndex = (<any>$('#tabTermDefintions li.active')).index();
         if (currentIndex < 0) currentIndex = 1;

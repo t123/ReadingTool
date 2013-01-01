@@ -33,7 +33,23 @@ class ReadingToolUi {
         }
     }
 
-    toggleL1() {
+    public setIsPlaying(isPlaying: bool) {
+        this.isPlaying = isPlaying;
+    }
+
+    public setWasPlaying(wasPlaying: bool) {
+        this.wasPlaying = wasPlaying;
+    }
+
+    public getWasPlaying() {
+        return this.wasPlaying;
+    }
+
+    public getIsPlaying() {
+        return this.isPlaying;
+    }
+
+    public toggleL1() {
         var li = $('#toggleL1').parent('li');
 
         if (li.hasClass('active')) {
@@ -59,7 +75,7 @@ class ReadingToolUi {
         }
     }
 
-    toggleL2() {
+    public toggleL2() {
         var li = $('#toggleL2').parent('li');
 
         if (li.hasClass('active')) {
@@ -72,7 +88,7 @@ class ReadingToolUi {
         }
     }
 
-    toggleQuickmode() {
+    public toggleQuickmode() {
         var li = $('#quickmode').parent('li');
         this.settings.quickmode = !this.settings.quickmode;
         if (this.settings.quickmode) {
@@ -82,7 +98,7 @@ class ReadingToolUi {
         }
     }
 
-    changeRead(direction: number) {
+    public changeRead(direction: number) {
         var words = $('#totalWords').data('value');
         $.post(routes.reading.changeRead,
         {
@@ -96,7 +112,7 @@ class ReadingToolUi {
         });
     }
 
-    changeListened(direction: number) {
+    public changeListened(direction: number) {
         $.post(routes.reading.changeListened,
         {
             textId: this.settings.textId,
@@ -108,7 +124,7 @@ class ReadingToolUi {
         });
     }
 
-    openTextModal(isClick: bool, event: any) {
+    public openTextModal(isClick: bool, event: any) {
         if (this.modalVisible && this.settings.modalBehaviour == 'Rollover') return;
         if (!isClick && this.settings.modalBehaviour != 'Rollover') return;
 
@@ -158,11 +174,7 @@ class ReadingToolUi {
             }
         }
 
-        if (this.isPlaying) {
-            this.wasPlaying = true;
-        }
-
-        if (this.isPlaying && this.settings.keyBindings.autoPause) {
+        if (this.settings.keyBindings.autoPause) {
             this.audio.pauseAudio();
         }
 
@@ -170,7 +182,7 @@ class ReadingToolUi {
         modal.modal('show');
     }
 
-    closeTextModal() {
+    public closeTextModal() {
         modal.modal('hide');
     }
 
@@ -288,20 +300,87 @@ $(function () {
         selectedWord.blankModal();
         modal.hide();
         ui.modalVisible = false;
-        ui.audio.resumeAudio(ui.settings.keyBindings.autoPause, ui.wasPlaying);
+        ui.audio.resumeAudio();
     });
 
     modal.modal({ show: false, keyboard: true, backdrop: false });
 });
 
-$(document).keyup(function (event) {
+$(document).keyup(function (event:any) {
     var code = (event.keyCode ? event.keyCode : event.which);
     if (ui.modalVisible) {
         if (code == 27) {
             ui.closeTextModal();
-        } else if ((<any>event).ctrlKey && code == 13) {
+        } else if(event.ctrlKey && code == 13) {
             selectedWord.saveChanges();
             ui.closeTextModal();
+        } else {
+            if (event.altKey) {
+                switch (code) {
+                    case ui.settings.keyBindings.resetWord:
+                        selectedWord.resetTerm();
+                        break;
+
+                    case ui.settings.keyBindings.changeKnown:
+                        selectedWord.changeState('known');
+                        break;
+
+                    case ui.settings.keyBindings.changeNotKnown:
+                        selectedWord.changeState('notknown');
+                        break;
+
+                    case ui.settings.keyBindings.changeIgnored:
+                        selectedWord.changeState('ignored');
+                        break;
+
+                    case ui.settings.keyBindings.changeNotSeen:
+                        selectedWord.changeState('notseen');
+                        break;
+                }
+            }
+        }
+    } else {
+        if (ui.settings.keyBindings.controlsEnabled) {
+            if (event.altKey || event.shiftKey || event.ctrlKey) return;
+
+            switch (code) {
+                    case ui.settings.keyBindings.volumeUp:
+                        ui.audio.increaseVolume();
+                        break;
+
+                    case ui.settings.keyBindings.volumeDown:
+                        ui.audio.decreaseVolume();
+                        break;
+
+                    case ui.settings.keyBindings.speedUp:
+                        ui.audio.speedUpAudio();
+                        break;
+
+                    case ui.settings.keyBindings.slowDown:
+                        ui.audio.slowDownAudio();
+                        break;
+
+                    case ui.settings.keyBindings.rewindToBeginning:
+                        ui.audio.restartAudio();
+                        break;
+
+                    case ui.settings.keyBindings.rewind:
+                        ui.audio.rewindAudio();
+                        break;
+
+                    case ui.settings.keyBindings.stop:
+                        ui.audio.stopAudio();
+                        break;
+
+                    case ui.settings.keyBindings.forward:
+                        ui.audio.fastForwardAudio();
+                        break;
+
+                    case ui.settings.keyBindings.playPause:
+                        ui.audio.playAudio();
+                        break;
+                    default: break;
+                }
         }
     }
 });

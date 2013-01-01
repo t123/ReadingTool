@@ -1,3 +1,4 @@
+var _this = this;
 var AudioPlayer = (function () {
     function AudioPlayer(settings) {
         var _this = this;
@@ -14,12 +15,28 @@ var AudioPlayer = (function () {
             }, function () {
             });
         });
+        if(this.settings.keyBindings.autoPause) {
+            this.audioPlayer.addEventListener("play", function (e) {
+                ui.setIsPlaying(true);
+                ui.setWasPlaying(false);
+            });
+            this.audioPlayer.addEventListener("pause", function (e) {
+                if(ui.isPlaying) {
+                    ui.setWasPlaying(true);
+                }
+                ui.setIsPlaying(false);
+            });
+            this.audioPlayer.addEventListener("ended", function (e) {
+                ui.setIsPlaying(false);
+                ui.setWasPlaying(false);
+            });
+        }
     }
     AudioPlayer.prototype.pauseAudio = function () {
         this.audioPlayer.pause();
     };
-    AudioPlayer.prototype.resumeAudio = function (autoPause, wasPlaying) {
-        if(autoPause && wasPlaying) {
+    AudioPlayer.prototype.resumeAudio = function () {
+        if(this.settings.keyBindings.autoPause && ui.getWasPlaying()) {
             this.audioPlayer.currentTime = this.audioPlayer.currentTime - 0.5;
             this.audioPlayer.play();
         }
@@ -48,22 +65,23 @@ var AudioPlayer = (function () {
         this.audioPlayer.currentTime = 0;
         this.audioPlayer.play();
     };
-    AudioPlayer.prototype.rewindAudio = function (seconds) {
-        this.audioPlayer.currentTime = this.audioPlayer.currentTime - seconds;
+    AudioPlayer.prototype.rewindAudio = function () {
+        this.audioPlayer.currentTime = this.audioPlayer.currentTime - this.settings.keyBindings.secondsToRewind;
     };
     AudioPlayer.prototype.stopAudio = function () {
         this.audioPlayer.currentTime = 0;
         this.audioPlayer.pause();
+        ui.setIsPlaying(false);
+        ui.setWasPlaying(false);
     };
-    AudioPlayer.prototype.fastForwardAudio = function (seconds) {
-        this.audioPlayer.currentTime = this.audioPlayer.currentTime + seconds;
+    AudioPlayer.prototype.fastForwardAudio = function () {
+        this.audioPlayer.currentTime = this.audioPlayer.currentTime + this.settings.keyBindings.secondsToRewind;
     };
-    AudioPlayer.prototype.playAudio = function (isPlaying) {
-        if(isPlaying) {
+    AudioPlayer.prototype.playAudio = function () {
+        if(ui.getIsPlaying()) {
             this.audioPlayer.pause();
             return false;
         } else {
-            isPlaying = true;
             this.audioPlayer.play();
             return true;
         }
@@ -75,7 +93,7 @@ var NullAudioPlayer = (function () {
     NullAudioPlayer.prototype.pauseAudio = function () {
         return;
     };
-    NullAudioPlayer.prototype.resumeAudio = function (autoPause, wasPlaying) {
+    NullAudioPlayer.prototype.resumeAudio = function () {
         return;
     };
     NullAudioPlayer.prototype.increaseVolume = function () {
@@ -93,16 +111,16 @@ var NullAudioPlayer = (function () {
     NullAudioPlayer.prototype.restartAudio = function () {
         return;
     };
-    NullAudioPlayer.prototype.rewindAudio = function (seconds) {
+    NullAudioPlayer.prototype.rewindAudio = function () {
         return;
     };
     NullAudioPlayer.prototype.stopAudio = function () {
         return;
     };
-    NullAudioPlayer.prototype.fastForwardAudio = function (seconds) {
+    NullAudioPlayer.prototype.fastForwardAudio = function () {
         return;
     };
-    NullAudioPlayer.prototype.playAudio = function (isPlaying) {
+    NullAudioPlayer.prototype.playAudio = function () {
         return true;
     };
     return NullAudioPlayer;

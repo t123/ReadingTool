@@ -1,20 +1,22 @@
 /// <reference path="jquery.d.ts"/>
 /// <reference path="settings.ts"/>
+/// <reference path="readingui.ts"/>
 
 declare var routes: any;
+declare var ui: ReadingToolUi;
 
 interface IAudioPlayer {
     pauseAudio();
-    resumeAudio(autoPause: bool, wasPlaying: bool);
+    resumeAudio();
     increaseVolume();
     decreaseVolume();
     speedUpAudio();
     slowDownAudio();
     restartAudio();
-    rewindAudio(seconds: number);
+    rewindAudio();
     stopAudio();
-    fastForwardAudio(seconds: number);
-    playAudio(isPlaying: bool): bool;
+    fastForwardAudio();
+    playAudio(): bool;
 }
 
 class AudioPlayer implements IAudioPlayer {
@@ -39,14 +41,33 @@ class AudioPlayer implements IAudioPlayer {
                 }
             );
         });
+
+        if (this.settings.keyBindings.autoPause) {
+            this.audioPlayer.addEventListener("play", function (e) => {
+                ui.setIsPlaying(true);
+                ui.setWasPlaying(false);
+            });
+
+            this.audioPlayer.addEventListener("pause", function (e) => {
+                if (ui.isPlaying) {
+                    ui.setWasPlaying(true);
+                }
+                ui.setIsPlaying(false);
+            });
+
+            this.audioPlayer.addEventListener("ended", function (e) => {
+                ui.setIsPlaying(false);
+                ui.setWasPlaying(false);
+            });
+        }
     }
 
     public pauseAudio() {
         this.audioPlayer.pause();
     }
 
-    public resumeAudio(autoPause: bool, wasPlaying: bool) {
-        if (autoPause && wasPlaying) {
+    public resumeAudio() {
+        if (this.settings.keyBindings.autoPause && ui.getWasPlaying()) {
             this.audioPlayer.currentTime = this.audioPlayer.currentTime - 0.5;
             this.audioPlayer.play();
         }
@@ -81,25 +102,26 @@ class AudioPlayer implements IAudioPlayer {
         this.audioPlayer.play();
     }
 
-    public rewindAudio(seconds: number) {
-        this.audioPlayer.currentTime = this.audioPlayer.currentTime - seconds;
+    public rewindAudio() {
+        this.audioPlayer.currentTime = this.audioPlayer.currentTime - this.settings.keyBindings.secondsToRewind;
     }
 
     public stopAudio() {
         this.audioPlayer.currentTime = 0;
         this.audioPlayer.pause();
+        ui.setIsPlaying(false);
+        ui.setWasPlaying(false);
     }
 
-    public fastForwardAudio(seconds: number) {
-        this.audioPlayer.currentTime = this.audioPlayer.currentTime + seconds;
+    public fastForwardAudio() {
+        this.audioPlayer.currentTime = this.audioPlayer.currentTime + this.settings.keyBindings.secondsToRewind;
     }
 
-    public playAudio(isPlaying: bool): bool {
-        if (isPlaying) {
+    public playAudio(): bool {
+        if (ui.getIsPlaying()) {
             this.audioPlayer.pause();
             return false;
         } else {
-            isPlaying = true;
             this.audioPlayer.play();
             return true;
         }
@@ -108,14 +130,14 @@ class AudioPlayer implements IAudioPlayer {
 
 class NullAudioPlayer implements IAudioPlayer {
     public pauseAudio() { return; }
-    public resumeAudio(autoPause: bool, wasPlaying: bool) { return; }
+    public resumeAudio() { return; }
     public increaseVolume() { return; }
     public decreaseVolume() { return; }
     public speedUpAudio() { return; }
     public slowDownAudio() { return; }
     public restartAudio() { return; }
-    public rewindAudio(seconds: number) { return; }
+    public rewindAudio() { return; }
     public stopAudio() { return; }
-    public fastForwardAudio(seconds: number) { return; }
-    public playAudio(isPlaying: bool) { return true; }
+    public fastForwardAudio() { return; }
+    public playAudio() { return true; }
 }

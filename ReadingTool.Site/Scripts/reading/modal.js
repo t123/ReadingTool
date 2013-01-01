@@ -88,6 +88,30 @@ var SelectedWord = (function () {
             }
         });
     };
+    SelectedWord.prototype.changeState = function (state) {
+        switch(state) {
+            case 'known': {
+                $('#knownState').attr('checked', true);
+                break;
+
+            }
+            case 'notknown': {
+                $('#unknownState').attr('checked', true);
+                break;
+
+            }
+            case 'ignored': {
+                $('#ignoredState').attr('checked', true);
+                break;
+
+            }
+            case 'notseen': {
+                $('#notseenState').attr('checked', true);
+                break;
+
+            }
+        }
+    };
     SelectedWord.prototype.saveChanges = function () {
         var _this = this;
         var currentIndex = ($('#tabTermDefintions li.active')).index();

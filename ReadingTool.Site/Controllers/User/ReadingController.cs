@@ -496,6 +496,9 @@ namespace ReadingTool.Site.Controllers.User
                 term.State = TermState.Unknown;
                 _termService.Save(term);
 
+                Term newTerm = _termService.Find(term.Id);
+                newTerm.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
+
                 return new JsonNetResult()
                 {
                     Data = new ResponseMessage(OK)
@@ -504,7 +507,7 @@ namespace ReadingTool.Site.Controllers.User
                         Data = new
                         {
                             termPhrase = term.TermPhrase.ToLowerInvariant(),
-                            term = new JsonTermResult(term)
+                            term = new JsonTermResult(newTerm)
                         }
                     }
                 };
