@@ -135,70 +135,73 @@
 .filterbar a {
   margin-left: 12px;
 }
-.gridtable {
+#grid .gridtable {
   font-size: smaller;
 }
-.gridtable .col10 {
+#grid .gridtable .col10 {
   width: 10%;
 }
-.gridtable .col20 {
+#grid .gridtable .col20 {
   width: 20%;
 }
-.gridtable .col30 {
+#grid .gridtable .col30 {
   width: 30%;
 }
-.gridtable .col40 {
+#grid .gridtable .col40 {
   width: 40%;
 }
-.gridtable .col50 {
+#grid .gridtable .col50 {
   width: 50%;
 }
-.gridtable .col60 {
+#grid .gridtable .col60 {
   width: 60%;
 }
-.gridtable .col70 {
+#grid .gridtable .col70 {
   width: 70%;
 }
-.gridtable .col80 {
+#grid .gridtable .col80 {
   width: 80%;
 }
-.gridtable .col90 {
+#grid .gridtable .col90 {
   width: 90%;
 }
-.gridtable .col5 {
+#grid .gridtable .col5 {
   width: 5%;
 }
-.gridtable .col15 {
+#grid .gridtable .col15 {
   width: 15%;
 }
-.gridtable .col25 {
+#grid .gridtable .col25 {
   width: 25%;
 }
-.gridtable .col35 {
+#grid .gridtable .col35 {
   width: 35%;
 }
-.gridtable .col45 {
+#grid .gridtable .col45 {
   width: 45%;
 }
-.gridtable .col55 {
+#grid .gridtable .col55 {
   width: 55%;
 }
-.gridtable .col65 {
+#grid .gridtable .col65 {
   width: 65%;
 }
-.gridtable .col75 {
+#grid .gridtable .col75 {
   width: 75%;
 }
-.gridtable .col85 {
+#grid .gridtable .col85 {
   width: 85%;
 }
-.gridtable .col95 {
+#grid .gridtable .col95 {
   width: 95%;
 }
-.gridtable i {
+#grid .gridtable i {
   padding-left: 5px;
 }
-.gridtable .btn-link {
+#grid .gridtable .btn-link {
   padding: 0px;
   line-height: normal;
+}
+.noselection {
+  background-color: #feaaaa !important;
 }

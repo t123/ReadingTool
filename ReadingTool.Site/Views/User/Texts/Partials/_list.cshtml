@@ -11,7 +11,7 @@
     footerStyle: "hidden",
     
     columns: new[] {
-        grid.Column("", style:"col5", format: @<text><input type="checkbox" /></text>),
+        grid.Column("", style:"col5", format: @<text><input type="checkbox" value="@item.Id"/></text>, header: "<input type=\"checkbox\" />"),
         grid.Column("Language", style:"col10", format: @<text>
                                              @ViewHelpers.FormatLanguage(@item.Language, @item.LanguageColour)
                                          </text>),

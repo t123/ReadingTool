@@ -376,5 +376,66 @@ namespace ReadingTool.Site.Controllers.User
 
             return model;
         }
+
+        [AjaxRoute]
+        public ActionResult PerformAction(string action, Guid[] ids, string input)
+        {
+            try
+            {
+                if(ids == null || ids.Length == 0)
+                {
+                    return new JsonNetResult() { Data = "OK" };
+                }
+
+                IList<Text> texts = new List<Text>();
+                ids.ToList().ForEach(x => texts.Add(_textService.Find(x)));
+
+                switch(action)
+                {
+                    case "add":
+                        if(!string.IsNullOrWhiteSpace(input))
+                        {
+                            foreach(var t in texts)
+                            {
+                                t.Tags = TagHelper.ToString(TagHelper.Merge(TagHelper.Split(t.Tags), TagHelper.Split(input)));
+                                _textService.Save(t);
+                            }
+                        }
+                        break;
+
+                    case "remove":
+                        if(!string.IsNullOrWhiteSpace(input))
+                        {
+                            foreach(var t in texts)
+                            {
+                                t.Tags = TagHelper.ToString(TagHelper.Remove(TagHelper.Split(t.Tags), TagHelper.Split(input)));
+                                _textService.Save(t);
+                            }
+                        }
+                        break;
+
+                    case "delete":
+                        foreach(var t in texts)
+                        {
+                            _textService.Delete(t);
+                        }
+                        break;
+
+                    case "rename":
+                        foreach(var t in texts)
+                        {
+                            t.CollectionName = input;
+                            _textService.Save(t);
+                        }
+                        break;
+                }
+
+                return new JsonNetResult() { Data = "OK" };
+            }
+            catch(Exception e)
+            {
+                return new JsonNetResult() { Data = "FAIL" };
+            }
+        }
     }
 }

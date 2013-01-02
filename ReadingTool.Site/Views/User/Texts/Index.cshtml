@@ -62,5 +62,21 @@ using a # sign, or use some of these special tags: " + string.Join(", ", FilterP
     @Html.Partial("Partials/_menu", null, ViewData)
 }
 
+<div>
+    <input type="text" class="input-medium" style="vertical-align: top" id="actionInput"/>
+    <div class="btn-group">
+        <button class="btn">Action</button>
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#" id="addTags">add tags to selected texts</a></li>
+            <li><a href="#" id="removeTags">remove tags from selected texts</a></li>
+            <li><a href="#" id="renameCollection">rename collection of selected texts</a></li>
+            <li><a href="#" id="deleteTexts">delete selected texts</a></li>
+        </ul>
+    </div>
+</div>
+<div class="clr20"></div>
 @Html.ActionLink("add a new text", "Add", new { }, new { @class = "btn btn-primary" })
 <div class="clr50"></div>

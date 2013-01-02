@@ -33,7 +33,7 @@ function updateGrid() {
         },
         function (data) {
             $('#grid').html(data);
-            $('#grid table thead tr th:first').html('<input type="checkbox" id="checkAll" />');
+            $('#grid table thead tr th:first').html('<input type="checkbox" id="checkAll" value="00000000-0000-0000-0000-0000000000000" />');
         }
     );
 }
@@ -89,10 +89,6 @@ $('#grid').on('click', 'thead ', function (e) {
         return;
     }
     
-    console.info(e.target);
-    e.preventDefault();
-    return;
-    
     e.preventDefault();
     var url = $(e.target).attr('href');
     
@@ -129,3 +125,47 @@ var delay = (function () {
         timer = setTimeout(callback, ms);
     };
 })();
+
+function getSelectedCheckboxes() {
+    var ids = [];
+    $('.table input[type=checkbox]:checked').each(function () {
+        ids.push($(this).val());
+    });
+
+    return ids;
+}
+
+$('#addTags').click(function() { doAction('add'); });
+$('#removeTags').click(function () { doAction('remove'); });
+$('#renameCollection').click(function () { doAction('rename');});
+$('#deleteTexts').click(function () {doAction('delete');});
+
+function doAction(action) {
+    var cbs = getSelectedCheckboxes();
+    $('.table tr th:eq(0)').removeClass('noselection');
+    $('#actionInput').removeClass('noselection');
+    
+    if (cbs.length == 0) {
+        $('.table tr th:eq(0)').addClass('noselection');
+        return;
+    }
+
+    var input = $('#actionInput').val();
+    if(action!='delete' && input=='') {
+        $('#actionInput').addClass('noselection');
+        return;
+    }
+    
+    $.post(routes.texts.performAction, {
+        action: action,
+        ids: cbs,
+        input: input
+    }, function (data) {
+        if (data == "OK") {
+            if (action == 'delete') {
+                state.page = 1;
+            }
+            updateGrid();
+        }
+    });
+}
