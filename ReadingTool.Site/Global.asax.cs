@@ -72,6 +72,8 @@ namespace ReadingTool.Site
             ModelBinders.Binders.DefaultBinder = new EmptyStringModelBinder();
 
             RegisterMappings.Register();
+
+            ReadingTool.Site.Init.Start();
         }
 
         void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)

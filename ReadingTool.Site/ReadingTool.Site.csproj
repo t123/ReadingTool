@@ -68,6 +68,9 @@
     <Reference Include="Elmah.Mvc">
       <HintPath>..\packages\Elmah.MVC.2.0.2\lib\net40\Elmah.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -208,6 +211,7 @@
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\FlashHelper.cs" />
     <Compile Include="Helpers\GravatarHelper.cs" />
+    <Compile Include="Init.cs" />
     <Compile Include="JsonNetResult.cs" />
     <Compile Include="Mappings\RegisterMappings.cs" />
     <Compile Include="Models\Account\SignInViewModel.cs" />
@@ -337,6 +341,7 @@
     <Content Include="Content\themes\united\site.min.css">
       <DependentUpon>site.less</DependentUpon>
     </Content>
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\other\footer\codemirror\lib\codemirror.css" />
     <Content Include="Scripts\other\footer\codemirror\lib\codemirror.js" />
@@ -490,7 +495,6 @@
     <Content Include="Content\sample.json" />
     <Content Include="log4net.config" />
     <None Include="Views\Shared\EditorTemplates\String.cshtml" />
-    <Content Include="Views\Shared\_MINIPROFILER UPDATED Layout.cshtml" />
     <Content Include="Views\Shared\_Navigation.cshtml" />
     <Content Include="Views\Shared\_NotFound.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />

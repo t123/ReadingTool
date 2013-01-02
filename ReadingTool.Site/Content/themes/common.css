@@ -135,3 +135,70 @@
 .filterbar a {
   margin-left: 12px;
 }
+.gridtable {
+  font-size: smaller;
+}
+.gridtable .col10 {
+  width: 10%;
+}
+.gridtable .col20 {
+  width: 20%;
+}
+.gridtable .col30 {
+  width: 30%;
+}
+.gridtable .col40 {
+  width: 40%;
+}
+.gridtable .col50 {
+  width: 50%;
+}
+.gridtable .col60 {
+  width: 60%;
+}
+.gridtable .col70 {
+  width: 70%;
+}
+.gridtable .col80 {
+  width: 80%;
+}
+.gridtable .col90 {
+  width: 90%;
+}
+.gridtable .col5 {
+  width: 5%;
+}
+.gridtable .col15 {
+  width: 15%;
+}
+.gridtable .col25 {
+  width: 25%;
+}
+.gridtable .col35 {
+  width: 35%;
+}
+.gridtable .col45 {
+  width: 45%;
+}
+.gridtable .col55 {
+  width: 55%;
+}
+.gridtable .col65 {
+  width: 65%;
+}
+.gridtable .col75 {
+  width: 75%;
+}
+.gridtable .col85 {
+  width: 85%;
+}
+.gridtable .col95 {
+  width: 95%;
+}
+.gridtable i {
+  padding-left: 5px;
+}
+.gridtable .btn-link {
+  padding: 0px;
+  line-height: normal;
+}

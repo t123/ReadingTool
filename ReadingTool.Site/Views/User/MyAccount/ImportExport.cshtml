@@ -12,7 +12,7 @@
 First you must <a href=""" + Url.Content("~/Content/jsonexport.php.txt") + @"""> download this script</a> (right click and select <strong>save link as...</strong>) 
 and remove the .txt extension, so the filename becomes <strong>jsonexport.php</strong>. You must then upload it to your LWT server and go to http://www.example.org/jsonexport.php 
 (replace example.org with your server). This will start a download of all your data. When it's finished <strong>you must delete</strong> the 
-jsonexport.php file, otherwise anyone will be able to download your data. Once you have your JSON file, you can import it using the form below.", htmlEncode:false)
+jsonexport.php file, otherwise anyone will be able to download your data. Once you have your JSON file, you can import it using the form below (you can ZIP it if you want).", htmlEncode:false)
 
 @using(Html.BeginForm("ImportExport", "MyAccount", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
 {

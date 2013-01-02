@@ -372,7 +372,6 @@ namespace ReadingTool.Site.Controllers.User
                 AsParallel = asParallel,
                 User = _userService.Find(this.CurrentUserId()),
                 PagedTexts = _textService.FindPagedTexts(text),
-                //KeyBindings = Mapper.Map<KeyBindings, KeyBindingsModel>(user.KeyBindings),
             };
 
             return model;

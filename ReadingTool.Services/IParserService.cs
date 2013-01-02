@@ -19,13 +19,11 @@ namespace ReadingTool.Services
 {
     public interface IParserService
     {
-        string Parse(bool asParallel, Language l1Language, Language l2Language, Tuple<Term[], Term[]> terms, Text text);
+        string Parse(bool asParallel, Language l1Language, Language l2Language, Tuple<IList<Term>, IList<Term>> terms, Text text);
     }
 
     public class DefaultParserService : IParserService
     {
-        private readonly IDbConnection _db;
-        private readonly IUserIdentity _identity;
 
         private bool _asParallel;
         private Text _text;
@@ -37,20 +35,18 @@ namespace ReadingTool.Services
         private Splitter _l1Splitter;
         private Splitter _l2Splitter;
 
-        public DefaultParserService(IDbConnection db, IPrincipal principal)
+        public DefaultParserService()
         {
-            _db = db;
-            _identity = principal.Identity as IUserIdentity;
         }
 
-        public string Parse(bool asParallel, Language l1Language, Language l2Language, Tuple<Term[], Term[]> terms, Text text)
+        public string Parse(bool asParallel, Language l1Language, Language l2Language, Tuple<IList<Term>, IList<Term>> terms, Text text)
         {
             _asParallel = asParallel;
             _text = text;
             _l1Language = l1Language;
             _l2Language = l2Language;
-            _singleTerms = terms.Item1;
-            _terms = terms.Item2;
+            _singleTerms = terms.Item1.ToArray();
+            _terms = terms.Item2.ToArray();
             _l1Splitter = new Splitter(@"([^" + _l1Language.Settings.RegexWordCharacters + @"]+)", true);
 
             if(_l2Language != null)

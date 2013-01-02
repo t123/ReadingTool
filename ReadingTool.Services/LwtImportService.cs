@@ -53,119 +53,133 @@ namespace ReadingTool.Services
             #region foreach language
             foreach(var item in lwtData.LWT_Languages)
             {
-                Language l = new Language()
-                    {
-                        Id = SequentialGuid.NewGuid(),
-                        Name = item.LgName + "-" + date,
-                        Owner = owner,
-                        Created = DateTime.Now,
-                        Modified = DateTime.Now,
-                        SystemLanguageId = null,
-                        Colour = "#FFFFFF",
-                        IsPublic = false,
-                        Review = null,
-                        Settings = new LanguageSettings()
-                            {
-                                Direction = item.LgRightToLeft.HasValue
-                                                ? item.LgRightToLeft.Value
-                                                      ? LanguageDirection.RTL
-                                                      : LanguageDirection.LTR
-                                                : LanguageDirection.LTR,
-                                ModalBehaviour = ModalBehaviour.LeftClick,
-                                ShowRomanisation = true,
-                                RemoveSpaces = item.LgRemoveSpaces ?? false,
-                                KeepFocus = true,
-                                CharacterSubstitutions = item.LgCharacterSubstitutions,
-                                RegexWordCharacters = item.LgRegexpWordCharacters,
-                                ExceptionSplitSentences = item.LgExceptionsSplitSentences,
-                                SplitEachCharacter = item.LgSplitEachChar ?? false,
-                                RegexSplitSentences = item.LgRegexpSplitSentences,
-                            }
-                    };
-
-                if(!string.IsNullOrEmpty(item.LgGoogleTranslateURI))
+                try
                 {
-                    l.AddDictionary(new LanguageDictionary()
+                    Language l = new Language()
+                        {
+                            Id = SequentialGuid.NewGuid(),
+                            Name = item.LgName + "-" + date,
+                            Owner = owner,
+                            Created = DateTime.Now,
+                            Modified = DateTime.Now,
+                            SystemLanguageId = null,
+                            Colour = "#FFFFFF",
+                            IsPublic = false,
+                            Review = null,
+                            Settings = new LanguageSettings()
+                                {
+                                    Direction = item.LgRightToLeft.HasValue
+                                                    ? item.LgRightToLeft.Value
+                                                          ? LanguageDirection.RTL
+                                                          : LanguageDirection.LTR
+                                                    : LanguageDirection.LTR,
+                                    ModalBehaviour = ModalBehaviour.LeftClick,
+                                    ShowRomanisation = true,
+                                    RemoveSpaces = item.LgRemoveSpaces ?? false,
+                                    KeepFocus = true,
+                                    CharacterSubstitutions = item.LgCharacterSubstitutions,
+                                    RegexWordCharacters = item.LgRegexpWordCharacters,
+                                    ExceptionSplitSentences = item.LgExceptionsSplitSentences,
+                                    SplitEachCharacter = item.LgSplitEachChar ?? false,
+                                    RegexSplitSentences = item.LgRegexpSplitSentences,
+                                }
+                        };
+
+                    if(!string.IsNullOrEmpty(item.LgGoogleTranslateURI))
+                    {
+                        l.AddDictionary(new LanguageDictionary()
+                            {
+                                AutoOpen = false,
+                                DisplayOrder = 1,
+                                Name = "Google Translate",
+                                Parameter = DictionaryParameter.Sentence,
+                                Url = item.LgGoogleTranslateURI,
+                                Id = SequentialGuid.NewGuid(),
+                                UrlEncoding = "",
+                                WindowName = "googletranslation"
+                            });
+                    }
+
+                    if(!string.IsNullOrEmpty(item.LgDict1URI))
+                    {
+                        l.AddDictionary(new LanguageDictionary()
                         {
                             AutoOpen = false,
-                            DisplayOrder = 1,
-                            Name = "Google Translate",
-                            Parameter = DictionaryParameter.Sentence,
-                            Url = item.LgGoogleTranslateURI,
+                            DisplayOrder = 2,
+                            Name = "Dictionary 1",
+                            Parameter = DictionaryParameter.Word,
+                            Url = item.LgDict1URI,
                             Id = SequentialGuid.NewGuid(),
                             UrlEncoding = "",
-                            WindowName = "googletranslation"
+                            WindowName = "dictionary_1"
                         });
-                }
+                    }
 
-                if(!string.IsNullOrEmpty(item.LgDict1URI))
-                {
-                    l.AddDictionary(new LanguageDictionary()
+                    if(!string.IsNullOrEmpty(item.LgDict2URI))
                     {
-                        AutoOpen = false,
-                        DisplayOrder = 2,
-                        Name = "Dictionary 1",
-                        Parameter = DictionaryParameter.Word,
-                        Url = item.LgDict1URI,
-                        Id = SequentialGuid.NewGuid(),
-                        UrlEncoding = "",
-                        WindowName = "dictionary_1"
-                    });
-                }
+                        l.AddDictionary(new LanguageDictionary()
+                        {
+                            AutoOpen = false,
+                            DisplayOrder = 2,
+                            Name = "Dictionary 2",
+                            Parameter = DictionaryParameter.Word,
+                            Url = item.LgDict2URI,
+                            Id = SequentialGuid.NewGuid(),
+                            UrlEncoding = "",
+                            WindowName = "dictionary_2"
+                        });
+                    }
 
-                if(!string.IsNullOrEmpty(item.LgDict2URI))
-                {
-                    l.AddDictionary(new LanguageDictionary()
+                    if(!test)
                     {
-                        AutoOpen = false,
-                        DisplayOrder = 2,
-                        Name = "Dictionary 2",
-                        Parameter = DictionaryParameter.Word,
-                        Url = item.LgDict2URI,
-                        Id = SequentialGuid.NewGuid(),
-                        UrlEncoding = "",
-                        WindowName = "dictionary_2"
-                    });
-                }
+                        _languageService.Save(l);
+                    }
 
-                if(!test)
+                    item.Id = l.Id;
+                }
+                catch(Exception e)
                 {
-                    _languageService.Save(l);
+                    throw new Exception(string.Format("Could not import language: {0}", item.LgName), e);
                 }
-
-                item.Id = l.Id;
             }
             #endregion
 
             #region foreach archived text
             foreach(var item in lwtData.LWT_ArchivedTexts)
             {
-                var lid = lwtData.LWT_Languages.FirstOrDefault(x => x.LgID == item.AtLgID);
-                if(lid == null) throw new Exception("Could not find language with ID: " + item.AtLgID);
-
-                List<string> atags = new List<string>() { "archived" };
-
-                var text = new Text()
+                try
                 {
-                    L1Id = lid.Id,
-                    L2Id = null,
-                    Title = item.AtTitle,
-                    L1Text = item.AtText,
-                    Owner = owner,
-                    Created = DateTime.Now,
-                    Modified = DateTime.Now,
-                    L2Text = "",
-                    IsParallel = false,
-                };
+                    var lid = lwtData.LWT_Languages.FirstOrDefault(x => x.LgID == item.AtLgID);
+                    if(lid == null) throw new Exception("Could not find language with ID: " + item.AtLgID);
 
-                var links = lwtData.LWT_ArchTextTags.Where(x => x.AgAtID == item.AtId);
-                atags.AddRange(from i in links select lwtData.LWT_Tags2.FirstOrDefault(x => x.T2ID == i.AgT2ID) into t where t != null select t.T2Text);
-                text.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
-                text.AudioUrl = (item.AtAudioURI ?? "").Contains("://") ? item.AtAudioURI : mediaUrl + item.AtAudioURI;
+                    List<string> atags = new List<string>() { "archived" };
 
-                if(!test)
+                    var text = new Text()
+                        {
+                            L1Id = lid.Id,
+                            L2Id = null,
+                            Title = item.AtTitle,
+                            L1Text = item.AtText,
+                            Owner = owner,
+                            Created = DateTime.Now,
+                            Modified = DateTime.Now,
+                            L2Text = "",
+                            IsParallel = false,
+                        };
+
+                    var links = lwtData.LWT_ArchTextTags.Where(x => x.AgAtID == item.AtId);
+                    atags.AddRange(from i in links select lwtData.LWT_Tags2.FirstOrDefault(x => x.T2ID == i.AgT2ID) into t where t != null select t.T2Text);
+                    text.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
+                    text.AudioUrl = (item.AtAudioURI ?? "").Contains("://") ? item.AtAudioURI : mediaUrl + item.AtAudioURI;
+
+                    if(!test)
+                    {
+                        _textService.Save(text);
+                    }
+                }
+                catch(Exception e)
                 {
-                    _textService.Save(text);
+                    throw new Exception(string.Format("Could not import archived text: {0}", item.AtTitle), e);
                 }
             }
             #endregion
@@ -173,82 +187,106 @@ namespace ReadingTool.Services
             #region foreach text
             foreach(var item in lwtData.LWT_Texts)
             {
-                var lid = lwtData.LWT_Languages.FirstOrDefault(x => x.LgID == item.TxLgID);
-                if(lid == null) throw new Exception("Could not find language with ID: " + item.TxLgID);
-
-                List<string> atags = new List<string>();
-                var text = new Text()
+                try
                 {
-                    L1Id = lid.Id,
-                    L2Id = null,
-                    Title = item.TxTitle,
-                    L1Text = item.TxText,
-                    Owner = owner,
-                    Created = DateTime.Now,
-                    Modified = DateTime.Now,
-                    L2Text = "",
-                    IsParallel = false,
-                };
+                    var lid = lwtData.LWT_Languages.FirstOrDefault(x => x.LgID == item.TxLgID);
+                    if(lid == null) throw new Exception("Could not find language with ID: " + item.TxLgID);
 
-                text.AudioUrl = (item.TxAudioURI ?? "").Contains("://") ? item.TxAudioURI : mediaUrl + item.TxAudioURI;
-                var links = lwtData.LWT_TextTags.Where(x => x.TtTxID == item.TxID);
-                atags.AddRange(from i in links select lwtData.LWT_Tags2.FirstOrDefault(x => x.T2ID == i.TtT2ID) into t where t != null select t.T2Text);
-                text.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
+                    List<string> atags = new List<string>();
+                    var text = new Text()
+                        {
+                            L1Id = lid.Id,
+                            L2Id = null,
+                            Title = item.TxTitle,
+                            L1Text = item.TxText,
+                            Owner = owner,
+                            Created = DateTime.Now,
+                            Modified = DateTime.Now,
+                            L2Text = "",
+                            IsParallel = false,
+                        };
 
-                if(!test)
+                    text.AudioUrl = (item.TxAudioURI ?? "").Contains("://") ? item.TxAudioURI : mediaUrl + item.TxAudioURI;
+                    var links = lwtData.LWT_TextTags.Where(x => x.TtTxID == item.TxID);
+                    atags.AddRange(from i in links select lwtData.LWT_Tags2.FirstOrDefault(x => x.T2ID == i.TtT2ID) into t where t != null select t.T2Text);
+                    text.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
+
+                    if(!test)
+                    {
+                        _textService.Save(text);
+                    }
+                }
+                catch(Exception e)
                 {
-                    _textService.Save(text);
+                    throw new Exception(string.Format("Could not import text: {0}", item.TxTitle), e);
                 }
             }
             #endregion
 
             #region foreach word
+            var terms = new List<Term>();
             foreach(var item in lwtData.LWT_Words)
             {
-                List<string> atags = new List<string>();
-                Term term = new Term()
+                try
                 {
-                    Owner = owner,
-                    LanguageId = lwtData.LWT_Languages.First(x => x.LgID == item.WoLgID).Id,
-                    TermPhrase = (item.WoText ?? "").Replace("{", "").Replace("}", ""),
-                    NextReview = DateTime.Now,
-                };
+                    List<string> atags = new List<string>();
+                    Term term = new Term()
+                        {
+                            Owner = owner,
+                            LanguageId = lwtData.LWT_Languages.First(x => x.LgID == item.WoLgID).Id,
+                            TermPhrase = (item.WoText ?? "").Replace("{", "").Replace("}", ""),
+                            NextReview = DateTime.Now,
+                        };
 
-                term.Length = (short)term.TermPhrase.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
+                    term.Length = (short)term.TermPhrase.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
 
-                IndividualTerm it = new IndividualTerm
+                    IndividualTerm it = new IndividualTerm
+                        {
+                            Created = item.WoCreated ?? DateTime.Now,
+                            Modified = item.WoStatusChanged ?? DateTime.Now,
+                            Sentence = (item.WoSentence ?? "").Replace("{", "").Replace("}", ""),
+                            Definition = item.WoTranslation ?? "",
+                            BaseTerm = "",
+                            Romanisation = ""
+                        };
+
+                    if((item.WoStatus ?? 1) == 98)
                     {
-                        Created = item.WoCreated ?? DateTime.Now,
-                        Modified = item.WoStatusChanged ?? DateTime.Now,
-                        Sentence = (item.WoSentence ?? "").Replace("{", "").Replace("}", ""),
-                        Definition = item.WoTranslation ?? "",
-                        BaseTerm = "",
-                        Romanisation = ""
-                    };
+                        term.Box = 1;
+                        term.State = TermState.Ignored;
+                    }
+                    else if((item.WoStatus ?? 1) == 99)
+                    {
+                        term.State = TermState.Known;
+                        term.Box = 9;
+                    }
+                    else
+                    {
+                        term.State = TermState.Unknown;
+                        term.Box = item.WoStatus ?? 1;
+                    }
 
-                if((item.WoStatus ?? 1) == 98)
-                {
-                    term.Box = 1;
-                    term.State = TermState.Ignored;
-                }
-                else if((item.WoStatus ?? 1) == 99)
-                {
-                    term.State = TermState.Known;
-                    term.Box = 9;
-                }
-                else
-                {
-                    term.State = TermState.Unknown;
-                    term.Box = item.WoStatus ?? 1;
-                }
+                    var links = lwtData.LWT_WordTags.Where(x => x.WtWoID == item.WoID);
+                    atags.AddRange(from i in links select lwtData.LWT_Tags.FirstOrDefault(x => x.TgID == i.WtTgID) into t where t != null select t.TgText);
+                    it.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
 
-                var links = lwtData.LWT_WordTags.Where(x => x.WtWoID == item.WoID);
-                atags.AddRange(from i in links select lwtData.LWT_Tags.FirstOrDefault(x => x.TgID == i.WtTgID) into t where t != null select t.TgText);
-                it.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
-
-                if(!test)
+                    terms.Add(term);
+                }
+                catch(Exception e)
                 {
-                    _termService.Save(term, audit: false);
+                    throw new Exception(string.Format("Could not create term: {0}", item.WoText), e);
+                }
+            }
+
+            if(!test)
+            {
+                try
+                {
+                    _termService.SaveAll(terms, audit: false);
+                }
+                catch(Exception e)
+                {
+                    throw new Exception(string.Format("Could not import terms"), e);
                 }
             }
             #endregion

@@ -24,7 +24,7 @@ namespace ReadingTool.Services
         Term Find(Guid id);
         Term Find(Guid languageId, string term);
         IEnumerable<Term> FindAll();
-        Tuple<Term[], Term[]> FindAllForParsing(Language language);
+        Tuple<IList<Term>, IList<Term>> FindAllForParsing(Language language);
         IEnumerable<Term> FindAll(Guid languageId);
         Tuple<bool, string> ReviewTerm(Term term, Review review);
         SearchResult<Term> FilterTerms(SearchOptions searchOptions = null);
@@ -107,6 +107,7 @@ namespace ReadingTool.Services
                         it.TermId = term.Id;
                         it.Id = SequentialGuid.NewGuid();
                         it.Created = DateTime.Now;
+                        it.LanguageId = term.LanguageId;
                     }
 
                     it.Modified = DateTime.Now;
@@ -209,14 +210,26 @@ namespace ReadingTool.Services
         #endregion
 
         #region parsing
-        public Tuple<Term[], Term[]> FindAllForParsing(Language language)
+        public Tuple<IList<Term>, IList<Term>> FindAllForParsing(Language language)
         {
-            var singleTerms = _db.Select<Term>(x => x.Length == 1 && x.LanguageId == language.Id && x.Owner == _identity.UserId);
-            singleTerms.ForEach(x => x.AddIndividualTerms(_db.Select<IndividualTerm>(y => y.TermId == x.Id)));
-            var multiTerms = _db.Select<Term>(x => x.Length > 1 && x.LanguageId == language.Id && x.Owner == _identity.UserId);
-            multiTerms.ForEach(x => x.AddIndividualTerms(_db.Select<IndividualTerm>(y => y.TermId == x.Id)));
+            var allTerms = _db.Select<Term>(x => x.LanguageId == language.Id && x.Owner == _identity.UserId);
+            var allIndividualTerm = _db.Select<IndividualTerm>(x => x.LanguageId == language.Id);
 
-            return new Tuple<Term[], Term[]>(singleTerms.ToArray(), multiTerms.ToArray());
+            var singleTerms = allTerms.Where(x => x.Length == 1).ToList();
+            singleTerms.ForEach(x => x.AddIndividualTerms(allIndividualTerm.Where(z => z.TermId == x.Id)));
+
+            var multiTerms = allTerms.Where(x => x.Length > 1).ToList();
+            multiTerms.ForEach(x => x.AddIndividualTerms(allIndividualTerm.Where(z => z.TermId == x.Id)));
+
+            //var singleTerms = _db.Select<Term>(x => x.Length == 1 && x.LanguageId == language.Id && x.Owner == _identity.UserId);
+            //var singleIndividualTerm = _db.Select<IndividualTerm>(x => x.LanguageId == language.Id);
+            //singleTerms.ForEach(x => x.AddIndividualTerms(singleIndividualTerm.Where(z => z.TermId == x.Id)));
+
+            //var multiTerms = _db.Select<Term>(x => x.Length > 1 && x.LanguageId == language.Id && x.Owner == _identity.UserId);
+            //var multiIndividualTerm = _db.Select<IndividualTerm>(x => x.LanguageId == language.Id);
+            //multiTerms.ForEach(x => x.AddIndividualTerms(multiIndividualTerm.Where(z => z.TermId == x.Id)));
+
+            return new Tuple<IList<Term>, IList<Term>>(singleTerms, multiTerms);
         }
         #endregion
 

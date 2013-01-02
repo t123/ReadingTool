@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
 using Newtonsoft.Json;
+using ReadingTool.Core;
 using ReadingTool.Entities;
 
 namespace ReadingTool.Services
@@ -56,10 +57,11 @@ namespace ReadingTool.Services
 #if DEBUG
             return user;
 #else
-            if(_userService.VerifyPassword(password, user.Password))
+            if(user.Roles.Contains(Constants.Roles.WEB) && _userService.VerifyPassword(password, user.Password))
             {
                 return user;
             }
+
             return null;
 #endif
         }

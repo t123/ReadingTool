@@ -5,17 +5,18 @@
 }
 
 @grid.GetHtml(
-    tableStyle: "table table-striped table-bordered table-condensed table-hover",
+    tableStyle: "table table-striped table-bordered table-condensed table-hover gridtable",
     numericLinksCount: 0,
     mode: WebGridPagerModes.Numeric,
     footerStyle: "hidden",
     
     columns: new[] { 
-        grid.Column("Language", format: @<text>
+        grid.Column("", style:"col5", format: @<text><input type="checkbox" value="@item.Id"/></text>, header: "<input type=\"checkbox\" />"),
+        grid.Column("Language", style:"col10", format: @<text>
                                              @ViewHelpers.FormatLanguage(@item.Language, @item.LanguageColour)
                                          </text>),
-        grid.Column("State", header: "State"),
-        grid.Column("TermPhrase", header: "Term Phrase", format:@<text>
+        grid.Column("State", style:"col10",header: "State"),
+        grid.Column("TermPhrase", style:"col60", header: "Term Phrase", format:@<text>
                                               @if(!string.IsNullOrEmpty(item.Tags))
                                             {
                                                 <i class="icon-tags" title="@item.Tags"> </i>
@@ -42,8 +43,8 @@
                                                                      
 
                                           </text>),
-        grid.Column("Box", header: "Box"),
-        grid.Column("Next Review" , header: "Next Review", format:@<text>
+        grid.Column("Box", style:"col5", header: "Box"),
+        grid.Column("Next Review", style:"col15", header: "Next Review", format:@<text>
                                             @Html.FormatDateHumanAgo((DateTime?)@item.NextReview, prepend:"in")
                                         </text>),
         

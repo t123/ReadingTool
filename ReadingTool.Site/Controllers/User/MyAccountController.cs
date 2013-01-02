@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
+using Ionic.Zip;
 using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
@@ -245,9 +246,31 @@ namespace ReadingTool.Site.Controllers.User
                         if(file != null && file.InputStream != null && file.ContentLength > 0)
                         {
                             string jsonData;
-                            using(var sr = new StreamReader(file.InputStream, Encoding.UTF8))
+
+                            if(ZipFile.IsZipFile(file.InputStream, false))
                             {
-                                jsonData = sr.ReadToEnd();
+                                file.InputStream.Position = 0;
+                                using(var zip = ZipFile.Read(file.InputStream))
+                                {
+                                    var accountData = zip[0];
+
+                                    if(accountData == null)
+                                    {
+                                        throw new Exception("There is no file in the ZIP archive");
+                                    }
+
+                                    using(var sr = new StreamReader(accountData.OpenReader()))
+                                    {
+                                        jsonData = sr.ReadToEnd();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                using(var sr = new StreamReader(file.InputStream, Encoding.UTF8))
+                                {
+                                    jsonData = sr.ReadToEnd();
+                                }
                             }
 
                             _lwtImportService.ImportJson(model.TestMode, model.MediaUrl, jsonData);
@@ -291,10 +314,17 @@ namespace ReadingTool.Site.Controllers.User
                         }
                     }
 
-                    var jsonString = JsonConvert.SerializeObject(exportModel);
+                    var jsonString = JsonConvert.SerializeObject(exportModel, Formatting.Indented);
 
-                    //TODO zip this up
-                    return File(Encoding.UTF8.GetBytes(jsonString), "application/json", "account.json");
+                    MemoryStream ms = new MemoryStream();
+                    using(ZipFile zip = new ZipFile())
+                    {
+                        zip.AddEntry("account.json", jsonString, Encoding.UTF8);
+                        zip.Save(ms);
+                    }
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    return File(ms, "application/zip", "account.zip");
 
                 default:
                     this.FlashError(Constants.Messages.FORM_FAIL);

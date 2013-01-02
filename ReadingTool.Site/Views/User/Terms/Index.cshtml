@@ -21,6 +21,7 @@
                  }
 
                  $('#filter').val(state.filter);
+                 $('#rowsPerPage').val(state.perPage);
                  $('#searchhelp').popover({ html: true });
 
                  updateGrid();
@@ -34,7 +35,15 @@
 using a # sign, or use some of these special tags: " + string.Join(", ", FilterParser.MagicTermTags.Select(x => "<strong>#" + x + "</strong>"));
 }
 <div class="filterbar">
-    <input type="text" name="filter" id="filter" class="input-xxlarge" placeholder="type to search, use # to search for tags">
+    <input type="text" name="filter" id="filter" class="input-xxlarge" placeholder="type to search, use # to search for tags" />
+    <select name="rowsPerPage" id="rowsPerPage" class="input-small">
+        <option value="5">5</option>
+        <option value="15">15</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="250">250</option>
+    </select>
     <a href="#" onclick="reset(false)">
         <i class=" icon-remove" title="clear text filter"> </i>
     </a>

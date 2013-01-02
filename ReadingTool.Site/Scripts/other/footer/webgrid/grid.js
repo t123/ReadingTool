@@ -33,9 +33,18 @@ function updateGrid() {
         },
         function (data) {
             $('#grid').html(data);
+            $('#grid table thead tr th:first').html('<input type="checkbox" id="checkAll" />');
         }
     );
 }
+
+$('#rowsPerPage').bind("change", function(e) {
+    delay(function () {
+        state.page = 1;
+        state.perPage = $('#rowsPerPage').val();
+        updateGrid();
+    }, 500);
+});
 
 $("#filter").bind("keyup", function (e) {
     if (
@@ -61,15 +70,36 @@ $("#filter").bind("keyup", function (e) {
     }, 500);
 });
 
-$('#grid').on("click", "li", function (e) {
-    e.preventDefault();
+function updateCheckboxes() {
+    var state = $('#checkAll').attr('checked');
+    if (state == undefined) state = false;
+    $('.table input[type=checkbox]').each(function() {
+        $(this).attr('checked', state);
+    });
+}
+
+$('#grid').on('click', 'li', function (e) {
     state.page = $(e.target).data('page');
     updateGrid();
 });
 
-$('#grid').on("click", "thead", function (e) {
+$('#grid').on('click', 'thead ', function (e) {
+    if ($(e.target).is('input')) {
+        updateCheckboxes();
+        return;
+    }
+    
+    console.info(e.target);
+    e.preventDefault();
+    return;
+    
     e.preventDefault();
     var url = $(e.target).attr('href');
+    
+    if(url==undefined || url=='') {
+        return;
+    }
+    
     var parsed = parseQueryString(url.substring(url.indexOf('?') + 1));
 
     if (state.sort == parsed.sort) {

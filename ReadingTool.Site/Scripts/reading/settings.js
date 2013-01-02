@@ -1,3 +1,4 @@
+var _this = this;
 var Class = (function () {
     function Class() { }
     return Class;

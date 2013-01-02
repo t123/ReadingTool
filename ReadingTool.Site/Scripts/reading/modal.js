@@ -1,3 +1,4 @@
+var _this = this;
 var SelectedWord = (function () {
     function SelectedWord(settings, element, quicksave) {
         this.settings = settings;
@@ -87,30 +88,6 @@ var SelectedWord = (function () {
                 _this.updateTermClasses(data.data.termPhrase, data.data.term);
             }
         });
-    };
-    SelectedWord.prototype.changeState = function (state) {
-        switch(state) {
-            case 'known': {
-                $('#knownState').attr('checked', true);
-                break;
-
-            }
-            case 'notknown': {
-                $('#unknownState').attr('checked', true);
-                break;
-
-            }
-            case 'ignored': {
-                $('#ignoredState').attr('checked', true);
-                break;
-
-            }
-            case 'notseen': {
-                $('#notseenState').attr('checked', true);
-                break;
-
-            }
-        }
     };
     SelectedWord.prototype.saveChanges = function () {
         var _this = this;

@@ -13,16 +13,10 @@ var ReadingToolUi = (function () {
         }
     }
     ReadingToolUi.prototype.setIsPlaying = function (isPlaying) {
+        if(this.isPlaying) {
+            this.wasPlaying = true;
+        }
         this.isPlaying = isPlaying;
-    };
-    ReadingToolUi.prototype.setWasPlaying = function (wasPlaying) {
-        this.wasPlaying = wasPlaying;
-    };
-    ReadingToolUi.prototype.getWasPlaying = function () {
-        return this.wasPlaying;
-    };
-    ReadingToolUi.prototype.getIsPlaying = function () {
-        return this.isPlaying;
     };
     ReadingToolUi.prototype.toggleL1 = function () {
         var li = $('#toggleL1').parent('li');
@@ -165,7 +159,10 @@ var ReadingToolUi = (function () {
                 }
             }
         }
-        if(this.settings.keyBindings.autoPause) {
+        if(this.isPlaying) {
+            this.wasPlaying = true;
+        }
+        if(this.isPlaying && this.settings.keyBindings.autoPause) {
             this.audio.pauseAudio();
         }
         selectedWord = new SelectedWord(this.settings, event.srcElement, false);
@@ -316,7 +313,7 @@ $(function () {
         selectedWord.blankModal();
         modal.hide();
         ui.modalVisible = false;
-        ui.audio.resumeAudio();
+        ui.audio.resumeAudio(ui.settings.keyBindings.autoPause, ui.wasPlaying);
     });
     modal.modal({
         show: false,
@@ -330,90 +327,77 @@ $(document).keyup(function (event) {
         if(code == 27) {
             ui.closeTextModal();
         } else {
-            if(event.ctrlKey && code == 13) {
+            if((event).ctrlKey && code == 13) {
                 selectedWord.saveChanges();
                 ui.closeTextModal();
-            } else {
-                if(event.altKey) {
-                    switch(code) {
-                        case ui.settings.keyBindings.resetWord: {
-                            selectedWord.resetTerm();
-                            break;
-
-                        }
-                        case ui.settings.keyBindings.changeKnown: {
-                            selectedWord.changeState('known');
-                            break;
-
-                        }
-                        case ui.settings.keyBindings.changeNotKnown: {
-                            selectedWord.changeState('notknown');
-                            break;
-
-                        }
-                        case ui.settings.keyBindings.changeIgnored: {
-                            selectedWord.changeState('ignored');
-                            break;
-
-                        }
-                        case ui.settings.keyBindings.changeNotSeen: {
-                            selectedWord.changeState('notseen');
-                            break;
-
-                        }
-                    }
-                }
             }
         }
     } else {
-        if(ui.settings.keyBindings.controlsEnabled) {
+        if(this.settings.keyBindings.controlsEnabled) {
             if(event.altKey || event.shiftKey || event.ctrlKey) {
                 return;
             }
             switch(code) {
-                case ui.settings.keyBindings.volumeUp: {
-                    ui.audio.increaseVolume();
+                case this.settings.keyBindings.volumeUp: {
+                    if(audioPlayer.volume < 1) {
+                        audioPlayer.volume = audioPlayer.volume + 0.1;
+                    }
                     break;
 
                 }
-                case ui.settings.keyBindings.volumeDown: {
-                    ui.audio.decreaseVolume();
+                case settings.volumeDown: {
+                    if(audioPlayer.volume > 0) {
+                        audioPlayer.volume = audioPlayer.volume - 0.1;
+                    }
                     break;
 
                 }
-                case ui.settings.keyBindings.speedUp: {
-                    ui.audio.speedUpAudio();
+                case settings.speedUp: {
+                    console.log(audioPlayer.playbackRate);
+                    if(audioPlayer.playbackRate < 2) {
+                        audioPlayer.playbackRate = audioPlayer.playbackRate + 0.1;
+                    }
                     break;
 
                 }
-                case ui.settings.keyBindings.slowDown: {
-                    ui.audio.slowDownAudio();
+                case settings.speedDown: {
+                    console.log(audioPlayer.playbackRate);
+                    if(audioPlayer.playbackRate > 0) {
+                        audioPlayer.playbackRate = audioPlayer.playbackRate - 0.1;
+                    }
                     break;
 
                 }
-                case ui.settings.keyBindings.rewindToBeginning: {
-                    ui.audio.restartAudio();
+                case settings.restart: {
+                    audioPlayer.currentTime = 0;
+                    audioPlayer.play();
                     break;
 
                 }
-                case ui.settings.keyBindings.rewind: {
-                    ui.audio.rewindAudio();
+                case settings.rewind: {
+                    audioPlayer.currentTime = audioPlayer.currentTime - settings.secondsToRewind;
                     break;
 
                 }
-                case ui.settings.keyBindings.stop: {
-                    ui.audio.stopAudio();
+                case settings.stop: {
+                    audioPlayer.currentTime = 0;
+                    audioPlayer.pause();
                     break;
 
                 }
-                case ui.settings.keyBindings.forward: {
-                    ui.audio.fastForwardAudio();
+                case settings.forward: {
+                    audioPlayer.currentTime = audioPlayer.currentTime + settings.secondsToRewind;
                     break;
 
                 }
-                case ui.settings.keyBindings.playPause: {
-                    ui.audio.playAudio();
-                    break;
+                case settings.play: {
+                    if(settings.isPlaying) {
+                        settings.isPlaying = false;
+                        audioPlayer.pause();
+                    } else {
+                        settings.isPlaying = true;
+                        audioPlayer.play();
+                    }
 
                 }
                 default: {
