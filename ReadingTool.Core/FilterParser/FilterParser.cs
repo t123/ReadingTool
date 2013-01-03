@@ -33,7 +33,8 @@ namespace ReadingTool.Core.FilterParser
                 @"unknown",
                 @"ignored",
                 @"notseen",
-                //@"definitions"
+                @"definitions",
+                @"nodefinitions"
             };
 
         public class FilterResult

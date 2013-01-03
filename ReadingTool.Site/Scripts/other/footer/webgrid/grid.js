@@ -139,6 +139,10 @@ $('#addTags').click(function() { doAction('add'); });
 $('#removeTags').click(function () { doAction('remove'); });
 $('#renameCollection').click(function () { doAction('rename');});
 $('#deleteTexts').click(function () {doAction('delete');});
+$('#changeKnown').click(function () { doAction('known'); });
+$('#changeUnknown').click(function () { doAction('unknown'); });
+$('#changeIgnored').click(function () { doAction('ignored'); });
+$('#changeNotseen').click(function () { doAction('notseen'); });
 
 function doAction(action) {
     var cbs = getSelectedCheckboxes();
@@ -151,12 +155,13 @@ function doAction(action) {
     }
 
     var input = $('#actionInput').val();
-    if(action!='delete' && input=='') {
+    if((action=='addTags' || action=='removeTags') && input=='') {
         $('#actionInput').addClass('noselection');
         return;
     }
-    
-    $.post(routes.texts.performAction, {
+
+    var route = routes.texts == undefined ? routes.terms.performAction : routes.texts.permformAction;
+    $.post(route, {
         action: action,
         ids: cbs,
         input: input

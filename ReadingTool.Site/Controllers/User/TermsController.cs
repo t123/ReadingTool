@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using ReadingTool.Core;
@@ -80,6 +81,76 @@ namespace ReadingTool.Site.Controllers.User
             };
 
             return PartialView("Partials/_list", result);
+        }
+
+        [AjaxRoute]
+        public ActionResult PerformAction(string action, Guid[] ids, string input)
+        {
+            try
+            {
+                if(ids == null || ids.Length == 0)
+                {
+                    return new JsonNetResult() { Data = "OK" };
+                }
+
+                IList<Term> terms = new List<Term>();
+
+                switch(action)
+                {
+                    case "add":
+                        ids.ToList().ForEach(x => terms.Add(_termService.Find(x, includeIndividualTerms: true)));
+                        if(!string.IsNullOrWhiteSpace(input))
+                        {
+                            foreach(var t in terms)
+                            {
+                                foreach(var it in t.IndividualTerms)
+                                {
+                                    it.Tags = TagHelper.ToString(TagHelper.Merge(TagHelper.Split(it.Tags), TagHelper.Split(input)));
+                                    t.UpdateIndividualTerm(it.Id, it);
+                                }
+
+                                _termService.Save(t);
+                            }
+                        }
+                        break;
+
+                    case "remove":
+                        ids.ToList().ForEach(x => terms.Add(_termService.Find(x, includeIndividualTerms: true)));
+                        if(!string.IsNullOrWhiteSpace(input))
+                        {
+                            foreach(var t in terms)
+                            {
+                                foreach(var it in t.IndividualTerms)
+                                {
+                                    it.Tags = TagHelper.ToString(TagHelper.Remove(TagHelper.Split(it.Tags), TagHelper.Split(input)));
+                                    t.UpdateIndividualTerm(it.Id, it);
+                                }
+
+                                _termService.Save(t);
+                            }
+                        }
+                        break;
+
+                    case "known":
+                    case "unknown":
+                    case "notseen":
+                    case "ignored":
+                        ids.ToList().ForEach(x => terms.Add(_termService.Find(x)));
+                        var newState = (TermState)Enum.Parse(typeof(TermState), action, true);
+                        foreach(var t in terms)
+                        {
+                            t.State = newState;
+                            _termService.Save(t);
+                        }
+                        break;
+                }
+
+                return new JsonNetResult() { Data = "OK" };
+            }
+            catch(Exception e)
+            {
+                return new JsonNetResult() { Data = "FAIL" };
+            }
         }
     }
 }

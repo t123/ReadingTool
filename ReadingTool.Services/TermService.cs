@@ -21,7 +21,7 @@ namespace ReadingTool.Services
         void SaveAll(IEnumerable<Term> terms, bool audit = true);
         void Delete(Term term);
         void Delete(Guid id);
-        Term Find(Guid id);
+        Term Find(Guid id, bool includeIndividualTerms = false);
         Term Find(Guid languageId, string term);
         IEnumerable<Term> FindAll();
         Tuple<IList<Term>, IList<Term>> FindAllForParsing(Language language);
@@ -188,9 +188,23 @@ namespace ReadingTool.Services
             Delete(Find(id));
         }
 
-        public Term Find(Guid id)
+        public Term Find(Guid id, bool includeIndividualTerms = false)
         {
-            return _db.Select<Term>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
+            if(includeIndividualTerms)
+            {
+                var term = _db.Select<Term>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
+
+                if(term != null)
+                {
+                    term.AddIndividualTerms(FindIndividualTerms(term.Id));
+                }
+
+                return term;
+            }
+            else
+            {
+                return _db.Select<Term>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
+            }
         }
 
         public IEnumerable<Term> FindAll()
@@ -301,6 +315,7 @@ namespace ReadingTool.Services
             var options = FilterParser.Parse(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()), so.Filter, FilterParser.MagicTermTags);
 
             #region magic
+            string having = "";
             if(options.Magic.Count > 0)
             {
                 string magicSql = "";
@@ -330,8 +345,12 @@ namespace ReadingTool.Services
                                 magicSql += " AND t.State='" + TermState.NotSeen.ToString() + "' ";
                                 break;
 
+                            case @"nodefintions":
+                                having = " HAVING COUNT(IT.Id)=0 ";
+                                break;
+
                             case @"definitions":
-                                //TODO 
+                                having = " HAVING COUNT(IT.Id)>0 ";
                                 break;
                         }
                     }
@@ -375,17 +394,26 @@ namespace ReadingTool.Services
             #endregion
 
             #region query creation
-            const string columns = "l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId";
+            const string columns = "l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId, COUNT(IT.Id) as ITCount";
             string sql = string.Format(@"
 SELECT
 /*ROWNUMBER*/
 /*COLUMNS*/
 FROM [Term] t
-LEFT JOIN [Language] l ON t.LanguageId=l.Id
+LEFT JOIN [Language] l ON t.LanguageId=l.Id 
+/*LEFTJOINIT*/
 WHERE t.Owner='{0}' /*WHERE*/
+/*GROUPBY*/
+/*HAVING*/
 ", _identity.UserId);
 
-            string countQuery = sql.Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total").Replace("/*COLUMNS*/", "").Replace("/*WHERE*/", whereSql.ToString());
+            string countQuery = sql
+                .Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total")
+                .Replace("/*COLUMNS*/", "")
+                .Replace("/*HAVING*/", "")
+                .Replace("/*GROUPBY*/", "")
+                .Replace("/*LEFTJOINIT*/", "")
+                .Replace("/*WHERE*/", whereSql.ToString());
 
             StringBuilder query = new StringBuilder();
             query.AppendFormat(@"
@@ -397,7 +425,13 @@ FROM
 WHERE RowNumber BETWEEN {1} AND {2}
 ORDER BY RowNumber
 ",
-                         sql.Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,").Replace("/*COLUMNS*/", columns).Replace("/*WHERE*/", whereSql.ToString()),
+                         sql
+                         .Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,")
+                         .Replace("/*COLUMNS*/", columns)
+                         .Replace("/*LEFTJOINIT*/", "LEFT JOIN [IndividualTerm] IT ON t.Id=it.TermId ")
+                         .Replace("/*HAVING*/", having)
+                         .Replace("/*GROUPBY*/", "GROUP BY l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId")
+                         .Replace("/*WHERE*/", whereSql.ToString()),
                          (so.Page - 1) * so.RowsPerPage,
                          (so.Page - 1) * so.RowsPerPage + so.RowsPerPage
                 );
@@ -406,7 +440,7 @@ ORDER BY RowNumber
             try
             {
                 var texts = _db.Query<Term>(query.ToString());
-                var count = _db.Scalar<int>(countQuery);
+                var count = _db.Scalar<int>(countQuery); //TODO FIXME #definitions doesn't count correctly.
                 return new SearchResult<Term> { Results = texts, TotalRows = count };
             }
             catch(Exception e)

@@ -90,6 +90,9 @@
 .table form {
   margin: 0px;
 }
+.table .progress {
+  margin: 0px;
+}
 .ui-autocomplete-loading {
   background: #ffffff url('/content/img/ui-anim_basic_16x16.gif') right center no-repeat;
 }

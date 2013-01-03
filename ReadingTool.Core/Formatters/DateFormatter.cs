@@ -4,7 +4,7 @@ namespace ReadingTool.Core.Formatters
 {
     public static class DateFormatter
     {
-        public static string SecondsToHourMinuteSeconds(long? seconds)
+        public static string SecondsToHourMinuteSeconds(this long? seconds)
         {
             if(seconds == null)
             {
@@ -14,7 +14,7 @@ namespace ReadingTool.Core.Formatters
             return SecondsToHourMinuteSeconds(seconds.Value);
         }
 
-        public static string SecondsToHourMinuteSeconds(long seconds)
+        public static string SecondsToHourMinuteSeconds(this long seconds)
         {
             TimeSpan ts = TimeSpan.FromSeconds(seconds);
             return string.Format("{0:D2}h:{1:D2}m:{2:D2}s", ts.Hours, ts.Minutes, ts.Seconds);

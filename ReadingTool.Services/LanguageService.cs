@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -20,6 +21,7 @@ namespace ReadingTool.Services
         IEnumerable<Language> FindAll();
         IEnumerable<Language> FindAllIncludePublic();
         Language FindByName(string name, bool? publicLanguage = false);
+        Tuple<List<TextStatResult>, List<TermStatResult>> FindBasicLanguageStats();
     }
 
     public class LanguageService : ILanguageService
@@ -109,6 +111,64 @@ namespace ReadingTool.Services
             {
                 return _db.Select<Language>(x => x.Name == name && x.IsPublic == publicLanguage.Value).FirstOrDefault();
             }
+        }
+
+        public Tuple<List<TextStatResult>, List<TermStatResult>> FindBasicLanguageStats()
+        {
+            var textCount = @"
+SELECT l.Id, COUNT(t.Id) as Total, SUM(t.ListenLength) as ListenLength, SUM(t.WordsRead) as WordsRead
+FROM Language l
+LEFT JOIN Text t ON l.Id=t.L1Id
+WHERE l.Owner='{0}'
+GROUP BY l.Id
+";
+
+            var termCount = @"
+SELECT l.Id, t.State, COUNT(t.Id) as Total
+FROM Language l
+LEFT JOIN Term t ON l.Id=t.LanguageId
+WHERE l.Owner='{0}'
+GROUP BY l.Id, t.State
+";
+
+            var cmd = _db.CreateCommand();
+            cmd.CommandText = string.Format(textCount, _identity.UserId);
+            cmd.CommandType = CommandType.Text;
+
+            var texts = new List<TextStatResult>();
+            using(var reader = cmd.ExecuteReader())
+            {
+                while(reader.Read())
+                {
+                    texts.Add(new TextStatResult()
+                    {
+                        Id = reader.GetGuid(0),
+                        Count = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                        Listened = reader.IsDBNull(2) ? 0 : reader.GetInt64(2),
+                        Read = reader.IsDBNull(3) ? 0 : reader.GetInt64(3)
+                    });
+                }
+            }
+
+            cmd = _db.CreateCommand();
+            cmd.CommandText = string.Format(termCount, _identity.UserId);
+            cmd.CommandType = CommandType.Text;
+
+            var terms = new List<TermStatResult>();
+            using(var reader = cmd.ExecuteReader())
+            {
+                while(reader.Read())
+                {
+                    terms.Add(new TermStatResult()
+                        {
+                            Id = reader.GetGuid(0),
+                            State = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                            Count = reader.IsDBNull(2) ? 0 : reader.GetInt32(2)
+                        });
+                }
+            }
+
+            return new Tuple<List<TextStatResult>, List<TermStatResult>>(texts, terms);
         }
     }
 }

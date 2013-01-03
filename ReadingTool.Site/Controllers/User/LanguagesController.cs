@@ -31,6 +31,10 @@ namespace ReadingTool.Site.Controllers.User
 
         public ActionResult Index()
         {
+            var stats = _languageService.FindBasicLanguageStats();
+            ViewBag.TextStats = stats.Item1;
+            ViewBag.TermStats = stats.Item2;
+
             return View(_languageService.FindAll());
         }
 

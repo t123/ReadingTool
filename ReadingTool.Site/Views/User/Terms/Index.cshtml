@@ -61,5 +61,23 @@ using a # sign, or use some of these special tags: " + string.Join(", ", FilterP
 {
     @Html.Partial("Partials/_menu", null, ViewData)
 }
-
+<div>
+    <input type="text" class="input-medium" style="vertical-align: top" id="actionInput"/>
+    <div class="btn-group">
+        <button class="btn">Action</button>
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#" id="addTags">add tags to selected terms</a></li>
+            <li><a href="#" id="removeTags">remove tags from selected terms</a></li>
+            <li><a href="#" id="changeKnown">change selected terms to known</a></li>
+            <li><a href="#" id="changeUnknown">change selected terms to not known</a></li>
+            <li><a href="#" id="changeIgnored">change selected terms to ignored</a></li>
+            <li><a href="#" id="changeNotseen">change selected terms to not seen</a></li>
+        </ul>
+    </div>
+</div>
+<div class="clr100"></div>
+<div class="clr50"></div>
 <div class="clr50"></div>

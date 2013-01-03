@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Ionic.Zip;
 using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
@@ -327,13 +328,39 @@ namespace ReadingTool.Site.Controllers.User
                 try
                 {
                     TextImport json;
-                    using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
 
-                        if(json == null) throw new Exception("File is empty");
-                        if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
+                    if(ZipFile.IsZipFile(model.File.InputStream, false))
+                    {
+                        model.File.InputStream.Position = 0;
+                        using(var zip = ZipFile.Read(model.File.InputStream))
+                        {
+                            var data = zip[0];
+
+                            if(data == null)
+                            {
+                                throw new Exception("There is no file in the ZIP archive");
+                            }
+
+                            using(var sr = new StreamReader(data.OpenReader()))
+                            {
+                                JsonSerializer serializer = new JsonSerializer();
+                                json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
+
+                                if(json == null) throw new Exception("File is empty");
+                                if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
+                        {
+                            JsonSerializer serializer = new JsonSerializer();
+                            json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
+
+                            if(json == null) throw new Exception("File is empty");
+                            if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
+                        }
                     }
 
                     int imported = _textService.Import(json);
