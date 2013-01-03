@@ -74,7 +74,11 @@ namespace ReadingTool.Site.Controllers.User
                         LastSeen = x.LastSeen,
                         Title = x.Title,
                         LanguageColour = languages.GetValueOrDefault(x.L1Id, new Language() { Colour = "#FFFFFF" }).Colour,
-                        Tags = x.Tags
+                        Tags = x.Tags,
+                        TimesListened = x.TimesListened,
+                        TimesRead = x.TimesRead,
+                        WordsRead = x.WordsRead,
+                        ListenLength = x.ListenLength.SecondsToHourMinuteSeconds()
                     }));
 
             SearchGridResult<TextListModel> result = new SearchGridResult<TextListModel>()

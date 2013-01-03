@@ -188,7 +188,7 @@ namespace ReadingTool.Services
             #endregion
 
             #region query creation
-            const string columns = "l.Name, t.CollectionName, t.CollectionNo, t.Title, t.LastSeen, t.AudioUrl, t.Id, t.Tags, t.IsParallel, t.L1Id, t.Created";
+            const string columns = "l.Name, t.CollectionName, t.CollectionNo, t.Title, t.LastSeen, t.AudioUrl, t.Id, t.Tags, t.IsParallel, t.L1Id, t.Created, t.TimesRead, t.TimesListened, t.ListenLength, t.WordsRead";
             string sql = string.Format(@"
 SELECT
 /*ROWNUMBER*/

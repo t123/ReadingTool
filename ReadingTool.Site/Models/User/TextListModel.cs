@@ -17,5 +17,9 @@ namespace ReadingTool.Site.Models.User
         public bool HasAudio { get; set; }
         public bool IsParallel { get; set; }
         public string Tags { get; set; }
+        public int? TimesRead { get; set; }
+        public long? WordsRead { get; set; }
+        public int? TimesListened { get; set; }
+        public string ListenLength { get; set; }
     }
 }

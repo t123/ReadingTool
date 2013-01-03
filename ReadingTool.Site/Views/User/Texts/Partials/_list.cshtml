@@ -1,4 +1,5 @@
 ﻿@using ReadingTool.Entities.Search
+@using ReadingTool.Core.Formatters
 @model ReadingTool.Entities.Search.SearchGridResult<ReadingTool.Site.Models.User.TextListModel> 
 @{
     WebGrid grid = new WebGrid(Model.Items, rowsPerPage: @Model.RowsPerPage);
@@ -15,7 +16,7 @@
         grid.Column("Language", style:"col10", format: @<text>
                                              @ViewHelpers.FormatLanguage(@item.Language, @item.LanguageColour)
                                          </text>),
-        grid.Column("Title", style:"col30", format: @<text>
+        grid.Column("Title", style:"col25", format: @<text>
                                           @if(!string.IsNullOrEmpty(item.Tags))
                                             {
                                                 <i class="icon-tags" title="@item.Tags"> </i>
@@ -28,31 +29,13 @@
                                             
                                           @item.Title
                                       </text>),
-        grid.Column("CollectionName", style:"col25", header: "Collection Name"),
+        grid.Column("", style:"col5", header: "Read", format:@<text><a title="@item.WordsRead words">@item.TimesRead</a></text>),
+        grid.Column("", style:"col5", header: "Listened", format:@<text><a title="@item.ListenLength">@item.TimesListened</a></text>),
+        grid.Column("CollectionName", style:"col20", header: "Collection Name"),
         grid.Column("CollectionNo", style:"col5", header: "Collection No", canSort:false),
         grid.Column("LastSeen", style:"col10", header: "Last Seen", format:@<text>
                                             @Html.FormatDateHumanAgo((DateTime?)@item.LastSeen, "ago")
                                         </text>),
-        @*grid.Column("", 
-                        style: "button", 
-                        header: "", 
-                    format: @<text>
-                              @if(@item.IsParallel)
-                              {
-                                  <div class="btn-group">
-                                    <a href="@Url.Action("Read", new { id = item.Id })" title="read" class="btn btn-mini">read</a>
-                                    <a href="@Url.Action("ReadInParallel", new { id = item.Id })" title="read in parallel" class="btn btn-mini">parallel</a>
-                                  </div>
-                              }
-                              else
-                              {
-                                  <a href="@Url.Action("Read", new { id = item.Id })" title="read" class="btn btn-mini">read</a>
-                              }
-                             </text>),
-
-        grid.Column("", style: "button", header: "", format: @<text>@Html.EditButton(Url.Action("Edit", new { id = item.Id }))</text>),
-        grid.Column("", style: "button", header: "", format: @<text>@Html.DeleteButton(Url.Action("Delete", new { id = item.Id }))</text>)*@
-
         grid.Column("", style: "col10", header: "", format: @<text>
 <a href="@Url.Action("Read", new { id = item.Id })"><i class="icon-zoom-in" title="read"> </i></a>
 @if(item.IsParallel)
