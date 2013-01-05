@@ -92,7 +92,7 @@
         </div>
 
         @Html.BootstrapFormDropDown(x=>x.L2Id, new SelectList(ViewBag.L2Languages as Dictionary<Guid,string>, "Key", "Value"), "None")
-        @Html.BootstrapFormCustomHtml(x=>x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l2modal"">change L2 text</a>")
+        @Html.BootstrapFormCustomHtml(x=>x.L2Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l2modal"">change L2 text</a>")
         <div id="l2modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

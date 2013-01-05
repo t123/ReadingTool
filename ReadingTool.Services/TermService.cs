@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
 using ReadingTool.Core.FilterParser;
@@ -63,12 +66,14 @@ namespace ReadingTool.Services
 
             foreach(var it in term.IndividualTerms)
             {
-                Save(term.Id, it);
+                Save(term.Id, term.LanguageId, it);
             }
+
+            var language = _languageService.Find(term.LanguageId);
 
             if(audit)
             {
-                Logger.Info(new TermLog()
+                var tl = new TermLog()
                     {
                         Date = DateTime.Now,
                         State = term.State,
@@ -76,8 +81,42 @@ namespace ReadingTool.Services
                         LanguageId = term.LanguageId,
                         Owner = term.Owner,
                         IsNew = isNew,
-                        StateChange = term.StateHasChanged
-                    });
+                        StateChange = term.StateHasChanged,
+                        Language = language,
+                        Term = term
+                    };
+
+                Logger.Info(FormatAuditAsJson(tl));
+            }
+        }
+
+        private string FormatAuditAsJson(TermLog log)
+        {
+            return JsonConvert.SerializeObject(log, new JsonSerializerSettings() { ContractResolver = new TermAuditSerializeContractResolver(), Formatting = Formatting.None });
+        }
+
+        public class TermAuditSerializeContractResolver : DefaultContractResolver
+        {
+            public new static readonly TermAuditSerializeContractResolver Instance = new TermAuditSerializeContractResolver();
+
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+                if(property.DeclaringType == typeof(Language) &&
+                    (property.PropertyName == "Settings") ||
+                    (property.PropertyName == "Review") ||
+                    (property.PropertyName == "Dictionaries")
+                    )
+                {
+                    property.ShouldSerialize = instance => false;
+                }
+                else if(property.DeclaringType == typeof(Term) && property.PropertyName == "Definition")
+                {
+                    property.ShouldSerialize = instance => false;
+                }
+
+                return property;
             }
         }
 
@@ -86,6 +125,7 @@ namespace ReadingTool.Services
             StringBuilder sb = new StringBuilder();
 
             IList<IndividualTerm> its = new List<IndividualTerm>();
+            var languages = _languageService.FindAll().ToDictionary(x => x.Id);
 
             foreach(var term in terms)
             {
@@ -127,7 +167,7 @@ namespace ReadingTool.Services
 
                 if(audit)
                 {
-                    sb.AppendLine(new TermLog()
+                    var tl = new TermLog()
                     {
                         Date = DateTime.Now,
                         State = term.State,
@@ -135,8 +175,12 @@ namespace ReadingTool.Services
                         LanguageId = term.LanguageId,
                         Owner = term.Owner,
                         IsNew = isNew,
-                        StateChange = term.StateHasChanged
-                    }.ToString());
+                        StateChange = term.StateHasChanged,
+                        Language = languages[term.LanguageId],
+                        Term = term
+                    };
+
+                    sb.AppendLine(FormatAuditAsJson(tl));
                 }
             }
 
@@ -155,11 +199,12 @@ namespace ReadingTool.Services
             }
         }
 
-        private void Save(Guid termId, IndividualTerm individual)
+        private void Save(Guid termId, Guid languageId, IndividualTerm individual)
         {
             if(individual.Id == Guid.Empty)
             {
                 individual.TermId = termId;
+                individual.LanguageId = languageId;
                 individual.Id = SequentialGuid.NewGuid();
                 individual.Created = DateTime.Now;
             }

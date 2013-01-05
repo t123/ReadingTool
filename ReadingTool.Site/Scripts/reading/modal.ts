@@ -192,10 +192,10 @@ class SelectedWord {
         } else {
             var elem = $(this.element);
             var prependString = '<span';
-                    prependString += ' class="' + term.id + ' ' + this.settings.classes.multiClass + ' ' + term.stateClass + '"';
-                    prependString += ' data-id="' + term.id + '"';
-                    prependString += ' data-phrase="' + termPhrase + '"';
-                    prependString += '>' + term.length + '</span>';
+            prependString += ' class="' + term.id + ' ' + this.settings.classes.multiClass + ' ' + term.stateClass + '"';
+            prependString += ' data-id="' + term.id + '"';
+            prependString += ' data-phrase="' + termPhrase + '"';
+            prependString += '>' + term.length + '</span>';
 
             if (elem.prev().length == 0) {
                 console.log('beginning of sentence or sup');
@@ -357,7 +357,14 @@ class SelectedWord {
         var i = 0;
         var next = $(this.element);
 
+        if (next.hasClass(this.settings.classes.multiClass)) {
+            next = next.parent().next()
+        }
+
+        var safety = 0;
+
         do {
+            safety++;
             if (next == null) break;
             if (
                 next.attr('class') == this.settings.classes.spaceClass ||
@@ -369,7 +376,7 @@ class SelectedWord {
             currentWord += next.text() + ' ';
             next = next.next();
             i++;
-        } while (i < this.length);
+        } while (i < this.length && safety < 200);
 
         this.selectedWord = currentWord;
         this.updateModalDisplay();

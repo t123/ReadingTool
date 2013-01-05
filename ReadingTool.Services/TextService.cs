@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Ionic.Zip;
 using ReadingTool.Core;
 using ReadingTool.Core.Comparers;
 using ReadingTool.Core.Enums;
@@ -21,7 +23,7 @@ namespace ReadingTool.Services
         void Delete(Text text);
         void Delete(Guid id);
         Text Find(Guid id);
-        IEnumerable<Text> FindAll();
+        IEnumerable<Text> FindAll(bool includeText = false);
         Tuple<Guid?, Guid?> FindPagedTexts(Text text);
         int Import(TextImport import);
         SearchResult<Text> FilterTexts(SearchOptions so = null);
@@ -57,10 +59,75 @@ namespace ReadingTool.Services
             }
 
             _db.Save(text);
+            SaveTextFiles(text);
 
             var tags = TagHelper.Split(text.Tags);
             _db.Delete<Tag>(x => x.TextId == text.Id);
             _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = null, TextId = text.Id, Value = x }));
+        }
+
+        private string GetTextsDirectory(Text text)
+        {
+            if(text == null)
+            {
+                throw new NoNullAllowedException("Text cannot be null");
+            }
+
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Texts", _identity.UserId.ToString());
+        }
+
+        private void SaveTextFiles(Text text)
+        {
+            var directory = new DirectoryInfo(GetTextsDirectory(text));
+
+            if(!directory.Exists)
+            {
+                directory.Create();
+            }
+
+            var outputFile = Path.Combine(directory.FullName, string.Format("{0}.zip", text.Id));
+
+            using(ZipFile zip = new ZipFile())
+            {
+                zip.AddEntry("l1.txt", text.L1Text, Encoding.UTF8);
+                zip.AddEntry("l2.txt", text.L2Text, Encoding.UTF8);
+                zip.Save(outputFile);
+            }
+        }
+
+        private Text LoadTextFiles(Text text)
+        {
+            var directory = new DirectoryInfo(GetTextsDirectory(text));
+
+            if(!directory.Exists)
+            {
+                return text;
+            }
+
+            var inputFile = Path.Combine(directory.FullName, string.Format("{0}.zip", text.Id));
+
+            if(!File.Exists(inputFile))
+            {
+                return text;
+            }
+
+            using(var zip = ZipFile.Read(inputFile))
+            {
+                var l1 = zip["l1.txt"];
+                var l2 = zip["l2.txt"];
+
+                using(var sr = new StreamReader(l1.OpenReader(), Encoding.UTF8))
+                {
+                    text.L1Text = sr.ReadToEnd();
+                }
+
+                using(var sr = new StreamReader(l2.OpenReader(), Encoding.UTF8))
+                {
+                    text.L2Text = sr.ReadToEnd();
+                }
+            }
+
+            return text;
         }
 
         public void Delete(Text text)
@@ -75,12 +142,30 @@ namespace ReadingTool.Services
 
         public Text Find(Guid id)
         {
-            return _db.Select<Text>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
+            var text = _db.Select<Text>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
+
+            if(text == null)
+            {
+                return null;
+            }
+
+            text = LoadTextFiles(text);
+
+            return text;
         }
 
-        public IEnumerable<Text> FindAll()
+        public IEnumerable<Text> FindAll(bool includeTexts = false)
         {
-            return _db.Select<Text>(x => x.Owner == _identity.UserId);
+            var texts = _db.Select<Text>(x => x.Owner == _identity.UserId);
+            if(includeTexts)
+            {
+                //TODO fixme 
+                return texts.Select(text => LoadTextFiles(text)).ToList();
+            }
+            else
+            {
+                return texts;
+            }
         }
 
         public SearchResult<Text> FilterTexts(SearchOptions so = null)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -40,6 +41,13 @@ namespace ReadingTool.Services
 
             _db.Select<Language>(x => x.Owner == user.Id).ForEach(DeleteLanguage);
             _db.DeleteById<User>(user.Id);
+            var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Texts", user.Id.ToString());
+            DirectoryInfo di = new DirectoryInfo(directory);
+
+            if(di.Exists)
+            {
+                di.Delete(true);
+            }
         }
 
         public void DeleteLanguage(Language language)
@@ -82,7 +90,24 @@ namespace ReadingTool.Services
 
             _db.Update<IndividualTerm>(new { TextId = (Guid?)null }, x => x.TextId == text.Id);
             _db.Delete<Tag>(x => x.TextId == text.Id);
+            DeleteTextFile(text);
             _db.DeleteById<Text>(text.Id);
+        }
+
+        private void DeleteTextFile(Text text)
+        {
+            if(text == null)
+            {
+                return;
+            }
+
+            var textDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Texts", _identity.UserId.ToString());
+            var textFile = Path.Combine(textDirectory, string.Format("{0}.zip", text.Id));
+
+            if(File.Exists(textFile))
+            {
+                File.Delete(textFile);
+            }
         }
     }
 }

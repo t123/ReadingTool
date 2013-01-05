@@ -1,4 +1,3 @@
-var _this = this;
 var SelectedWord = (function () {
     function SelectedWord(settings, element, quicksave) {
         this.settings = settings;
@@ -88,6 +87,30 @@ var SelectedWord = (function () {
                 _this.updateTermClasses(data.data.termPhrase, data.data.term);
             }
         });
+    };
+    SelectedWord.prototype.changeState = function (state) {
+        switch(state) {
+            case 'known': {
+                $('#knownState').attr('checked', true);
+                break;
+
+            }
+            case 'notknown': {
+                $('#unknownState').attr('checked', true);
+                break;
+
+            }
+            case 'ignored': {
+                $('#ignoredState').attr('checked', true);
+                break;
+
+            }
+            case 'notseen': {
+                $('#notseenState').attr('checked', true);
+                break;
+
+            }
+        }
     };
     SelectedWord.prototype.saveChanges = function () {
         var _this = this;
@@ -262,7 +285,12 @@ var SelectedWord = (function () {
         var currentWord = '';
         var i = 0;
         var next = $(this.element);
+        if(next.hasClass(this.settings.classes.multiClass)) {
+            next = next.parent().next();
+        }
+        var safety = 0;
         do {
+            safety++;
             if(next == null) {
                 break;
             }
@@ -273,7 +301,7 @@ var SelectedWord = (function () {
             currentWord += next.text() + ' ';
             next = next.next();
             i++;
-        }while(i < this.length)
+        }while(i < this.length && safety < 200)
         this.selectedWord = currentWord;
         this.updateModalDisplay();
     };

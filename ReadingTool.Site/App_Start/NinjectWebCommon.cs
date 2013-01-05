@@ -1,6 +1,8 @@
 using System.Data;
 using System.Data.Common;
 using System.Security.Principal;
+using System.Web.Http;
+using NinjectAdapter;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ServiceStack.DataAccess;
@@ -55,6 +57,9 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
             RegisterServices(kernel);
+
+            GlobalConfiguration.Configuration.DependencyResolver = new WebApiDependencyResolver(kernel); 
+
             return kernel;
         }
 

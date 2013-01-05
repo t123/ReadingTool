@@ -428,7 +428,8 @@ namespace ReadingTool.Site.Controllers.User
                                 Romanisation = it.Romanisation,
                                 Sentence = it.Sentence,
                                 Tags = it.Tags,
-                                TextId = textId
+                                TextId = textId,
+                                LanguageId = languageId
                             });
                     }
                     else
@@ -439,7 +440,8 @@ namespace ReadingTool.Site.Controllers.User
                                 Definition = it.Definition,
                                 Romanisation = it.Romanisation,
                                 Sentence = it.Sentence,
-                                Tags = it.Tags
+                                Tags = it.Tags,
+                                LanguageId = languageId
                             });
                     }
                 }

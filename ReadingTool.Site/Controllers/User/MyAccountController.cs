@@ -302,7 +302,7 @@ namespace ReadingTool.Site.Controllers.User
                         User = user,
                         Languages = languages,
                         Terms = _termService.FindAll().ToList(),
-                        Texts = _textService.FindAll().ToList(),
+                        Texts = _textService.FindAll(true).ToList(),
                     };
 
                     foreach(var l in languages.Where(x => x.SystemLanguageId != null))

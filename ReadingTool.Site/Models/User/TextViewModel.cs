@@ -34,7 +34,6 @@ namespace ReadingTool.Site.Models.User
         [Display(Name = "Title", Order = 5)]
         public string Title { get; set; }
 
-        [StringLength(40000)]
         [Display(Name = "L1 Text", Order = 6)]
         [DataType(DataType.MultilineText)]
         public string L1Text { get; set; }
@@ -42,7 +41,6 @@ namespace ReadingTool.Site.Models.User
         [Display(Name = "L2 Langauge", Order = 7)]
         public Guid? L2Id { get; set; }
 
-        [StringLength(40000)]
         [Display(Name = "L2 Text", Order = 8)]
         [DataType(DataType.MultilineText)]
         public string L2Text { get; set; }

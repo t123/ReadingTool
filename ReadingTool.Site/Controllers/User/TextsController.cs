@@ -405,6 +405,9 @@ namespace ReadingTool.Site.Controllers.User
                 PagedTexts = _textService.FindPagedTexts(text),
             };
 
+            text.LastSeen = DateTime.Now;
+            _textService.Save(text);
+
             return model;
         }
 
