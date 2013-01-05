@@ -24,6 +24,7 @@ namespace ReadingTool.Services
         void Delete(Guid id);
         Text Find(Guid id);
         IEnumerable<Text> FindAll(bool includeText = false);
+        IEnumerable<Text> FindAllByLanguage(Guid languageId, bool includeText = false);
         Tuple<Guid?, Guid?> FindPagedTexts(Text text);
         int Import(TextImport import);
         SearchResult<Text> FilterTexts(SearchOptions so = null);
@@ -157,6 +158,20 @@ namespace ReadingTool.Services
         public IEnumerable<Text> FindAll(bool includeTexts = false)
         {
             var texts = _db.Select<Text>(x => x.Owner == _identity.UserId);
+            if(includeTexts)
+            {
+                //TODO fixme 
+                return texts.Select(text => LoadTextFiles(text)).ToList();
+            }
+            else
+            {
+                return texts;
+            }
+        }
+
+        public IEnumerable<Text> FindAllByLanguage(Guid languageId, bool includeTexts = false)
+        {
+            var texts = _db.Select<Text>(x => x.Owner == _identity.UserId && x.L1Id == languageId);
             if(includeTexts)
             {
                 //TODO fixme 

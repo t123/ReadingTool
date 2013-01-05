@@ -197,7 +197,9 @@
     <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\ValidEmailAddress.cs" />
     <Compile Include="CassetteConfiguration.cs" />
+    <Compile Include="Controllers\Api\TermsController.cs" />
     <Compile Include="Controllers\Api\LanguagesController.cs" />
+    <Compile Include="Controllers\Api\TextsController.cs" />
     <Compile Include="Controllers\RoutesController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\User\ReadingController.cs" />
@@ -238,6 +240,12 @@
     <Compile Include="Models\User\TextImportModel.cs" />
     <Compile Include="Models\User\TextListModel.cs" />
     <Compile Include="Models\User\TextViewModel.cs" />
+    <Compile Include="Models\WebApi\LanguageModel.cs" />
+    <Compile Include="Models\WebApi\LanguageDictionaryModel.cs" />
+    <Compile Include="Models\WebApi\LanguageSettingsModel.cs" />
+    <Compile Include="Models\WebApi\TermModel.cs" />
+    <Compile Include="Models\WebApi\IndividualTermModel.cs" />
+    <Compile Include="Models\WebApi\TextModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebApiDependencyResolver.cs" />
   </ItemGroup>
