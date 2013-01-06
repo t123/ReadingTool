@@ -27,9 +27,9 @@ namespace ReadingTool.Site.Controllers.Api
             {
                 IEnumerable<string> apiKeyHeaderValues = null;
                 request.Headers.TryGetValues("X-ApiKey", out apiKeyHeaderValues);
-                var apiKeyHeaderValue = (apiKeyHeaderValues ?? new string[] { }).FirstOrDefault();
+                var ak = (apiKeyHeaderValues ?? new string[] { }).ToDictionary(x => "X-ApiKey", x => x).FirstOrDefault();
 
-                var ak = request.GetQueryNameValuePairs().FirstOrDefault(x => x.Key == "X-ApiKey");
+                ak = request.GetQueryNameValuePairs().FirstOrDefault(x => x.Key == "X-ApiKey");
 
                 if(string.IsNullOrWhiteSpace(ak.Value))
                 {

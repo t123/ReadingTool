@@ -4,11 +4,12 @@
     <text>
         <script id="term-ul-template" type="text/html">
             {{#each individualTerms}}
-            {{#if @@index}}
-            <li><a href="#tab{{@@index}}" data-toggle="tab" data-termid="{{id}}" data-messageid="itermMessage{{@@index}}">{{title}}</a></li>
-            {{else}}
-            <li><a href="#tab{{@@index}}" data-toggle="tab" data-termid="{{id}}" data-messageid="itermMessage{{@@index}}">{{title}}</a></li>
-            {{/if}}
+            <li>
+                <a href="#tab{{@@index}}" data-toggle="tab" data-termid="{{id}}" data-messageid="itermMessage{{@@index}}">
+                    {{title}}
+                    <i class="icon-remove" class="deleteITerm" onclick="selectedWord.deleteITerm('{{id}}')" style="padding-left: 5px;"> </i>
+                </a>
+            </li>
             {{/each}}
         </script>
         <script id="term-div-template" type="text/html">

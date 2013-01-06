@@ -641,5 +641,54 @@ namespace ReadingTool.Site.Controllers.User
                 };
             }
         }
+
+        [AjaxRoute]
+        public JsonResult DeleteIndividualTerm(Guid termId, Guid individualTermId)
+        {
+            try
+            {
+                var term = _termService.Find(termId, true);
+
+                if(term == null)
+                {
+                    throw new Exception("Term not found");
+                }
+
+                var it = term.IndividualTerms.FirstOrDefault(x => x.Id == individualTermId);
+
+                if(it == null)
+                {
+                    throw new Exception("Individual term not found");
+                }
+
+                term.RemoveIndividualTerm(it.Id);
+                _termService.Save(term);
+                term.AddIndividualTerm(new IndividualTerm() { Id = Guid.Empty, Created = DateTime.Now.AddYears(1) }, true);
+
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(OK)
+                    {
+                        Message = "Individual term deleted",
+                        Data = new
+                        {
+                            termPhrase = term.TermPhrase.ToLowerInvariant(),
+                            term = new JsonTermResult(term)
+                        }
+                    }
+                };
+            }
+            catch(Exception e)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(e);
+                return new JsonNetResult()
+                {
+                    Data = new ResponseMessage(FAIL)
+                    {
+                        Message = "Delete failed"
+                    }
+                };
+            }
+        }
     }
 }

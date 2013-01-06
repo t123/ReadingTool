@@ -119,6 +119,7 @@ var SelectedWord = (function () {
             currentIndex = 1;
         }
         $('#iconResult').hide();
+        $('.modal-footer').removeClass('failed');
         $.post(routes.reading.saveTerm, $('#formTerms').serialize(), function (data) {
             console.log('saving term changes');
             console.log(data);
@@ -346,6 +347,30 @@ var SelectedWord = (function () {
         $('#tabContent').html('');
         $('#termMessages').html('');
         $('#selectedWord').html('');
+    };
+    SelectedWord.prototype.deleteITerm = function (id) {
+        var _this = this;
+        $('#iconResult').hide();
+        var currentIndex = 1;
+        $('.modal-footer').removeClass('failed');
+        $.post(routes.reading.deleteIndividualTerm, {
+            termId: $('#termId').val(),
+            individualTermId: id
+        }, function (data) {
+            console.log('deleting iterm ', id);
+            if(data.result == "OK") {
+                $('#termMessage').removeClass('label-info').addClass('label-success').html(data.message);
+                _this.createTemplate(data.data.term);
+                ($('#tabTermDefintions a')).eq(currentIndex).tab('show');
+                _this.updateModalDisplay();
+                $('#iconResult').removeClass().addClass('icon-ok-circle').show().fadeOut(2000);
+                _this.updateTermClasses(data.data.termPhrase, data.data.term);
+            } else {
+                $('#termMessage').removeClass().addClass('label label-important').html(data.message);
+                $('.modal-footer').addClass('failed');
+                $('#iconResult').removeClass().addClass('icon-exclamation-sign icon-white').show().fadeOut(2000);
+            }
+        });
     };
     return SelectedWord;
 })();

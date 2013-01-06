@@ -64,6 +64,11 @@ namespace ReadingTool.Services
             term.Length = (short)term.TermPhrase.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
             _db.Save(term);
 
+            foreach(var it in term.DeletedIndividualTerms)
+            {
+                _db.Delete<IndividualTerm>(x => x.Id == it.Id);
+            }
+
             foreach(var it in term.IndividualTerms)
             {
                 Save(term.Id, term.LanguageId, it);

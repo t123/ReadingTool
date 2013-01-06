@@ -114,7 +114,7 @@ namespace ReadingTool.Services
 
             var user = _db.QuerySingle<User>(new { ApiKey = apiKey });
 
-            if(user == null)
+            if(user == null || !user.ApiEnabled)
             {
                 return null;
             }

@@ -150,6 +150,7 @@ class SelectedWord {
         var currentIndex = (<any>$('#tabTermDefintions li.active')).index();
         if (currentIndex < 0) currentIndex = 1;
         $('#iconResult').hide();
+        $('.modal-footer').removeClass('failed');
 
         $.post(routes.reading.saveTerm,
             $('#formTerms').serialize(),
@@ -430,5 +431,32 @@ class SelectedWord {
         $('#tabContent').html('');
         $('#termMessages').html('');
         $('#selectedWord').html('');
+    }
+
+    public deleteITerm(id) {
+        $('#iconResult').hide();
+        var currentIndex = 1;
+        $('.modal-footer').removeClass('failed');
+
+        $.post(routes.reading.deleteIndividualTerm,
+            {
+                termId: $('#termId').val(),
+                individualTermId: id
+            },
+            function (data) => {
+                console.log('deleting iterm ', id);
+                if (data.result == "OK") {
+                    $('#termMessage').removeClass('label-info').addClass('label-success').html(data.message);
+                    this.createTemplate(data.data.term);
+                    (<any>$('#tabTermDefintions a')).eq(currentIndex).tab('show');
+                    this.updateModalDisplay();
+                    $('#iconResult').removeClass().addClass('icon-ok-circle').show().fadeOut(2000);
+                    this.updateTermClasses(data.data.termPhrase, data.data.term);
+                } else {
+                    $('#termMessage').removeClass().addClass('label label-important').html(data.message);
+                    $('.modal-footer').addClass('failed');
+                    $('#iconResult').removeClass().addClass('icon-exclamation-sign icon-white').show().fadeOut(2000);
+                }
+            });
     }
 }
