@@ -28,6 +28,7 @@ namespace ReadingTool.Services
         Tuple<Guid?, Guid?> FindPagedTexts(Text text);
         int Import(TextImport import);
         SearchResult<Text> FilterTexts(SearchOptions so = null);
+        IEnumerable<string> FindAllTags(string startsWith = "");
     }
 
     public class TextService : ITextService
@@ -337,6 +338,12 @@ ORDER BY RowNumber
                 var message = string.Format("Invalid text search SQL:\n\n{0}\n\n{1}\n\n{2}", brokenSql, countQuery, query);
                 throw new Exception(message, e);
             }
+        }
+
+        public IEnumerable<string> FindAllTags(string startsWith = "")
+        {
+            var tags = _db.Select<Tag>("SELECT DISTINCT(Value) FROM Tag WHERE TextId IN ( SELECT Id FROM Text WHERE Owner={0}) AND Value LIKE {1} ORDER BY Value", _identity.UserId, startsWith + "%");
+            return tags.Select(x => x.Value);
         }
 
         public Tuple<Guid?, Guid?> FindPagedTexts(Text text)

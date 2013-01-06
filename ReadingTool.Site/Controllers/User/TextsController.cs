@@ -412,6 +412,35 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [AjaxRoute]
+        public ActionResult AutoCompleteTags(string query)
+        {
+            query = (query ?? "").Trim();
+            var indexOf = query.LastIndexOf(' ');
+
+            if(indexOf <= 0)
+            {
+                return new JsonNetResult()
+                    {
+                        Data = new
+                            {
+                                query = query,
+                                suggestions = new string[] { }
+                            }
+                    };
+            }
+
+            var tag = query.Substring(indexOf + 1);
+
+            dynamic response = new
+            {
+                query = query,
+                suggestions = _textService.FindAllTags(tag).Take(10)
+            };
+
+            return new JsonNetResult() { Data = response };
+        }
+
+        [AjaxRoute]
         public ActionResult PerformAction(string action, Guid[] ids, string input)
         {
             try

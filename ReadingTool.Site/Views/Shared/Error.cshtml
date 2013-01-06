@@ -25,24 +25,28 @@
         @Bundles.RenderStylesheets()
         @Bundles.RenderStylesheets("head")
         @Bundles.RenderScripts()
-        <title>SITE - @ViewBag.Title</title>
+        <title>ReadingTool - @ViewBag.Title</title>
         @Bundles.RenderScripts("head")
     </head>
-<body>
-    <div class="container-fluid">
-        @Html.Partial("_Navigation")
-        @Html.Flash()
-        <h1>Error Page</h1>
-        <div class="clr50"></div>
-        <div class="navbar navbar-fixed-bottom navbar-inverse">
-            <div class="navbar-inner">
-                <div style="width: 50%; margin: auto; padding-top: 8px;">
-                    © @DateTime.Now.Year released under the AGPL&nbsp;&nbsp;-&nbsp;&nbsp;
-                    <a href="https://github.com/t123/ReadingTool" target="_blank">source code</a>&nbsp;&nbsp;-&nbsp;&nbsp;
-                    <a href="http://www.sil.org/iso639-3/" target="_blank">language data from www.sil.org/iso639-3/</a>
+    <body>
+        <div class="container-fluid">
+            @Html.Partial("_Navigation")
+            @Html.Flash()
+            <div class="clr10"></div>
+            @Html.FlashMessage("Sorry, an error has occurred. Please go back and try again.")
+            <p>
+                If you would like to report this error, please do so at <a target="_blank" href="https://github.com/t123/ReadingTool/issues">https://github.com/t123/ReadingTool/issues</a>.
+            </p>
+            <div class="clr50"></div>
+            <div class="navbar navbar-fixed-bottom navbar-inverse">
+                <div class="navbar-inner">
+                    <div style="width: 50%; margin: auto; padding-top: 8px; color: white;">
+                        © @DateTime.Now.Year released under the AGPL&nbsp;&nbsp;-&nbsp;&nbsp;
+                        <a href="https://github.com/t123/ReadingTool" target="_blank">source code</a>&nbsp;&nbsp;-&nbsp;&nbsp;
+                        <a href="http://www.sil.org/iso639-3/" target="_blank">language data from www.sil.org/iso639-3/</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>

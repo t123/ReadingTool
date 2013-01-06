@@ -10,16 +10,19 @@
     Bundles.Reference("Scripts/other/footer/codemirror/lib/util/search.js");
     Bundles.Reference("Scripts/other/footer/codemirror/lib/util/searchcursor.js");
     Bundles.Reference("Scripts/other/footer/codemirror/lib/codemirror.css");
-    
+    Bundles.AddInlineScript(@<text><script src="/routes/?c=user.texts" type="text/javascript"></script></text>, "head");
+
     Bundles.AddInlineScript(
         @<script type="text/javascript">
              $('.autocomplete').each(function (index, html) {
-                 var url = $(html).data('autocomplete');
+                 var url = routes.texts.autoCompleteTags;
                  $(html).autocomplete({
-                     minChars: 3,
+                     minChars: 2,
                      type: 'POST',
                      serviceUrl: url,
+                     delimiter: /\s* /,
                      onSelect: function (suggestion) {
+                         $(html).focus();
                      }
                  });
              });
@@ -58,7 +61,7 @@
                  editor2.matchHighlight("CodeMirror-matchhighlight");
              });
          </script>
-        , "body");
+, "body");
 }
 
 @section Menu
@@ -72,35 +75,35 @@
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Add Text</legend>
-        @Html.BootstrapFormDropDown(x=>x.L1Id, new SelectList(ViewBag.Languages as Dictionary<Guid,string>, "Key", "Value"), "Please choose")
-        @Html.BootstrapFormTextbox(x=>x.AudioUrl, new { @type="url", @class="input-xxlarge"})
-        @Html.BootstrapFormTextbox(x=>x.CollectionName, new { @class="input-xxlarge" })
-        @Html.BootstrapFormItem(x=>x.CollectionNo)
-        @Html.BootstrapFormTextbox(x=>x.Title, new { @class="input-xxlarge" })
-        @Html.BootstrapFormTextbox(x=>x.Tags, new { @class="input-xxlarge" })
-        @Html.BootstrapFormCustomHtml(x=>x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l1modal"">change L1 text</a>")
+        @Html.BootstrapFormDropDown(x => x.L1Id, new SelectList(ViewBag.Languages as Dictionary<Guid, string>, "Key", "Value"), "Please choose")
+        @Html.BootstrapFormTextbox(x => x.AudioUrl, new { @type = "url", @class = "input-xxlarge" })
+        @Html.BootstrapFormTextbox(x => x.CollectionName, new { @class = "input-xxlarge" })
+        @Html.BootstrapFormItem(x => x.CollectionNo)
+        @Html.BootstrapFormTextbox(x => x.Title, new { @class = "input-xxlarge" })
+        @Html.BootstrapFormTextbox(x => x.Tags, new RouteValueDictionary { { "class", "input-xxlarge autocomplete" } })
+        @Html.BootstrapFormCustomHtml(x => x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l1modal"">change L1 text</a>")
         <div id="l1modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">@Html.LabelFor(x=>x.L1Text)</h3>
+            <h3 id="myModalLabel">@Html.LabelFor(x => x.L1Text)</h3>
           </div>
           <div class="modal-body">
-            <p>@Html.TextAreaFor(x=>x.L1Text)</p>
+            <p>@Html.TextAreaFor(x => x.L1Text)</p>
           </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
           </div>
         </div>
 
-        @Html.BootstrapFormDropDown(x=>x.L2Id, new SelectList(ViewBag.Languages as Dictionary<Guid,string>, "Key", "Value"), "None")
-        @Html.BootstrapFormCustomHtml(x=>x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l2modal"">change L2 text</a>")
+        @Html.BootstrapFormDropDown(x => x.L2Id, new SelectList(ViewBag.Languages as Dictionary<Guid, string>, "Key", "Value"), "None")
+        @Html.BootstrapFormCustomHtml(x => x.L1Text, @"<a class=""btn btn-inverse btn-small"" data-toggle=""modal"" href=""#l2modal"">change L2 text</a>")
         <div id="l2modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false" data-keyboard="true">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">@Html.LabelFor(x=>x.L2Text)</h3>
+            <h3 id="myModalLabel">@Html.LabelFor(x => x.L2Text)</h3>
           </div>
           <div class="modal-body">
-            <p>@Html.TextAreaFor(x=>x.L2Text)</p>
+            <p>@Html.TextAreaFor(x => x.L2Text)</p>
           </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -109,7 +112,7 @@
         <div class="buttons">
             <input type="submit" class="btn btn-primary" name="save" value="save"/>
             <input type="submit" class="btn btn-primary" name="saveread" value="save & read"/>
-            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { },new{@class="btn btn-link"})
+            @Html.ActionLink("Cancel", ViewContext.RouteData.Values["action"].ToString(), new { }, new { @class = "btn btn-link" })
         </div>
     </fieldset>
 }
