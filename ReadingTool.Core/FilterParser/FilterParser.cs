@@ -55,8 +55,12 @@ namespace ReadingTool.Core.FilterParser
             }
         }
 
-        private static readonly Regex regex = new Regex(@"#[\w]+|\w+|""[\w\s]*""");
+        private static readonly Regex regex = new Regex(@"#[\w|\-]+|(\w|\-)+|""(\w|\s|\-)*""");
 
+        private static string StripQuotes(string input)
+        {
+            return input.Replace("\"", "");
+        }
         public static FilterResult Parse(IEnumerable<string> userLanguages, string filter, string[] magicTerms)
         {
             filter = (filter ?? "").ToLowerInvariant().Trim();
@@ -69,7 +73,7 @@ namespace ReadingTool.Core.FilterParser
                 if(t.StartsWith("\"")) t = t.Substring(1, t.Length - 1);
                 if(t.EndsWith("\"")) t = t.Substring(0, t.Length - 1);
 
-                t = t.Trim();
+                t = StripQuotes(t.Trim());
                 if(string.IsNullOrEmpty(t))
                 {
                     continue;
@@ -86,15 +90,17 @@ namespace ReadingTool.Core.FilterParser
                     {
                         result.Tags.Add(t);
                     }
+
+                    continue;
                 }
-                else if(userLanguages.Contains(t))
+
+                if(userLanguages.Contains(t))
                 {
                     result.Languages.Add(t);
+                    continue;
                 }
-                else
-                {
-                    result.Other.Add(t);
-                }
+
+                result.Other.Add(t);
             }
 
             return result;

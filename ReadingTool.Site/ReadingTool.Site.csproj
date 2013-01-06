@@ -197,6 +197,7 @@
     <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\ValidEmailAddress.cs" />
     <Compile Include="CassetteConfiguration.cs" />
+    <Compile Include="Controllers\Api\AuthorizationHeaderHandler.cs" />
     <Compile Include="Controllers\Api\TermsController.cs" />
     <Compile Include="Controllers\Api\LanguagesController.cs" />
     <Compile Include="Controllers\Api\TextsController.cs" />

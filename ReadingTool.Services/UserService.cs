@@ -20,6 +20,7 @@ namespace ReadingTool.Services
         User FindUserByUsername(string username);
         bool UserExists(string username);
         bool VerifyPassword(string attemptedPassword, string currentPassword);
+        User FindUserByApiKey(string apiKeyHeaderValue);
     }
 
     public class UserService : IUserService
@@ -102,6 +103,25 @@ namespace ReadingTool.Services
 #else
             return BCrypt.Net.BCrypt.Verify(attemptedPassword, currentPassword);
 #endif
+        }
+
+        public User FindUserByApiKey(string apiKey)
+        {
+            if(string.IsNullOrWhiteSpace(apiKey))
+            {
+                return null;
+            }
+
+            var user = _db.QuerySingle<User>(new { ApiKey = apiKey });
+
+            if(user == null)
+            {
+                return null;
+            }
+
+            //TODO any other logic here
+
+            return user;
         }
     }
 }

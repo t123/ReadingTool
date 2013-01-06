@@ -6,12 +6,14 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using AutoMapper;
+using ReadingTool.Core;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Models.WebApi;
 
 namespace ReadingTool.Site.Controllers.Api
 {
+    [Authorize(Roles = Constants.Roles.WEB)]
     public class LanguagesController : ApiController
     {
         private readonly ILanguageService _languageService;
