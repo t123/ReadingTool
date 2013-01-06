@@ -17,6 +17,7 @@ using ReadingTool.Site.Models.User;
 
 namespace ReadingTool.Site.Controllers.User
 {
+    [Authorize(Roles = Constants.Roles.WEB)]
     public class TermsController : Controller
     {
         private readonly ITermService _termService;

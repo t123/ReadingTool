@@ -17,12 +17,12 @@ using ServiceStack;
 namespace ReadingTool.Site.Controllers.User
 {
     [ValidateInput(false)]
+    [Authorize(Roles = Constants.Roles.WEB)]
     public class ReadingController : Controller
     {
         private readonly ITextService _textService;
         private readonly ITermService _termService;
         private readonly ILanguageService _languageService;
-        private readonly IUserIdentity _identity;
 
         public const string OK = "OK";
         public const string FAIL = "FAIL";
@@ -42,13 +42,11 @@ namespace ReadingTool.Site.Controllers.User
         public ReadingController(
             ITextService textService,
             ITermService termService,
-            ILanguageService languageService,
-            IPrincipal principal)
+            ILanguageService languageService)
         {
             _textService = textService;
             _termService = termService;
             _languageService = languageService;
-            _identity = principal.Identity as IUserIdentity;
         }
 
         [HttpPost]

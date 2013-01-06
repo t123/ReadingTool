@@ -20,6 +20,7 @@ using ReadingTool.Site.Models.User;
 
 namespace ReadingTool.Site.Controllers.User
 {
+    [Authorize(Roles = Constants.Roles.WEB)]
     public class TextsController : Controller
     {
         private readonly ITextService _textService;
