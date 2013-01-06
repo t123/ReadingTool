@@ -24,20 +24,15 @@ namespace ReadingTool.Services
 
     public class DefaultParserService : IParserService
     {
-
-        private bool _asParallel;
-        private Text _text;
-        private Language _l1Language;
-        private Language _l2Language;
-        private Term[] _terms;
-        private Term[] _singleTerms;
-        private Regex _termTest;
-        private Splitter _l1Splitter;
-        private Splitter _l2Splitter;
-
-        public DefaultParserService()
-        {
-        }
+        protected bool _asParallel;
+        protected Text _text;
+        protected Language _l1Language;
+        protected Language _l2Language;
+        protected Term[] _terms;
+        protected Term[] _singleTerms;
+        protected Regex _termTest;
+        protected Splitter _l1Splitter;
+        protected Splitter _l2Splitter;
 
         public string Parse(bool asParallel, Language l1Language, Language l2Language, Tuple<IList<Term>, IList<Term>> terms, Text text)
         {
@@ -70,7 +65,7 @@ namespace ReadingTool.Services
             return ApplyTransform(xml);
         }
 
-        private string BuildTextWithTitle(string inputText)
+        protected virtual string BuildTextWithTitle(string inputText)
         {
             return (_text.CollectionNo.HasValue ? _text.CollectionNo + ". " : "") +
                    _text.Title +
@@ -79,7 +74,7 @@ namespace ReadingTool.Services
                    inputText;
         }
 
-        private string SplitText(string text, LanguageSettings settings)
+        protected virtual string SplitText(string text, LanguageSettings settings)
         {
             if(string.IsNullOrEmpty(text) || settings == null) return string.Empty;
 
@@ -146,7 +141,7 @@ namespace ReadingTool.Services
             //}
         }
 
-        protected XDocument CreateTextXml(string text, string parallelText)
+        protected virtual XDocument CreateTextXml(string text, string parallelText)
         {
             var l1Settings = _l1Language.Settings;
             var l2Settings = _l2Language == null ? null : _l2Language.Settings;
@@ -180,7 +175,7 @@ namespace ReadingTool.Services
             return document;
         }
 
-        protected XElement CreateParagraph(string paragraph, bool asParallel, LanguageSettings settings, Splitter splitter)
+        protected virtual XElement CreateParagraph(string paragraph, bool asParallel, LanguageSettings settings, Splitter splitter)
         {
             var thisParagraph = new XElement("p");
 
@@ -319,7 +314,7 @@ namespace ReadingTool.Services
             return document;
         }
 
-        protected string ApplyTransform(XDocument document)
+        protected virtual string ApplyTransform(XDocument document)
         {
 #if DEBUG
             string xslText = null;

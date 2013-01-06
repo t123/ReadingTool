@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Security.Principal;
@@ -58,7 +59,7 @@ namespace ReadingTool.Site.App_Start
 
             RegisterServices(kernel);
 
-            GlobalConfiguration.Configuration.DependencyResolver = new WebApiDependencyResolver(kernel); 
+            GlobalConfiguration.Configuration.DependencyResolver = new WebApiDependencyResolver(kernel);
 
             return kernel;
         }
@@ -82,11 +83,12 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<ISequenceService>().To<SequenceService>();
             kernel.Bind<ILwtImportService>().To<LwtImportService>();
             kernel.Bind<IUpgradeService>().To<UpgradeService>();
+            kernel.Bind<LatexParserService>().To<LatexParserService>();
 
             kernel.Bind<OrmLiteConnectionFactory>().ToMethod
                 (
                     x =>
-                    new OrmLiteConnectionFactory("Data Source=(local);Initial Catalog=Test;Persist Security Info=True;User ID=sa;Password=password", SqlServerOrmLiteDialectProvider.Instance)
+                    new OrmLiteConnectionFactory(ConfigurationManager.AppSettings["ConnectionString"], SqlServerOrmLiteDialectProvider.Instance)
                         {
                             ConnectionFilter = z => new ProfiledDbConnection((DbConnection)((IHasDbConnection)z).DbConnection, MiniProfiler.Current)
                         }

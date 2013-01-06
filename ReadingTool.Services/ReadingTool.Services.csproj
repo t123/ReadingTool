@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AuthenticationService.cs" />
     <Compile Include="DeleteService.cs" />
+    <Compile Include="LatexParserService.cs" />
     <Compile Include="LwtImportService.cs" />
     <Compile Include="SequenceService.cs" />
     <Compile Include="UpgradeService.cs" />

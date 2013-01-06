@@ -255,6 +255,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="App_Data\latex.xsl" />
     <Content Include="App_Data\read.xsl" />
     <Content Include="App_Data\readparallel.xsl" />
     <Content Include="Content\img\glyphicons-halflings-white.png" />
@@ -543,6 +544,7 @@
     <Content Include="Views\User\Terms\Partials\_list.cshtml" />
     <Content Include="Views\User\MyAccount\Upgrade.cshtml" />
     <Content Include="Views\User\MyAccount\ApiAccess.cshtml" />
+    <Content Include="Views\User\Texts\ReadLatex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

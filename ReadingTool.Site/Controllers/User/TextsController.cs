@@ -263,6 +263,35 @@ namespace ReadingTool.Site.Controllers.User
             return View("Read", Create(text, true));
         }
 
+        public ActionResult ReadLatex(Guid id)
+        {
+            Text text = _textService.Find(id);
+
+            if(text == null)
+            {
+                this.FlashError(Constants.Messages.FORM_NOT_FOUND, DescriptionFormatter.GetDescription<Text>());
+                return RedirectToAction("Index");
+            }
+
+            var latexParser = DependencyResolver.Current.GetService<LatexParserService>();
+            var l1Language = _languageService.Find(text.L1Id);
+            Language l2Language = null;
+            var terms = _termService.FindAllForParsing(l1Language);
+            var parsed = latexParser.Parse(false, l1Language, l2Language, terms, text);
+
+            var model = new ReadViewModel()
+            {
+                Text = text,
+                Language = l1Language,
+                ParsedText = parsed,
+                AsParallel = false,
+                User = _userService.Find(this.CurrentUserId()),
+                PagedTexts = new Tuple<Guid?, Guid?>(null, null)
+            };
+
+            return View(model);
+        }
+
         [HttpGet]
         public ActionResult Import()
         {
