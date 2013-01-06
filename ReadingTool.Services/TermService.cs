@@ -465,6 +465,15 @@ WHERE t.Owner='{0}' /*WHERE*/
                 .Replace("/*LEFTJOINIT*/", "")
                 .Replace("/*WHERE*/", whereSql.ToString());
 
+            int page = so.Page - 1;
+            int rowsPerPage = so.RowsPerPage;
+
+            if(so.IgnorePaging)
+            {
+                page = 0;
+                rowsPerPage = int.MaxValue;
+            }
+
             StringBuilder query = new StringBuilder();
             query.AppendFormat(@"
 SELECT *
@@ -482,8 +491,8 @@ ORDER BY RowNumber
                          .Replace("/*HAVING*/", having)
                          .Replace("/*GROUPBY*/", "GROUP BY l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId")
                          .Replace("/*WHERE*/", whereSql.ToString()),
-                         (so.Page - 1) * so.RowsPerPage,
-                         (so.Page - 1) * so.RowsPerPage + so.RowsPerPage
+                         page * rowsPerPage,
+                         page * rowsPerPage + rowsPerPage
                 );
             #endregion
 

@@ -300,6 +300,15 @@ WHERE t.Owner='{0}' /*WHERE*/
 
             string countQuery = sql.Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total").Replace("/*COLUMNS*/", "").Replace("/*WHERE*/", whereSql.ToString());
 
+            int page = so.Page - 1;
+            int rowsPerPage = so.RowsPerPage;
+
+            if(so.IgnorePaging)
+            {
+                page = 0;
+                rowsPerPage = int.MaxValue;
+            }
+
             StringBuilder query = new StringBuilder();
             query.AppendFormat(@"
 SELECT *
@@ -311,8 +320,8 @@ WHERE RowNumber BETWEEN {1} AND {2}
 ORDER BY RowNumber
 ",
                          sql.Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,").Replace("/*COLUMNS*/", columns).Replace("/*WHERE*/", whereSql.ToString()),
-                         (so.Page - 1) * so.RowsPerPage,
-                         (so.Page - 1) * so.RowsPerPage + so.RowsPerPage
+                         page,
+                         page * rowsPerPage + rowsPerPage
                 );
             #endregion
 

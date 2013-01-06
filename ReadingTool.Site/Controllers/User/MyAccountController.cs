@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using AutoMapper;
 using Ionic.Zip;
+using Ionic.Zlib;
 using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
@@ -319,6 +320,8 @@ namespace ReadingTool.Site.Controllers.User
                     MemoryStream ms = new MemoryStream();
                     using(ZipFile zip = new ZipFile())
                     {
+                        zip.CompressionMethod = CompressionMethod.BZip2;
+                        zip.CompressionLevel = CompressionLevel.BestCompression;
                         zip.AddEntry("account.json", jsonString, Encoding.UTF8);
                         zip.Save(ms);
                     }

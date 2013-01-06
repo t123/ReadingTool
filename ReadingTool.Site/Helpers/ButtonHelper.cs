@@ -10,23 +10,23 @@ namespace ReadingTool.Site.Helpers
     public static class ButtonHelper
     {
         #region delete button
-        public static MvcHtmlString DeleteButton(this HtmlHelper html, string url)
+        public static MvcHtmlString DeleteButton(this HtmlHelper html, string url, string classes = "")
         {
-            return DeleteButton(html, url, null);
+            return DeleteButton(html, url, null, classes);
         }
 
-        public static MvcHtmlString DeleteButton(this HtmlHelper html, string url, long? id)
+        public static MvcHtmlString DeleteButton(this HtmlHelper html, string url, Guid? id, string classes = "")
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendFormat(@"<form method=""post"" action=""{0}"" onsubmit=""return confirm('Are you sure you want to delete this?');"">", url);
+            sb.AppendFormat(@"<form method=""post"" action=""{0}"" onsubmit=""return confirm('Are you sure you want to delete this?');"" style=""display:inline"">", url);
             sb.AppendFormat("{0}", html.AntiForgeryToken());
             if(id.HasValue)
             {
                 sb.AppendFormat(@"<input type=""hidden"" name=""id"" value=""{0}"" />", id.Value);
             }
 
-            sb.AppendFormat(@"<button type=""submit"" class=""btn btn-mini btn-danger"">delete</button>");
+            sb.AppendFormat(@"<button type=""submit"" class=""btn btn-danger {0}"">delete</button>", classes);
             sb.Append("</form>");
 
             return new MvcHtmlString(sb.ToString());
@@ -34,16 +34,16 @@ namespace ReadingTool.Site.Helpers
         #endregion
 
         #region edit button
-        public static MvcHtmlString EditButton(this HtmlHelper html, string url)
+        public static MvcHtmlString EditButton(this HtmlHelper html, string url, string classes = "")
         {
-            return EditButton(html, url, null);
+            return EditButton(html, url, null, classes);
         }
 
-        public static MvcHtmlString EditButton(this HtmlHelper html, string url, long? id)
+        public static MvcHtmlString EditButton(this HtmlHelper html, string url, Guid? id, string classes = "")
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendFormat(@"<a class=""btn btn-mini"" href=""{0}"" title=""edit"">edit</a>", url);
+            sb.AppendFormat(@"<a class=""btn {1}"" href=""{0}"" title=""edit"">edit</a>", url, classes);
 
             return new MvcHtmlString(sb.ToString());
         }

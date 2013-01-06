@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
+using Ionic.Zip;
+using Ionic.Zlib;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
 using ReadingTool.Core.Formatters;
@@ -150,6 +154,130 @@ namespace ReadingTool.Site.Controllers.User
             catch(Exception e)
             {
                 return new JsonNetResult() { Data = "FAIL" };
+            }
+        }
+
+        [AjaxRoute]
+        public ActionResult ExportSelected(string ids)
+        {
+            var list = new List<Term>();
+
+            if(!string.IsNullOrEmpty(ids))
+            {
+                foreach(var id in ids.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Guid i;
+
+                    if(!Guid.TryParse(id, out i))
+                        continue;
+
+                    var term = _termService.Find(i, true);
+                    if(term == null)
+                    {
+                        continue;
+                    }
+
+                    list.Add(term);
+                }
+            }
+
+            return CreateExportFile(list);
+        }
+
+        [AjaxRoute]
+        public ActionResult ExportTerms(string filter)
+        {
+            var result = _termService.FilterTerms(new SearchOptions()
+                {
+                    Filter = filter,
+                    Sort = "language",
+                    IgnorePaging = true
+                });
+
+            foreach(var t in result.Results)
+            {
+                t.AddIndividualTerms(_termService.FindIndividualTerms(t));
+            }
+
+            return CreateExportFile(result.Results);
+        }
+
+        private ActionResult CreateExportFile(IEnumerable<Term> terms)
+        {
+            var languages = _languageService.FindAll().ToDictionary(x => x.Id, x => x.Name);
+
+            StringBuilder csvFile = new StringBuilder();
+            foreach(var term in terms)
+            {
+                if(term.IndividualTerms.Any())
+                {
+                    foreach(var it in term.IndividualTerms)
+                    {
+                        var export = new TermExportModel()
+                            {
+                                BaseTerm = it.BaseTerm,
+                                Box = term.Box,
+                                Definition = it.Definition.Replace("\n", "<br/>").Replace("\r", ""),
+                                Id = term.Id,
+                                IndividualTermId = it.Id,
+                                LanguageId = it.LanguageId,
+                                LanguageName = languages.GetValueOrDefault(it.LanguageId, "Unknown"),
+                                NextReview = term.NextReview,
+                                Romanisation = it.Romanisation,
+                                Sentence = it.Sentence.ReplaceString(it.BaseTerm, "<strong>" + it.BaseTerm + "</strong>", StringComparison.InvariantCultureIgnoreCase),
+                                State = term.State.ToDescription(),
+                                Tags = it.Tags,
+                                TermPhrase = term.TermPhrase
+                            };
+
+                        csvFile.AppendLine(export.ToString());
+                    }
+                }
+                else
+                {
+                    var export = new TermExportModel()
+                    {
+                        BaseTerm = "",
+                        Box = term.Box,
+                        Definition = "",
+                        Id = term.Id,
+                        IndividualTermId = null,
+                        LanguageId = term.LanguageId,
+                        LanguageName = languages.GetValueOrDefault(term.LanguageId, "Unknown"),
+                        NextReview = term.NextReview,
+                        Romanisation = "",
+                        Sentence = "",
+                        State = term.State.ToDescription(),
+                        Tags = "",
+                        TermPhrase = term.TermPhrase
+                    };
+
+                    csvFile.AppendLine(export.ToString());
+                }
+            }
+
+            if(csvFile.Length > 1)
+            {
+                csvFile.Remove(csvFile.Length - 2, 2);
+            }
+
+            if(csvFile.Length < 100 * 1024)
+            {
+                return new FileContentResult(Encoding.UTF8.GetBytes(csvFile.ToString()), "text/csv") { FileDownloadName = "terms.tsv" };
+            }
+            else
+            {
+                MemoryStream ms = new MemoryStream();
+                using(ZipFile zip = new ZipFile())
+                {
+                    zip.CompressionMethod = CompressionMethod.BZip2;
+                    zip.CompressionLevel = CompressionLevel.BestCompression;
+                    zip.AddEntry("terms.tsv", csvFile.ToString(), Encoding.UTF8);
+                    zip.Save(ms);
+                }
+
+                ms.Seek(0, SeekOrigin.Begin);
+                return File(ms, "application/zip", "terms.zip");
             }
         }
     }

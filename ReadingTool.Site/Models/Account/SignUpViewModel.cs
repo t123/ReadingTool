@@ -7,6 +7,7 @@ namespace ReadingTool.Site.Models.Account
         [Required]
         [Display(Name = "Username", Order = 1)]
         [MinLength(3)]
+        [RegularExpression(@"^[a-zA-Z0-9_-]*$", ErrorMessage = "Please use only letters, numbers, hyphens and underscores")]
         public string Username { get; set; }
 
         [Required]

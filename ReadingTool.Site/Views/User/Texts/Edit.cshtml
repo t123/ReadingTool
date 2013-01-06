@@ -113,3 +113,12 @@
         </div>
     </fieldset>
 }
+<div class="clr50"></div>
+<div class="buttons">
+    @Html.ActionLink("read text", "Read", new {  id=Model.Id }, new { @class = "btn btn-primary" })
+    @if(!string.IsNullOrEmpty(Model.L2Text))
+    {
+        @Html.ActionLink("read text in parallel", "ReadParallel", new { id=Model.Id }, new {@class = "btn btn-primary"})
+    }
+    @Html.DeleteButton(Url.Action("Delete"), Model.Id)
+</div>

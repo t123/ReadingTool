@@ -77,7 +77,14 @@ using a # sign, or use some of these special tags: " + string.Join(", ", FilterP
             <li><a href="#" id="changeNotseen">change selected terms to not seen</a></li>
         </ul>
     </div>
+    <form method="post" action="@Url.Action("ExportSelected")" style="display: inline" onsubmit="$('#ExportSelectedIds').val(getSelectedCheckboxes());">
+        <input type="hidden" name="ids" id="ExportSelectedIds" value=""/>
+        <button type="submit" class="btn btn-primary">export selected terms</button>
+    </form>
+    <form method="post" action="@Url.Action("ExportTerms")" style="display: inline" onsubmit="$('#ExportFilter').val(state.filter);">
+        <input type="hidden" name="filter" id="ExportFilter" value=""/>
+        <button type="submit" class="btn btn-primary">export all matching terms</button>
+    </form>
 </div>
 <div class="clr100"></div>
-<div class="clr50"></div>
 <div class="clr50"></div>

@@ -68,9 +68,9 @@
                             </div>
                         }
                     </td>
-                    <td>@Html.EditButton(Url.Action("Edit", new { id = l.Id }))</td>
+                    <td>@Html.EditButton(Url.Action("Edit", new { id = l.Id }), "btn-mini")</td>
                     <td>@Html.GenericButton("Dictionaries", Url.Action("Dictionaries", new { id = l.Id }), "btn btn-mini")</td>
-                    <td>@Html.DeleteButton(Url.Action("Delete", new { id = l.Id }))</td>
+                    <td>@Html.DeleteButton(Url.Action("Delete", new { id = l.Id }), classes:"btn-mini")</td>
                 </tr>
             }
         </tbody>

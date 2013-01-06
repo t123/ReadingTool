@@ -21,6 +21,7 @@ namespace ReadingTool.Site.Models.User
         [Display(Name = "Username", Order = 1)]
         [Tip("This is your unique username.")]
         [MinLength(3)]
+        [RegularExpression(@"^[a-zA-Z0-9_-]*$", ErrorMessage = "Please use only letters, numbers, hyphens and underscores")]
         public string Username { get; set; }
 
         [StringLength(30)]
