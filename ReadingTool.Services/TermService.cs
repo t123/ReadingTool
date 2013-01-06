@@ -87,43 +87,50 @@ namespace ReadingTool.Services
                         Owner = term.Owner,
                         IsNew = isNew,
                         StateChange = term.StateHasChanged,
-                        Language = language,
-                        Term = term
+                        //Language = language,
+                        //Term = term
                     };
 
-                Logger.Info(FormatAuditAsJson(tl));
+                Logger.Info(FormatAuditAsTSV(tl));
             }
         }
 
-        private string FormatAuditAsJson(TermLog log)
+        private string FormatAuditAsTSV(TermLog log)
         {
-            return JsonConvert.SerializeObject(log, new JsonSerializerSettings() { ContractResolver = new TermAuditSerializeContractResolver(), Formatting = Formatting.None });
+            return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}",
+                log.TermId, log.LanguageId, log.Owner, log.State, log.Date, log.IsNew, log.StateChange
+                );
         }
 
-        public class TermAuditSerializeContractResolver : DefaultContractResolver
-        {
-            public new static readonly TermAuditSerializeContractResolver Instance = new TermAuditSerializeContractResolver();
+        //private string FormatAuditAsJson(TermLog log)
+        //{
+        //    return JsonConvert.SerializeObject(log, new JsonSerializerSettings() { ContractResolver = new TermAuditSerializeContractResolver(), Formatting = Formatting.None });
+        //}
 
-            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-            {
-                JsonProperty property = base.CreateProperty(member, memberSerialization);
+        //public class TermAuditSerializeContractResolver : DefaultContractResolver
+        //{
+        //    public new static readonly TermAuditSerializeContractResolver Instance = new TermAuditSerializeContractResolver();
 
-                if(property.DeclaringType == typeof(Language) &&
-                    (property.PropertyName == "Settings") ||
-                    (property.PropertyName == "Review") ||
-                    (property.PropertyName == "Dictionaries")
-                    )
-                {
-                    property.ShouldSerialize = instance => false;
-                }
-                else if(property.DeclaringType == typeof(Term) && property.PropertyName == "Definition")
-                {
-                    property.ShouldSerialize = instance => false;
-                }
+        //    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        //    {
+        //        JsonProperty property = base.CreateProperty(member, memberSerialization);
 
-                return property;
-            }
-        }
+        //        if(property.DeclaringType == typeof(Language) &&
+        //            (property.PropertyName == "Settings") ||
+        //            (property.PropertyName == "Review") ||
+        //            (property.PropertyName == "Dictionaries")
+        //            )
+        //        {
+        //            property.ShouldSerialize = instance => false;
+        //        }
+        //        else if(property.DeclaringType == typeof(Term) && property.PropertyName == "Definition")
+        //        {
+        //            property.ShouldSerialize = instance => false;
+        //        }
+
+        //        return property;
+        //    }
+        //}
 
         public void SaveAll(IEnumerable<Term> terms, bool audit = true)
         {
@@ -181,11 +188,11 @@ namespace ReadingTool.Services
                         Owner = term.Owner,
                         IsNew = isNew,
                         StateChange = term.StateHasChanged,
-                        Language = languages[term.LanguageId],
-                        Term = term
+                        //Language = languages[term.LanguageId],
+                        //Term = term
                     };
 
-                    sb.AppendLine(FormatAuditAsJson(tl));
+                    sb.AppendLine(FormatAuditAsTSV(tl));
                 }
             }
 
