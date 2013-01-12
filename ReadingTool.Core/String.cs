@@ -61,5 +61,10 @@ namespace ReadingTool.Core
 
             return sb.ToString();
         }
+
+        public static string ToCamelCase(this string input)
+        {
+            return input;
+        }
     }
 }

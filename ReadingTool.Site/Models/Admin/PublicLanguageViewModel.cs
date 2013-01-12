@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MongoDB.Bson;
 using ReadingTool.Core.Attributes;
 using ReadingTool.Site.Attributes;
 using ReadingTool.Site.Models.User;
@@ -15,7 +16,7 @@ namespace ReadingTool.Site.Models.Admin
     public class PublicLanguageViewModel
     {
         [HiddenInput(DisplayValue = false)]
-        public Guid Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [Required]
         [StringLength(30)]

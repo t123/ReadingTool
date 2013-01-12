@@ -5,70 +5,40 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver.Linq;
+using ReadingTool.Core.Database;
 using ReadingTool.Entities;
-using ServiceStack.OrmLite;
+using ReadingTool.Repository;
 
 namespace ReadingTool.Services
 {
-    public interface ISystemLanguageService
+    public interface ISystemLanguageService : IRepository<SystemLanguage>
     {
-        void Save(SystemLanguage language);
-        void Save(IList<SystemLanguage> languages);
-        void Delete(SystemLanguage language);
-        void Delete(Guid id);
-        SystemLanguage Find(Guid id);
-        IEnumerable<SystemLanguage> FindAll();
         IEnumerable<SystemLanguage> FindAllStartingWith(string term);
         SystemLanguage FindByName(string name);
     }
 
-    public class SystemLanguageService : ISystemLanguageService
+    public class SystemLanguageService : Repository<SystemLanguage>, ISystemLanguageService
     {
-        private readonly IDbConnection _db;
-
-        public SystemLanguageService(IDbConnection db)
+        public SystemLanguageService(MongoContext context)
+            : base(context)
         {
-            _db = db;
         }
 
-        public void Save(SystemLanguage language)
-        {
-            _db.Save(language);
-        }
-
-        public void Save(IList<SystemLanguage> languages)
-        {
-            _db.SaveAll(languages);
-        }
-
-        public void Delete(SystemLanguage language)
+        public new void Delete(SystemLanguage language)
         {
             throw new NotImplementedException();
-        }
-
-        public void Delete(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public SystemLanguage Find(Guid id)
-        {
-            return _db.GetById<SystemLanguage>(id);
-        }
-
-        public IEnumerable<SystemLanguage> FindAll()
-        {
-            return _db.Select<SystemLanguage>();
         }
 
         public IEnumerable<SystemLanguage> FindAllStartingWith(string term)
         {
-            return _db.Select<SystemLanguage>(x => x.Name.StartsWith(term));
+            return _collection.AsQueryable().Where(x => x.Name.StartsWith(term));
         }
 
         public SystemLanguage FindByName(string name)
         {
-            return _db.Select<SystemLanguage>(x => x.Name==name).FirstOrDefault();
+            return _collection.AsQueryable().FirstOrDefault(x => x.Name == name);
         }
     }
 }

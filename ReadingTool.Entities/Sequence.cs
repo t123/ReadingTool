@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ServiceStack.OrmLite;
 
-namespace ReadingTool.Repository
+namespace ReadingTool.Entities
 {
-    public class BaseRepository<T>
+    public class Sequence
     {
-       
+        //[AutoIncrement]
+        //public long Id { get; set; }
     }
 }

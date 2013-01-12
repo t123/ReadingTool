@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using MongoDB.Bson;
 using ReadingTool.Core.Attributes;
 using ReadingTool.Site.Attributes;
-using ServiceStack.DataAnnotations;
 
 namespace ReadingTool.Site.Models.User
 {
@@ -14,7 +14,7 @@ namespace ReadingTool.Site.Models.User
     {
         [ReadOnly(true)]
         [ScaffoldColumn(false)]
-        public Guid Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [Required]
         [StringLength(30)]

@@ -5,8 +5,8 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using ReadingTool.Core;
 using ReadingTool.Site.Attributes;
-using ServiceStack.Text;
 
 namespace ReadingTool.Site.Controllers
 {

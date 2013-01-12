@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using ServiceStack.OrmLite;
 
 namespace ReadingTool.Site.Models.WebApi
 {

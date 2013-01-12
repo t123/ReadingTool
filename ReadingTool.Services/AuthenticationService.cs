@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Entities;
@@ -26,7 +27,7 @@ namespace ReadingTool.Services
         internal class UserTicketData
         {
             public string DisplayName { get; set; }
-            public string Roles { get; set; }
+            public string[] Roles { get; set; }
             public string Theme { get; set; }
         }
 
@@ -94,9 +95,16 @@ namespace ReadingTool.Services
             }
         }
 
-        protected Guid GetUserIdFromIdentity(IIdentity identity)
+        protected ObjectId GetUserIdFromIdentity(IIdentity identity)
         {
-            return Guid.Parse(identity.Name);
+            ObjectId id;
+
+            if(ObjectId.TryParse(identity.Name, out id))
+            {
+                return id;
+            }
+
+            throw new Exception("Invalid user id");
         }
 
         public HttpCookie CreateAuthenticationTicket(User user)

@@ -5,7 +5,7 @@ using System.Net.Http.Formatting;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 using NinjectAdapter;
-using ReadingTool.Site.Controllers.Api;
+//using ReadingTool.Site.Controllers.Api;
 
 namespace ReadingTool.Site
 {
@@ -27,7 +27,7 @@ namespace ReadingTool.Site
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new AuthorizationHeaderHandler());
+            //GlobalConfiguration.Configuration.MessageHandlers.Add(new AuthorizationHeaderHandler());
             config.Filters.Add(new AuthorizeAttribute());
         }
     }

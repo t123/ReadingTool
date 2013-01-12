@@ -13,39 +13,15 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
 using Elmah;
+using MongoDB.Bson;
 using Ninject;
 using Ninject.Web.Common;
 using ReadingTool.Entities;
 using ReadingTool.Services;
-using ReadingTool.Site.Controllers.User;
 using ReadingTool.Site.Mappings;
-using ServiceStack.DataAccess;
-using ServiceStack.OrmLite;
-using ServiceStack.OrmLite.SqlServer;
-using StackExchange.Profiling;
-using StackExchange.Profiling.Data;
 
 namespace ReadingTool.Site
 {
-    internal static class ContextPerRequest
-    {
-        private static readonly OrmLiteConnectionFactory _factory = DependencyResolver.Current.GetService<OrmLiteConnectionFactory>();
-
-        internal static IDbConnection Current
-        {
-            get
-            {
-                if(!HttpContext.Current.Items.Contains("myContext"))
-                {
-                    OrmLiteConfig.DialectProvider.UseUnicode = true;
-                    HttpContext.Current.Items.Add("myContext", _factory.OpenDbConnection());
-                }
-
-                return HttpContext.Current.Items["myContext"] as IDbConnection;
-            }
-        }
-    }
-
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
     public class MvcApplication : HttpApplication
@@ -70,6 +46,7 @@ namespace ReadingTool.Site
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             ModelBinders.Binders.DefaultBinder = new EmptyStringModelBinder();
+            ModelBinders.Binders.Add(typeof(ObjectId), new ObjectIdBinder());
 
             RegisterMappings.Register();
 
@@ -85,23 +62,14 @@ namespace ReadingTool.Site
                 if(httpException.GetHttpCode() == (int)HttpStatusCode.NotFound)
                 {
                     string url = ((HttpContext)e.Context).Request.RawUrl;
-
-                    if(url.EndsWith(".php"))
+                    string[] ignoreExtensions = new string[] { ".php", ".asp", ".aspx", ".gif", ".png", ".ico" };
+                    if(ignoreExtensions.Select(url.EndsWith).Any())
                     {
                         e.Dismiss();
                     }
                     else if(url.StartsWith("/apple-touch"))
                     {
                         e.Dismiss();
-                    }
-                    else
-                    {
-                        switch(url)
-                        {
-                            case "/favicon.ico":
-                                e.Dismiss();
-                                break;
-                        }
                     }
                 }
             }
@@ -113,12 +81,6 @@ namespace ReadingTool.Site
 
         private void Application_EndRequest()
         {
-            var connection = HttpContext.Current.Items["myContext"] as IDbConnection;
-
-            if(connection != null)
-            {
-                connection.Dispose();
-            }
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)

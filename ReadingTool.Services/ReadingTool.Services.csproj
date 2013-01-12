@@ -41,12 +41,16 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=1.7.0.4714, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\mongocsharpdriver.1.7\lib\net35\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=1.7.0.4714, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\mongocsharpdriver.1.7\lib\net35\MongoDB.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.OrmLite, Version=3.9.32.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ReadingTool.Site\bin\ServiceStack.OrmLite.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,29 +62,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthenticationService.cs" />
-    <Compile Include="DeleteService.cs" />
-    <Compile Include="LatexParserService.cs" />
-    <Compile Include="LwtImportService.cs" />
-    <Compile Include="SequenceService.cs" />
-    <Compile Include="UpgradeService.cs" />
-    <Compile Include="TermService.cs" />
-    <Compile Include="IParserService.cs" />
-    <Compile Include="TextService.cs" />
-    <Compile Include="SystemLanguageService.cs" />
-    <Compile Include="LanguageService.cs" />
-    <Compile Include="EmailService.cs" />
-    <Compile Include="UserService.cs" />
+    <Compile Include="AuthenticationService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeleteService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LanguageService.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemLanguageService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UserService.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ReadingTool.Entities\ReadingTool.Entities.csproj">
-      <Project>{3f3a7dfe-5000-4531-97d4-64569f2e706c}</Project>
-      <Name>ReadingTool.Entities</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ReadingTool.Core\ReadingTool.Core.csproj">
       <Project>{c21d8b11-bd7b-4170-a11f-5cbbfc7960bf}</Project>
       <Name>ReadingTool.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReadingTool.Entities\ReadingTool.Entities.csproj">
+      <Project>{3f3a7dfe-5000-4531-97d4-64569f2e706c}</Project>
+      <Name>ReadingTool.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ReadingTool.Repository\ReadingTool.Repository.csproj">
+      <Project>{e29fe805-9199-4206-8435-017253584f1b}</Project>
+      <Name>ReadingTool.Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

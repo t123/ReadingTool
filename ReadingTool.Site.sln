@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0B489E
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Entities", "..\ReadingTool.Entities\ReadingTool.Entities.csproj", "{3F3A7DFE-5000-4531-97D4-64569F2E706C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Entities", "ReadingTool.Entities\ReadingTool.Entities.csproj", "{3F3A7DFE-5000-4531-97D4-64569F2E706C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Repository", "ReadingTool.Repository\ReadingTool.Repository.csproj", "{E29FE805-9199-4206-8435-017253584F1B}"
 EndProject

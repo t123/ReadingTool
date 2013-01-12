@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using ReadingTool.Core.Enums;
 using ReadingTool.Entities;
-using ServiceStack.DataAnnotations;
-using ServiceStack.OrmLite;
 
 namespace ReadingTool.Site.Models.WebApi
 {

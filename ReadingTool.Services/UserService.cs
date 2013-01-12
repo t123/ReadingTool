@@ -4,33 +4,32 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver.Linq;
 using ReadingTool.Core;
+using ReadingTool.Core.Database;
 using ReadingTool.Entities;
-using ServiceStack.OrmLite;
+using ReadingTool.Repository;
 
 namespace ReadingTool.Services
 {
-    public interface IUserService
+    public interface IUserService : IRepository<User>
     {
         void Create(string username, string password);
         void Save(User user, string newPassword = "");
-        void Delete(User user);
-        void Delete(Guid id);
-        User Find(Guid id);
         User FindUserByUsername(string username);
         bool UserExists(string username);
         bool VerifyPassword(string attemptedPassword, string currentPassword);
         User FindUserByApiKey(string apiKeyHeaderValue);
     }
 
-    public class UserService : IUserService
+    public class UserService : Repository<User>, IUserService
     {
-        private readonly IDbConnection _db;
         private readonly IDeleteService _deleteService;
 
-        public UserService(IDbConnection db, IDeleteService deleteService)
+        public UserService(MongoContext db, IDeleteService deleteService)
+            : base(db)
         {
-            _db = db;
             _deleteService = deleteService;
         }
 
@@ -38,17 +37,15 @@ namespace ReadingTool.Services
         {
             var user = new User()
                 {
-                    Id = SequentialGuid.NewGuid(),
-                    Created = DateTime.Now,
                     DisplayName = (username ?? "").Trim(),
                     EmailAddress = string.Empty,
                     Modified = DateTime.Now,
                     Password = BCrypt.Net.BCrypt.HashString(password),
-                    Roles = Constants.Roles.WEB,
+                    Roles = new[] { Constants.Roles.WEB },
                     Username = (username ?? "").Trim()
                 };
 
-            _db.Save(user);
+            base.Save(user);
         }
 
         public void Save(User user, string newPassword = "")
@@ -67,28 +64,23 @@ namespace ReadingTool.Services
                 user.Password = BCrypt.Net.BCrypt.HashString(newPassword);
             }
 
-            _db.Save(user);
+            base.Save(user);
         }
 
-        public void Delete(User user)
+        public new void Delete(User user)
         {
             _deleteService.DeleteUser(user);
         }
 
-        public void Delete(Guid id)
+        public new void Delete(ObjectId id)
         {
-            Delete(Find(id));
-        }
-
-        public User Find(Guid id)
-        {
-            return id == Guid.Empty ? null : _db.GetById<User>(id);
+            Delete(FindOne(id));
         }
 
         public User FindUserByUsername(string username)
         {
             username = (username ?? "").Trim();
-            return _db.QuerySingle<User>(new { Username = username });
+            return _collection.AsQueryable().FirstOrDefault(x => x.Username == username);
         }
 
         public bool UserExists(string username)
@@ -112,9 +104,9 @@ namespace ReadingTool.Services
                 return null;
             }
 
-            var user = _db.QuerySingle<User>(new { ApiKey = apiKey });
+            var user = _collection.AsQueryable().FirstOrDefault(x => x.Api.ApiKey == apiKey);
 
-            if(user == null || !user.ApiEnabled)
+            if(user == null || !user.Api.IsEnabled)
             {
                 return null;
             }

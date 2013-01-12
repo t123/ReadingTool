@@ -6,8 +6,8 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using ReadingTool.Core.Database;
 using ReadingTool.Entities;
-using ServiceStack.OrmLite;
 
 namespace ReadingTool.Services
 {
@@ -21,46 +21,46 @@ namespace ReadingTool.Services
 
     public class DeleteService : IDeleteService
     {
+        private readonly MongoContext _context;
         //TODO change to DELETE * WHERE x=x <-- allow IEnumerables
 
-        private readonly IDbConnection _db;
         private readonly IUserIdentity _identity;
 
-        public DeleteService(IDbConnection db, IPrincipal principal)
+        public DeleteService(MongoContext context, IPrincipal principal)
         {
-            _db = db;
+            _context = context;
             _identity = principal.Identity as IUserIdentity;
         }
 
         public void DeleteUser(User user)
         {
-            if(user == null || user.Id != _identity.UserId)
-            {
-                return;
-            }
+            //if(user == null || user.Id != _identity.UserId)
+            //{
+            //    return;
+            //}
 
-            _db.Select<Language>(x => x.Owner == user.Id).ForEach(DeleteLanguage);
-            _db.DeleteById<User>(user.Id);
-            var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Texts", user.Id.ToString());
-            DirectoryInfo di = new DirectoryInfo(directory);
+            //_db.Select<Language>(x => x.Owner == user.Id).ForEach(DeleteLanguage);
+            //_db.DeleteById<User>(user.Id);
+            //var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Texts", user.Id.ToString());
+            //DirectoryInfo di = new DirectoryInfo(directory);
 
-            if(di.Exists)
-            {
-                di.Delete(true);
-            }
+            //if(di.Exists)
+            //{
+            //    di.Delete(true);
+            //}
         }
 
         public void DeleteLanguage(Language language)
         {
-            if(language == null || language.Owner != _identity.UserId)
-            {
-                return;
-            }
+            //if(language == null || language.Owner != _identity.UserId)
+            //{
+            //    return;
+            //}
 
-            _db.Select<Term>(x => x.LanguageId == language.Id).ForEach(DeleteTerm);
-            _db.Select<Text>(x => x.L1Id == language.Id).ForEach(DeleteText);
-            _db.Update<Text>(new { L2Id = (Guid?)null }, x => x.L2Id == language.Id);
-            _db.DeleteById<Language>(language.Id);
+            //_db.Select<Term>(x => x.LanguageId == language.Id).ForEach(DeleteTerm);
+            //_db.Select<Text>(x => x.L1Id == language.Id).ForEach(DeleteText);
+            //_db.Update<Text>(new { L2Id = (Guid?)null }, x => x.L2Id == language.Id);
+            //_db.DeleteById<Language>(language.Id);
         }
 
         public void DeleteTerm(Term term)
@@ -70,15 +70,7 @@ namespace ReadingTool.Services
                 return;
             }
 
-            var it = _db.Select<IndividualTerm>(x => x.TermId == term.Id);
-
-            foreach(var i in it)
-            {
-                _db.Delete<Tag>(x => x.TermId == i.Id);
-            }
-
-            _db.Delete<IndividualTerm>(x => x.TermId == term.Id);
-            _db.DeleteById<Term>(term.Id);
+            //_db.DeleteById<Term>(term.Id);
         }
 
         public void DeleteText(Text text)
@@ -88,10 +80,9 @@ namespace ReadingTool.Services
                 return;
             }
 
-            _db.Update<IndividualTerm>(new { TextId = (Guid?)null }, x => x.TextId == text.Id);
-            _db.Delete<Tag>(x => x.TextId == text.Id);
-            DeleteTextFile(text);
-            _db.DeleteById<Text>(text.Id);
+            //_db.Update<IndividualTerm>(new { TextId = (Guid?)null }, x => x.TextId == text.Id);
+            //DeleteTextFile(text);
+            //_db.DeleteById<Text>(text.Id);
         }
 
         private void DeleteTextFile(Text text)

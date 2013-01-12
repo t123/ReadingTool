@@ -26,38 +26,38 @@ namespace ReadingTool.Site.Controllers.User
     {
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
-        private readonly ILanguageService _languageService;
-        private readonly ITermService _termService;
-        private readonly ITextService _textService;
-        private readonly ISystemLanguageService _systemLanguageService;
-        private readonly ILwtImportService _lwtImportService;
-        private readonly IUpgradeService _upgradeService;
+        //private readonly ILanguageService _languageService;
+        //private readonly ITermService _termService;
+        //private readonly ITextService _textService;
+        //private readonly ISystemLanguageService _systemLanguageService;
+        //private readonly ILwtImportService _lwtImportService;
+        //private readonly IUpgradeService _upgradeService;
 
         public MyAccountController(
             IUserService userService,
-            IAuthenticationService authenticationService,
-            ILanguageService languageService,
-            ITermService termService,
-            ITextService textService,
-            ISystemLanguageService systemLanguageService,
-            ILwtImportService lwtImportService,
-            IUpgradeService upgradeService
+            IAuthenticationService authenticationService
+            //ILanguageService languageService,
+            //ITermService termService,
+            //ITextService textService,
+            //ISystemLanguageService systemLanguageService,
+            //ILwtImportService lwtImportService,
+            //IUpgradeService upgradeService
             )
         {
             _userService = userService;
             _authenticationService = authenticationService;
-            _languageService = languageService;
-            _termService = termService;
-            _textService = textService;
-            _systemLanguageService = systemLanguageService;
-            _lwtImportService = lwtImportService;
-            _upgradeService = upgradeService;
+            //_languageService = languageService;
+            //_termService = termService;
+            //_textService = textService;
+            //_systemLanguageService = systemLanguageService;
+            //_lwtImportService = lwtImportService;
+            //_upgradeService = upgradeService;
         }
 
         [HttpGet]
         public ActionResult Index()
         {
-            var user = _userService.Find(this.CurrentUserId());
+            var user = _userService.FindOne(this.CurrentUserId());
 
             if(user == null)
             {
@@ -93,7 +93,7 @@ namespace ReadingTool.Site.Controllers.User
             [Bind(Prefix = "Item1")]ProfileViewModel profile,
             [Bind(Prefix = "Item2")]PasswordChangeViewModel passwordChange)
         {
-            var user = _userService.Find(this.CurrentUserId());
+            var user = _userService.FindOne(this.CurrentUserId());
 
             if(user == null)
             {
@@ -184,7 +184,7 @@ namespace ReadingTool.Site.Controllers.User
         [ValidateAntiForgeryToken]
         public ActionResult Delete(DeleteAccountModel model)
         {
-            var user = _userService.Find(this.CurrentUserId());
+            var user = _userService.FindOne(this.CurrentUserId());
             if(!string.IsNullOrEmpty(model.Password) && _userService.VerifyPassword(model.Password, user.Password))
             {
                 _userService.Delete(user);
@@ -202,7 +202,7 @@ namespace ReadingTool.Site.Controllers.User
         [HttpGet]
         public ActionResult Controls()
         {
-            var user = _userService.Find(this.CurrentUserId());
+            var user = _userService.FindOne(this.CurrentUserId());
             var mapped = Mapper.Map<KeyBindings, KeyBindingsModel>(user.KeyBindings ?? new KeyBindings());
             return View(mapped);
         }
@@ -211,7 +211,7 @@ namespace ReadingTool.Site.Controllers.User
         [ValidateAntiForgeryToken]
         public ActionResult Controls(KeyBindingsModel model)
         {
-            var user = _userService.Find(this.CurrentUserId());
+            var user = _userService.FindOne(this.CurrentUserId());
 
             if(ModelState.IsValid)
             {
@@ -228,6 +228,8 @@ namespace ReadingTool.Site.Controllers.User
             this.FlashError(Constants.Messages.FORM_FAIL);
             return View(model);
         }
+
+        /*
 
         [HttpGet]
         public ActionResult ImportExport()
@@ -336,11 +338,11 @@ namespace ReadingTool.Site.Controllers.User
 
             return RedirectToAction("ImportExport");
         }
-
+        */
         [HttpGet]
         public ActionResult ApiAccess()
         {
-            var user = _userService.Find(this.CurrentUserId());
+            var user = _userService.FindOne(this.CurrentUserId());
 
             if(user == null)
             {
@@ -350,8 +352,8 @@ namespace ReadingTool.Site.Controllers.User
             return View(new ApiModel
                 {
                     CreateNewKey = false,
-                    IsEnabled = user.ApiEnabled,
-                    ApiKey = user.ApiKey
+                    IsEnabled = user.Api.IsEnabled,
+                    ApiKey = user.Api.ApiKey
                 });
         }
 
@@ -361,21 +363,21 @@ namespace ReadingTool.Site.Controllers.User
         {
             if(ModelState.IsValid)
             {
-                var user = _userService.Find(this.CurrentUserId());
-                user.ApiEnabled = model.IsEnabled;
+                var user = _userService.FindOne(this.CurrentUserId());
+                user.Api.IsEnabled = model.IsEnabled;
 
-                if(user.ApiEnabled && string.IsNullOrWhiteSpace(user.ApiKey))
+                if(user.Api.IsEnabled && string.IsNullOrWhiteSpace(user.Api.ApiKey))
                 {
-                    user.ApiKey = RandomString(40);
+                    user.Api.ApiKey = RandomString(40);
                 }
-                else if(!user.ApiEnabled)
+                else if(!user.Api.IsEnabled)
                 {
-                    user.ApiKey = "";
+                    user.Api.ApiKey = "";
                 }
 
-                if(user.ApiEnabled && model.CreateNewKey)
+                if(user.Api.IsEnabled && model.CreateNewKey)
                 {
-                    user.ApiKey = RandomString(40);
+                    user.Api.ApiKey = RandomString(40);
                 }
 
                 _userService.Save(user);
@@ -426,7 +428,7 @@ namespace ReadingTool.Site.Controllers.User
                 return result.ToString();
             }
         }
-
+        /*
         [HttpGet]
         public ActionResult Upgrade()
         {
@@ -468,7 +470,7 @@ namespace ReadingTool.Site.Controllers.User
 
             return RedirectToAction("Upgrade");
         }
-
+        */
         private void UpdateUser(Entities.User user)
         {
             var cookie = _authenticationService.CreateAuthenticationTicket(user);

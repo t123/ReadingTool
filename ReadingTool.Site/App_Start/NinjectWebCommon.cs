@@ -4,13 +4,9 @@ using System.Data.Common;
 using System.Security.Principal;
 using System.Web.Http;
 using NinjectAdapter;
+using ReadingTool.Core.Database;
 using ReadingTool.Entities;
 using ReadingTool.Services;
-using ServiceStack.DataAccess;
-using ServiceStack.OrmLite;
-using ServiceStack.OrmLite.SqlServer;
-using StackExchange.Profiling;
-using StackExchange.Profiling.Data;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(ReadingTool.Site.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(ReadingTool.Site.App_Start.NinjectWebCommon), "Stop")]
@@ -70,29 +66,21 @@ namespace ReadingTool.Site.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IParserService>().To<DefaultParserService>();
-            kernel.Bind<ITermService>().To<TermService>();
+            //kernel.Bind<IParserService>().To<DefaultParserService>();
+            //kernel.Bind<ITermService>().To<TermService>();
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<IAuthenticationService>().To<AuthenticationService>();
             kernel.Bind<ILanguageService>().To<LanguageService>();
-            kernel.Bind<ITextService>().To<TextService>();
+            //kernel.Bind<ITextService>().To<TextService>();
             kernel.Bind<ISystemLanguageService>().To<SystemLanguageService>();
             kernel.Bind<IDeleteService>().To<DeleteService>();
-            kernel.Bind<IDbConnection>().ToMethod(x => ContextPerRequest.Current);
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
-            kernel.Bind<ISequenceService>().To<SequenceService>();
-            kernel.Bind<ILwtImportService>().To<LwtImportService>();
-            kernel.Bind<IUpgradeService>().To<UpgradeService>();
-            kernel.Bind<LatexParserService>().To<LatexParserService>();
+            //kernel.Bind<ISequenceService>().To<SequenceService>();
+            //kernel.Bind<ILwtImportService>().To<LwtImportService>();
+            //kernel.Bind<IUpgradeService>().To<UpgradeService>();
+            //kernel.Bind<LatexParserService>().To<LatexParserService>();
 
-            kernel.Bind<OrmLiteConnectionFactory>().ToMethod
-                (
-                    x =>
-                    new OrmLiteConnectionFactory(ConfigurationManager.AppSettings["ConnectionString"], SqlServerOrmLiteDialectProvider.Instance)
-                        {
-                            ConnectionFilter = z => new ProfiledDbConnection((DbConnection)((IHasDbConnection)z).DbConnection, MiniProfiler.Current)
-                        }
-                ).InSingletonScope();
+            kernel.Bind<MongoContext>().ToMethod(x => MongoContext.Instance).InSingletonScope();
         }
     }
 }

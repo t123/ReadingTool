@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MongoDB.Bson;
 using ReadingTool.Entities;
 
 namespace ReadingTool.Site.Helpers
 {
     public class UserHelper
     {
-        public static readonly Guid NOT_LOGGED_IN_ID = Guid.Empty;
+        public static readonly ObjectId NOT_LOGGED_IN_ID = ObjectId.Empty;
 
-        public static Guid CurrentUserId(HttpContext context)
+        public static ObjectId CurrentUserId(HttpContext context)
         {
             if(
                 context == null ||
@@ -27,7 +28,7 @@ namespace ReadingTool.Site.Helpers
             return identity.UserId;
         }
 
-        public static Guid CurrentUserId(HttpContextBase context)
+        public static ObjectId CurrentUserId(HttpContextBase context)
         {
             if(
                 context == null ||
@@ -46,7 +47,7 @@ namespace ReadingTool.Site.Helpers
 
     public static class HttpContextHelper
     {
-        public static Guid CurrentUserId(this System.Web.HttpContext context)
+        public static ObjectId CurrentUserId(this System.Web.HttpContext context)
         {
             return UserHelper.CurrentUserId(context);
         }
@@ -54,7 +55,7 @@ namespace ReadingTool.Site.Helpers
 
     public static class HttpContextBaseHelper
     {
-        public static Guid CurrentUserId(this System.Web.HttpContextBase context)
+        public static ObjectId CurrentUserId(this System.Web.HttpContextBase context)
         {
             return UserHelper.CurrentUserId(context);
         }
@@ -62,7 +63,7 @@ namespace ReadingTool.Site.Helpers
 
     public static class ControllerHelper
     {
-        public static Guid CurrentUserId(this Controller controller)
+        public static ObjectId CurrentUserId(this Controller controller)
         {
             if(controller == null) return UserHelper.NOT_LOGGED_IN_ID;
             return UserHelper.CurrentUserId(controller.HttpContext);

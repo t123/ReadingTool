@@ -1,9 +1,6 @@
 ﻿@using ReadingTool.Entities
 @using ReadingTool.Site.Helpers
-@using StackExchange.Profiling
 @{
-    StackExchange.Profiling.MiniProfiler.Settings.UseExistingjQuery = true;
-    this.InitClientTimings();
     var user = HttpContext.Current.User.Identity as UserIdentity;
     Bundles.Reference("Content/themes/common.less");
     
@@ -53,7 +50,6 @@
     </div>
     
     @Bundles.RenderScripts("body")
-    @*@MiniProfiler.RenderIncludes()*@
 </body>
 </html>
 <!--© @DateTime.Now.Year released under the AGPL-->

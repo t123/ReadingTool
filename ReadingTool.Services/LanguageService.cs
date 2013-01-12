@@ -6,57 +6,53 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver.Linq;
 using ReadingTool.Core;
+using ReadingTool.Core.Database;
 using ReadingTool.Entities;
-using ServiceStack.OrmLite;
+using ReadingTool.Repository;
 
 namespace ReadingTool.Services
 {
-    public interface ILanguageService
+    public interface ILanguageService : IRepository<Language>
     {
-        void Save(Language language);
-        void Delete(Language language);
-        void Delete(Guid id);
-        Language Find(Guid id);
-        IEnumerable<Language> FindAll();
         IEnumerable<Language> FindAllIncludePublic();
         Language FindByName(string name, bool? publicLanguage = false);
         Tuple<List<TextStatResult>, List<TermStatResult>> FindBasicLanguageStats();
     }
 
-    public class LanguageService : ILanguageService
+    public class LanguageService : Repository<Language>, ILanguageService
     {
-        private readonly IDbConnection _db;
         private readonly IDeleteService _deleteService;
         private readonly IUserIdentity _identity;
 
-        public LanguageService(IDbConnection db, IPrincipal principal, IDeleteService deleteService)
+        public LanguageService(MongoContext context, IPrincipal principal, IDeleteService deleteService)
+            : base(context)
         {
-            _db = db;
             _deleteService = deleteService;
             _identity = principal.Identity as IUserIdentity;
         }
 
-        public void Save(Language language)
+        public new void Save(Language language)
         {
             if(language.IsPublic && !_identity.IsInRole(Constants.Roles.ADMIN))
             {
                 return;
             }
 
-            if(language.Id == Guid.Empty)
+            if(language.Id == ObjectId.Empty)
             {
-                language.Id = SequentialGuid.NewGuid();
-                language.Created = DateTime.Now;
+                language.Id = ObjectId.GenerateNewId();
                 language.Owner = language.IsPublic ? User.DummyOwner : _identity.UserId;
             }
 
             language.Modified = DateTime.Now;
 
-            _db.Save(language);
+            base.Save(language);
         }
 
-        public void Delete(Language language)
+        public new void Delete(Language language)
         {
             if(language.IsPublic && !_identity.IsInRole(Constants.Roles.ADMIN))
             {
@@ -66,14 +62,9 @@ namespace ReadingTool.Services
             _deleteService.DeleteLanguage(language);
         }
 
-        public void Delete(Guid id)
+        public new Language FindOne(ObjectId id)
         {
-            Delete(Find(id));
-        }
-
-        public Language Find(Guid id)
-        {
-            var language = _db.Select<Language>(x => x.Id == id).FirstOrDefault();
+            var language = _collection.AsQueryable().FirstOrDefault(x => x.Id == id);
 
             if(language == null)
             {
@@ -91,82 +82,84 @@ namespace ReadingTool.Services
             return null;
         }
 
-        public IEnumerable<Language> FindAll()
+        public new IEnumerable<Language> FindAll()
         {
-            return _db.Select<Language>(x => x.Owner == _identity.UserId);
+            return _collection.FindAll().AsQueryable().Where(x => x.Owner == _identity.UserId);
         }
 
         public IEnumerable<Language> FindAllIncludePublic()
         {
-            return _db.Select<Language>(x => x.Owner == _identity.UserId || x.IsPublic);
+            return _collection.FindAll().AsQueryable().Where(x => x.Owner == _identity.UserId || x.IsPublic);
         }
 
         public Language FindByName(string name, bool? publicLanguage = false)
         {
             if(publicLanguage == null)
             {
-                return _db.Select<Language>(x => x.Name == name).FirstOrDefault();
+                return _collection.AsQueryable().FirstOrDefault(x => x.Name == name);
             }
             else
             {
-                return _db.Select<Language>(x => x.Name == name && x.IsPublic == publicLanguage.Value).FirstOrDefault();
+                return _collection.AsQueryable().FirstOrDefault(x => x.Name == name && x.IsPublic == publicLanguage.Value);
             }
         }
 
         public Tuple<List<TextStatResult>, List<TermStatResult>> FindBasicLanguageStats()
         {
-            var textCount = @"
-SELECT l.Id, COUNT(t.Id) as Total, SUM(t.ListenLength) as ListenLength, SUM(t.WordsRead) as WordsRead
-FROM Language l
-LEFT JOIN Text t ON l.Id=t.L1Id
-WHERE l.Owner='{0}'
-GROUP BY l.Id
-";
+//            var textCount = @"
+//SELECT l.Id, COUNT(t.Id) as Total, SUM(t.ListenLength) as ListenLength, SUM(t.WordsRead) as WordsRead
+//FROM Language l
+//LEFT JOIN Text t ON l.Id=t.L1Id
+//WHERE l.Owner='{0}'
+//GROUP BY l.Id
+//";
 
-            var termCount = @"
-SELECT l.Id, t.State, COUNT(t.Id) as Total
-FROM Language l
-LEFT JOIN Term t ON l.Id=t.LanguageId
-WHERE l.Owner='{0}'
-GROUP BY l.Id, t.State
-";
+//            var termCount = @"
+//SELECT l.Id, t.State, COUNT(t.Id) as Total
+//FROM Language l
+//LEFT JOIN Term t ON l.Id=t.LanguageId
+//WHERE l.Owner='{0}'
+//GROUP BY l.Id, t.State
+//";
 
-            var cmd = _db.CreateCommand();
-            cmd.CommandText = string.Format(textCount, _identity.UserId);
-            cmd.CommandType = CommandType.Text;
+//            var cmd = _db.CreateCommand();
+//            cmd.CommandText = string.Format(textCount, _identity.UserId);
+//            cmd.CommandType = CommandType.Text;
 
+//            var texts = new List<TextStatResult>();
+//            using(var reader = cmd.ExecuteReader())
+//            {
+//                while(reader.Read())
+//                {
+//                    texts.Add(new TextStatResult()
+//                    {
+//                        Id = reader.GetGuid(0),
+//                        Count = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+//                        Listened = reader.IsDBNull(2) ? 0 : reader.GetInt64(2),
+//                        Read = reader.IsDBNull(3) ? 0 : reader.GetInt64(3)
+//                    });
+//                }
+//            }
+
+//            cmd = _db.CreateCommand();
+//            cmd.CommandText = string.Format(termCount, _identity.UserId);
+//            cmd.CommandType = CommandType.Text;
+
+//            var terms = new List<TermStatResult>();
+//            using(var reader = cmd.ExecuteReader())
+//            {
+//                while(reader.Read())
+//                {
+//                    terms.Add(new TermStatResult()
+//                        {
+//                            Id = reader.GetGuid(0),
+//                            State = reader.IsDBNull(1) ? "" : reader.GetString(1),
+//                            Count = reader.IsDBNull(2) ? 0 : reader.GetInt32(2)
+//                        });
+//                }
+//            }
             var texts = new List<TextStatResult>();
-            using(var reader = cmd.ExecuteReader())
-            {
-                while(reader.Read())
-                {
-                    texts.Add(new TextStatResult()
-                    {
-                        Id = reader.GetGuid(0),
-                        Count = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-                        Listened = reader.IsDBNull(2) ? 0 : reader.GetInt64(2),
-                        Read = reader.IsDBNull(3) ? 0 : reader.GetInt64(3)
-                    });
-                }
-            }
-
-            cmd = _db.CreateCommand();
-            cmd.CommandText = string.Format(termCount, _identity.UserId);
-            cmd.CommandType = CommandType.Text;
-
             var terms = new List<TermStatResult>();
-            using(var reader = cmd.ExecuteReader())
-            {
-                while(reader.Read())
-                {
-                    terms.Add(new TermStatResult()
-                        {
-                            Id = reader.GetGuid(0),
-                            State = reader.IsDBNull(1) ? "" : reader.GetString(1),
-                            Count = reader.IsDBNull(2) ? 0 : reader.GetInt32(2)
-                        });
-                }
-            }
 
             return new Tuple<List<TextStatResult>, List<TermStatResult>>(texts, terms);
         }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using MongoDB.Bson;
 using ReadingTool.Core;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
@@ -17,7 +18,7 @@ using ReadingTool.Site.Models.User;
 
 namespace ReadingTool.Site.Controllers.Admin
 {
-    [CustomAuthorize(Roles = Constants.Roles.ADMIN)]
+    //[CustomAuthorize(Roles = Constants.Roles.ADMIN)]
     public class HomeController : Controller
     {
         private readonly ISystemLanguageService _systemLanguageService;
@@ -60,7 +61,7 @@ namespace ReadingTool.Site.Controllers.Admin
                         Colour = "",
                         Name = model.Name,
                         IsPublic = true,
-                        SystemLanguageId = sl == null ? (Guid?)null : sl.Id,
+                        SystemLanguageId = sl == null ? (ObjectId?)null : sl.Id,
                         Settings = Mapper.Map<LanguageSettings>(model.Settings)
                     }
                     );
@@ -74,9 +75,9 @@ namespace ReadingTool.Site.Controllers.Admin
         }
 
         [HttpGet]
-        public ActionResult EditPublicLanguage(Guid id)
+        public ActionResult EditPublicLanguage(ObjectId id)
         {
-            var language = _languageService.Find(id);
+            var language = _languageService.FindOne(id);
 
             if(language == null)
             {
@@ -95,9 +96,9 @@ namespace ReadingTool.Site.Controllers.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPublicLanguage(Guid id, PublicLanguageViewModel model)
+        public ActionResult EditPublicLanguage(ObjectId id, PublicLanguageViewModel model)
         {
-            var language = _languageService.Find(id);
+            var language = _languageService.FindOne(id);
 
             if(ModelState.IsValid)
             {
@@ -173,7 +174,6 @@ namespace ReadingTool.Site.Controllers.Admin
 
                         languages.Add(new SystemLanguage()
                         {
-                            Id = SequentialGuid.NewGuid(),
                             Code = code,
                             Name = split[LanguageNameColumnNo]
                         });
@@ -181,7 +181,7 @@ namespace ReadingTool.Site.Controllers.Admin
                         count++;
                     }
 
-                    _systemLanguageService.Save(languages.OrderBy(x => x.Name).ToArray());
+                    _systemLanguageService.Save(languages.OrderBy(x => x.Name).Take(1).ToArray());
 
                     this.FlashSuccess("{0} languages imported", count);
 

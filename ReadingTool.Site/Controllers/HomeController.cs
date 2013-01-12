@@ -7,7 +7,6 @@ using System.Web;
 using System.Web.Mvc;
 using ReadingTool.Entities;
 using ReadingTool.Site.Helpers;
-using ServiceStack.OrmLite;
 
 namespace ReadingTool.Site.Controllers
 {
