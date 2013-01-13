@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using MongoDB.Bson;
 
 namespace ReadingTool.Site.Models.User
 {
     public class TextListModel
     {
-        public Guid Id { get; set; }
+        public ObjectId Id { get; set; }
         public string Language { get; set; }
         public string LanguageColour { get; set; }
         public string Title { get; set; }

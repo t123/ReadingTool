@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Ionic.Zip;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
@@ -72,20 +73,20 @@ namespace ReadingTool.Site.Controllers.User
                         HasAudio = !string.IsNullOrEmpty(x.AudioUrl),
                         IsParallel = x.IsParallel,
                         Language = languages.GetValueOrDefault(x.L1Id, new Language() { Name = "NA" }).Name,
-                        LastSeen = x.LastSeen,
+                        LastSeen = x.Metadata.LastSeen,
                         Title = x.Title,
                         LanguageColour = languages.GetValueOrDefault(x.L1Id, new Language() { Colour = "#FFFFFF" }).Colour,
-                        Tags = x.Tags,
-                        TimesListened = x.TimesListened,
-                        TimesRead = x.TimesRead,
-                        WordsRead = x.WordsRead,
-                        ListenLength = x.ListenLength.SecondsToHourMinuteSeconds()
+                        Tags = TagHelper.ToString(x.Tags),
+                        TimesListened = x.Metadata.TimesListened,
+                        TimesRead = x.Metadata.TimesRead,
+                        WordsRead = x.Metadata.WordsRead,
+                        ListenLength = x.Metadata.ListenLength.SecondsToHourMinuteSeconds()
                     }));
 
             SearchGridResult<TextListModel> result = new SearchGridResult<TextListModel>()
                 {
                     Items = textViewList,
-                    Page = page.Value,
+                    Page = page ?? 1,
                     Sort = sort,
                     Direction = sortDir,
                     RowsPerPage = perPage ?? 15,
@@ -111,7 +112,7 @@ namespace ReadingTool.Site.Controllers.User
                 ModelState.AddModelError("L2Id", "Please choose a language");
             }
 
-            var l1 = _languageService.Find(model.L1Id);
+            var l1 = _languageService.FindOne(model.L1Id);
             if(l1 != null && l1.IsPublic)
             {
                 ModelState.AddModelError("L1Id", "Please choose a language");
@@ -129,7 +130,7 @@ namespace ReadingTool.Site.Controllers.User
                         L1Text = model.L1Text,
                         L2Text = model.L2Text,
                         Title = model.Title,
-                        Tags = TagHelper.ToString(TagHelper.Split(model.Tags))
+                        Tags = TagHelper.Split(model.Tags)
                     };
 
                 _textService.Save(t);
@@ -147,13 +148,13 @@ namespace ReadingTool.Site.Controllers.User
             ViewBag.Languages = _languageService.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Id, x => x.Name);
             this.FlashError(Constants.Messages.FORM_FAIL);
 
-            return View();
+            return View(model);
         }
 
         [HttpGet]
-        public ActionResult Edit(Guid id)
+        public ActionResult Edit(ObjectId id)
         {
-            Text text = _textService.Find(id);
+            Text text = _textService.FindOne(id);
 
             if(text == null)
             {
@@ -175,21 +176,21 @@ namespace ReadingTool.Site.Controllers.User
                     L2Id = text.L2Id,
                     L1Text = text.L1Text,
                     L2Text = text.L2Text,
-                    Tags = text.Tags,
+                    Tags = TagHelper.ToString(text.Tags),
                     Title = text.Title
                 });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, TextViewModel model, string save, string saveread)
+        public ActionResult Edit(ObjectId id, TextViewModel model, string save, string saveread)
         {
             if(!string.IsNullOrWhiteSpace(model.L2Text) && model.L2Id == null)
             {
                 ModelState.AddModelError("L2Id", "Please choose a language");
             }
 
-            var l1 = _languageService.Find(model.L1Id);
+            var l1 = _languageService.FindOne(model.L1Id);
             if(l1 != null && l1.IsPublic)
             {
                 ModelState.AddModelError("L1Id", "Please choose a language");
@@ -197,7 +198,7 @@ namespace ReadingTool.Site.Controllers.User
 
             if(ModelState.IsValid)
             {
-                Text text = _textService.Find(id);
+                Text text = _textService.FindOne(id);
 
                 text.AudioUrl = model.AudioUrl;
                 text.CollectionName = model.CollectionName;
@@ -206,7 +207,7 @@ namespace ReadingTool.Site.Controllers.User
                 text.L2Id = model.L2Id;
                 text.L1Text = model.L1Text;
                 text.L2Text = model.L2Text;
-                text.Tags = TagHelper.ToString(TagHelper.Split(model.Tags));
+                text.Tags = TagHelper.Split(model.Tags);
                 text.Title = model.Title;
 
                 _textService.Save(text);
@@ -230,17 +231,17 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id)
+        public ActionResult Delete(ObjectId id)
         {
-            _textService.Delete(_textService.Find(id));
+            _textService.Delete(_textService.FindOne(id));
             this.FlashSuccess(Constants.Messages.FORM_DELETE, DescriptionFormatter.GetDescription<Text>());
 
             return RedirectToAction("Index");
         }
 
-        public ActionResult Read(Guid id)
+        public ActionResult Read(ObjectId id)
         {
-            Text text = _textService.Find(id);
+            Text text = _textService.FindOne(id);
 
             if(text == null)
             {
@@ -251,9 +252,9 @@ namespace ReadingTool.Site.Controllers.User
             return View(Create(text, false));
         }
 
-        public ActionResult ReadInParallel(Guid id)
+        public ActionResult ReadInParallel(ObjectId id)
         {
-            Text text = _textService.Find(id);
+            Text text = _textService.FindOne(id);
 
             if(text == null)
             {
@@ -264,9 +265,9 @@ namespace ReadingTool.Site.Controllers.User
             return View("Read", Create(text, true));
         }
 
-        public ActionResult ReadLatex(Guid id)
+        public ActionResult ReadLatex(ObjectId id)
         {
-            Text text = _textService.Find(id);
+            Text text = _textService.FindOne(id);
 
             if(text == null)
             {
@@ -275,7 +276,7 @@ namespace ReadingTool.Site.Controllers.User
             }
 
             var latexParser = DependencyResolver.Current.GetService<LatexParserService>();
-            var l1Language = _languageService.Find(text.L1Id);
+            var l1Language = _languageService.FindOne(text.L1Id);
             Language l2Language = null;
             var terms = _termService.FindAllForParsing(l1Language);
             var parsed = latexParser.Parse(false, l1Language, l2Language, terms, text);
@@ -286,8 +287,8 @@ namespace ReadingTool.Site.Controllers.User
                 Language = l1Language,
                 ParsedText = parsed,
                 AsParallel = false,
-                User = _userService.Find(this.CurrentUserId()),
-                PagedTexts = new Tuple<Guid?, Guid?>(null, null)
+                User = _userService.FindOne(this.CurrentUserId()),
+                PagedTexts = new Tuple<ObjectId?, ObjectId?>(null, null)
             };
 
             return View(model);
@@ -357,8 +358,6 @@ namespace ReadingTool.Site.Controllers.User
 
             if(ModelState.IsValid && model.File != null && model.File.ContentLength > 0)
             {
-                //TODO allow zip
-
                 try
                 {
                     TextImport json;
@@ -420,8 +419,8 @@ namespace ReadingTool.Site.Controllers.User
 
         private ReadViewModel Create(Text text, bool asParallel)
         {
-            var l1Language = _languageService.Find(text.L1Id);
-            var l2Language = _languageService.Find(text.L2Id ?? Guid.Empty);
+            var l1Language = _languageService.FindOne(text.L1Id);
+            var l2Language = _languageService.FindOne(text.L2Id ?? ObjectId.Empty);
             var terms = _termService.FindAllForParsing(l1Language);
             var parsed = _parserService.Parse(asParallel, l1Language, l2Language, terms, text);
 
@@ -431,16 +430,17 @@ namespace ReadingTool.Site.Controllers.User
                 Language = l1Language,
                 ParsedText = parsed,
                 AsParallel = asParallel,
-                User = _userService.Find(this.CurrentUserId()),
+                User = _userService.FindOne(this.CurrentUserId()),
                 PagedTexts = _textService.FindPagedTexts(text),
             };
 
-            text.LastSeen = DateTime.Now;
+            text.Metadata.LastSeen = DateTime.Now;
             _textService.Save(text);
 
             return model;
         }
 
+        /*
         [AjaxRoute]
         public ActionResult AutoCompleteTags(string query)
         {
@@ -471,7 +471,7 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [AjaxRoute]
-        public ActionResult PerformAction(string action, Guid[] ids, string input)
+        public ActionResult PerformAction(string action, ObjectId[] ids, string input)
         {
             try
             {
@@ -481,7 +481,7 @@ namespace ReadingTool.Site.Controllers.User
                 }
 
                 IList<Text> texts = new List<Text>();
-                ids.ToList().ForEach(x => texts.Add(_textService.Find(x)));
+                ids.ToList().ForEach(x => texts.Add(_textService.FindOne(x)));
 
                 switch(action)
                 {
@@ -530,5 +530,6 @@ namespace ReadingTool.Site.Controllers.User
                 return new JsonNetResult() { Data = "FAIL" };
             }
         }
+        */
     }
 }

@@ -185,7 +185,14 @@
     <Compile Include="Controllers\Admin\HomeController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\RoutesController.cs" />
+    <Compile Include="Controllers\User\LanguagesController.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Controllers\User\MyAccountController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\User\TermsController.cs" />
+    <Compile Include="Controllers\User\TextsController.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\DebugHelper.cs" />

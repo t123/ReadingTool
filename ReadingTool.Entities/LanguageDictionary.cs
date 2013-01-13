@@ -12,7 +12,7 @@ namespace ReadingTool.Entities
 {
     public class LanguageDictionary
     {
-        [BsonId]
+        //[BsonId]
         public ObjectId Id { get; set; }
 
         [StringLength(250)]

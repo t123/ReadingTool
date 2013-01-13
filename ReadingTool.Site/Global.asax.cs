@@ -47,6 +47,7 @@ namespace ReadingTool.Site
 
             ModelBinders.Binders.DefaultBinder = new EmptyStringModelBinder();
             ModelBinders.Binders.Add(typeof(ObjectId), new ObjectIdBinder());
+            ModelBinders.Binders.Add(typeof(ObjectId?), new ObjectIdBinder());
 
             RegisterMappings.Register();
 

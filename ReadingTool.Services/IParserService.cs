@@ -44,10 +44,24 @@ namespace ReadingTool.Services
             _terms = terms.Item2.ToArray();
             _l1Splitter = new Splitter(@"([^" + _l1Language.Settings.RegexWordCharacters + @"]+)", true);
 
-            if(_l2Language != null)
+            if(_l2Language == null)
             {
-                _l2Splitter = new Splitter(@"([^" + _l2Language.Settings.RegexWordCharacters + @"]+)", true);
+                _l2Language = new Language()
+                    {
+                        Settings = new LanguageSettings()
+                            {
+                                CharacterSubstitutions = @"´='|`='|’='|‘='|...=…|..=‥|»=|«=|“=|”=|„=|‟=|""=",
+                                RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ",
+                                RegexSplitSentences = ".!?:;",
+                                ExceptionSplitSentences = "[A-Z].|Dr.",
+                                KeepFocus = true,
+                                Direction = LanguageDirection.LTR,
+                                ModalBehaviour = ModalBehaviour.LeftClick
+                            }
+                    };
             }
+
+            _l2Splitter = new Splitter(@"([^" + _l2Language.Settings.RegexWordCharacters + @"]+)", true);
 
             _termTest = new Regex(@"([" + _l1Language.Settings.RegexWordCharacters + @"])", RegexOptions.Compiled);
 

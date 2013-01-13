@@ -35,6 +35,20 @@ namespace ReadingTool.Entities
 
         public KeyBindings()
         {
+            Reset = new Key();
+            SpeedUp = new Key();
+            SpeedDown = new Key();
+            VolumeUp = new Key();
+            VolumeDown = new Key();
+            RewindToBeginning = new Key();
+            Rewind = new Key();
+            PlayPause = new Key();
+            Stop = new Key();
+            FastForward = new Key();
+            Known = new Key();
+            NotKnown = new Key();
+            Ignored = new Key();
+            Known = new Key();
             SecondsToRewind = 3;
         }
     }

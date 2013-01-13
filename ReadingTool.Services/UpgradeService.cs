@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Security.Principal;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
@@ -16,7 +17,6 @@ namespace ReadingTool.Services
 
     public class UpgradeService : IUpgradeService
     {
-        private readonly IDbConnection _db;
         private readonly ITextService _textService;
         private readonly ITermService _termService;
         private readonly ILanguageService _languageService;
@@ -24,7 +24,6 @@ namespace ReadingTool.Services
         private readonly IUserIdentity _identity;
 
         public UpgradeService(
-            IDbConnection db,
             IPrincipal principal,
             ITextService textService,
             ITermService termService,
@@ -32,7 +31,6 @@ namespace ReadingTool.Services
             ISystemLanguageService systemLanguageService
             )
         {
-            _db = db;
             _textService = textService;
             _termService = termService;
             _languageService = languageService;
@@ -44,8 +42,8 @@ namespace ReadingTool.Services
         {
             dynamic json = JsonConvert.DeserializeObject(jsonString);
 
-            var lmap = new Dictionary<string, Guid>();
-            var tmap = new Dictionary<string, Guid?>();
+            var lmap = new Dictionary<string, ObjectId>();
+            var tmap = new Dictionary<string, ObjectId?>();
 
             foreach(var language in json.Languages)
             {
@@ -71,11 +69,11 @@ namespace ReadingTool.Services
 
                 foreach(var d in language.Dictionaries)
                 {
-                    l.AddDictionary(new LanguageDictionary()
+                    l.Dictionaries.Add(new LanguageDictionary()
                         {
                             AutoOpen = false,
                             DisplayOrder = 1,
-                            Id = SequentialGuid.NewGuid(),
+                            Id = ObjectId.GenerateNewId(),
                             Name = d.Name,
                             Url = d.Url,
                             Parameter = DictionaryParameter.Word,
@@ -100,19 +98,21 @@ namespace ReadingTool.Services
                         L1Text = text.L1Text,
                         L2Text = text.L2Text,
                         Owner = _identity.UserId,
-                        LastSeen = text.LastSeen,
-                        Tags = ""
+                        Metadata = new TextMetadata() { LastSeen = text.LastSeen },
+                        Tags = new string[] { }
                     };
 
                 string lid = text.LanguageId.ToString();
-                t.L1Id = lmap.GetValueOrDefault(lid, Guid.Empty);
+                t.L1Id = lmap.GetValueOrDefault(lid, ObjectId.Empty);
 
                 if(text.Tags != null)
                 {
-                    foreach(var tag in text.Tags)
+                    List<string> tags = new List<string>();
+                    foreach(string t1 in text.Tags)
                     {
-                        t.Tags += ((string)tag).ToLowerInvariant().Trim() + " ";
+                        tags.Add(t1);
                     }
+                    t.Tags = tags.ToArray();
                 }
 
                 _textService.Save(t);
@@ -124,7 +124,7 @@ namespace ReadingTool.Services
             {
                 Term t = new Term()
                     {
-                        Id = SequentialGuid.NewGuid(),
+                        Id = ObjectId.GenerateNewId(),
                         Owner = _identity.UserId,
                         Box = word.Box,
                         Length = word.Length,
@@ -143,29 +143,30 @@ namespace ReadingTool.Services
                 }
 
                 string lid = word.LanguageId.ToString();
-                t.LanguageId = lmap.GetValueOrDefault(lid, Guid.Empty);
+                t.LanguageId = lmap.GetValueOrDefault(lid, ObjectId.Empty);
 
                 var it = new IndividualTerm()
                     {
                         BaseTerm = word.BaseWord,
                         Romanisation = word.Romanisation,
                         Sentence = word.Sentence,
-                        TermId = t.Id,
                         Definition = word.Definition,
                     };
 
                 string tid = word.ItemId.ToString();
-                it.TextId = tmap.GetValueOrDefault(tid, (Guid?)null);
+                it.TextId = tmap.GetValueOrDefault(tid, (ObjectId?)null);
 
                 if(word.Tags != null)
                 {
-                    foreach(var tag in word.Tags)
+                    List<string> tags = new List<string>();
+                    foreach(string t1 in word.Tags)
                     {
-                        it.Tags += ((string)tag).ToLowerInvariant().Trim() + " ";
+                        tags.Add(t1);
                     }
+                    it.Tags = tags.ToArray();
                 }
 
-                t.AddIndividualTerm(it);
+                t.IndividualTerms.Add(it);
                 terms.Add(t);
             }
 

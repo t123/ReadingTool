@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MongoDB.Bson;
 using ReadingTool.Core.Attributes;
 using ReadingTool.Core.Enums;
 
@@ -11,11 +12,11 @@ namespace ReadingTool.Site.Models.User
     public class DictionaryViewModel
     {
         [HiddenInput(DisplayValue = false)]
-        public Guid Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [ReadOnly(true)]
         [HiddenInput(DisplayValue = false)]
-        public Guid LanguageId { get; set; }
+        public ObjectId LanguageId { get; set; }
 
         [Display(Name = "Dictionary Name", Order = 1)]
         [Tip("This is your name for the dictionary.")]

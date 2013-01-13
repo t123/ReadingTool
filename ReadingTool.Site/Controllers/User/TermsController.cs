@@ -6,6 +6,7 @@ using System.Text;
 using System.Web.Mvc;
 using Ionic.Zip;
 using Ionic.Zlib;
+using MongoDB.Bson;
 using ReadingTool.Core;
 using ReadingTool.Core.Enums;
 using ReadingTool.Core.Formatters;
@@ -46,10 +47,6 @@ namespace ReadingTool.Site.Controllers.User
                 Direction = sortDir
             });
 
-            foreach(var t in searchResult.Results)
-            {
-                t.AddIndividualTerms(_termService.FindIndividualTerms(t));
-            }
 
             IList<TermListModel> termViewList = new List<TermListModel>();
             var languages = _languageService.FindAll().ToDictionary(x => x.Id);
@@ -88,75 +85,75 @@ namespace ReadingTool.Site.Controllers.User
             return PartialView("Partials/_list", result);
         }
 
-        [AjaxRoute]
-        public ActionResult PerformAction(string action, Guid[] ids, string input)
-        {
-            try
-            {
-                if(ids == null || ids.Length == 0)
-                {
-                    return new JsonNetResult() { Data = "OK" };
-                }
+        //[AjaxRoute]
+        //public ActionResult PerformAction(string action, Guid[] ids, string input)
+        //{
+        //    try
+        //    {
+        //        if(ids == null || ids.Length == 0)
+        //        {
+        //            return new JsonNetResult() { Data = "OK" };
+        //        }
 
-                IList<Term> terms = new List<Term>();
+        //        IList<Term> terms = new List<Term>();
 
-                switch(action)
-                {
-                    case "add":
-                        ids.ToList().ForEach(x => terms.Add(_termService.Find(x, includeIndividualTerms: true)));
-                        if(!string.IsNullOrWhiteSpace(input))
-                        {
-                            foreach(var t in terms)
-                            {
-                                foreach(var it in t.IndividualTerms)
-                                {
-                                    it.Tags = TagHelper.ToString(TagHelper.Merge(TagHelper.Split(it.Tags), TagHelper.Split(input)));
-                                    t.UpdateIndividualTerm(it.Id, it);
-                                }
+        //        switch(action)
+        //        {
+        //            case "add":
+        //                ids.ToList().ForEach(x => terms.Add(_termService.Find(x, includeIndividualTerms: true)));
+        //                if(!string.IsNullOrWhiteSpace(input))
+        //                {
+        //                    foreach(var t in terms)
+        //                    {
+        //                        foreach(var it in t.IndividualTerms)
+        //                        {
+        //                            it.Tags = TagHelper.ToString(TagHelper.Merge(TagHelper.Split(it.Tags), TagHelper.Split(input)));
+        //                            t.UpdateIndividualTerm(it.Id, it);
+        //                        }
 
-                                _termService.Save(t);
-                            }
-                        }
-                        break;
+        //                        _termService.Save(t);
+        //                    }
+        //                }
+        //                break;
 
-                    case "remove":
-                        ids.ToList().ForEach(x => terms.Add(_termService.Find(x, includeIndividualTerms: true)));
-                        if(!string.IsNullOrWhiteSpace(input))
-                        {
-                            foreach(var t in terms)
-                            {
-                                foreach(var it in t.IndividualTerms)
-                                {
-                                    it.Tags = TagHelper.ToString(TagHelper.Remove(TagHelper.Split(it.Tags), TagHelper.Split(input)));
-                                    t.UpdateIndividualTerm(it.Id, it);
-                                }
+        //            case "remove":
+        //                ids.ToList().ForEach(x => terms.Add(_termService.Find(x, includeIndividualTerms: true)));
+        //                if(!string.IsNullOrWhiteSpace(input))
+        //                {
+        //                    foreach(var t in terms)
+        //                    {
+        //                        foreach(var it in t.IndividualTerms)
+        //                        {
+        //                            it.Tags = TagHelper.ToString(TagHelper.Remove(TagHelper.Split(it.Tags), TagHelper.Split(input)));
+        //                            t.UpdateIndividualTerm(it.Id, it);
+        //                        }
 
-                                _termService.Save(t);
-                            }
-                        }
-                        break;
+        //                        _termService.Save(t);
+        //                    }
+        //                }
+        //                break;
 
-                    case "known":
-                    case "unknown":
-                    case "notseen":
-                    case "ignored":
-                        ids.ToList().ForEach(x => terms.Add(_termService.Find(x)));
-                        var newState = (TermState)Enum.Parse(typeof(TermState), action, true);
-                        foreach(var t in terms)
-                        {
-                            t.State = newState;
-                            _termService.Save(t);
-                        }
-                        break;
-                }
+        //            case "known":
+        //            case "unknown":
+        //            case "notseen":
+        //            case "ignored":
+        //                ids.ToList().ForEach(x => terms.Add(_termService.Find(x)));
+        //                var newState = (TermState)Enum.Parse(typeof(TermState), action, true);
+        //                foreach(var t in terms)
+        //                {
+        //                    t.State = newState;
+        //                    _termService.Save(t);
+        //                }
+        //                break;
+        //        }
 
-                return new JsonNetResult() { Data = "OK" };
-            }
-            catch(Exception e)
-            {
-                return new JsonNetResult() { Data = "FAIL" };
-            }
-        }
+        //        return new JsonNetResult() { Data = "OK" };
+        //    }
+        //    catch(Exception e)
+        //    {
+        //        return new JsonNetResult() { Data = "FAIL" };
+        //    }
+        //}
 
         [AjaxRoute]
         public ActionResult ExportSelected(string ids)
@@ -167,12 +164,12 @@ namespace ReadingTool.Site.Controllers.User
             {
                 foreach(var id in ids.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    Guid i;
+                    ObjectId i;
 
-                    if(!Guid.TryParse(id, out i))
+                    if(!ObjectId.TryParse(id, out i))
                         continue;
 
-                    var term = _termService.Find(i, true);
+                    var term = _termService.FindOne(i);
                     if(term == null)
                     {
                         continue;
@@ -194,11 +191,6 @@ namespace ReadingTool.Site.Controllers.User
                     Sort = "language",
                     IgnorePaging = true
                 });
-
-            foreach(var t in result.Results)
-            {
-                t.AddIndividualTerms(_termService.FindIndividualTerms(t));
-            }
 
             return CreateExportFile(result.Results);
         }
@@ -227,7 +219,7 @@ namespace ReadingTool.Site.Controllers.User
                                 Romanisation = it.Romanisation,
                                 Sentence = it.Sentence.ReplaceString(it.BaseTerm, "<strong>" + it.BaseTerm + "</strong>", StringComparison.InvariantCultureIgnoreCase),
                                 State = term.State.ToDescription(),
-                                Tags = it.Tags,
+                                Tags =string.Join(" ", it.Tags),
                                 TermPhrase = term.TermPhrase
                             };
 

@@ -64,7 +64,15 @@ namespace ReadingTool.Core
 
         public static string ToCamelCase(this string input)
         {
-            return input;
+            if(string.IsNullOrWhiteSpace(input))
+            {
+                return input;
+            }
+
+            var output = input.ToCharArray();
+            output[0] = (char)((int)output[0] + 32); //TODO FIXME 
+
+            return new string(output);
         }
     }
 }

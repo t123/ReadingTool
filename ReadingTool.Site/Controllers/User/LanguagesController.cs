@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using ReadingTool.Core;
 using ReadingTool.Core.Formatters;
@@ -20,13 +21,11 @@ namespace ReadingTool.Site.Controllers.User
     {
         private readonly ILanguageService _languageService;
         private readonly ISystemLanguageService _systemLanguageService;
-        private readonly ISequenceService _sequenceService;
 
-        public LanguagesController(ILanguageService languageService, ISystemLanguageService systemLanguageService, ISequenceService sequenceService)
+        public LanguagesController(ILanguageService languageService, ISystemLanguageService systemLanguageService)
         {
             _languageService = languageService;
             _systemLanguageService = systemLanguageService;
-            _sequenceService = sequenceService;
         }
 
         public ActionResult Index()
@@ -57,7 +56,7 @@ namespace ReadingTool.Site.Controllers.User
                         {
                             Colour = model.Colour,
                             Name = model.Name,
-                            SystemLanguageId = sl == null ? (Guid?)null : sl.Id,
+                            SystemLanguageId = sl == null ? (ObjectId?)null : sl.Id,
                             Settings = Mapper.Map<LanguageSettings>(model.Settings)
                         }
                     );
@@ -71,9 +70,9 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult Edit(Guid id)
+        public ActionResult Edit(ObjectId id)
         {
-            var language = _languageService.Find(id);
+            var language = _languageService.FindOne(id);
 
             if(language == null)
             {
@@ -86,7 +85,7 @@ namespace ReadingTool.Site.Controllers.User
                     Id = language.Id,
                     Colour = language.Colour,
                     Name = language.Name,
-                    SystemLanguage = language.SystemLanguageId.HasValue ? _systemLanguageService.Find(language.SystemLanguageId.Value).Name : "",
+                    SystemLanguage = language.SystemLanguageId.HasValue ? _systemLanguageService.FindOne(language.SystemLanguageId.Value).Name : "",
                     Settings = Mapper.Map<LanguageSettings, LanguageSettingsViewModel>(language.Settings)
                 }
                 );
@@ -94,14 +93,14 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, LanguageViewModel model)
+        public ActionResult Edit(ObjectId id, LanguageViewModel model)
         {
-            var language = _languageService.Find(id);
+            var language = _languageService.FindOne(id);
 
             if(ModelState.IsValid)
             {
                 var sl = _systemLanguageService.FindByName(model.SystemLanguage);
-                language.SystemLanguageId = sl == null ? (Guid?)null : sl.Id;
+                language.SystemLanguageId = sl == null ? (ObjectId?)null : sl.Id;
                 language.Name = model.Name;
                 language.Colour = model.Colour;
                 language.Settings = Mapper.Map<LanguageSettings>(model.Settings);
@@ -117,9 +116,9 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id)
+        public ActionResult Delete(ObjectId id)
         {
-            Language l = _languageService.Find(id);
+            Language l = _languageService.FindOne(id);
             _languageService.Delete(l);
 
             this.FlashSuccess(Constants.Messages.FORM_DELETE, DescriptionFormatter.GetDescription<Language>() + " " + l.Name);
@@ -127,9 +126,9 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult Dictionaries(Guid id)
+        public ActionResult Dictionaries(ObjectId id)
         {
-            Language language = _languageService.Find(id);
+            Language language = _languageService.FindOne(id);
 
             if(language == null)
             {
@@ -141,9 +140,9 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult AddDictionary(Guid id)
+        public ActionResult AddDictionary(ObjectId id)
         {
-            Language language = _languageService.Find(id);
+            Language language = _languageService.FindOne(id);
 
             if(language == null)
             {
@@ -157,16 +156,16 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddDictionary(Guid id, DictionaryViewModel model)
+        public ActionResult AddDictionary(ObjectId id, DictionaryViewModel model)
         {
-            Language language = _languageService.Find(id);
+            Language language = _languageService.FindOne(id);
 
             if(ModelState.IsValid)
             {
                 LanguageDictionary ld = Mapper.Map<DictionaryViewModel, LanguageDictionary>(model);
-                ld.Id = Guid.NewGuid();
-                ld.DisplayOrder = _sequenceService.Next();
-                language.AddDictionary(ld);
+                ld.Id = ObjectId.GenerateNewId();
+                ld.DisplayOrder = 1000;
+                language.Dictionaries.Add(ld);
 
                 _languageService.Save(language);
 
@@ -180,9 +179,9 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult EditDictionary(Guid id, Guid dictionaryId)
+        public ActionResult EditDictionary(ObjectId id, ObjectId dictionaryId)
         {
-            Language language = _languageService.Find(id);
+            Language language = _languageService.FindOne(id);
 
             if(language == null)
             {
@@ -206,9 +205,9 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditDictionary(Guid id, Guid dictionaryId, DictionaryViewModel model)
+        public ActionResult EditDictionary(ObjectId id, ObjectId dictionaryId, DictionaryViewModel model)
         {
-            Language language = _languageService.Find(id);
+            Language language = _languageService.FindOne(id);
 
             if(ModelState.IsValid)
             {
@@ -220,7 +219,6 @@ namespace ReadingTool.Site.Controllers.User
                 dictionary.UrlEncoding = model.UrlEncoding;
                 dictionary.WindowName = model.WindowName;
 
-                language.UpdateDictionary(dictionary);
                 _languageService.Save(language);
 
                 this.FlashSuccess(Constants.Messages.FORM_UPDATE, DescriptionFormatter.GetDescription(model));
@@ -234,13 +232,13 @@ namespace ReadingTool.Site.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteDictionary(Guid id, Guid dictionaryId)
+        public ActionResult DeleteDictionary(ObjectId id, ObjectId dictionaryId)
         {
-            Language language = _languageService.Find(id);
+            Language language = _languageService.FindOne(id);
 
             if(language != null)
             {
-                language.RemoveDictionary(dictionaryId);
+                language.Dictionaries.Remove(language.Dictionaries.FirstOrDefault(x => x.Id == dictionaryId));
                 _languageService.Save(language);
             }
 
@@ -262,14 +260,14 @@ namespace ReadingTool.Site.Controllers.User
         }
 
         [AjaxRoute]
-        public JsonResult UpdateOrder(Guid languageId, IEnumerable<Guid> ids)
+        public JsonResult UpdateOrder(ObjectId languageId, IEnumerable<ObjectId> ids)
         {
             try
             {
                 //if(!string.IsNullOrEmpty(ids))
                 if(ids != null && ids.Any())
                 {
-                    var l = _languageService.Find(languageId);
+                    var l = _languageService.FindOne(languageId);
 
                     if(l == null)
                     {

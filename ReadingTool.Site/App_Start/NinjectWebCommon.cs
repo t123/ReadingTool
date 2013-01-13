@@ -66,19 +66,18 @@ namespace ReadingTool.Site.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            //kernel.Bind<IParserService>().To<DefaultParserService>();
-            //kernel.Bind<ITermService>().To<TermService>();
+            kernel.Bind<IParserService>().To<DefaultParserService>();
+            kernel.Bind<ITermService>().To<TermService>();
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<IAuthenticationService>().To<AuthenticationService>();
             kernel.Bind<ILanguageService>().To<LanguageService>();
-            //kernel.Bind<ITextService>().To<TextService>();
+            kernel.Bind<ITextService>().To<TextService>();
             kernel.Bind<ISystemLanguageService>().To<SystemLanguageService>();
             kernel.Bind<IDeleteService>().To<DeleteService>();
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
-            //kernel.Bind<ISequenceService>().To<SequenceService>();
-            //kernel.Bind<ILwtImportService>().To<LwtImportService>();
-            //kernel.Bind<IUpgradeService>().To<UpgradeService>();
-            //kernel.Bind<LatexParserService>().To<LatexParserService>();
+            kernel.Bind<ILwtImportService>().To<LwtImportService>();
+            kernel.Bind<IUpgradeService>().To<UpgradeService>();
+            kernel.Bind<LatexParserService>().To<LatexParserService>();
 
             kernel.Bind<MongoContext>().ToMethod(x => MongoContext.Instance).InSingletonScope();
         }

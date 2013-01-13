@@ -16,7 +16,7 @@ namespace ReadingTool.Site
 
             if(result.AttemptedValue == null)
             {
-                return null;
+                return (ObjectId?)null;
             }
 
             ObjectId test;
@@ -25,7 +25,7 @@ namespace ReadingTool.Site
                 return test;
             }
 
-            return null;
+            return (ObjectId?)null;
         }
     }
 }

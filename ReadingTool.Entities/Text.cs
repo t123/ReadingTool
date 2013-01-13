@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using ReadingTool.Core.Database;
 
 namespace ReadingTool.Entities
 {
-    public class Text
+    public class Text : IEntity
     {
         [BsonId]
         public ObjectId Id { get; set; }
@@ -60,5 +61,11 @@ namespace ReadingTool.Entities
         public string[] Tags { get; set; }
 
         public TextMetadata Metadata { get; set; }
+
+        public Text()
+        {
+            Metadata = new TextMetadata();
+            Tags = new string[0];
+        }
     }
 }

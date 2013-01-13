@@ -6,6 +6,9 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using ReadingTool.Core.Database;
 using ReadingTool.Entities;
 
@@ -25,42 +28,54 @@ namespace ReadingTool.Services
         //TODO change to DELETE * WHERE x=x <-- allow IEnumerables
 
         private readonly IUserIdentity _identity;
+        private readonly MongoCollection _userCollection;
+        private readonly MongoCollection _textCollection;
+        private readonly MongoCollection _languageCollection;
+        private readonly MongoCollection _termCollection;
 
         public DeleteService(MongoContext context, IPrincipal principal)
         {
             _context = context;
             _identity = principal.Identity as IUserIdentity;
+
+            _userCollection = _context.Database.GetCollection(typeof(User).Name);
+            _languageCollection = _context.Database.GetCollection(typeof(Language).Name);
+            _textCollection = _context.Database.GetCollection(typeof(Text).Name);
+            _termCollection = _context.Database.GetCollection(typeof(Term).Name);
         }
 
         public void DeleteUser(User user)
         {
-            //if(user == null || user.Id != _identity.UserId)
-            //{
-            //    return;
-            //}
+            if(user == null || user.Id != _identity.UserId)
+            {
+                return;
+            }
 
-            //_db.Select<Language>(x => x.Owner == user.Id).ForEach(DeleteLanguage);
-            //_db.DeleteById<User>(user.Id);
-            //var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Texts", user.Id.ToString());
-            //DirectoryInfo di = new DirectoryInfo(directory);
 
-            //if(di.Exists)
-            //{
-            //    di.Delete(true);
-            //}
+            _languageCollection.Remove(Query.EQ("Owner", _identity.UserId));
+            _termCollection.Remove(Query.EQ("Owner", _identity.UserId));
+            _textCollection.Remove(Query.EQ("Owner", _identity.UserId));
+            _userCollection.Remove(Query.EQ("_id", user.Id));
+            var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "Texts", user.Id.ToString());
+            DirectoryInfo di = new DirectoryInfo(directory);
+
+            if(di.Exists)
+            {
+                di.Delete(true);
+            }
         }
 
         public void DeleteLanguage(Language language)
         {
-            //if(language == null || language.Owner != _identity.UserId)
-            //{
-            //    return;
-            //}
+            if(language == null || language.Owner != _identity.UserId)
+            {
+                return;
+            }
 
-            //_db.Select<Term>(x => x.LanguageId == language.Id).ForEach(DeleteTerm);
-            //_db.Select<Text>(x => x.L1Id == language.Id).ForEach(DeleteText);
-            //_db.Update<Text>(new { L2Id = (Guid?)null }, x => x.L2Id == language.Id);
-            //_db.DeleteById<Language>(language.Id);
+            _termCollection.Remove(Query.EQ("LanguageId", language.Id));
+            _textCollection.Remove(Query.EQ("L1Id", language.Id));
+            _textCollection.Update(Query.EQ("L2Id", language.Id), Update.Set("L2Id", BsonNull.Value));
+            _languageCollection.Remove(Query.EQ("_id", language.Id));
         }
 
         public void DeleteTerm(Term term)
@@ -70,7 +85,7 @@ namespace ReadingTool.Services
                 return;
             }
 
-            //_db.DeleteById<Term>(term.Id);
+            _termCollection.Remove(Query.EQ("_id", term.Id));
         }
 
         public void DeleteText(Text text)
@@ -80,9 +95,10 @@ namespace ReadingTool.Services
                 return;
             }
 
-            //_db.Update<IndividualTerm>(new { TextId = (Guid?)null }, x => x.TextId == text.Id);
-            //DeleteTextFile(text);
-            //_db.DeleteById<Text>(text.Id);
+
+            _textCollection.Remove(Query.EQ("_id", text.Id));
+            _termCollection.Update(Query.EQ("TextId", text.Id), Update.Set("TextId", BsonNull.Value));
+            DeleteTextFile(text);
         }
 
         private void DeleteTextFile(Text text)

@@ -79,7 +79,7 @@
 }
 else
 {
-    @Html.FlashMessage("You have not added any dictionaries yet")
+    @Html.FlashMessage("You have not added any dictionaries to " + Model.Name + " yet")
 }
 
 @Html.ActionLink("add a new dictionary", "AddDictionary", new { id=Model.Id}, new { @class = "btn btn-primary" })

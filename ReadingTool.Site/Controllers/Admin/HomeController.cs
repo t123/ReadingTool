@@ -181,7 +181,7 @@ namespace ReadingTool.Site.Controllers.Admin
                         count++;
                     }
 
-                    _systemLanguageService.Save(languages.OrderBy(x => x.Name).Take(1).ToArray());
+                    _systemLanguageService.Save(languages.OrderBy(x => x.Name).ToArray());
 
                     this.FlashSuccess("{0} languages imported", count);
 

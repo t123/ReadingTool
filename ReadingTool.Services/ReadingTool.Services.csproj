@@ -68,11 +68,29 @@
     <Compile Include="DeleteService.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IParserService.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="LanguageService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LatexParserService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LwtImportService.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemLanguageService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TermService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TextService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UpgradeService.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UserService.cs">

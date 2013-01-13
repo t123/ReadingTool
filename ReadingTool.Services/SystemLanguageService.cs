@@ -33,12 +33,12 @@ namespace ReadingTool.Services
 
         public IEnumerable<SystemLanguage> FindAllStartingWith(string term)
         {
-            return _collection.AsQueryable().Where(x => x.Name.StartsWith(term));
+            return Queryable.Where(x => x.Name.StartsWith(term));
         }
 
         public SystemLanguage FindByName(string name)
         {
-            return _collection.AsQueryable().FirstOrDefault(x => x.Name == name);
+            return Queryable.FirstOrDefault(x => x.Name == name);
         }
     }
 }

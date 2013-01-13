@@ -26,32 +26,32 @@ namespace ReadingTool.Site.Controllers.User
     {
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
-        //private readonly ILanguageService _languageService;
-        //private readonly ITermService _termService;
-        //private readonly ITextService _textService;
-        //private readonly ISystemLanguageService _systemLanguageService;
-        //private readonly ILwtImportService _lwtImportService;
-        //private readonly IUpgradeService _upgradeService;
+        private readonly ILanguageService _languageService;
+        private readonly ITermService _termService;
+        private readonly ITextService _textService;
+        private readonly ISystemLanguageService _systemLanguageService;
+        private readonly ILwtImportService _lwtImportService;
+        private readonly IUpgradeService _upgradeService;
 
         public MyAccountController(
             IUserService userService,
-            IAuthenticationService authenticationService
-            //ILanguageService languageService,
-            //ITermService termService,
-            //ITextService textService,
-            //ISystemLanguageService systemLanguageService,
-            //ILwtImportService lwtImportService,
-            //IUpgradeService upgradeService
+            IAuthenticationService authenticationService,
+            ILanguageService languageService,
+            ITermService termService,
+            ITextService textService,
+            ISystemLanguageService systemLanguageService,
+            ILwtImportService lwtImportService,
+            IUpgradeService upgradeService
             )
         {
             _userService = userService;
             _authenticationService = authenticationService;
-            //_languageService = languageService;
-            //_termService = termService;
-            //_textService = textService;
-            //_systemLanguageService = systemLanguageService;
-            //_lwtImportService = lwtImportService;
-            //_upgradeService = upgradeService;
+            _languageService = languageService;
+            _termService = termService;
+            _textService = textService;
+            _systemLanguageService = systemLanguageService;
+            _lwtImportService = lwtImportService;
+            _upgradeService = upgradeService;
         }
 
         [HttpGet]
@@ -229,14 +229,12 @@ namespace ReadingTool.Site.Controllers.User
             return View(model);
         }
 
-        /*
-
         [HttpGet]
         public ActionResult ImportExport()
         {
             return View();
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ImportExport(string export, LwtImport model, HttpPostedFileBase file)
@@ -296,7 +294,7 @@ namespace ReadingTool.Site.Controllers.User
                     break;
 
                 case "export your account data":
-                    var user = _userService.Find(this.CurrentUserId());
+                    var user = _userService.FindOne(this.CurrentUserId());
                     var languages = _languageService.FindAll().ToList();
                     user.Password = string.Empty;
 
@@ -310,7 +308,7 @@ namespace ReadingTool.Site.Controllers.User
 
                     foreach(var l in languages.Where(x => x.SystemLanguageId != null))
                     {
-                        var sl = _systemLanguageService.Find(l.SystemLanguageId.Value);
+                        var sl = _systemLanguageService.FindOne(l.SystemLanguageId.Value);
                         if(sl != null)
                         {
                             exportModel.SystemLanguages.Add(sl);
@@ -338,7 +336,7 @@ namespace ReadingTool.Site.Controllers.User
 
             return RedirectToAction("ImportExport");
         }
-        */
+        
         [HttpGet]
         public ActionResult ApiAccess()
         {
@@ -428,7 +426,7 @@ namespace ReadingTool.Site.Controllers.User
                 return result.ToString();
             }
         }
-        /*
+        
         [HttpGet]
         public ActionResult Upgrade()
         {
@@ -470,7 +468,7 @@ namespace ReadingTool.Site.Controllers.User
 
             return RedirectToAction("Upgrade");
         }
-        */
+        
         private void UpdateUser(Entities.User user)
         {
             var cookie = _authenticationService.CreateAuthenticationTicket(user);

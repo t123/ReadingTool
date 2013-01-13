@@ -8,14 +8,14 @@
 <div class="clr50"></div>
 <ul class="nav nav-pills nav-stacked" id="readingbuttons">
     <li>
-        Read <span class="label label-info" id="timesRead">@(string.Format("{0} ({1} words)", Model.Text.TimesRead ?? 0, Model.Text.WordsRead ?? 0))</span> time(s)
+        Read <span class="label label-info" id="timesRead">@(string.Format("{0} ({1} words)", Model.Text.Metadata.TimesRead ?? 0, Model.Text.Metadata.WordsRead ?? 0))</span> time(s)
         <a href="#" id="minusRead" style="display: inline"><i class="icon-minus"> </i></a>
         <a href="#" id="plusRead" style="display: inline"><i class="icon-plus"> </i></a>
     </li>
-    @if(!string.IsNullOrWhiteSpace(Model.Text.AudioUrl) || (Model.Text.TimesListened.HasValue && Model.Text.TimesListened > 0)) 
+    @if(!string.IsNullOrWhiteSpace(Model.Text.AudioUrl) || (Model.Text.Metadata.TimesListened.HasValue && Model.Text.Metadata.TimesListened > 0)) 
     {
         <li>
-            Listened <span class="label label-info" id="timesListened">@(string.Format("{0} ({1})", Model.Text.TimesListened ?? 0, Model.Text.ListenLength.SecondsToHourMinuteSeconds()))</span> time(s)
+            Listened <span class="label label-info" id="timesListened">@(string.Format("{0} ({1})", Model.Text.Metadata.TimesListened ?? 0, Model.Text.Metadata.ListenLength.SecondsToHourMinuteSeconds()))</span> time(s)
             
             @if(!string.IsNullOrWhiteSpace(Model.Text.AudioUrl))
             {

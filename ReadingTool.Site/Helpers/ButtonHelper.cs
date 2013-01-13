@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using MongoDB.Bson;
 
 namespace ReadingTool.Site.Helpers
 {
@@ -15,7 +16,7 @@ namespace ReadingTool.Site.Helpers
             return DeleteButton(html, url, null, classes);
         }
 
-        public static MvcHtmlString DeleteButton(this HtmlHelper html, string url, Guid? id, string classes = "")
+        public static MvcHtmlString DeleteButton(this HtmlHelper html, string url, ObjectId? id, string classes = "")
         {
             StringBuilder sb = new StringBuilder();
 
@@ -39,7 +40,7 @@ namespace ReadingTool.Site.Helpers
             return EditButton(html, url, null, classes);
         }
 
-        public static MvcHtmlString EditButton(this HtmlHelper html, string url, Guid? id, string classes = "")
+        public static MvcHtmlString EditButton(this HtmlHelper html, string url, ObjectId? id, string classes = "")
         {
             StringBuilder sb = new StringBuilder();
 

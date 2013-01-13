@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using ReadingTool.Core.Database;
 using ReadingTool.Core.Enums;
 
 namespace ReadingTool.Entities
 {
-    public class Term
+    public class Term : IEntity
     {
         [BsonId]
         public ObjectId Id { get; set; }
@@ -52,20 +53,7 @@ namespace ReadingTool.Entities
 
         public DateTime? NextReview { get; set; }
 
-        private readonly List<IndividualTerm> _individualTerms;
-
-        //[BsonIgnore]
-        public IEnumerable<IndividualTerm> IndividualTerms
-        {
-            get { return _individualTerms.Where(x => !x.IsDeleted).OrderBy(x => x.Created).ToList().AsReadOnly(); }
-            //set { _individualTerms = (value ?? new List<IndividualTerm>()).ToList(); }
-        }
-
-        [BsonIgnore]
-        public IEnumerable<IndividualTerm> DeletedIndividualTerms
-        {
-            get { return _individualTerms.Where(x => x.IsDeleted); }
-        }
+        public IList<IndividualTerm> IndividualTerms { get; set; }
 
         [BsonIgnore]
         public string Definition
@@ -74,9 +62,9 @@ namespace ReadingTool.Entities
             {
                 StringBuilder sb = new StringBuilder();
 
-                if(_individualTerms.Count == 1)
+                if(IndividualTerms.Count() == 1)
                 {
-                    var it = _individualTerms[0];
+                    var it = IndividualTerms.First();
                     sb.AppendFormat("{0}{1}", it.BaseTerm, "\n");
                     if(!string.IsNullOrEmpty(it.Romanisation)) sb.AppendFormat("{0}{1}", it.Romanisation, "\n");
                     sb.AppendFormat("{0}{1}", it.Definition, "\n");
@@ -84,7 +72,7 @@ namespace ReadingTool.Entities
                 else
                 {
                     int counter = 1;
-                    foreach(var it in _individualTerms)
+                    foreach(var it in IndividualTerms)
                     {
                         if(it.Id == ObjectId.Empty)
                         {
@@ -105,76 +93,15 @@ namespace ReadingTool.Entities
 
         public Term()
         {
-            _individualTerms = new List<IndividualTerm>();
+            IndividualTerms = new List<IndividualTerm>();
         }
-
-        #region individual terms
-        public void AddIndividualTerms(IEnumerable<IndividualTerm> individualTerms)
-        {
-            _individualTerms.AddRange(individualTerms);
-        }
-
-        public void AddIndividualTerm(IndividualTerm individualTerm, bool allowBlank = false)
-        {
-            if(individualTerm == null)
-            {
-                return;
-            }
-
-            if(
-                !allowBlank &&
-                string.IsNullOrWhiteSpace(individualTerm.Definition) &&
-                string.IsNullOrWhiteSpace(individualTerm.Romanisation) &&
-                string.IsNullOrWhiteSpace(individualTerm.BaseTerm)
-                )
-            {
-                //skip word where nothing is filled in
-                return;
-            }
-
-            individualTerm.LanguageId = this.LanguageId;
-            _individualTerms.Add(individualTerm);
-        }
-
-        public void RemoveIndividualTerm(ObjectId id)
-        {
-            RemoveIndividualTerm(_individualTerms.FirstOrDefault(x => x.Id == id));
-        }
-
-        public void RemoveIndividualTerm(IndividualTerm individualTerm)
-        {
-            if(individualTerm == null)
-            {
-                return;
-            }
-
-            individualTerm.IsDeleted = true;
-        }
-
-        public void UpdateIndividualTerm(ObjectId id, IndividualTerm individualTerm)
-        {
-            var it = _individualTerms.FirstOrDefault(x => x.Id == id);
-
-            if(it == null)
-            {
-                return;
-            }
-
-            it.BaseTerm = individualTerm.BaseTerm;
-            it.Definition = individualTerm.Definition;
-            it.Sentence = individualTerm.Sentence;
-            it.Tags = individualTerm.Tags;
-            it.Romanisation = individualTerm.Romanisation;
-            it.LanguageId = individualTerm.LanguageId;
-        }
-        #endregion
     }
 
     public class IndividualTerm
     {
         [BsonId]
         public ObjectId Id { get; set; }
-        public DateTime Created { get { return Id.CreationTime; } }
+        public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
 
         [BsonIgnore]
@@ -203,8 +130,7 @@ namespace ReadingTool.Entities
         public string Romanisation { get; set; }
 
         [Required]
-        [StringLength(1000)]
-        public string Tags { get; set; }
+        public string[] Tags { get; set; }
 
         public IndividualTerm()
         {
@@ -213,7 +139,7 @@ namespace ReadingTool.Entities
             Sentence = string.Empty;
             Definition = string.Empty;
             Romanisation = string.Empty;
-            Tags = string.Empty;
+            Tags = new string[] { };
         }
     }
 }

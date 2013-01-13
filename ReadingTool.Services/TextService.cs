@@ -7,40 +7,38 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Ionic.Zip;
+using MongoDB.Bson;
 using ReadingTool.Core;
 using ReadingTool.Core.Comparers;
+using ReadingTool.Core.Database;
 using ReadingTool.Core.Enums;
 using ReadingTool.Core.FilterParser;
 using ReadingTool.Entities;
 using ReadingTool.Entities.Search;
-using ServiceStack.OrmLite;
+using ReadingTool.Repository;
 
 namespace ReadingTool.Services
 {
-    public interface ITextService
+    public interface ITextService : IRepository<Text>
     {
         void Save(Text text, bool ignoreModificationTime = false);
-        void Delete(Text text);
-        void Delete(Guid id);
-        Text Find(Guid id);
         IEnumerable<Text> FindAll(bool includeText = false);
-        IEnumerable<Text> FindAllByLanguage(Guid languageId, bool includeText = false);
-        Tuple<Guid?, Guid?> FindPagedTexts(Text text);
+        IEnumerable<Text> FindAllByLanguage(ObjectId languageId, bool includeText = false);
+        Tuple<ObjectId?, ObjectId?> FindPagedTexts(Text text);
         int Import(TextImport import);
         SearchResult<Text> FilterTexts(SearchOptions so = null);
         IEnumerable<string> FindAllTags(string startsWith = "");
     }
 
-    public class TextService : ITextService
+    public class TextService : Repository<Text>, ITextService
     {
-        private readonly IDbConnection _db;
         private readonly IDeleteService _deleteService;
         private readonly ILanguageService _languageService;
         private readonly IUserIdentity _identity;
 
-        public TextService(IDbConnection db, IPrincipal principal, IDeleteService deleteService, ILanguageService languageService)
+        public TextService(MongoContext context, IPrincipal principal, IDeleteService deleteService, ILanguageService languageService)
+            : base(context)
         {
-            _db = db;
             _deleteService = deleteService;
             _languageService = languageService;
             _identity = principal.Identity as IUserIdentity;
@@ -48,11 +46,9 @@ namespace ReadingTool.Services
 
         public void Save(Text text, bool ignoreModificationTime = false)
         {
-            if(text.Id == Guid.Empty)
+            if(text.Id == ObjectId.Empty)
             {
-                text.Created = DateTime.Now;
                 text.Owner = _identity.UserId;
-                text.Id = SequentialGuid.NewGuid();
             }
 
             if(!ignoreModificationTime)
@@ -60,12 +56,8 @@ namespace ReadingTool.Services
                 text.Modified = DateTime.Now;
             }
 
-            _db.Save(text);
+            base.Save(text);
             SaveTextFiles(text);
-
-            var tags = TagHelper.Split(text.Tags);
-            _db.Delete<Tag>(x => x.TextId == text.Id);
-            _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = null, TextId = text.Id, Value = x }));
         }
 
         private string GetTextsDirectory(Text text)
@@ -132,19 +124,14 @@ namespace ReadingTool.Services
             return text;
         }
 
-        public void Delete(Text text)
+        public new void Delete(Text text)
         {
             _deleteService.DeleteText(text);
         }
 
-        public void Delete(Guid id)
+        public new Text FindOne(ObjectId id)
         {
-            Delete(Find(id));
-        }
-
-        public Text Find(Guid id)
-        {
-            var text = _db.Select<Text>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
+            var text = Queryable.FirstOrDefault(x => x.Owner == _identity.UserId);
 
             if(text == null)
             {
@@ -158,7 +145,8 @@ namespace ReadingTool.Services
 
         public IEnumerable<Text> FindAll(bool includeTexts = false)
         {
-            var texts = _db.Select<Text>(x => x.Owner == _identity.UserId);
+            var texts = Queryable.Where(x => x.Owner == _identity.UserId);
+
             if(includeTexts)
             {
                 //TODO fixme 
@@ -170,9 +158,9 @@ namespace ReadingTool.Services
             }
         }
 
-        public IEnumerable<Text> FindAllByLanguage(Guid languageId, bool includeTexts = false)
+        public IEnumerable<Text> FindAllByLanguage(ObjectId languageId, bool includeTexts = false)
         {
-            var texts = _db.Select<Text>(x => x.Owner == _identity.UserId && x.L1Id == languageId);
+            var texts = Queryable.Where(x => x.Owner == _identity.UserId && x.L1Id == languageId);
             if(includeTexts)
             {
                 //TODO fixme 
@@ -186,176 +174,180 @@ namespace ReadingTool.Services
 
         public SearchResult<Text> FilterTexts(SearchOptions so = null)
         {
-            if(so == null)
-            {
-                so = new SearchOptions();
-            }
+            //            if(so == null)
+            //            {
+            //                so = new SearchOptions();
+            //            }
 
-            #region ordering
-            string orderBy;
-            switch(so.Sort)
-            {
-                case "title":
-                    orderBy = string.Format("ORDER BY t.Title {0}, l.Name ASC, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
-                    break;
+            //            #region ordering
+            //            string orderBy;
+            //            switch(so.Sort)
+            //            {
+            //                case "title":
+            //                    orderBy = string.Format("ORDER BY t.Title {0}, l.Name ASC, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
+            //                    break;
 
-                case "lastseen":
-                    orderBy = string.Format("ORDER BY t.LastSeen {0}, l.Name ASC, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
-                    break;
+            //                case "lastseen":
+            //                    orderBy = string.Format("ORDER BY t.LastSeen {0}, l.Name ASC, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
+            //                    break;
 
-                case "collectionname":
-                    orderBy = string.Format("ORDER BY t.CollectionName ASC, t.CollectionNo, t.Title, l.Name", so.Direction.ToString());
-                    break;
+            //                case "collectionname":
+            //                    orderBy = string.Format("ORDER BY t.CollectionName ASC, t.CollectionNo, t.Title, l.Name", so.Direction.ToString());
+            //                    break;
 
-                case "language":
-                default:
-                    orderBy = string.Format("ORDER BY l.Name {0}, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
-                    break;
-            }
-            #endregion
+            //                case "language":
+            //                default:
+            //                    orderBy = string.Format("ORDER BY l.Name {0}, t.CollectionName, t.CollectionNo, t.Title", so.Direction.ToString());
+            //                    break;
+            //            }
+            //            #endregion
 
-            #region create where clause
-            StringBuilder whereSql = new StringBuilder();
+            //            #region create where clause
+            //            StringBuilder whereSql = new StringBuilder();
 
-            var options = FilterParser.Parse(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()), so.Filter, FilterParser.MagicTextTags);
+            //            var options = FilterParser.Parse(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()), so.Filter, FilterParser.MagicTextTags);
 
-            #region magic
-            if(options.Magic.Count > 0)
-            {
-                string magicSql = "";
-                foreach(var o in options.Magic)
-                {
-                    switch(o)
-                    {
-                        case @"parallel":
-                            magicSql += " AND t.IsParallel=1 ";
-                            break;
-                        case @"single":
-                            magicSql += " AND t.IsParallel=0 ";
-                            break;
-                        case @"audio":
-                            magicSql += " AND t.AudioURL IS NOT NULL AND LEN(t.AudioUrl)>0 ";
-                            break;
-                        case @"noaudio":
-                            magicSql += " AND (t.AudioURL IS NULL OR LEN(t.AudioUrl)=0) ";
-                            break;
-                        case @"recent":
-                            magicSql += " AND t.LastSeen>'" + DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
-                            break;
-                        case @"new":
-                            magicSql += " AND t.Created>'" + DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
-                            break;
-                        case @"unseen":
-                            magicSql += " AND t.LastSeen IS NULL ";
-                            break;
-                    }
-                }
+            //            #region magic
+            //            if(options.Magic.Count > 0)
+            //            {
+            //                string magicSql = "";
+            //                foreach(var o in options.Magic)
+            //                {
+            //                    switch(o)
+            //                    {
+            //                        case @"parallel":
+            //                            magicSql += " AND t.IsParallel=1 ";
+            //                            break;
+            //                        case @"single":
+            //                            magicSql += " AND t.IsParallel=0 ";
+            //                            break;
+            //                        case @"audio":
+            //                            magicSql += " AND t.AudioURL IS NOT NULL AND LEN(t.AudioUrl)>0 ";
+            //                            break;
+            //                        case @"noaudio":
+            //                            magicSql += " AND (t.AudioURL IS NULL OR LEN(t.AudioUrl)=0) ";
+            //                            break;
+            //                        case @"recent":
+            //                            magicSql += " AND t.LastSeen>'" + DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+            //                            break;
+            //                        case @"new":
+            //                            magicSql += " AND t.Created>'" + DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+            //                            break;
+            //                        case @"unseen":
+            //                            magicSql += " AND t.LastSeen IS NULL ";
+            //                            break;
+            //                    }
+            //                }
 
-                whereSql.Append(magicSql);
-            }
-            #endregion
+            //                whereSql.Append(magicSql);
+            //            }
+            //            #endregion
 
-            #region languages
-            if(options.Languages.Count > 0)
-            {
-                string languageSql = string.Format("AND l.Name IN ( {0} )", string.Join(",", options.Languages.Select(x => "'" + x + "'")));
-                whereSql.Append(languageSql);
-            }
-            #endregion
+            //            #region languages
+            //            if(options.Languages.Count > 0)
+            //            {
+            //                string languageSql = string.Format("AND l.Name IN ( {0} )", string.Join(",", options.Languages.Select(x => "'" + x + "'")));
+            //                whereSql.Append(languageSql);
+            //            }
+            //            #endregion
 
-            #region other
-            if(options.Other.Count > 0)
-            {
-                string otherSql = string.Format("AND ( ");
+            //            #region other
+            //            if(options.Other.Count > 0)
+            //            {
+            //                string otherSql = string.Format("AND ( ");
 
-                foreach(var o in options.Other)
-                {
-                    otherSql += string.Format("t.Title LIKE '%{0}%' OR t.CollectionName LIKE '%{0}%' OR ", o); //TODO escape
-                }
+            //                foreach(var o in options.Other)
+            //                {
+            //                    otherSql += string.Format("t.Title LIKE '%{0}%' OR t.CollectionName LIKE '%{0}%' OR ", o); //TODO escape
+            //                }
 
-                otherSql = otherSql.Substring(0, otherSql.Length - 4);
-                otherSql += " )";
-                whereSql.Append(otherSql);
-            }
-            #endregion
+            //                otherSql = otherSql.Substring(0, otherSql.Length - 4);
+            //                otherSql += " )";
+            //                whereSql.Append(otherSql);
+            //            }
+            //            #endregion
 
-            #region tags
-            if(options.Tags.Count > 0)
-            {
-                string tagSql = string.Format("AND T.Id IN ( SELECT TextId FROM Tag WHERE Tag.Value IN ({0}))", string.Join(",", options.Tags.Select(x => "'" + x + "'")));
-                whereSql.Append(tagSql);
-            }
-            #endregion
-            #endregion
+            //            #region tags
+            //            if(options.Tags.Count > 0)
+            //            {
+            //                string tagSql = string.Format("AND T.Id IN ( SELECT TextId FROM Tag WHERE Tag.Value IN ({0}))", string.Join(",", options.Tags.Select(x => "'" + x + "'")));
+            //                whereSql.Append(tagSql);
+            //            }
+            //            #endregion
+            //            #endregion
 
-            #region query creation
-            const string columns = "l.Name, t.CollectionName, t.CollectionNo, t.Title, t.LastSeen, t.AudioUrl, t.Id, t.Tags, t.IsParallel, t.L1Id, t.Created, t.TimesRead, t.TimesListened, t.ListenLength, t.WordsRead";
-            string sql = string.Format(@"
-SELECT
-/*ROWNUMBER*/
-/*COLUMNS*/
-FROM [Text] t
-LEFT JOIN [Language] l ON t.L1Id=l.Id
-WHERE t.Owner='{0}' /*WHERE*/
-", _identity.UserId);
+            //            #region query creation
+            //            const string columns = "l.Name, t.CollectionName, t.CollectionNo, t.Title, t.LastSeen, t.AudioUrl, t.Id, t.Tags, t.IsParallel, t.L1Id, t.Created, t.TimesRead, t.TimesListened, t.ListenLength, t.WordsRead";
+            //            string sql = string.Format(@"
+            //SELECT
+            ///*ROWNUMBER*/
+            ///*COLUMNS*/
+            //FROM [Text] t
+            //LEFT JOIN [Language] l ON t.L1Id=l.Id
+            //WHERE t.Owner='{0}' /*WHERE*/
+            //", _identity.UserId);
 
-            string countQuery = sql.Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total").Replace("/*COLUMNS*/", "").Replace("/*WHERE*/", whereSql.ToString());
+            //            string countQuery = sql.Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total").Replace("/*COLUMNS*/", "").Replace("/*WHERE*/", whereSql.ToString());
 
-            int page = so.Page - 1;
-            int rowsPerPage = so.RowsPerPage;
+            //            int page = so.Page - 1;
+            //            int rowsPerPage = so.RowsPerPage;
 
-            if(so.IgnorePaging)
-            {
-                page = 0;
-                rowsPerPage = int.MaxValue;
-            }
+            //            if(so.IgnorePaging)
+            //            {
+            //                page = 0;
+            //                rowsPerPage = int.MaxValue;
+            //            }
 
-            StringBuilder query = new StringBuilder();
-            query.AppendFormat(@"
-SELECT *
-FROM
-(
-{0}
-) AS RowConstrainedResult
-WHERE RowNumber BETWEEN {1} AND {2}
-ORDER BY RowNumber
-",
-                         sql.Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,").Replace("/*COLUMNS*/", columns).Replace("/*WHERE*/", whereSql.ToString()),
-                         page,
-                         page * rowsPerPage + rowsPerPage
-                );
-            #endregion
+            //            StringBuilder query = new StringBuilder();
+            //            query.AppendFormat(@"
+            //SELECT *
+            //FROM
+            //(
+            //{0}
+            //) AS RowConstrainedResult
+            //WHERE RowNumber BETWEEN {1} AND {2}
+            //ORDER BY RowNumber
+            //",
+            //                         sql.Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,").Replace("/*COLUMNS*/", columns).Replace("/*WHERE*/", whereSql.ToString()),
+            //                         page,
+            //                         page * rowsPerPage + rowsPerPage
+            //                );
+            //            #endregion
 
-            try
-            {
-                var texts = _db.Query<Text>(query.ToString());
-                var count = _db.Scalar<int>(countQuery);
-                return new SearchResult<Text> { Results = texts, TotalRows = count };
-            }
-            catch(Exception e)
-            {
-                var brokenSql = _db.GetLastSql();
-                var message = string.Format("Invalid text search SQL:\n\n{0}\n\n{1}\n\n{2}", brokenSql, countQuery, query);
-                throw new Exception(message, e);
-            }
+            //            try
+            //            {
+            //                var texts = _db.Query<Text>(query.ToString());
+            //                var count = _db.Scalar<int>(countQuery);
+            //                return new SearchResult<Text> { Results = texts, TotalRows = count };
+            //            }
+            //            catch(Exception e)
+            //            {
+            //                var brokenSql = _db.GetLastSql();
+            //                var message = string.Format("Invalid text search SQL:\n\n{0}\n\n{1}\n\n{2}", brokenSql, countQuery, query);
+            //                throw new Exception(message, e);
+            //            }
+
+            var texts = FindAll();
+            return new SearchResult<Text> { Results = texts, TotalRows = texts.Count() };
         }
 
         public IEnumerable<string> FindAllTags(string startsWith = "")
         {
-            var tags = _db.Select<Tag>("SELECT DISTINCT(Value) FROM Tag WHERE TextId IN ( SELECT Id FROM Text WHERE Owner={0}) AND Value LIKE {1} ORDER BY Value", _identity.UserId, startsWith + "%");
-            return tags.Select(x => x.Value);
+            return new string[] { };
+            //var tags = _db.Select<Tag>("SELECT DISTINCT(Value) FROM Tag WHERE TextId IN ( SELECT Id FROM Text WHERE Owner={0}) AND Value LIKE {1} ORDER BY Value", _identity.UserId, startsWith + "%");
+            //return tags.Select(x => x.Value);
         }
 
-        public Tuple<Guid?, Guid?> FindPagedTexts(Text text)
+        public Tuple<ObjectId?, ObjectId?> FindPagedTexts(Text text)
         {
-            if(text == null) return new Tuple<Guid?, Guid?>(null, null);
-            if(string.IsNullOrWhiteSpace(text.CollectionName)) return new Tuple<Guid?, Guid?>(null, null);
-            if(!text.CollectionNo.HasValue) return new Tuple<Guid?, Guid?>(null, null);
+            if(text == null) return new Tuple<ObjectId?, ObjectId?>(null, null);
+            if(string.IsNullOrWhiteSpace(text.CollectionName)) return new Tuple<ObjectId?, ObjectId?>(null, null);
+            if(!text.CollectionNo.HasValue) return new Tuple<ObjectId?, ObjectId?>(null, null);
 
-            Guid? previousId = FindPreviousId(text);
-            Guid? nextId = FindNextId(text);
+            ObjectId? previousId = FindPreviousId(text);
+            ObjectId? nextId = FindNextId(text);
 
-            return new Tuple<Guid?, Guid?>(previousId, nextId);
+            return new Tuple<ObjectId?, ObjectId?>(previousId, nextId);
         }
 
 
@@ -367,8 +359,8 @@ ORDER BY RowNumber
 
             dynamic defaults = new
                 {
-                    L1Id = Guid.Empty,
-                    L2Id = (Guid?)Guid.Empty,
+                    L1Id = ObjectId.Empty,
+                    L2Id = (ObjectId?)ObjectId.Empty,
                     AutoNumberCollection = (bool?)null,
                     CollectionName = "",
                     StartCollectionWithNumber = (int?)null,
@@ -402,7 +394,7 @@ ORDER BY RowNumber
                 defaults.AutoNumberCollection = defaults.Defaults.AutoNumberCollection;
                 defaults.CollectionName = defaults.Defaults.CollectionName;
                 defaults.StartCollectionWithNumber = defaults.Defaults.StartCollectionWithNumber;
-                defaults.Tags = defaults.Defaults.Tags;
+                defaults.Tags = TagHelper.Merge(defaults.Defaults.Tags);
             }
 
             #region test texts and get the languageIds
@@ -412,7 +404,7 @@ ORDER BY RowNumber
             foreach(var text in import.Items)
             {
                 #region get languages
-                if(!languageNameToId.ContainsKey(text.L1LanguageName ?? "") && defaults.L1Id == Guid.Empty)
+                if(!languageNameToId.ContainsKey(text.L1LanguageName ?? "") && defaults.L1Id == ObjectId.Empty)
                 {
                     if(string.IsNullOrEmpty(text.L1LanguageName))
                     {
@@ -462,22 +454,30 @@ ORDER BY RowNumber
                     AudioUrl = text.AudioUrl,
                     CollectionName = string.IsNullOrEmpty(text.CollectionName) ? defaults.CollectionName : text.CollectionName,
                     Owner = _identity.UserId,
-                    L1Id = languageNameToId.GetValueOrDefault(text.L1LanguageName, (Guid)defaults.L1Id),
+                    L1Id = languageNameToId.GetValueOrDefault(text.L1LanguageName, (ObjectId)defaults.L1Id),
                     //L2Id = languageNameToId.GetValueOrDefault(text.L2LanguageName, (Guid)defaults.L2Id),
                     L1Text = text.L1Text,
                     L2Text = text.L2Text,
                     Title = text.Title ?? "Import " + imported,
-                    Tags = TagHelper.ToString(TagHelper.Merge(defaults.Tags, text.Tags)),
                 };
+
+                if(text.Tags != null)
+                {
+                    newText.Tags = TagHelper.Merge(defaults.Tags, text.Tags);
+                }
+                else
+                {
+                    newText.Tags = TagHelper.Merge(defaults.Tags);
+                }
 
 
                 if(string.IsNullOrEmpty(text.L2LanguageName))
                 {
-                    if(defaults.L2Id == null || defaults.L2Id == Guid.Empty)
+                    if(defaults.L2Id == null || defaults.L2Id == ObjectId.Empty)
                     {
                         if(newText.IsParallel)
                         {
-                            newText.L2Id = ltrWithSpaces.Id;
+                            newText.L2Id = ltrWithSpaces == null ? (ObjectId?)null : ltrWithSpaces.Id;
                         }
                         else
                         {
@@ -486,7 +486,7 @@ ORDER BY RowNumber
                     }
                     else
                     {
-                        newText.L2Id = ((Guid?)defaults.L2Id).Value;
+                        newText.L2Id = ((ObjectId?)defaults.L2Id).Value;
                     }
                 }
                 else
@@ -516,28 +516,30 @@ ORDER BY RowNumber
             #endregion
         }
 
-        private Guid? FindPreviousId(Text text)
+        private ObjectId? FindPreviousId(Text text)
         {
-            var found = _db.Select<Text>("SELECT TOP 1 Id FROM [Text] WHERE Owner={0} AND L1Id={1} AND CollectionName={2} AND CollectionNo IS NOT NULL AND CollectionNo<{3} ORDER BY CollectionNo DESC",
-                                         _identity.UserId,
-                                         text.L1Id,
-                                         text.CollectionName,
-                                         text.CollectionNo
-                ).FirstOrDefault();
+            return null;
+            //var found = _db.Select<Text>("SELECT TOP 1 Id FROM [Text] WHERE Owner={0} AND L1Id={1} AND CollectionName={2} AND CollectionNo IS NOT NULL AND CollectionNo<{3} ORDER BY CollectionNo DESC",
+            //                             _identity.UserId,
+            //                             text.L1Id,
+            //                             text.CollectionName,
+            //                             text.CollectionNo
+            //    ).FirstOrDefault();
 
-            return found == null ? (Guid?)null : found.Id;
+            //return found == null ? (Guid?)null : found.Id;
         }
 
-        private Guid? FindNextId(Text text)
+        private ObjectId? FindNextId(Text text)
         {
-            var found = _db.Select<Text>("SELECT TOP 1 Id FROM [Text] WHERE Owner={0} AND L1Id={1} AND CollectionName={2} AND CollectionNo IS NOT NULL AND CollectionNo>{3} ORDER BY CollectionNo ASC",
-                                         _identity.UserId,
-                                         text.L1Id,
-                                         text.CollectionName,
-                                         text.CollectionNo
-                ).FirstOrDefault();
+            return null;
+            //var found = _db.Select<Text>("SELECT TOP 1 Id FROM [Text] WHERE Owner={0} AND L1Id={1} AND CollectionName={2} AND CollectionNo IS NOT NULL AND CollectionNo>{3} ORDER BY CollectionNo ASC",
+            //                             _identity.UserId,
+            //                             text.L1Id,
+            //                             text.CollectionName,
+            //                             text.CollectionNo
+            //    ).FirstOrDefault();
 
-            return found == null ? (Guid?)null : found.Id;
+            //return found == null ? (Guid?)null : found.Id;
         }
     }
 }

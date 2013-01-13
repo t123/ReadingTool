@@ -4,8 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using ReadingTool.Core;
+using ReadingTool.Core.Database;
 using ReadingTool.Core.Enums;
 using ReadingTool.Entities;
 
@@ -18,7 +20,7 @@ namespace ReadingTool.Services
 
     public class LwtImportService : ILwtImportService
     {
-        private readonly IDbConnection _db;
+        private readonly MongoContext _context;
         private readonly ITextService _textService;
         private readonly ITermService _termService;
         private readonly ILanguageService _languageService;
@@ -27,7 +29,7 @@ namespace ReadingTool.Services
         private readonly IUserIdentity _identity;
 
         public LwtImportService(
-            IDbConnection db,
+            MongoContext context,
             IPrincipal principal,
             ITextService textService,
             ITermService termService,
@@ -35,7 +37,7 @@ namespace ReadingTool.Services
             ISystemLanguageService systemLanguageService
             )
         {
-            _db = db;
+            _context = context;
             _textService = textService;
             _termService = termService;
             _languageService = languageService;
@@ -48,7 +50,7 @@ namespace ReadingTool.Services
             JsonLwt lwtData = new JsonLwt();
             lwtData = JsonConvert.DeserializeObject<JsonLwt>(data);
             string date = DateTime.Now.ToString("ddMM-HHmm");
-            Guid owner = _identity.UserId;
+            ObjectId owner = _identity.UserId;
 
             #region foreach language
             foreach(var item in lwtData.LWT_Languages)
@@ -57,10 +59,9 @@ namespace ReadingTool.Services
                 {
                     Language l = new Language()
                         {
-                            Id = SequentialGuid.NewGuid(),
+                            Id = ObjectId.GenerateNewId(),
                             Name = item.LgName + "-" + date,
                             Owner = owner,
-                            Created = DateTime.Now,
                             Modified = DateTime.Now,
                             SystemLanguageId = null,
                             Colour = "#FFFFFF",
@@ -87,14 +88,14 @@ namespace ReadingTool.Services
 
                     if(!string.IsNullOrEmpty(item.LgGoogleTranslateURI))
                     {
-                        l.AddDictionary(new LanguageDictionary()
+                        l.Dictionaries.Add(new LanguageDictionary()
                             {
                                 AutoOpen = false,
                                 DisplayOrder = 1,
                                 Name = "Google Translate",
                                 Parameter = DictionaryParameter.Sentence,
                                 Url = item.LgGoogleTranslateURI,
-                                Id = SequentialGuid.NewGuid(),
+                                Id = ObjectId.GenerateNewId(),
                                 UrlEncoding = "",
                                 WindowName = "googletranslation"
                             });
@@ -102,14 +103,14 @@ namespace ReadingTool.Services
 
                     if(!string.IsNullOrEmpty(item.LgDict1URI))
                     {
-                        l.AddDictionary(new LanguageDictionary()
+                        l.Dictionaries.Add(new LanguageDictionary()
                         {
                             AutoOpen = false,
                             DisplayOrder = 2,
                             Name = "Dictionary 1",
                             Parameter = DictionaryParameter.Word,
                             Url = item.LgDict1URI,
-                            Id = SequentialGuid.NewGuid(),
+                            Id = ObjectId.GenerateNewId(),
                             UrlEncoding = "",
                             WindowName = "dictionary_1"
                         });
@@ -117,14 +118,14 @@ namespace ReadingTool.Services
 
                     if(!string.IsNullOrEmpty(item.LgDict2URI))
                     {
-                        l.AddDictionary(new LanguageDictionary()
+                        l.Dictionaries.Add(new LanguageDictionary()
                         {
                             AutoOpen = false,
                             DisplayOrder = 2,
                             Name = "Dictionary 2",
                             Parameter = DictionaryParameter.Word,
                             Url = item.LgDict2URI,
-                            Id = SequentialGuid.NewGuid(),
+                            Id = ObjectId.GenerateNewId(),
                             UrlEncoding = "",
                             WindowName = "dictionary_2"
                         });
@@ -161,7 +162,6 @@ namespace ReadingTool.Services
                             Title = item.AtTitle,
                             L1Text = item.AtText,
                             Owner = owner,
-                            Created = DateTime.Now,
                             Modified = DateTime.Now,
                             L2Text = "",
                             IsParallel = false,
@@ -169,7 +169,7 @@ namespace ReadingTool.Services
 
                     var links = lwtData.LWT_ArchTextTags.Where(x => x.AgAtID == item.AtId);
                     atags.AddRange(from i in links select lwtData.LWT_Tags2.FirstOrDefault(x => x.T2ID == i.AgT2ID) into t where t != null select t.T2Text);
-                    text.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
+                    text.Tags = TagHelper.Merge(atags.ToArray());
                     text.AudioUrl = (item.AtAudioURI ?? "").Contains("://") ? item.AtAudioURI : mediaUrl + item.AtAudioURI;
 
                     if(!test)
@@ -200,7 +200,6 @@ namespace ReadingTool.Services
                             Title = item.TxTitle,
                             L1Text = item.TxText,
                             Owner = owner,
-                            Created = DateTime.Now,
                             Modified = DateTime.Now,
                             L2Text = "",
                             IsParallel = false,
@@ -209,7 +208,7 @@ namespace ReadingTool.Services
                     text.AudioUrl = (item.TxAudioURI ?? "").Contains("://") ? item.TxAudioURI : mediaUrl + item.TxAudioURI;
                     var links = lwtData.LWT_TextTags.Where(x => x.TtTxID == item.TxID);
                     atags.AddRange(from i in links select lwtData.LWT_Tags2.FirstOrDefault(x => x.T2ID == i.TtT2ID) into t where t != null select t.T2Text);
-                    text.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
+                    text.Tags = TagHelper.Merge(atags.ToArray());
 
                     if(!test)
                     {
@@ -268,7 +267,8 @@ namespace ReadingTool.Services
 
                     var links = lwtData.LWT_WordTags.Where(x => x.WtWoID == item.WoID);
                     atags.AddRange(from i in links select lwtData.LWT_Tags.FirstOrDefault(x => x.TgID == i.WtTgID) into t where t != null select t.TgText);
-                    it.Tags = TagHelper.ToString(TagHelper.Merge(atags.ToArray()));
+                    it.Tags = TagHelper.Merge(atags.ToArray());
+                    term.IndividualTerms.Add(it);
 
                     terms.Add(term);
                 }
@@ -323,7 +323,7 @@ namespace ReadingTool.Services
 
         private class Languages
         {
-            public Guid Id { get; set; }
+            public ObjectId Id { get; set; }
 
 
             public int? LgID { get; set; }

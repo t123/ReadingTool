@@ -6,46 +6,42 @@ using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using ReadingTool.Core;
+using ReadingTool.Core.Database;
 using ReadingTool.Core.Enums;
 using ReadingTool.Core.FilterParser;
 using ReadingTool.Core.Formatters;
 using ReadingTool.Entities;
 using ReadingTool.Entities.Search;
-using ServiceStack.OrmLite;
+using ReadingTool.Repository;
 
 namespace ReadingTool.Services
 {
-    public interface ITermService
+    public interface ITermService : IRepository<Term>
     {
         void Save(Term term, bool audit = true);
         void SaveAll(IEnumerable<Term> terms, bool audit = true);
-        void Delete(Term term);
-        void Delete(Guid id);
-        Term Find(Guid id, bool includeIndividualTerms = false);
-        Term Find(Guid languageId, string term);
+        Term Find(ObjectId languageId, string term);
         IEnumerable<Term> FindAll();
         Tuple<IList<Term>, IList<Term>> FindAllForParsing(Language language);
-        IEnumerable<Term> FindAll(Guid languageId);
+        IEnumerable<Term> FindAll(ObjectId languageId);
         Tuple<bool, string> ReviewTerm(Term term, Review review);
         SearchResult<Term> FilterTerms(SearchOptions searchOptions = null);
-        IEnumerable<IndividualTerm> FindIndividualTerms(Guid termId);
+        IEnumerable<IndividualTerm> FindIndividualTerms(ObjectId termId);
         IEnumerable<IndividualTerm> FindIndividualTerms(Term term);
     }
 
-    public class TermService : ITermService
+    public class TermService : Repository<Term>, ITermService
     {
-        private readonly IDbConnection _db;
-        private readonly ILanguageService _languageService;
         private readonly IUserIdentity _identity;
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger("TermAuditLog");
 
-        public TermService(IDbConnection db, IPrincipal principal, ILanguageService languageService)
+        public TermService(MongoContext context, IPrincipal principal)
+            : base(context)
         {
-            _db = db;
-            _languageService = languageService;
             _identity = principal.Identity as IUserIdentity;
         }
 
@@ -53,28 +49,17 @@ namespace ReadingTool.Services
         public void Save(Term term, bool audit = true)
         {
             bool isNew = false;
-            if(term.Id == Guid.Empty)
+            if(term.Id == ObjectId.Empty)
             {
                 isNew = true;
-                term.Id = SequentialGuid.NewGuid();
+                term.Id = ObjectId.GenerateNewId();
                 term.Owner = _identity.UserId;
             }
 
             term.TermPhrase = term.TermPhrase.Trim();
             term.Length = (short)term.TermPhrase.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
-            _db.Save(term);
 
-            foreach(var it in term.DeletedIndividualTerms)
-            {
-                _db.Delete<IndividualTerm>(x => x.Id == it.Id);
-            }
-
-            foreach(var it in term.IndividualTerms)
-            {
-                Save(term.Id, term.LanguageId, it);
-            }
-
-            var language = _languageService.Find(term.LanguageId);
+            base.Save(term);
 
             if(audit)
             {
@@ -102,49 +87,18 @@ namespace ReadingTool.Services
                 );
         }
 
-        //private string FormatAuditAsJson(TermLog log)
-        //{
-        //    return JsonConvert.SerializeObject(log, new JsonSerializerSettings() { ContractResolver = new TermAuditSerializeContractResolver(), Formatting = Formatting.None });
-        //}
-
-        //public class TermAuditSerializeContractResolver : DefaultContractResolver
-        //{
-        //    public new static readonly TermAuditSerializeContractResolver Instance = new TermAuditSerializeContractResolver();
-
-        //    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-        //    {
-        //        JsonProperty property = base.CreateProperty(member, memberSerialization);
-
-        //        if(property.DeclaringType == typeof(Language) &&
-        //            (property.PropertyName == "Settings") ||
-        //            (property.PropertyName == "Review") ||
-        //            (property.PropertyName == "Dictionaries")
-        //            )
-        //        {
-        //            property.ShouldSerialize = instance => false;
-        //        }
-        //        else if(property.DeclaringType == typeof(Term) && property.PropertyName == "Definition")
-        //        {
-        //            property.ShouldSerialize = instance => false;
-        //        }
-
-        //        return property;
-        //    }
-        //}
-
         public void SaveAll(IEnumerable<Term> terms, bool audit = true)
         {
             StringBuilder sb = new StringBuilder();
 
             IList<IndividualTerm> its = new List<IndividualTerm>();
-            var languages = _languageService.FindAll().ToDictionary(x => x.Id);
+            //var languages = _languageService.FindAll().ToDictionary(x => x.Id);
 
             foreach(var term in terms)
             {
                 bool isNew = false;
-                if(term.Id == Guid.Empty)
+                if(term.Id == ObjectId.Empty)
                 {
-                    term.Id = SequentialGuid.NewGuid();
                     term.Owner = _identity.UserId;
                     isNew = true;
                 }
@@ -154,10 +108,9 @@ namespace ReadingTool.Services
 
                 foreach(var it in term.IndividualTerms)
                 {
-                    if(it.Id == Guid.Empty)
+                    if(it.Id == ObjectId.Empty)
                     {
-                        it.TermId = term.Id;
-                        it.Id = SequentialGuid.NewGuid();
+                        it.Id = ObjectId.GenerateNewId();
                         it.Created = DateTime.Now;
                         it.LanguageId = term.LanguageId;
                     }
@@ -167,12 +120,6 @@ namespace ReadingTool.Services
                     it.Definition = it.Definition.Trim();
                     it.Sentence = it.Sentence.Trim();
                     it.Romanisation = it.Romanisation.Trim();
-                    it.Tags = it.Tags.Trim().ToLowerInvariant();
-
-                    if(!isNew)
-                    {
-                        _db.Delete<Tag>(x => x.TermId == it.Id);
-                    }
                 }
 
                 its = its.Union(term.IndividualTerms).ToList();
@@ -196,14 +143,7 @@ namespace ReadingTool.Services
                 }
             }
 
-            _db.InsertAll(terms);
-            _db.InsertAll(its);
-
-            foreach(var it in its)
-            {
-                var tags = TagHelper.Split(it.Tags);
-                _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = it.Id, TextId = null, Value = x }));
-            }
+            _collection.InsertBatch(terms);
 
             if(audit)
             {
@@ -211,86 +151,44 @@ namespace ReadingTool.Services
             }
         }
 
-        private void Save(Guid termId, Guid languageId, IndividualTerm individual)
-        {
-            if(individual.Id == Guid.Empty)
-            {
-                individual.TermId = termId;
-                individual.LanguageId = languageId;
-                individual.Id = SequentialGuid.NewGuid();
-                individual.Created = DateTime.Now;
-            }
 
-            individual.Modified = DateTime.Now;
-            individual.BaseTerm = individual.BaseTerm.Trim();
-            individual.Definition = individual.Definition.Trim();
-            individual.Sentence = individual.Sentence.Trim();
-            individual.Romanisation = individual.Romanisation.Trim();
-            individual.Tags = individual.Tags.Trim().ToLowerInvariant();
-
-            _db.Save(individual);
-
-            var tags = TagHelper.Split(individual.Tags);
-            _db.Delete<Tag>(x => x.TermId == individual.Id);
-            _db.InsertAll<Tag>(tags.Select(x => new Tag() { TermId = individual.Id, TextId = null, Value = x }));
-        }
-
-        public void Delete(Term term)
+        public new void Delete(Term term)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Guid id)
+        public new Term FindOne(ObjectId id)
         {
-            Delete(Find(id));
+            return Queryable.FirstOrDefault(x => x.Id == id && x.Owner == _identity.UserId);
         }
 
-        public Term Find(Guid id, bool includeIndividualTerms = false)
+        public new IEnumerable<Term> FindAll()
         {
-            if(includeIndividualTerms)
-            {
-                var term = _db.Select<Term>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
-
-                if(term != null)
-                {
-                    term.AddIndividualTerms(FindIndividualTerms(term.Id));
-                }
-
-                return term;
-            }
-            else
-            {
-                return _db.Select<Term>(x => x.Id == id && x.Owner == _identity.UserId).FirstOrDefault();
-            }
+            return Queryable.Where(x => x.Owner == _identity.UserId);
         }
 
-        public IEnumerable<Term> FindAll()
+        public IEnumerable<Term> FindAll(ObjectId languageId)
         {
-            return _db.Select<Term>(x => x.Owner == _identity.UserId);
+            return Queryable.Where(x => x.Owner == _identity.UserId && x.LanguageId == languageId);
         }
 
-        public IEnumerable<Term> FindAll(Guid languageId)
+        public bool Exists(ObjectId languageId, string termPhrase)
         {
-            return _db.Select<Term>(x => x.LanguageId == languageId && x.Owner == _identity.UserId);
-        }
-
-        public bool Exists(Guid languageId, string termPhrase)
-        {
-            return _db.Select<Term>(x => x.LanguageId == languageId && x.TermPhrase == termPhrase).FirstOrDefault() != null;
+            return Queryable.Count(x => x.TermPhrase == termPhrase && x.LanguageId == languageId) != 0;
         }
         #endregion
 
         #region parsing
         public Tuple<IList<Term>, IList<Term>> FindAllForParsing(Language language)
         {
-            var allTerms = _db.Select<Term>(x => x.LanguageId == language.Id && x.Owner == _identity.UserId);
-            var allIndividualTerm = _db.Select<IndividualTerm>(x => x.LanguageId == language.Id);
+            //var allTerms = _db.Select<Term>(x => x.LanguageId == language.Id && x.Owner == _identity.UserId);
+            //var allIndividualTerm = _db.Select<IndividualTerm>(x => x.LanguageId == language.Id);
 
-            var singleTerms = allTerms.Where(x => x.Length == 1).ToList();
-            singleTerms.ForEach(x => x.AddIndividualTerms(allIndividualTerm.Where(z => z.TermId == x.Id)));
+            //var singleTerms = allTerms.Where(x => x.Length == 1).ToList();
+            //singleTerms.ForEach(x => x.AddIndividualTerms(allIndividualTerm.Where(z => z.TermId == x.Id)));
 
-            var multiTerms = allTerms.Where(x => x.Length > 1).ToList();
-            multiTerms.ForEach(x => x.AddIndividualTerms(allIndividualTerm.Where(z => z.TermId == x.Id)));
+            //var multiTerms = allTerms.Where(x => x.Length > 1).ToList();
+            //multiTerms.ForEach(x => x.AddIndividualTerms(allIndividualTerm.Where(z => z.TermId == x.Id)));
 
             //var singleTerms = _db.Select<Term>(x => x.Length == 1 && x.LanguageId == language.Id && x.Owner == _identity.UserId);
             //var singleIndividualTerm = _db.Select<IndividualTerm>(x => x.LanguageId == language.Id);
@@ -300,6 +198,8 @@ namespace ReadingTool.Services
             //var multiIndividualTerm = _db.Select<IndividualTerm>(x => x.LanguageId == language.Id);
             //multiTerms.ForEach(x => x.AddIndividualTerms(multiIndividualTerm.Where(z => z.TermId == x.Id)));
 
+            var singleTerms = new List<Term>();
+            var multiTerms = new List<Term>();
             return new Tuple<IList<Term>, IList<Term>>(singleTerms, multiTerms);
         }
         #endregion
@@ -334,192 +234,195 @@ namespace ReadingTool.Services
 
         public SearchResult<Term> FilterTerms(SearchOptions so = null)
         {
-            if(so == null)
-            {
-                so = new SearchOptions();
-            }
+            //            if(so == null)
+            //            {
+            //                so = new SearchOptions();
+            //            }
 
-            #region ordering
-            string orderBy;
-            switch(so.Sort)
-            {
-                case "state":
-                    orderBy = string.Format("ORDER BY t.State {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
-                    break;
+            //            #region ordering
+            //            string orderBy;
+            //            switch(so.Sort)
+            //            {
+            //                case "state":
+            //                    orderBy = string.Format("ORDER BY t.State {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+            //                    break;
 
-                case "nextreview":
-                    orderBy = string.Format("ORDER BY t.LastSeen {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
-                    break;
+            //                case "nextreview":
+            //                    orderBy = string.Format("ORDER BY t.LastSeen {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+            //                    break;
 
-                case "termphrase":
-                    orderBy = string.Format("ORDER BY t.TermPhrase {0},l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
-                    break;
+            //                case "termphrase":
+            //                    orderBy = string.Format("ORDER BY t.TermPhrase {0},l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+            //                    break;
 
-                case "box":
-                    orderBy = string.Format("ORDER BY t.Box {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
-                    break;
+            //                case "box":
+            //                    orderBy = string.Format("ORDER BY t.Box {0}, l.Name ASC, t.TermPhrase, t.State", so.Direction.ToString());
+            //                    break;
 
-                case "language":
-                default:
-                    orderBy = string.Format("ORDER BY l.Name {0}, t.TermPhrase, t.State", so.Direction.ToString());
-                    break;
-            }
-            #endregion
+            //                case "language":
+            //                default:
+            //                    orderBy = string.Format("ORDER BY l.Name {0}, t.TermPhrase, t.State", so.Direction.ToString());
+            //                    break;
+            //            }
+            //            #endregion
 
-            #region create where clause
-            StringBuilder whereSql = new StringBuilder();
+            //            #region create where clause
+            //            StringBuilder whereSql = new StringBuilder();
 
-            var options = FilterParser.Parse(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()), so.Filter, FilterParser.MagicTermTags);
+            //            var options = FilterParser.Parse(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()), so.Filter, FilterParser.MagicTermTags);
 
-            #region magic
-            string having = "";
-            if(options.Magic.Count > 0)
-            {
-                string magicSql = "";
-                foreach(var o in options.Magic)
-                {
-                    if(o.StartsWith("box"))
-                    {
-                        magicSql += " AND t.Box=" + o.Substring(3, o.Length - 3) + " ";
-                    }
-                    else
-                    {
-                        switch(o)
-                        {
-                            //case @"new":
-                            //    magicSql += " AND t.Created>'" + DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
-                            //    break;
-                            case @"known":
-                                magicSql += " AND t.State='" + TermState.Known.ToString() + "' ";
-                                break;
-                            case @"unknown":
-                                magicSql += " AND t.State='" + TermState.Unknown.ToString() + "' ";
-                                break;
-                            case @"ignored":
-                                magicSql += " AND t.State='" + TermState.Ignored.ToString() + "' ";
-                                break;
-                            case @"notseen":
-                                magicSql += " AND t.State='" + TermState.NotSeen.ToString() + "' ";
-                                break;
+            //            #region magic
+            //            string having = "";
+            //            if(options.Magic.Count > 0)
+            //            {
+            //                string magicSql = "";
+            //                foreach(var o in options.Magic)
+            //                {
+            //                    if(o.StartsWith("box"))
+            //                    {
+            //                        magicSql += " AND t.Box=" + o.Substring(3, o.Length - 3) + " ";
+            //                    }
+            //                    else
+            //                    {
+            //                        switch(o)
+            //                        {
+            //                            //case @"new":
+            //                            //    magicSql += " AND t.Created>'" + DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+            //                            //    break;
+            //                            case @"known":
+            //                                magicSql += " AND t.State='" + TermState.Known.ToString() + "' ";
+            //                                break;
+            //                            case @"unknown":
+            //                                magicSql += " AND t.State='" + TermState.Unknown.ToString() + "' ";
+            //                                break;
+            //                            case @"ignored":
+            //                                magicSql += " AND t.State='" + TermState.Ignored.ToString() + "' ";
+            //                                break;
+            //                            case @"notseen":
+            //                                magicSql += " AND t.State='" + TermState.NotSeen.ToString() + "' ";
+            //                                break;
 
-                            case @"nodefintions":
-                                having = " HAVING COUNT(IT.Id)=0 ";
-                                break;
+            //                            case @"nodefintions":
+            //                                having = " HAVING COUNT(IT.Id)=0 ";
+            //                                break;
 
-                            case @"definitions":
-                                having = " HAVING COUNT(IT.Id)>0 ";
-                                break;
-                        }
-                    }
-                }
+            //                            case @"definitions":
+            //                                having = " HAVING COUNT(IT.Id)>0 ";
+            //                                break;
+            //                        }
+            //                    }
+            //                }
 
-                whereSql.Append(magicSql);
-            }
-            #endregion
+            //                whereSql.Append(magicSql);
+            //            }
+            //            #endregion
 
-            #region languages
-            if(options.Languages.Count > 0)
-            {
-                string languageSql = string.Format("AND l.Name IN ( {0} )", string.Join(",", options.Languages.Select(x => "'" + x + "'")));
-                whereSql.Append(languageSql);
-            }
-            #endregion
+            //            #region languages
+            //            if(options.Languages.Count > 0)
+            //            {
+            //                string languageSql = string.Format("AND l.Name IN ( {0} )", string.Join(",", options.Languages.Select(x => "'" + x + "'")));
+            //                whereSql.Append(languageSql);
+            //            }
+            //            #endregion
 
-            #region other
-            if(options.Other.Count > 0)
-            {
-                string otherSql = string.Format("AND ( ");
+            //            #region other
+            //            if(options.Other.Count > 0)
+            //            {
+            //                string otherSql = string.Format("AND ( ");
 
-                foreach(var o in options.Other)
-                {
-                    otherSql += string.Format("t.TermPhrase LIKE '%{0}%' OR ", o); //TODO escape
-                }
+            //                foreach(var o in options.Other)
+            //                {
+            //                    otherSql += string.Format("t.TermPhrase LIKE '%{0}%' OR ", o); //TODO escape
+            //                }
 
-                otherSql = otherSql.Substring(0, otherSql.Length - 4);
-                otherSql += " )";
-                whereSql.Append(otherSql);
-            }
-            #endregion
+            //                otherSql = otherSql.Substring(0, otherSql.Length - 4);
+            //                otherSql += " )";
+            //                whereSql.Append(otherSql);
+            //            }
+            //            #endregion
 
-            #region tags
-            if(options.Tags.Count > 0)
-            {
-                string tagSql = string.Format("AND T.Id IN ( SELECT TermId FROM IndividualTerm WHERE Id IN ( SELECT TermId FROM Tag WHERE Value IN ({0})))", string.Join(",", options.Tags.Select(x => "'" + x + "'")));
-                whereSql.Append(tagSql);
-            }
-            #endregion
-            #endregion
+            //            #region tags
+            //            if(options.Tags.Count > 0)
+            //            {
+            //                string tagSql = string.Format("AND T.Id IN ( SELECT TermId FROM IndividualTerm WHERE Id IN ( SELECT TermId FROM Tag WHERE Value IN ({0})))", string.Join(",", options.Tags.Select(x => "'" + x + "'")));
+            //                whereSql.Append(tagSql);
+            //            }
+            //            #endregion
+            //            #endregion
 
-            #region query creation
-            const string columns = "l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId, COUNT(IT.Id) as ITCount";
-            string sql = string.Format(@"
-SELECT
-/*ROWNUMBER*/
-/*COLUMNS*/
-FROM [Term] t
-LEFT JOIN [Language] l ON t.LanguageId=l.Id 
-/*LEFTJOINIT*/
-WHERE t.Owner='{0}' /*WHERE*/
-/*GROUPBY*/
-/*HAVING*/
-", _identity.UserId);
+            //            #region query creation
+            //            const string columns = "l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId, COUNT(IT.Id) as ITCount";
+            //            string sql = string.Format(@"
+            //SELECT
+            ///*ROWNUMBER*/
+            ///*COLUMNS*/
+            //FROM [Term] t
+            //LEFT JOIN [Language] l ON t.LanguageId=l.Id 
+            ///*LEFTJOINIT*/
+            //WHERE t.Owner='{0}' /*WHERE*/
+            ///*GROUPBY*/
+            ///*HAVING*/
+            //", _identity.UserId);
 
-            string countQuery = sql
-                .Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total")
-                .Replace("/*COLUMNS*/", "")
-                .Replace("/*HAVING*/", "")
-                .Replace("/*GROUPBY*/", "")
-                .Replace("/*LEFTJOINIT*/", "")
-                .Replace("/*WHERE*/", whereSql.ToString());
+            //            string countQuery = sql
+            //                .Replace("/*ROWNUMBER*/", "COUNT(t.Id) as Total")
+            //                .Replace("/*COLUMNS*/", "")
+            //                .Replace("/*HAVING*/", "")
+            //                .Replace("/*GROUPBY*/", "")
+            //                .Replace("/*LEFTJOINIT*/", "")
+            //                .Replace("/*WHERE*/", whereSql.ToString());
 
-            int page = so.Page - 1;
-            int rowsPerPage = so.RowsPerPage;
+            //            int page = so.Page - 1;
+            //            int rowsPerPage = so.RowsPerPage;
 
-            if(so.IgnorePaging)
-            {
-                page = 0;
-                rowsPerPage = int.MaxValue;
-            }
+            //            if(so.IgnorePaging)
+            //            {
+            //                page = 0;
+            //                rowsPerPage = int.MaxValue;
+            //            }
 
-            StringBuilder query = new StringBuilder();
-            query.AppendFormat(@"
-SELECT *
-FROM
-(
-{0}
-) AS RowConstrainedResult
-WHERE RowNumber BETWEEN {1} AND {2}
-ORDER BY RowNumber
-",
-                         sql
-                         .Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,")
-                         .Replace("/*COLUMNS*/", columns)
-                         .Replace("/*LEFTJOINIT*/", "LEFT JOIN [IndividualTerm] IT ON t.Id=it.TermId ")
-                         .Replace("/*HAVING*/", having)
-                         .Replace("/*GROUPBY*/", "GROUP BY l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId")
-                         .Replace("/*WHERE*/", whereSql.ToString()),
-                         page * rowsPerPage,
-                         page * rowsPerPage + rowsPerPage
-                );
-            #endregion
+            //            StringBuilder query = new StringBuilder();
+            //            query.AppendFormat(@"
+            //SELECT *
+            //FROM
+            //(
+            //{0}
+            //) AS RowConstrainedResult
+            //WHERE RowNumber BETWEEN {1} AND {2}
+            //ORDER BY RowNumber
+            //",
+            //                         sql
+            //                         .Replace("/*ROWNUMBER*/", "ROW_NUMBER() OVER ( " + orderBy + " ) AS RowNumber,")
+            //                         .Replace("/*COLUMNS*/", columns)
+            //                         .Replace("/*LEFTJOINIT*/", "LEFT JOIN [IndividualTerm] IT ON t.Id=it.TermId ")
+            //                         .Replace("/*HAVING*/", having)
+            //                         .Replace("/*GROUPBY*/", "GROUP BY l.Name, t.TermPhrase, t.Box, t.State, t.NextReview, t.Id, t.LanguageId")
+            //                         .Replace("/*WHERE*/", whereSql.ToString()),
+            //                         page * rowsPerPage,
+            //                         page * rowsPerPage + rowsPerPage
+            //                );
+            //            #endregion
 
-            try
-            {
-                var texts = _db.Query<Term>(query.ToString());
-                var count = _db.Scalar<int>(countQuery); //TODO FIXME #definitions doesn't count correctly.
-                return new SearchResult<Term> { Results = texts, TotalRows = count };
-            }
-            catch(Exception e)
-            {
-                var brokenSql = _db.GetLastSql();
-                var message = string.Format("Invalid text search SQL:\n\n{0}\n\n{1}\n\n{2}", brokenSql, countQuery, query);
-                throw new Exception(message, e);
-            }
+            //            try
+            //            {
+            //                var texts = _db.Query<Term>(query.ToString());
+            //                var count = _db.Scalar<int>(countQuery); //TODO FIXME #definitions doesn't count correctly.
+            //                return new SearchResult<Term> { Results = texts, TotalRows = count };
+            //            }
+            //            catch(Exception e)
+            //            {
+            //                var brokenSql = _db.GetLastSql();
+            //                var message = string.Format("Invalid text search SQL:\n\n{0}\n\n{1}\n\n{2}", brokenSql, countQuery, query);
+            //                throw new Exception(message, e);
+            //            }
+
+            return new SearchResult<Term>() { Results = FindAll(), TotalRows = FindAll().Count() };
         }
 
-        public IEnumerable<IndividualTerm> FindIndividualTerms(Guid termId)
+        public IEnumerable<IndividualTerm> FindIndividualTerms(ObjectId termId)
         {
-            return FindIndividualTerms(Find(termId));
+            throw new NotImplementedException();
+            return FindIndividualTerms(FindOne(termId));
         }
 
         public IEnumerable<IndividualTerm> FindIndividualTerms(Term term)
@@ -529,7 +432,8 @@ ORDER BY RowNumber
                 return new IndividualTerm[0];
             }
 
-            return _db.Where<IndividualTerm>("TermId", term.Id);
+            throw new NotImplementedException();
+            //return _db.Where<IndividualTerm>("TermId", term.Id);
         }
 
         private DateTime GetNextReview(Review review, int? currentLevel)
@@ -575,16 +479,9 @@ ORDER BY RowNumber
             }
         }
 
-        public Term Find(Guid languageId, string termPhrase)
+        public Term Find(ObjectId languageId, string termPhrase)
         {
-            Term term = _db.Select<Term>(x => x.TermPhrase == termPhrase && x.LanguageId == languageId && x.Owner == _identity.UserId).FirstOrDefault();
-
-            if(term == null) return null;
-
-            var individual = _db.Select<IndividualTerm>(x => x.TermId == term.Id);
-            term.AddIndividualTerms(individual);
-
-            return term;
+            return Queryable.FirstOrDefault(x => x.TermPhrase == termPhrase && x.LanguageId == languageId && x.Owner == _identity.UserId);
         }
 
         #endregion

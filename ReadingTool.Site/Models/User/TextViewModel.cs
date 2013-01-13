@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using MongoDB.Bson;
 
 namespace ReadingTool.Site.Models.User
 {
@@ -11,11 +12,11 @@ namespace ReadingTool.Site.Models.User
     public class TextViewModel
     {
         [HiddenInput(DisplayValue = false)]
-        public Guid Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [Required]
         [Display(Name = "L1 Langauge", Order = 1)]
-        public Guid L1Id { get; set; }
+        public ObjectId L1Id { get; set; }
 
         [StringLength(250)]
         [Display(Name = "Audio URL", Order = 2)]
@@ -39,7 +40,7 @@ namespace ReadingTool.Site.Models.User
         public string L1Text { get; set; }
 
         [Display(Name = "L2 Langauge", Order = 7)]
-        public Guid? L2Id { get; set; }
+        public ObjectId? L2Id { get; set; }
 
         [Display(Name = "L2 Text", Order = 8)]
         [DataType(DataType.MultilineText)]

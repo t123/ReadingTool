@@ -38,12 +38,7 @@ namespace ReadingTool.Entities
 
         public ObjectId? SystemLanguageId { get; set; }
 
-        private List<LanguageDictionary> _dictionaries;
-        public IEnumerable<LanguageDictionary> Dictionaries
-        {
-            get { return _dictionaries.AsReadOnly(); }
-            set { _dictionaries = (value ?? new List<LanguageDictionary>()).ToList(); }
-        }
+        public IList<LanguageDictionary> Dictionaries { get; set; }
 
         [Required]
         public bool IsPublic { get; set; }
@@ -53,40 +48,7 @@ namespace ReadingTool.Entities
 
         public Language()
         {
-            _dictionaries = new List<LanguageDictionary>();
+            Dictionaries = new List<LanguageDictionary>();
         }
-
-        #region dictionaries
-        public void AddDictionary(LanguageDictionary dictionary)
-        {
-            if(dictionary == null)
-            {
-                return;
-            }
-
-            _dictionaries.Add(dictionary);
-        }
-
-        public void UpdateDictionary(LanguageDictionary dictionary)
-        {
-            if(dictionary == null)
-            {
-                return;
-            }
-
-            _dictionaries.Remove(_dictionaries.FirstOrDefault(x => x.Id == dictionary.Id));
-            _dictionaries.Add(dictionary);
-        }
-
-        public void RemoveDictionary(ObjectId id)
-        {
-            RemoveDictionary(_dictionaries.FirstOrDefault(x => x.Id == id));
-        }
-
-        public void RemoveDictionary(LanguageDictionary dictionary)
-        {
-            _dictionaries.Remove(dictionary);
-        }
-        #endregion
     }
 }

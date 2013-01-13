@@ -22,6 +22,7 @@ namespace ReadingTool.Repository
         IEnumerable<T> FindAll();
         void Delete(T entity);
         void Delete(ObjectId id);
+        IQueryable<T> Queryable { get; }
     }
 
     public class Repository<T> : IRepository<T> where T : IEntity
@@ -58,7 +59,10 @@ namespace ReadingTool.Repository
 
         public virtual void Save(IEnumerable<T> entities)
         {
-            _collection.Save(entities);
+            foreach(var e in entities)
+            {
+                Save(e);
+            }
         }
 
         public virtual IEnumerable<T> FindAll()
@@ -74,6 +78,14 @@ namespace ReadingTool.Repository
         public virtual void Delete(ObjectId id)
         {
             Delete(FindOne(id));
+        }
+
+        public IQueryable<T> Queryable
+        {
+            get
+            {
+                return _collection.AsQueryable();
+            }
         }
     }
 }
