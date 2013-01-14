@@ -22,9 +22,20 @@ namespace ReadingTool.Entities
         [Required]
         public ObjectId Owner { get; set; }
 
+        private string _termPhrase;
         [Required]
         [StringLength(50)]
-        public string TermPhrase { get; set; }
+        public string TermPhrase
+        {
+            get { return _termPhrase; }
+            set
+            {
+                _termPhrase = value;
+                TermPhraseLower = _termPhrase == null ? null : _termPhrase.ToLowerInvariant();
+            }
+        }
+
+        public string TermPhraseLower { get; private set; }
 
         [Required]
         public short Length { get; set; }

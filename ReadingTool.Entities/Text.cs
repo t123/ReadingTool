@@ -29,17 +29,42 @@ namespace ReadingTool.Entities
 
         public ObjectId? L2Id { get; set; }
 
+        private string _title;
+
         [Required]
         [StringLength(100)]
-        public string Title { get; set; }
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value;
+                TitleLower = _title == null ? null : _title.ToLowerInvariant();
+            }
+        }
+
+        public string TitleLower { get; private set; }
+
+        private string _collectionName;
 
         [StringLength(100)]
-        public string CollectionName { get; set; }
+        public string CollectionName
+        {
+            get { return _collectionName; }
+            set
+            {
+                _collectionName = value;
+                CollectionNameLower = _collectionName == null ? null : _collectionName.ToLowerInvariant();
+            }
+        }
+
+        public string CollectionNameLower { get; private set; }
+
         public int? CollectionNo { get; set; }
 
         [StringLength(250)]
         public string AudioUrl { get; set; }
-        
+
         [BsonIgnore]
         public string L1Text { get; set; }
 
