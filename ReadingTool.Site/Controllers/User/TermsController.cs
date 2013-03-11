@@ -68,7 +68,7 @@ namespace ReadingTool.Site.Controllers.User
                                 Definition = y.Definition,
                                 Romanisation = y.Romanisation,
                                 Sentence = y.Sentence,
-                                Tags = y.Tags
+                                Tags = TagHelper.ToString(y.Tags)
                             }).ToList()
                     }));
 
@@ -219,7 +219,7 @@ namespace ReadingTool.Site.Controllers.User
                                 Romanisation = it.Romanisation,
                                 Sentence = it.Sentence.ReplaceString(it.BaseTerm, "<strong>" + it.BaseTerm + "</strong>", StringComparison.InvariantCultureIgnoreCase),
                                 State = term.State.ToDescription(),
-                                Tags =string.Join(" ", it.Tags),
+                                Tags = string.Join(" ", it.Tags),
                                 TermPhrase = term.TermPhrase
                             };
 

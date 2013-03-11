@@ -36,12 +36,14 @@ namespace ReadingTool.Services
 
     public class TermService : Repository<Term>, ITermService
     {
+        private readonly ILanguageService _languageService;
         private readonly IUserIdentity _identity;
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger("TermAuditLog");
 
-        public TermService(MongoContext context, IPrincipal principal)
+        public TermService(MongoContext context, IPrincipal principal, ILanguageService languageService)
             : base(context)
         {
+            _languageService = languageService;
             _identity = principal.Identity as IUserIdentity;
         }
 
@@ -234,10 +236,10 @@ namespace ReadingTool.Services
 
         public SearchResult<Term> FilterTerms(SearchOptions so = null)
         {
-            //            if(so == null)
-            //            {
-            //                so = new SearchOptions();
-            //            }
+            if(so == null)
+            {
+                so = new SearchOptions();
+            }
 
             //            #region ordering
             //            string orderBy;
@@ -416,7 +418,21 @@ namespace ReadingTool.Services
             //                throw new Exception(message, e);
             //            }
 
-            return new SearchResult<Term>() { Results = FindAll(), TotalRows = FindAll().Count() };
+            var query = Queryable;
+            query = query.OrderBy(x => x.LanguageId).ThenBy(x => x.TermPhrase).ThenBy(x => x.State);
+            int page = so.Page - 1;
+            int rowsPerPage = so.RowsPerPage;
+
+            if(so.IgnorePaging)
+            {
+                page = 0;
+                rowsPerPage = int.MaxValue;
+            }
+
+            var count = query.Count();
+            var results = query.Skip(page * rowsPerPage).Take(rowsPerPage);
+
+            return new SearchResult<Term>() { Results = results, TotalRows = count };
         }
 
         public IEnumerable<IndividualTerm> FindIndividualTerms(ObjectId termId)

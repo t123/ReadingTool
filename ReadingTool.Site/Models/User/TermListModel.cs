@@ -17,7 +17,7 @@ namespace ReadingTool.Site.Models.User
         public string State { get; set; }
         public IList<IndividualTerm> IndividualTerms { get; set; }
         public string Definition { get; set; }
-        public string[] Tags { get; set; }
+        public string Tags { get; set; }
 
         public TermListModel()
         {
@@ -31,7 +31,7 @@ namespace ReadingTool.Site.Models.User
             public string Sentence { get; set; }
             public string Definition { get; set; }
             public string Romanisation { get; set; }
-            public string[] Tags { get; set; }
+            public string Tags { get; set; }
         }
     }
 

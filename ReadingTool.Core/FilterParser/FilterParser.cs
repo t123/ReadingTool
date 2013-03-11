@@ -39,11 +39,11 @@ namespace ReadingTool.Core.FilterParser
 
         public class FilterResult
         {
-            public IList<string> UserLanguages { get; set; }
-            public IList<string> Languages { get; set; }
-            public IList<string> Tags { get; set; }
-            public IList<string> Other { get; set; }
-            public IList<string> Magic { get; set; }
+            public List<string> UserLanguages { get; set; }
+            public List<string> Languages { get; set; }
+            public List<string> Tags { get; set; }
+            public List<string> Other { get; set; }
+            public List<string> Magic { get; set; }
 
             public FilterResult()
             {

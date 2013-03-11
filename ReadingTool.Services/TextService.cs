@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ionic.Zip;
 using MongoDB.Bson;
+using MongoDB.Driver.Linq;
 using ReadingTool.Core;
 using ReadingTool.Core.Comparers;
 using ReadingTool.Core.Database;
@@ -174,10 +175,10 @@ namespace ReadingTool.Services
 
         public SearchResult<Text> FilterTexts(SearchOptions so = null)
         {
-            //            if(so == null)
-            //            {
-            //                so = new SearchOptions();
-            //            }
+            if(so == null)
+            {
+                so = new SearchOptions();
+            }
 
             //            #region ordering
             //            string orderBy;
@@ -327,8 +328,29 @@ namespace ReadingTool.Services
             //                throw new Exception(message, e);
             //            }
 
-            var texts = FindAll();
-            return new SearchResult<Text> { Results = texts, TotalRows = texts.Count() };
+            var query = Queryable;
+
+            var options = FilterParser.Parse(_languageService.FindAll().Select(x => x.Name.ToLowerInvariant()), so.Filter, FilterParser.MagicTextTags);
+
+            if(options.Other.Count > 0)
+            {
+                query = query.Where(x => x.TitleLower.In(options.Other) || x.CollectionNameLower.In(options.Other));
+            }
+
+            query = query.OrderBy(x => x.L1Id).ThenBy(x => x.CollectionName).ThenBy(x => x.CollectionNo).ThenBy(x => x.Title);
+            int page = so.Page - 1;
+            int rowsPerPage = so.RowsPerPage;
+
+            if(so.IgnorePaging)
+            {
+                page = 0;
+                rowsPerPage = int.MaxValue;
+            }
+
+            var count = query.Count();
+            var results = query.Skip(page * rowsPerPage).Take(rowsPerPage);
+
+            return new SearchResult<Text>() { Results = results, TotalRows = count };
         }
 
         public IEnumerable<string> FindAllTags(string startsWith = "")

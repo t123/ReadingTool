@@ -153,20 +153,27 @@ namespace ReadingTool.Services
                         Definition = word.Definition,
                     };
 
-                string tid = word.ItemId.ToString();
-                it.TextId = tmap.GetValueOrDefault(tid, (ObjectId?)null);
-
-                if(word.Tags != null)
+                if(!string.IsNullOrWhiteSpace(it.BaseTerm) || !string.IsNullOrWhiteSpace(it.Sentence) || !string.IsNullOrWhiteSpace(it.Definition))
                 {
-                    List<string> tags = new List<string>();
-                    foreach(string t1 in word.Tags)
+                    if(it.Definition != "*")
                     {
-                        tags.Add(t1);
+                        string tid = word.ItemId.ToString();
+                        it.TextId = tmap.GetValueOrDefault(tid, (ObjectId?)null);
+
+                        if(word.Tags != null)
+                        {
+                            List<string> tags = new List<string>();
+                            foreach(string t1 in word.Tags)
+                            {
+                                tags.Add(t1);
+                            }
+                            it.Tags = tags.ToArray();
+                        }
+
+                        t.IndividualTerms.Add(it);
                     }
-                    it.Tags = tags.ToArray();
                 }
 
-                t.IndividualTerms.Add(it);
                 terms.Add(t);
             }
 
