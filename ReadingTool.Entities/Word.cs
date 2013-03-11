@@ -43,7 +43,7 @@ namespace ReadingTool.Entities
         private string _languageName;
         public string LanguageName
         {
-            get { return _wordPhrase; }
+            get { return _languageName; }
             set
             {
                 _languageName = (value ?? "").Trim();
