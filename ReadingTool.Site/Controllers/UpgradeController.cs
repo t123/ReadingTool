@@ -87,7 +87,7 @@ namespace ReadingTool.Site.Controllers.Home
                         l.Code = "fr";
                         l.Settings = new Language.LanguageSettings()
                             {
-                                RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ\-",
+                                RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ\-\'",
                                 RegexSplitSentences = ".!?:;",
                                 Direction = LanguageDirection.LTR,
                                 ShowSpaces = true,

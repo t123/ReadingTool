@@ -35,10 +35,12 @@
             </fieldset>
             <fieldset>
                 <legend>Parser Settings</legend>
+                @Html.FlashMessage(@"For a language like French, if you want to treat words like <i>est-ce</i>, <i>là-bas</i> or <i>s'il</i> 
+as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'</strong> instead.", htmlEncode: false)
                 <div class="control-group">
                     @Html.LabelFor(x => x.Language.RegexWordCharacters, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Language.RegexWordCharacters, new { @placeholder = "word test regular expression, add \\- for French", @class="input-xxlarge" })
+                        @Html.TextBoxFor(x => x.Language.RegexWordCharacters, new { @placeholder = "word test regular expression, add \\-\\' for French", @class="input-xxlarge" })
                         @Html.ValidationMessageFor(x => x.Language.RegexWordCharacters)
                     </div>
                 </div>
