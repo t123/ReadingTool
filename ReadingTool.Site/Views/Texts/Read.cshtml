@@ -1,0 +1,134 @@
+﻿@using ReadingTool.Common
+@model ReadingTool.Site.Models.Texts.ReadModel
+@{
+    ViewBag.Title = "Read Text";
+    Bundles.Reference("Content/Reading");
+    Bundles.Reference("Scripts/Reading", "inline");
+
+    Bundles.AddInlineScript(@<text>
+                                 <script src="/routes/?c=Ajax" type="text/javascript"></script>
+                                 <script language="javascript">
+                                     $(function () {
+                                         var settings = {
+                                             textId: '@Model.Text.TextId',  
+                                             languageId: '@Model.Language.LanguageId'
+                                         };
+                                         
+                                         var modalHandler = new ModalHandler(routes, settings);
+                                     });
+                                 </script>
+                             </text>, "inline");
+}
+
+@section MenuAdditional {
+    <li style="margin-top: 2px;" class="pull-right">
+        <div class="btn-group">
+            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                more options for this text&nbsp;<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="@Url.Action("Edit", new { id = Model.Text.TextId })">edit text</a>
+                    <a href="@Url.Action("Read", new { id = Model.Text.TextId })">read single mode</a>
+                    <a href="@Url.Action("ReadParallel", new { id = Model.Text.TextId })">read in parallel</a>
+                    <a href="@Url.Action("DownloadLatex", new { id = Model.Text.TextId })">download latex</a>
+                    @{
+                        string action = Model.AsParallel ? "ReadParallel" : "Read";
+                    }
+                    @if(Model.PagedTexts.Item1 != null)
+                    {
+                        <a href="@Url.Action(action, new { id = Model.PagedTexts.Item1 })">previous text</a>
+                    }
+                    @if(Model.PagedTexts.Item2 != null)
+                    {
+                        <a href="@Url.Action(action, new { id = Model.PagedTexts.Item2 })">next text</a>
+                    }
+                    <a href="@Url.Action("Edit", "Languages", new { id = Model.Language.LanguageId })">edit language</a>
+                    <a href="#stats" onclick="$('#stats').show();">go to statistics</a>
+                </li>
+            </ul>
+        </div>
+    </li>
+}
+
+<div id="readingareaouter">
+    <div id="readingareainner">
+        @Html.Raw(@Model.ParsedText)
+        <div class="clr50"></div>
+        <button type="button" id="btnMarkRemainingAsKnown"class="btn">mark the remaining words as known</button>
+        <div class="clr10"></div>
+        <div id="markRemainingAsKnownProgress" class="alert alert-block" style="display: none"></div>
+        <div class="clr100"></div>
+    </div>
+</div>
+
+
+<div id="textModal" style="display: none;">
+    <input type="hidden" id="termId" value=""/>
+    <div class="row">
+        <div class="span6"><strong><span id="currentWord"></span></strong></div>
+        <div class="span3">
+            <ul class="states">
+                <li class="pull-right"><a id="textModalCloseLink" href="#" onclick="return false;">close</a></li>
+                <li class="pull-right"><a id="increaseWord" href="#" onclick="return false;">increase</a></li>
+                <li class="pull-right"><a id="decreaseWord" href="#" onclick="return false;">decrease</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span9">
+            <ul class="dictionaries">
+                @foreach(var dictionary in Model.Language.Dictionaries)
+                {
+                    <li><a 
+                            target="@(string.IsNullOrEmpty(dictionary.WindowName) ? "_blank" : dictionary.WindowName)"
+                            class="dictionary" 
+                            data-id="@dictionary.DictionaryId" 
+                            data-parameter="@dictionary.Sentence.ToString().ToLowerInvariant()" 
+                            data-urlEncode="@(string.IsNullOrEmpty(dictionary.Encoding) ? "false": "true")" 
+                            data-url="@dictionary.Url" 
+                            data-autoOpen="@dictionary.AutoOpen.ToString().ToLowerInvariant()"
+                            >@dictionary.Name
+                        </a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">&nbsp;</div>
+        <div class="span7">
+            <ul class="states">
+                <li class="known"><input type="radio" name="state" id="knownState" value="@TermState.Known"/>known</li>
+                <li class="notknown"><input type="radio" name="state" id="unknownState" value="@TermState.NotKnown"/>not known</li>
+                <li class="notseen"><input type="radio" name="state" id="notseenState" value="@TermState.NotSeen"/>not seen</li>
+                <li class="ignore"><input type="radio" name="state" id="ignoredState" value="@TermState.Ignore"/>ignore</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">Sentence:</div>
+        <div class="span7"><input type="text" name="currentSentence" id="currentSentence"/><a href="#" id="refreshSentence">refresh</a></div>
+    </div>
+    <div class="row">
+        <div class="span2">Base word:</div>
+        <div class="span7"><input type="text" name="baseWord" id="baseWord" placeholder="nominative form, dictionary form etc"/></div>
+    </div>
+    <div class="row">
+        <div class="span2">Definition:</div>
+        <div class="span7"><textarea name="definition" id="definition" rows="3" placeholder="your definition of the word"></textarea></div>
+    </div>
+    <div class="row">
+        <div class="span2">Tags:</div>
+        <div class="span7"><input type="text" name="tags" id="tags" placeholder="comma separated list of tags"/></div>
+    </div>
+    <div class="row">
+        <div class="span7" id="saveMessage">
+        </div>
+        <div class="span1">
+            <button id="btnSave" title="ctrl-enter to save" class="btn btn-small">save</button>
+        </div>
+        <div class="span1">
+            <button id="btnReset" title="reset" class="btn btn-small">reset</button>
+        </div>
+    </div>
+</div>

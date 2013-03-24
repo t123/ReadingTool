@@ -1,0 +1,46 @@
+﻿@using ReadingTool.Site.Models.Texts
+@model ReadingTool.Site.Models.Texts.TextImportModel
+@{
+    ViewBag.Title = "Import";
+    var languages = ViewBag.Languages as string[];
+    var sampleModel = ViewBag.SampleJsonModel as JsonSampleModel;
+    var sampleJson = ViewBag.SampleJson as string;
+}
+
+@if(languages.Any())
+{
+    <div class="alert alert-info">
+        The languages <strong>must match</strong> the names of your languages:
+        <div class="clr10"></div>
+        <ul class="unstyled">
+            @foreach(var language in languages)
+            {
+                <li><strong>@language</strong></li>
+            }
+        </ul>
+    </div>
+    using(Html.BeginForm("Import", "Texts", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <fieldset>
+            <legend>Import Texts</legend>
+            <input type="file" name="file" />
+
+            <div class="buttons">
+                <input type="submit" class="btn btn-primary" name="save" value="Import these texts" />
+                <a href="@Url.Action("Index")" class="btn">Back to all texts</a>
+            </div>
+        </fieldset>
+    }
+    <div class="clr20"></div>
+    @Html.Partial("Partials/_createsample", sampleModel ?? new JsonSampleModel(), ViewData)
+
+    if(!string.IsNullOrEmpty(sampleJson))
+    {
+        <pre>@ViewBag.SampleJson</pre>
+    }
+}
+else
+{
+    @Html.FlashMessage("You must first add some languages before you can import any texts", FlashHelper.Level.Alert)
+}

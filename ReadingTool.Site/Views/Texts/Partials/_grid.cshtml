@@ -1,0 +1,56 @@
+﻿@model ReadingTool.Common.Search.SearchGridResult<ReadingTool.Site.Models.Texts.TextViewModel> 
+@{
+    Layout = "";
+    WebGrid grid = new WebGrid(Model.Items, rowsPerPage: @Model.Paging.RowsPerPage);
+}
+
+@grid.GetHtml(
+    tableStyle: "table table-striped table-bordered table-condensed table-hover gridtable",
+    numericLinksCount: 0,
+    mode: WebGridPagerModes.Numeric,
+    footerStyle: "hidden",
+    columns: new[]
+        {
+            grid.Column("Language1", header: "Language", style: "col10"),
+            grid.Column("Title"),
+            grid.Column("CollectionName", header: "Collection Name", style: "col20"),
+            grid.Column("LastRead", header: "Last Read", style: "col10"),
+            grid.Column(style:"col5", format:@<text>
+                                                  <div class="btn-group">
+                                                          @if(item.IsParallel)
+                                                          {
+                                                              <a href="@Url.Action("ReadParallel", new { id=item.TextId})" class="btn btn-small btn-primary">read parallel</a>
+                                                          }
+                                                          else
+                                                          {
+                                                              <a href="@Url.Action("Read", new { id=item.TextId})" class="btn btn-small btn-primary">read</a>
+                                                          }
+                                                          <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                                                              <span class="caret"></span>
+                                                          </button>
+                                                          <ul class="dropdown-menu">
+                                                              <li>
+                                                                  <a href="@Url.Action("Edit", new { id=item.TextId})" class="btn">edit</a>
+                                                              </li>
+                                                              <li>
+                                                                  <a href="@Url.Action("Read", new { id=item.TextId})" class="btn">read</a>
+                                                              </li>
+                                                              @if(item.IsParallel)
+                                                              {
+                                                                  <li>
+                                                                      <a href="@Url.Action("ReadParallel", new {id = item.TextId})" class="btn">read parallel</a>
+                                                                  </li>
+                                                              }
+                                                              <li>
+                                                                  <form method="POST" action="@Url.Action("Delete", "Texts", new { id=item.TextId })">
+                                                                      @Html.AntiForgeryToken()
+                                                                      <button type="submit" class="btn btn-danger" style="width:100%">delete</button>
+                                                                  </form>
+                                                              </li>
+                                                          </ul>
+                                                  </div> 
+                                              </text>)
+    }
+)
+
+@Html.Partial("~/Views/Shared/_pager.cshtml", Model.Paging)

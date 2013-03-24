@@ -1,0 +1,56 @@
+﻿@{
+    Layout = null;
+    Bundles.Reference("Content/css");
+    Bundles.Reference("Scripts/Required");
+    Bundles.Reference("Scripts/Body", "body");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>ReadingTool - @ViewBag.Title</title>
+    @Bundles.RenderStylesheets()
+    @Bundles.RenderScripts()
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span1"></div>
+            <div class="span10">
+                <ul class="nav nav-pills">
+                    @{
+                        string controller = Request.RequestContext.RouteData.Values["controller"].ToString().ToLowerInvariant();
+                    }
+                    <li @Html.Raw(controller.Equals("account") ? "class=\"active\"" : "")>
+                        <a href="@Url.Action("Index", "Account")">My Account</a>
+                    </li>
+                    <li @Html.Raw(controller.Equals("languages") ? "class=\"active\"" : "")>
+                        <a href="@Url.Action("Index", "Languages")">Languages</a>
+                    </li>
+                    <li @Html.Raw(controller.Equals("texts") ? "class=\"active\"" : "")>
+                        <a href="@Url.Action("Index", "Texts")">Texts</a>
+                    </li>
+                    <li @Html.Raw(controller.Equals("terms") ? "class=\"active\"" : "")>
+                        <a href="@Url.Action("Index", "Terms")">Terms</a>
+                    </li>
+                    <li @Html.Raw(controller.Equals("review") ? "class=\"active\"" : "")>
+                        <a href="@Url.Action("Index", "Review")">Review</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("SignOut", "Home")">Sign Out</a>
+                    </li>
+                    @RenderSection("MenuAdditional", false)
+                </ul>
+            </div>
+            <div class="span1"></div>
+        </div>
+        @Html.Flash()
+        @RenderBody()
+    </div>
+    <div class="clr50"></div>
+    @Bundles.RenderScripts("body")
+    @Bundles.RenderScripts("footer")
+    @Bundles.RenderScripts("inline")
+</body>
+</html>

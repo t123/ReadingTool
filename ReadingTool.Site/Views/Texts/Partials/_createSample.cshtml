@@ -1,0 +1,56 @@
+﻿@model ReadingTool.Site.Models.Texts.JsonSampleModel
+@{
+    var languages = (ViewBag.Languages as string[]).ToDictionary(x => x, x => x);
+}
+@using(Html.BeginForm("CreateSample", "Texts", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Create a sample JSON file for import</legend>
+        <div class="control-group">
+            @Html.LabelFor(x => x.NumberOfItems, new { @class = "control-label" })
+            <div class="controls">
+                @Html.TextBoxFor(x => x.NumberOfItems, new { @placehold = "" })
+                @Html.ValidationMessageFor(x => x.NumberOfItems)
+            </div>
+        </div>
+        <div class="control-group">
+            @Html.LabelFor(x => x.L1Name, new { @class = "control-label" })
+            <div class="controls">
+                @Html.DropDownListFor(x => x.L1Name, new SelectList(languages, "Key", "Value"), "")
+                @Html.ValidationMessageFor(x => x.L1Name)
+            </div>
+        </div>
+        <div class="control-group">
+            @Html.LabelFor(x => x.L2Name, new { @class = "control-label" })
+            <div class="controls">
+                @Html.DropDownListFor(x => x.L2Name, new SelectList(languages, "Key", "Value"), "")
+                @Html.ValidationMessageFor(x => x.L2Name)
+            </div>
+        </div>
+        <div class="control-group">
+            @Html.LabelFor(x => x.CollectionName, new { @class = "control-label" })
+            <div class="controls">
+                @Html.TextBoxFor(x => x.CollectionName, new { @placehold = "" })
+                @Html.ValidationMessageFor(x => x.CollectionName)
+            </div>
+        </div>
+        <div class="control-group">
+            @Html.LabelFor(x => x.AutoNumberCollection, new { @class = "control-label" })
+            <div class="controls">
+                @Html.CheckBoxFor(x => x.AutoNumberCollection)
+                @Html.ValidationMessageFor(x => x.AutoNumberCollection)
+            </div>
+        </div>
+        <div class="control-group">
+            @Html.LabelFor(x => x.StartCollectionWithNumber, new { @class = "control-label" })
+            <div class="controls">
+                @Html.TextBoxFor(x => x.StartCollectionWithNumber, new { @placehold = "" })
+                @Html.ValidationMessageFor(x => x.StartCollectionWithNumber)
+            </div>
+        </div>
+        <div class="buttons">
+            <input type="submit" class="btn btn-primary" name="save" value="Create sample file" />
+        </div>
+    </fieldset>
+}

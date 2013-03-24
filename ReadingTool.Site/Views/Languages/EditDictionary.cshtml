@@ -1,0 +1,66 @@
+﻿@using ReadingTool.Common
+@model ReadingTool.Site.Models.Languages.DictionaryModel
+@{
+    ViewBag.Title = "Add Dictionary";
+}
+
+<div class="row-fluid">
+    <div class="span1"></div>
+    <div class="span10">
+        @using(Html.BeginForm("EditDictionary", "Languages", new { id=Model.LanguageId, Model.DictionaryId }, FormMethod.Post, new { @class="form-horizontal"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x=>x.LanguageId)
+            <fieldset>
+                <legend>Edit Dictionary</legend>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Name, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Name, new {@placeholder = "your name for the dictionary"})
+                        @Html.ValidationMessageFor(x=>x.Name)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Encoding, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Encoding, new {@placeholder = "word encoding for URL"})
+                        @Html.ValidationMessageFor(x=>x.Encoding)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.WindowName, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.WindowName, new {@placeholder = "name of window tab"})
+                        @Html.ValidationMessageFor(x=>x.WindowName)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Url, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Url, new {@placeholder = "url for dictionary, use [[text]]"})
+                        @Html.ValidationMessageFor(x=>x.Url)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Sentence, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.CheckBoxFor(x => x.Sentence, new {@placeholder = "send sentence?"})
+                        @Html.ValidationMessageFor(x=>x.Sentence)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.AutoOpen, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.CheckBoxFor(x => x.AutoOpen, new {@placeholder = "automatically open?"})
+                        @Html.ValidationMessageFor(x=>x.AutoOpen)
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="@Url.Action("Edit", new { id=Model.LanguageId})" class="btn">Back to language</a>
+                </div>
+            </fieldset>
+        }
+    </div>
+    <div class="span1"></div>
+</div>

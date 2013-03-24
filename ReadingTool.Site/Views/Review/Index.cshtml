@@ -1,0 +1,115 @@
+﻿@model ReadingTool.Site.Models.Review.ReviewModel
+@{
+    ViewBag.Title = "Review Terms";
+
+    Bundles.AddInlineScript(@<text>
+                                 <script language="javascript">
+                                     $('input[type="radio"]').click(function () {
+                                         //green #dff0d8
+                                         //red #f2dede
+                                         var td = $(this).closest('td');
+                                         td.css('background-color', '#fff');
+
+                                         if (td.next('td').text() == '') {
+                                             td.next('td').css('background-color', '#fff');
+                                             
+                                             if (td.next('td').next('td').text() == '') {
+                                                 td.next('td').next('td').css('background-color', '#fff');
+                                             }
+                                         }
+                                         td.prev('td').css('background-color', '#fff');
+                                         if ($(this).val() == 'know') {
+                                             td.css('background-color', '#dff0d8');
+                                         } else if($(this).val() == 'dontknow') {
+                                             td.css('background-color', '#f2dede');
+                                         } else {
+                                             td.css('background-color', '#fff');
+                                         }
+                                     });
+                                 </script>
+                             </text>, "inline");
+}
+
+@using(Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x=>x.LanguageId)
+    <div class="row-fluid">
+        <div class="span1"></div>
+        <div class="span10">
+            <div class="btn-group">
+                <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                    review words in&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="@Url.Action("Index", new {id = Guid.Empty})">All languages</a>
+                    </li>
+                    @foreach(var kvp in Model.Languages)
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", new {id = kvp.Key})">@kvp.Value</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            There are <strong>@Model.ReviewTotal</strong> terms are due
+        </div>
+        <div class="span1"></div>
+    </div>
+    <div class="clr10"></div>
+    <div class="row-fluid">
+        <div class="span1"></div>
+        <div class="span10">
+            @if(Model.Terms.Any())
+            {
+                <table class="table table-bordered review">
+                    <thead>
+                        <tr>
+                            <th class="col10">Skip</th>
+                            <th class="col10">Know</th>
+                            <th class="col10">Don't Know</th>
+                            <th class="col10">Term</th>
+                            <th>Sentence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int counter = 1;
+                            foreach (var term in Model.Terms)
+                            {
+                                string style = counter %2==0 ? @"style=""""" : @"style=""background-color: #f9f9f9;""";
+                                <tr>
+                                    <td><input type="radio" name="term_@term.TermId" value="skip"/></td>
+                                    <td><input type="radio" name="term_@term.TermId" value="know"/></td>
+                                    <td><input type="radio" name="term_@term.TermId" value="dontknow"/></td>
+                                    <td @Html.Raw(style)>@term.Phrase</td>
+                                    <td @Html.Raw(style)>
+                                        @{
+                                            var sentence = Html.Encode(term.Sentence);
+                                        }
+                                        @Html.Raw(sentence.Replace(term.Phrase, @"<a title=""" + @term.FullDefinition+ @""">" + @term.Phrase + "</a>"));
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+                        
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <strong>Nothing to review</strong>
+            }
+        </div>
+        <div class="span1"></div>
+    </div>
+    <div class="row-fluid">
+        <div class="span1"></div>
+        <div class="span10">
+            <input type="submit" class="btn btn-primary" value="Review these words"/>
+        </div>
+        <div class="span1"></div>
+    </div>
+}

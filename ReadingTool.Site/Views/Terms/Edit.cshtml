@@ -1,0 +1,62 @@
+﻿@using ReadingTool.Common
+@using ReadingTool.Common.Extensions
+@model ReadingTool.Site.Models.Terms.TermModel
+@{
+    ViewBag.Title = "Edit Term";
+    var states = from TermState t in Enum.GetValues(typeof (TermState)) select new {Key = t, Value = t.ToDescription()};
+}
+
+<div class="row-fluid">
+    <div class="span1"></div>
+    <div class="span10">
+        @using(Html.BeginForm("Edit", "Terms", new { id = Model.TermId }, FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.TermId)
+            <fieldset>
+                <legend>Edit Term</legend>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Sentence, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Sentence, new { @placeholder = "sentence", @class="input-xxlarge" })
+                        @Html.ValidationMessageFor(x => x.Sentence)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.BasePhrase, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.BasePhrase, new { @placeholder = "base phrase", @class="input-xxlarge" })
+                        @Html.ValidationMessageFor(x => x.BasePhrase)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Definition, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.TextAreaFor(x => x.Definition, new { @placeholder = "definition", @class="input-xxlarge" })
+                        @Html.ValidationMessageFor(x => x.Definition)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Tags, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Tags, new { @placeholder = "tags", @class="input-xxlarge" })
+                        @Html.ValidationMessageFor(x => x.Tags)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.State, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.DropDownListFor(x=>x.State, new SelectList(states, "Key", "Value"), "Please choose new state", new { @class="input-xxlarge"})
+                        @Html.ValidationMessageFor(x => x.State)
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="@Url.Action("Index")" class="btn">Back to terms</a>
+                </div>
+            </fieldset>
+        }
+    </div>
+    <div class="span1"></div>
+</div>

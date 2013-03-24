@@ -1,0 +1,617 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Read" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+
+  &lt;xsl:template match="/root"&gt;
+    &lt;xsl:apply-templates select="link"/&gt;
+    &lt;xsl:apply-templates select="stats"/&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="link"&gt;
+    &lt;xsl:apply-templates select="p[@side='first']"/&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="p[@side='first']"&gt;
+    &lt;p&gt;
+      &lt;xsl:attribute name="dir"&gt;
+        &lt;xsl:value-of select="@dir" /&gt;
+      &lt;/xsl:attribute&gt;
+      
+      &lt;xsl:apply-templates select="s"/&gt;
+    &lt;/p&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="s"&gt;
+    &lt;span class="sentence"&gt;
+      &lt;xsl:apply-templates select="t"/&gt;
+    &lt;/span&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="t"&gt;
+    &lt;xsl:apply-templates select="multi"/&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="@type='term'"&gt;
+        &lt;span&gt;
+          &lt;xsl:attribute name="class"&gt;
+            &lt;xsl:value-of select="@state" /&gt;
+            &lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;xsl:value-of select='@lower' /&gt;
+            &lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;xsl:value-of select='@box' /&gt;
+          &lt;/xsl:attribute&gt;
+          &lt;xsl:choose&gt;
+            &lt;xsl:when test="@data"&gt;
+              &lt;a&gt;
+                &lt;xsl:attribute name="title"&gt;
+                  &lt;xsl:value-of select="@data" /&gt;
+                &lt;/xsl:attribute&gt;
+                &lt;xsl:value-of select="@value" /&gt;
+              &lt;/a&gt;
+            &lt;/xsl:when&gt;
+            &lt;xsl:otherwise&gt;
+              &lt;xsl:value-of select="@value" /&gt;
+            &lt;/xsl:otherwise&gt;
+          &lt;/xsl:choose&gt;
+        &lt;/span&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='parallel'"&gt;
+        &lt;xsl:value-of select="@value" /&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='space'"&gt;
+        &lt;xsl:choose&gt;
+          &lt;xsl:when test="@inSpan='true'"&gt;
+            &lt;span&gt;
+              &lt;xsl:attribute name="class"&gt;wsx&lt;/xsl:attribute&gt;
+              &lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;/span&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='punctuation'"&gt;
+        &lt;xsl:choose&gt;
+          &lt;xsl:when test="@inSpan='true'"&gt;
+            &lt;span&gt;
+              &lt;xsl:attribute name="class"&gt;pcx&lt;/xsl:attribute&gt;
+              &lt;xsl:value-of select="@value" /&gt;
+            &lt;/span&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:value-of select="@value" /&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+      &lt;/xsl:when&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="multi"&gt;
+    &lt;sup&gt;
+      &lt;span&gt;
+        &lt;xsl:attribute name="class"&gt;
+          mxx
+          &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;xsl:value-of select="@state" /&gt;
+          &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;xsl:value-of select="@id" /&gt;
+          &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;xsl:value-of select='@box' /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:attribute name="data-phrase"&gt;
+          &lt;xsl:value-of select="." /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:attribute name="data-id"&gt;
+          &lt;xsl:value-of select="@id" /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:choose&gt;
+          &lt;xsl:when test="@data"&gt;
+            &lt;a&gt;
+              &lt;xsl:attribute name="title"&gt;
+                &lt;xsl:value-of select="@data" /&gt;
+              &lt;/xsl:attribute&gt;
+              &lt;xsl:value-of select="@length" /&gt;
+            &lt;/a&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:value-of select="@length" /&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+      &lt;/span&gt;
+    &lt;/sup&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="stats"&gt;
+    &lt;div style="margin-top: 30px;"&gt;
+      &lt;button class="btn" onclick="$('#stats').toggle();"&gt;
+        Show some statistics for this text
+      &lt;/button&gt;
+      &lt;br/&gt;
+      &lt;br/&gt;
+      &lt;div id="stats" style="display: none;"&gt;
+        &lt;table class="table table-striped table-bordered table-condensed table-hover"&gt;
+          &lt;caption&gt;Some stats for this text&lt;/caption&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Total Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:attribute name="id"&gt;totalWords&lt;/xsl:attribute&gt;
+                &lt;xsl:attribute name="data-value"&gt;
+                  &lt;xsl:value-of select="./totalWords" /&gt;
+                &lt;/xsl:attribute&gt;
+                  &lt;xsl:value-of select="./totalWords" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./totalWords/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;New Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./notseenCount" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./notseenCount/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Known Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./knownCount" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./knownCount/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Unknown Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./unknownCount" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./unknownCount/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+        &lt;br/&gt;
+        &lt;table class="table table-striped table-bordered table-condensed table-hover"&gt;
+          &lt;caption&gt;Most common new words in this text&lt;/caption&gt;
+          &lt;tbody&gt;
+            &lt;xsl:apply-templates select="unknownWords" /&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="word"&gt;
+    &lt;tr&gt;
+      &lt;td&gt;
+        &lt;xsl:value-of select="@count" /&gt;
+      &lt;/td&gt;
+      &lt;td&gt;
+        &lt;xsl:value-of select="." /&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;</value>
+  </data>
+  <data name="Read_Latex" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+  &lt;xsl:output method="text" indent="no" omit-xml-declaration="yes" /&gt;
+
+  &lt;xsl:template match="/root"&gt;
+    &lt;xsl:text&gt;\documentclass[12pt]{article}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\usepackage[papersize={108mm,144mm},margin=2mm]{geometry}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\usepackage[utf8]{inputenc}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\usepackage{perpage}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\MakePerPage{footnote}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\sloppy
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\pagestyle{empty}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\usepackage[scaled]{helvet}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\renewcommand{\familydefault}{\sfdefault}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\setlength\parindent{0pt}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:text&gt;\begin{document}
+
+&lt;/xsl:text&gt;
+    &lt;xsl:apply-templates select="link"/&gt;
+    &lt;xsl:text&gt;\end{document}
+&lt;/xsl:text&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="link"&gt;
+    &lt;xsl:apply-templates select="p[@side='first']"/&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="p[@side='first']"&gt;
+    &lt;xsl:text&gt;\paragraph{&lt;/xsl:text&gt;
+    &lt;xsl:apply-templates select="s"/&gt;
+    &lt;xsl:text&gt;}
+
+&lt;/xsl:text&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="s"&gt;
+    &lt;xsl:apply-templates select="t"/&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="t"&gt;
+    &lt;xsl:apply-templates select="multi"/&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="@type='term'"&gt;
+        &lt;xsl:value-of select="@value" /&gt;
+        &lt;xsl:if test="@state='nkx'"&gt;
+          &lt;xsl:text&gt; \protect\footnote{&lt;/xsl:text&gt;
+          &lt;xsl:value-of select="@data" /&gt;
+          &lt;xsl:text&gt;}&lt;/xsl:text&gt;
+        &lt;/xsl:if&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='space'"&gt;
+        &lt;xsl:text&gt; &lt;/xsl:text&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='punctuation'"&gt;
+        &lt;xsl:value-of select="@value" /&gt;
+      &lt;/xsl:when&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;</value>
+  </data>
+  <data name="Read_Parallel" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+
+  &lt;xsl:template match="/root"&gt;
+    &lt;table&gt;
+      &lt;xsl:apply-templates select="link"/&gt;
+    &lt;/table&gt;
+    &lt;xsl:apply-templates select="stats"/&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="link"&gt;
+    &lt;tr&gt;
+      &lt;xsl:apply-templates select="p"/&gt;
+    &lt;/tr&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="p[@side='first']"&gt;
+    &lt;td&gt;
+      &lt;xsl:attribute name="class"&gt;f&lt;/xsl:attribute&gt;
+      &lt;p&gt;
+        &lt;xsl:attribute name="dir"&gt;
+          &lt;xsl:value-of select="@dir" /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:apply-templates select="s"/&gt;
+      &lt;/p&gt;
+    &lt;/td&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="p[@side='second']"&gt;
+    &lt;td&gt;
+      &lt;xsl:attribute name="class"&gt;s&lt;/xsl:attribute&gt;
+      &lt;p&gt;
+        &lt;xsl:attribute name="dir"&gt;
+          &lt;xsl:value-of select="@dir" /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:apply-templates select="s"/&gt;
+      &lt;/p&gt;
+    &lt;/td&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="s"&gt;
+    &lt;span class="sentence"&gt;
+      &lt;xsl:apply-templates select="t"/&gt;
+    &lt;/span&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="t"&gt;
+    &lt;xsl:apply-templates select="multi"/&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="@type='term'"&gt;
+        &lt;span&gt;
+          &lt;xsl:attribute name="class"&gt;
+            &lt;xsl:value-of select="@state" /&gt;
+            &lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;xsl:value-of select='@lower' /&gt;
+            &lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;xsl:value-of select='@box' /&gt;
+          &lt;/xsl:attribute&gt;
+          &lt;xsl:choose&gt;
+            &lt;xsl:when test="@data"&gt;
+              &lt;a&gt;
+                &lt;xsl:attribute name="title"&gt;
+                  &lt;xsl:value-of select="@data" /&gt;
+                &lt;/xsl:attribute&gt;
+                &lt;xsl:value-of select="@value" /&gt;
+              &lt;/a&gt;
+            &lt;/xsl:when&gt;
+            &lt;xsl:otherwise&gt;
+              &lt;xsl:value-of select="@value" /&gt;
+            &lt;/xsl:otherwise&gt;
+          &lt;/xsl:choose&gt;
+        &lt;/span&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='parallel'"&gt;
+        &lt;xsl:value-of select="@value" /&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='space'"&gt;
+        &lt;xsl:choose&gt;
+          &lt;xsl:when test="@inSpan='true'"&gt;
+            &lt;span&gt;
+              &lt;xsl:attribute name="class"&gt;wsx&lt;/xsl:attribute&gt;
+              &lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;/span&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:when test="@type='punctuation'"&gt;
+        &lt;xsl:choose&gt;
+          &lt;xsl:when test="@inSpan='true'"&gt;
+            &lt;span&gt;
+              &lt;xsl:attribute name="class"&gt;pcx&lt;/xsl:attribute&gt;
+              &lt;xsl:value-of select="@value" /&gt;
+            &lt;/span&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:value-of select="@value" /&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+      &lt;/xsl:when&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="multi"&gt;
+    &lt;sup&gt;
+      &lt;span&gt;
+        &lt;xsl:attribute name="class"&gt;
+          mxx
+          &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;xsl:value-of select="@state" /&gt;
+          &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;xsl:value-of select="@id" /&gt;
+          &lt;xsl:text&gt; &lt;/xsl:text&gt;
+          &lt;xsl:value-of select='@box' /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:attribute name="data-phrase"&gt;
+          &lt;xsl:value-of select="." /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:attribute name="data-id"&gt;
+          &lt;xsl:value-of select="@id" /&gt;
+        &lt;/xsl:attribute&gt;
+        &lt;xsl:choose&gt;
+          &lt;xsl:when test="@data"&gt;
+            &lt;a&gt;
+              &lt;xsl:attribute name="title"&gt;
+                &lt;xsl:value-of select="@data" /&gt;
+              &lt;/xsl:attribute&gt;
+              &lt;xsl:value-of select="@length" /&gt;
+            &lt;/a&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;xsl:value-of select="@length" /&gt;
+          &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+      &lt;/span&gt;
+    &lt;/sup&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="stats"&gt;
+    &lt;div style="margin-top: 30px;"&gt;
+      &lt;button class="btn" onclick="$('#stats').toggle();"&gt;
+        Show some statistics for this text
+      &lt;/button&gt;
+      &lt;br/&gt;
+      &lt;br/&gt;
+      &lt;div id="stats" style="display: none;"&gt;
+        &lt;table class="table table-striped table-bordered table-condensed table-hover"&gt;
+          &lt;caption&gt;Some stats for this text&lt;/caption&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Total Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:attribute name="id"&gt;totalWords&lt;/xsl:attribute&gt;
+                &lt;xsl:attribute name="data-value"&gt;
+                  &lt;xsl:value-of select="./totalWords" /&gt;
+                &lt;/xsl:attribute&gt;
+                &lt;xsl:value-of select="./totalWords" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./totalWords/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;New Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./notseenCount" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./notseenCount/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Known Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./knownCount" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./knownCount/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;Unknown Words&lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./unknownCount" /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;xsl:value-of select="./unknownCount/@percent" /&gt;%
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+        &lt;br/&gt;
+        &lt;table class="table table-striped table-bordered table-condensed table-hover"&gt;
+          &lt;caption&gt;Most common new words in this text&lt;/caption&gt;
+          &lt;tbody&gt;
+            &lt;xsl:apply-templates select="unknownWords" /&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/xsl:template&gt;
+    
+  &lt;xsl:template match="word"&gt;
+    &lt;tr&gt;
+      &lt;td&gt;
+        &lt;xsl:value-of select="@count" /&gt;
+      &lt;/td&gt;
+      &lt;td&gt;
+        &lt;xsl:value-of select="." /&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;</value>
+  </data>
+</root>

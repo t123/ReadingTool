@@ -1,0 +1,104 @@
+﻿clr {
+  clear: both;
+}
+.clr5 {
+  clear: both;
+  height: 5px;
+}
+.clr10 {
+  clear: both;
+  height: 10px;
+}
+.clr15 {
+  clear: both;
+  height: 15px;
+}
+.clr20 {
+  clear: both;
+  height: 20px;
+}
+.clr50 {
+  clear: both;
+  height: 50px;
+}
+.clr100 {
+  clear: both;
+  height: 100px;
+}
+.errorlist ul {
+  list-style: none;
+}
+.errorlist ul li {
+  color: #b5121b;
+}
+.table {
+  font-size: smaller;
+}
+.table .col10 {
+  width: 10%;
+}
+.table .col20 {
+  width: 20%;
+}
+.table .col30 {
+  width: 30%;
+}
+.table .col40 {
+  width: 40%;
+}
+.table .col50 {
+  width: 50%;
+}
+.table .col60 {
+  width: 60%;
+}
+.table .col70 {
+  width: 70%;
+}
+.table .col80 {
+  width: 80%;
+}
+.table .col90 {
+  width: 90%;
+}
+.table .col5 {
+  width: 5%;
+}
+.table .col15 {
+  width: 15%;
+}
+.table .col25 {
+  width: 25%;
+}
+.table .col35 {
+  width: 35%;
+}
+.table .col45 {
+  width: 45%;
+}
+.table .col55 {
+  width: 55%;
+}
+.table .col65 {
+  width: 65%;
+}
+.table .col75 {
+  width: 75%;
+}
+.table .col85 {
+  width: 85%;
+}
+.table .col95 {
+  width: 95%;
+}
+.table form {
+  margin-bottom: 0px;
+}
+.table.review a {
+  color: #b5121b;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.CodeMirror {
+  border: 1px solid #cecece;
+}

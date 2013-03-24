@@ -1,0 +1,73 @@
+﻿@using ReadingTool.Common
+@model ReadingTool.Site.Models.Languages.LanguageModel
+@{
+    ViewBag.Title = "Add Language";
+    var directions = new Dictionary<LanguageDirection, string>
+        {
+            {LanguageDirection.LTR, "Left to Right"},
+            {LanguageDirection.RTL, "Right to Left"}
+        };
+}
+
+<div class="row-fluid">
+    <div class="span1"></div>
+    <div class="span10">
+        @using(Html.BeginForm("Add", "Languages", FormMethod.Post, new { @class="form-horizontal"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x=>x.LanguageId)
+            <fieldset>
+                <legend>Add Language</legend>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Name, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Name, new {@placeholder = "your name for the language"})
+                        @Html.ValidationMessageFor(x=>x.Name)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Code, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.DropDownListFor(x => x.Code, new SelectList(Model.Languages, "Key", "Value"))
+                        @Html.ValidationMessageFor(x=>x.Code)
+                    </div>
+                </div>
+                </fieldset>
+            <fieldset>
+                <legend>Parser Settings</legend>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.RegexWordCharacters, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.RegexWordCharacters, new {@placeholder = "word test regular expression"})
+                        @Html.ValidationMessageFor(x=>x.RegexWordCharacters)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.RegexSplitSentences, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.RegexSplitSentences, new {@placeholder = "end of sentence characters"})
+                        @Html.ValidationMessageFor(x=>x.RegexSplitSentences)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Name, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.DropDownListFor(x => x.Direction, new SelectList(directions, "Key", "Value"))
+                        @Html.ValidationMessageFor(x=>x.Direction)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.ShowSpaces, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.CheckBoxFor(x => x.ShowSpaces, new {@placeholder = "word test regular expression"})
+                        @Html.ValidationMessageFor(x=>x.ShowSpaces)
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </fieldset>
+        }
+    </div>
+    <div class="span1"></div>
+</div>
