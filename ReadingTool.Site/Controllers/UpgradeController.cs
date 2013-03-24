@@ -162,7 +162,11 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
                 DateTime? nextReview = word.NextReview;
-                if(nextReview.HasValue && nextReview.Value.Year < 2000)
+                if(t.State != TermState.NotKnown)
+                {
+                    t.NextReview = null;
+                }
+                else if(nextReview.HasValue && nextReview.Value.Year < 2000)
                 {
                     t.NextReview = null;
                 }
@@ -196,7 +200,7 @@ namespace ReadingTool.Site.Controllers.Home
                     }
                 }
 
-                t.HasTags = t.Tags.Count > 0;
+                //t.HasTags = t.Tags.Count > 0;
 
                 Regex regex = new Regex(@"([" + t.Language.Settings.RegexWordCharacters + @"])");
                 if(!regex.IsMatch(t.Phrase))

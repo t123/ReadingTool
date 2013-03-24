@@ -40,7 +40,7 @@ namespace ReadingTool.Site.Controllers.Home
         public ActionResult Index()
         {
             _systemLanguageRepository.DeleteAll(x => true);
-            _languageRepository.DeleteAll(x => true);
+            //_languageRepository.DeleteAll(x => true);
             _userRepository.DeleteAll(x => true);
 
             var user = _userService.CreateUser("travis", "travis");
@@ -55,87 +55,14 @@ namespace ReadingTool.Site.Controllers.Home
                     new SystemLanguage { Code = "fr", Name = "French"},
                     new SystemLanguage { Code = "lv", Name = "Latvian"},
                     new SystemLanguage { Code = "de", Name = "German"},
+                    new SystemLanguage { Code = "sw", Name = "Swedish"},
+                    new SystemLanguage { Code = "tr", Name = "Turkish"},
+                    new SystemLanguage { Code = "pl", Name = "Polish"},
                 };
 
             foreach(var l in systemLanguages)
             {
                 _systemLanguageRepository.Save(l);
-            }
-
-            var l1 = new Language()
-                {
-                    Code = "en",
-                    Name = "English",
-                    User = user,
-                    Settings = new Language.LanguageSettings
-                        {
-                            Direction = LanguageDirection.LTR,
-                            RegexSplitSentences = ".!?:;",
-                            RegexWordCharacters = "a-zA-ZÀ-ÖØ-öø-ȳ",
-                        }
-                };
-
-            var l2 = new Language()
-                {
-                    Code = "fr",
-                    Name = "French",
-                    User = user,
-                    Settings = new Language.LanguageSettings
-                        {
-                            Direction = LanguageDirection.LTR,
-                            RegexSplitSentences = ".!?:;",
-                            RegexWordCharacters = "a-zA-ZÀ-ÖØ-öø-ȳ",
-                        }
-                };
-
-            _languageRepository.Save(l1);
-            _languageRepository.Save(l2);
-
-            for(int i = 1; i < 100; i++)
-            {
-                Text t = new Text()
-                    {
-                        CollectionName = "Assimil",
-                        CollectionNo = i,
-                        Created = DateTime.Now,
-                        Language1 = l1,
-                        Language2 = l2,
-                        Modified = DateTime.Now,
-                        Title = "Lesson " + i,
-                        User = user,
-                    };
-
-                _textRepository.Save(t);
-
-                t = new Text()
-                {
-                    CollectionName = "Teach Yourself",
-                    CollectionNo = i,
-                    Created = DateTime.Now,
-                    Language1 = l2,
-                    Language2 = null,
-                    Modified = DateTime.Now,
-                    Title = "Lesson " + i,
-                    User = user,
-                    LastRead = DateTime.Now
-                };
-
-                var term = new Term()
-                    {
-                        BasePhrase = "Base Term" + i,
-                        Created = DateTime.Now,
-                        User = user,
-                        Text = t,
-                        Modified = DateTime.Now,
-                        Language = l1,
-                        Definition = "def",
-                        Phrase = "Term" + i,
-                        Sentence = "Sentence" + i,
-                        State = TermState.Known,
-                    };
-
-                _textRepository.Save(t);
-                _termRepository.Save(term);
             }
 
             return Redirect("/");

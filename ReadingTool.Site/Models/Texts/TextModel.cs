@@ -9,9 +9,9 @@ namespace ReadingTool.Site.Models.Texts
         public Guid TextId { get; set; }
 
         [Required(ErrorMessage = "Please enter a title.")]
-        [MaxLength(ErrorMessage = "Please use less than 250 characters.")]
+        [MaxLength(250, ErrorMessage = "Please use less than 250 characters.")]
         public string Title { get; set; }
-        [MaxLength(ErrorMessage = "Please use less than 250 characters.")]
+        [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]
         [Display(Name = "Collection Name")]
         public string CollectionName { get; set; }
         [Display(Name = "Collection Number")]
@@ -24,15 +24,16 @@ namespace ReadingTool.Site.Models.Texts
         [Display(Name = "Language 2")]
         public Guid? Language2Id { get; set; }
 
-        [Display(Name = "L1 Text")]
+        [Display(Name = "Text")]
         public string L1Text { get; set; }
 
-        [Display(Name = "L2 Text")]
+        [Display(Name = "Parallel Text")]
         public string L2Text { get; set; }
 
         public Dictionary<Guid, string> LanguageList { get; set; }
 
         [Display(Name = "Audio URL")]
+        [MaxLength(250, ErrorMessage = "Please use less than 250 characters.")]
         public string AudioUrl { get; set; }
     }
 }

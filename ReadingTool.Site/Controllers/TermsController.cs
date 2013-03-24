@@ -229,7 +229,7 @@ namespace ReadingTool.Site.Controllers.Home
                 term.Tags.Add(existing);
             }
 
-            term.HasTags = term.Tags.Count > 0;
+            //term.HasTags = term.Tags.Count > 0;
             _termRepository.Save(term);
 
             return RedirectToAction("Edit", new { id = id });

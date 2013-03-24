@@ -10,10 +10,10 @@ namespace ReadingTool.Common
         [Description("Not Known")]
         NotKnown = 2,
 
-        [Description("Ignored")]
-        Ignore = 4,
-
         [Description("Not Seen")]
-        NotSeen = 3
+        NotSeen = 3,
+
+        [Description("Ignored")]
+        Ignore = 4
     }
 }

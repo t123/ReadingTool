@@ -18,28 +18,28 @@
                 <div class="control-group">
                     @Html.LabelFor(x => x.Sentence, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Sentence, new { @placeholder = "sentence", @class="input-xxlarge" })
+                        @Html.TextBoxFor(x => x.Sentence, new { @placeholder = "the sentence", @class="input-xxlarge" })
                         @Html.ValidationMessageFor(x => x.Sentence)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.BasePhrase, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.BasePhrase, new { @placeholder = "base phrase", @class="input-xxlarge" })
+                        @Html.TextBoxFor(x => x.BasePhrase, new { @placeholder = "the base phrase, eg: nominative, dictionary form", @class="input-xxlarge" })
                         @Html.ValidationMessageFor(x => x.BasePhrase)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Definition, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextAreaFor(x => x.Definition, new { @placeholder = "definition", @class="input-xxlarge" })
+                        @Html.TextAreaFor(x => x.Definition, new { @placeholder = "your definition for this term", @class="input-xxlarge", rows=3 })
                         @Html.ValidationMessageFor(x => x.Definition)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Tags, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Tags, new { @placeholder = "tags", @class="input-xxlarge" })
+                        @Html.TextBoxFor(x => x.Tags, new { @placeholder = "any tags for this term, space separated", @class="input-xxlarge" })
                         @Html.ValidationMessageFor(x => x.Tags)
                     </div>
                 </div>

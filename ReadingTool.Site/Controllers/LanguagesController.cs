@@ -97,7 +97,13 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpGet]
         public ActionResult Add()
         {
-            return View(new LanguageModel() { Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name) });
+            return View(new LanguageModel()
+                {
+                    RegexSplitSentences = @".!?:;",
+                    RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ",
+                    Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
+                    ShowSpaces = true
+                });
         }
 
         [ValidateAntiForgeryToken]

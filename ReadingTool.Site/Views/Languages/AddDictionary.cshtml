@@ -16,28 +16,28 @@
                 <div class="control-group">
                     @Html.LabelFor(x => x.Name, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Name, new {@placeholder = "your name for the dictionary"})
+                        @Html.TextBoxFor(x => x.Name, new {@placeholder = "your name for the dictionary", @class="input-xlarge"})
                         @Html.ValidationMessageFor(x=>x.Name)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Encoding, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Encoding, new {@placeholder = "word encoding for URL"})
+                        @Html.TextBoxFor(x => x.Encoding, new {@placeholder = "word encoding for URL", @class="input-xlarge"})
                         @Html.ValidationMessageFor(x=>x.Encoding)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.WindowName, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.WindowName, new {@placeholder = "name of window tab"})
+                        @Html.TextBoxFor(x => x.WindowName, new {@placeholder = "name of window tab", @class="input-xlarge"})
                         @Html.ValidationMessageFor(x=>x.WindowName)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Url, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Url, new {@placeholder = "url for dictionary, use [[text]]"})
+                        @Html.TextBoxFor(x => x.Url, new {@placeholder = "URL for dictionary, use ###", @class="input-xxlarge"})
                         @Html.ValidationMessageFor(x=>x.Url)
                     </div>
                 </div>

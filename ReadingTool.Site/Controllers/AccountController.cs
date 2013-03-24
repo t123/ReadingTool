@@ -87,7 +87,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Delete(Guid id)
+        public ActionResult Delete()
         {
             _userService.Repository.Delete(_userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name)));
             return RedirectToAction("SignOut", "Home");

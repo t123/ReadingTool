@@ -6,7 +6,7 @@
     Bundles.Reference("Scripts/Reading", "inline");
 
     Bundles.AddInlineScript(@<text>
-                                 <script src="/routes/?c=Ajax" type="text/javascript"></script>
+                                 <script src="@Url.Action("Index", "Routes", new { @c="Ajax"})" type="text/javascript"></script>
                                  <script language="javascript">
                                      $(function () {
                                          var settings = {

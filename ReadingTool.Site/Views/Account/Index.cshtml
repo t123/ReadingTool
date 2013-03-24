@@ -22,14 +22,14 @@
                 <div class="control-group">
                     @Html.LabelFor(x => x.User.DisplayName, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.User.DisplayName, new {@placeholder = "display name"})
+                        @Html.TextBoxFor(x => x.User.DisplayName, new {@placeholder = "display name, what others users see", @class="input-xxlarge"})
                         @Html.ValidationMessageFor(x=>x.User.DisplayName)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.User.EmailAddress, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.User.EmailAddress, new {@placeholder = "email address"})
+                        @Html.TextBoxFor(x => x.User.EmailAddress, new {@placeholder = "email address, not required", @class="input-xxlarge"})
                         @Html.ValidationMessageFor(x=>x.User.EmailAddress)
                     </div>
                 </div>
@@ -46,14 +46,14 @@
                 <div class="control-group">
                     @Html.LabelFor(x => x.Password.OldPassword, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.PasswordFor(x => x.Password.OldPassword, new {@placeholder = "current password"})
+                        @Html.PasswordFor(x => x.Password.OldPassword, new {@placeholder = "your current password"})
                         @Html.ValidationMessageFor(x=>x.Password.OldPassword)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Password.NewPassword, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.PasswordFor(x => x.Password.NewPassword, new {@placeholder = "new password"})
+                        @Html.PasswordFor(x => x.Password.NewPassword, new {@placeholder = "your new password"})
                         @Html.ValidationMessageFor(x=>x.Password.NewPassword)
                     </div>
                 </div>

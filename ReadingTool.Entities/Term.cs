@@ -23,7 +23,6 @@ namespace ReadingTool.Entities
         public virtual IList<Tag> Tags { get; set; }
         public virtual User User { get; set; }
         public virtual short Length { get; set; }
-        public virtual bool HasTags { get; set; }
 
         public Term()
         {
@@ -101,9 +100,9 @@ namespace ReadingTool.Entities
             Map(x => x.Length).Not.Nullable();
             Map(x => x.State).CustomType<TermState>();
             Map(x => x.Phrase).Length(50).Not.Nullable();
-            Map(x => x.BasePhrase).Length(250);
+            Map(x => x.BasePhrase).Length(50);
             Map(x => x.Sentence).Length(500);
-            Map(x => x.Definition).Length(10000);
+            Map(x => x.Definition).Length(500);
             References(x => x.Text);
             References(x => x.Language).Not.Nullable();
             Map(x => x.Created);
@@ -111,7 +110,6 @@ namespace ReadingTool.Entities
             References(x => x.User).Not.Nullable();
             Map(x => x.Box);
             Map(x => x.NextReview);
-            Map(x => x.HasTags);
 
             HasManyToMany<Tag>(x => x.Tags)
                 .Table("TermTag")

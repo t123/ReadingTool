@@ -85,6 +85,18 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpPost]
         public JsonNetResult SaveTerm(SaveTermModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return new JsonNetResult()
+                {
+                    Data = new TermModel
+                    {
+                        State = "failed",
+                        Message = "<strong>WARNING</strong>: Term did not save"
+                    }
+                };
+            }
+
             Term term = null;
             string message;
             short length = (short)model.Phrase.Trim().Split(' ').Length;
@@ -159,7 +171,7 @@ namespace ReadingTool.Site.Controllers.Home
                     term.Tags.Add(existing);
                 }
 
-                term.HasTags = term.Tags.Count > 0;
+                //term.HasTags = term.Tags.Count > 0;
 
                 var stateUpdate = Term.NextReviewDate(term);
                 term.State = stateUpdate.Item1;
