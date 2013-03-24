@@ -1,6 +1,7 @@
 ﻿@using ReadingTool.Common
 @model ReadingTool.Site.Models.Texts.ReadModel
 @{
+    string action = Model.AsParallel ? "ReadParallel" : "Read";
     ViewBag.Title = "Read Text";
     Bundles.Reference("Content/Reading");
     Bundles.Reference("Scripts/Reading", "inline");
@@ -21,6 +22,12 @@
 }
 
 @section MenuAdditional {
+    @if (Model.PagedTexts.Item2 != null)
+    {
+        <li class="pull-right">
+            <a href="@Url.Action(action, new {id = Model.PagedTexts.Item2})">next</a>
+        </li>
+    }
     <li style="margin-top: 2px;" class="pull-right">
         <div class="btn-group">
             <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
@@ -28,33 +35,45 @@
             </button>
             <ul class="dropdown-menu">
                 <li>
-                    <a href="@Url.Action("Edit", new { id = Model.Text.TextId })">edit text</a>
-                    <a href="@Url.Action("Read", new { id = Model.Text.TextId })">read single mode</a>
-                    <a href="@Url.Action("ReadParallel", new { id = Model.Text.TextId })">read in parallel</a>
-                    <a href="@Url.Action("DownloadLatex", new { id = Model.Text.TextId })">download latex</a>
-                    @{
-                        string action = Model.AsParallel ? "ReadParallel" : "Read";
-                    }
-                    @if(Model.PagedTexts.Item1 != null)
+                    <a href="@Url.Action("Edit", new {id = Model.Text.TextId})">edit text</a>
+                    <a href="@Url.Action("Read", new {id = Model.Text.TextId})">read single mode</a>
+                    <a href="@Url.Action("ReadParallel", new {id = Model.Text.TextId})">read in parallel</a>
+                    <a href="@Url.Action("DownloadLatex", new {id = Model.Text.TextId})">download latex</a>
+                    @if (Model.PagedTexts.Item1 != null)
                     {
-                        <a href="@Url.Action(action, new { id = Model.PagedTexts.Item1 })">previous text</a>
+                        <a href="@Url.Action(action, new {id = Model.PagedTexts.Item1})">previous text</a>
                     }
-                    @if(Model.PagedTexts.Item2 != null)
+                    @if (Model.PagedTexts.Item2 != null)
                     {
-                        <a href="@Url.Action(action, new { id = Model.PagedTexts.Item2 })">next text</a>
+                        <a href="@Url.Action(action, new {id = Model.PagedTexts.Item2})">next text</a>
                     }
-                    <a href="@Url.Action("Edit", "Languages", new { id = Model.Language.LanguageId })">edit language</a>
+                    <a href="@Url.Action("Edit", "Languages", new {id = Model.Language.LanguageId})">edit language</a>
                     <a href="#stats" onclick="$('#stats').show();">go to statistics</a>
                 </li>
             </ul>
         </div>
     </li>
+    @if (Model.PagedTexts.Item1 != null)
+    {
+        <li class="pull-right">
+            <a href="@Url.Action(action, new {id = Model.PagedTexts.Item1})">previous</a>
+        </li>
+    }
 }
 
 <div id="readingareaouter">
     <div id="readingareainner">
         @Html.Raw(@Model.ParsedText)
         <div class="clr50"></div>
+        @if(Model.PagedTexts.Item1 != null)
+        {
+            <a href="@Url.Action(action, new { id = Model.PagedTexts.Item1 })" class="btn">previous text</a>
+        }
+        @if(Model.PagedTexts.Item2 != null)
+        {
+            <a href="@Url.Action(action, new { id = Model.PagedTexts.Item2 })" class="btn">next text</a>
+        }
+        <div class="clr10"></div>
         <button type="button" id="btnMarkRemainingAsKnown"class="btn">mark the remaining words as known</button>
         <div class="clr10"></div>
         <div id="markRemainingAsKnownProgress" class="alert alert-block" style="display: none"></div>
