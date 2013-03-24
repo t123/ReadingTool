@@ -62,12 +62,22 @@
             </div>
             </fieldset>
         }
-        @using(Html.BeginForm("Delete", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+        @using(Html.BeginForm("Delete", "Account", FormMethod.Post, new { @class = "form-horizontal", onsubmit="return confirm('Are you really sure?')" }))
         {
             @Html.AntiForgeryToken()
-            <div class="form-actions">
-                <button type="submit" class="btn btn-danger">Permanently delete my account</button>
-            </div>
+            <fieldset>
+                <legend>Permanently delete account</legend>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Delete.Password, new {@class = "control-label"})
+                    <div class="controls">
+                        @Html.PasswordFor(x => x.Delete.Password, new {@placeholder = "your current password"})
+                        @Html.ValidationMessageFor(x=>x.Delete.Password)
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">Permanently delete my account</button>
+                </div>
+            </fieldset>
         }
     </div>
     <div class="span1"></div>

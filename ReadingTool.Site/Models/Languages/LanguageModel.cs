@@ -55,11 +55,15 @@ namespace ReadingTool.Site.Models.Languages
         public string Code { get; set; }
 
         [MaxLength(100, ErrorMessage = "Please use less than 50 characters.")]
+        [Display(Name = "Regex Split Sentences")]
         public string RegexSplitSentences { get; set; }
 
         [MaxLength(100, ErrorMessage = "Please use less than 100 characters.")]
+        [Display(Name = "Regex Test Words")]
         public string RegexWordCharacters { get; set; }
         public LanguageDirection Direction { get; set; }
+
+        [Display(Name = "Display Spaces?")]
         public bool ShowSpaces { get; set; }
 
         public Dictionary<string, string> Languages { get; set; }

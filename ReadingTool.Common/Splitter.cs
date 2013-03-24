@@ -15,19 +15,20 @@ namespace ReadingTool.Common
             _pattern = pattern;
             _keepDelimiters = keepDelimiters;
         }
+
         public Splitter(string pattern, bool keepDelimiters)
             : this(string.IsNullOrWhiteSpace(pattern) ? DEFAULT_PATTERN : new Regex(pattern, RegexOptions.Compiled), keepDelimiters)
         {
         }
 
-        public Splitter(Regex pattern)
-            : this(pattern, true)
-        {
-        }
+        //public Splitter(Regex pattern)
+        //    : this(pattern, true)
+        //{
+        //}
 
-        public Splitter(string pattern) : this(pattern, true) { }
-        public Splitter(bool keepDelimiters) : this(DEFAULT_PATTERN, keepDelimiters) { }
-        public Splitter() : this(DEFAULT_PATTERN) { }
+        //public Splitter(string pattern) : this(pattern, true) { }
+        //public Splitter(bool keepDelimiters) : this(DEFAULT_PATTERN, keepDelimiters) { }
+        //public Splitter() : this(DEFAULT_PATTERN) { }
 
         public string[] Split(string text)
         {
@@ -57,6 +58,11 @@ namespace ReadingTool.Common
                 }
 
                 lastMatch = match.Index + match.Length;
+            }
+
+            if(lastMatch < text.Length)
+            {
+                splitted.Add(text.Substring(lastMatch, text.Length - lastMatch));
             }
 
             return splitted.ToArray();

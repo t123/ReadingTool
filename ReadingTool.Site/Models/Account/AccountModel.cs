@@ -34,13 +34,22 @@ namespace ReadingTool.Site.Models.Account
             public string OldPassword { get; set; }
         }
 
+        public class DeleteModel
+        {
+            [Display(Name = "Password")]
+            [Required(ErrorMessage = "Please enter your password.")]
+            public string Password { get; set; }
+        }
+
         public UserModel User { get; set; }
         public PasswordModel Password { get; set; }
+        public DeleteModel Delete { get; set; }
 
         public AccountModel()
         {
             User = new UserModel();
             Password = new PasswordModel();
+            Delete = new DeleteModel();
         }
     }
 

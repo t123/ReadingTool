@@ -38,14 +38,14 @@
                 <div class="control-group">
                     @Html.LabelFor(x => x.RegexWordCharacters, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.RegexWordCharacters, new {@placeholder = "word test regular expression"})
+                        @Html.TextBoxFor(x => x.RegexWordCharacters, new { @placeholder = "word test regular expression, add \\- for French", @class="input-xxlarge" })
                         @Html.ValidationMessageFor(x=>x.RegexWordCharacters)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.RegexSplitSentences, new {@class = "control-label"})
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.RegexSplitSentences, new {@placeholder = "end of sentence characters"})
+                        @Html.TextBoxFor(x => x.RegexSplitSentences, new { @placeholder = "end of sentence characters", @class="input-xxlarge" })
                         @Html.ValidationMessageFor(x=>x.RegexSplitSentences)
                     </div>
                 </div>

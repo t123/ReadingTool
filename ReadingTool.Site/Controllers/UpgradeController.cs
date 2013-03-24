@@ -72,7 +72,6 @@ namespace ReadingTool.Site.Controllers.Home
                 {
                     Name = language.Name,
                     User = _userRepository.LoadOne(UserId),
-                    Code = "en",
                     Settings = new Language.LanguageSettings()
                     {
                         RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ",
@@ -81,6 +80,44 @@ namespace ReadingTool.Site.Controllers.Home
                         ShowSpaces = true,
                     }
                 };
+
+                switch(l.Name.ToLowerInvariant())
+                {
+                    case "french":
+                        l.Code = "fr";
+                        l.Settings = new Language.LanguageSettings()
+                            {
+                                RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ\-",
+                                RegexSplitSentences = ".!?:;",
+                                Direction = LanguageDirection.LTR,
+                                ShowSpaces = true,
+                            };
+                        break;
+
+                    case "german":
+                        l.Code = "de";
+                        break;
+
+                    case "latvian":
+                        l.Code = "lv";
+                        break;
+
+                    case "polish":
+                        l.Code = "pl";
+                        break;
+
+                    case "swedish":
+                        l.Code = "sw";
+                        break;
+
+                    case "turkish":
+                        l.Code = "tr";
+                        break;
+
+                    default:
+                        l.Code = "en";
+                        break;
+                }
 
                 if(!string.IsNullOrEmpty(language.TranslateUrl.ToString()))
                 {

@@ -74,6 +74,7 @@ namespace ReadingTool.Entities
                 int random;
                 switch(term.Box)
                 {
+                    case 0: //Just in case
                     case 1:
                         random = r.Next(20) - 10;
                         return new Tuple<TermState, DateTime?>(TermState.NotKnown, DateTime.Now.AddMinutes(30 + random));

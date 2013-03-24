@@ -56,6 +56,8 @@ namespace ReadingTool.Services
 
         protected virtual string BuildTextWithTitle(string inputText)
         {
+            return inputText;
+
             return (_text.CollectionNo.HasValue ? _text.CollectionNo + ". " : "") +
                    _text.Title +
                    (string.IsNullOrEmpty(_text.CollectionName) ? "" : " (" + _text.CollectionName + ")") +
@@ -72,8 +74,8 @@ namespace ReadingTool.Services
             text = text.Replace("{", "[").Replace("}", "]");
             text = text.Trim();
             text = Regex.Replace(text, @"([" + (settings.RegexSplitSentences ?? string.Empty) + @"¶])\s", "$1\n");
-            return text;
 
+            return text;
         }
 
         protected virtual XDocument CreateTextXml(string text, string parallelText)

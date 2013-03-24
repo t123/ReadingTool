@@ -7,6 +7,7 @@ using AutoMapper;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Attributes;
+using ReadingTool.Site.Helpers;
 using ReadingTool.Site.Models.Account;
 
 namespace ReadingTool.Site.Controllers.Home
@@ -58,6 +59,7 @@ namespace ReadingTool.Site.Controllers.Home
             user.EmailAddress = model.EmailAddress;
             _userService.Repository.Save(user);
 
+            this.FlashSuccess("Your account has been updated.");
             return RedirectToAction("Index");
         }
 
@@ -81,14 +83,31 @@ namespace ReadingTool.Site.Controllers.Home
                     });
             }
 
+            this.FlashSuccess("Your password has been updated.");
             _userService.UpdatePassword(user, model.NewPassword);
             return RedirectToAction("Index");
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Delete()
+        public ActionResult Delete([Bind(Prefix = "Delete")]AccountModel.DeleteModel model)
         {
+            var user = _userService.ValidateUser(Guid.Parse(HttpContext.User.Identity.Name), model.Password);
+
+            if(user == null)
+            {
+                ModelState.AddModelError("Delete.Password", "Your password is incorrect");
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return View("Index", new AccountModel()
+                {
+                    User = Mapper.Map<User, AccountModel.UserModel>(_userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name)))
+                });
+            }
+
+            this.FlashSuccess("Your account has been deleted.");
             _userService.Repository.Delete(_userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name)));
             return RedirectToAction("SignOut", "Home");
         }
