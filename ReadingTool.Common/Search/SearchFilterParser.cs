@@ -20,7 +20,7 @@ namespace ReadingTool.Common.Search
             }
         }
 
-        private static Regex regex = new Regex(@"#[\w]+|\w+|""[\w\s]*""");
+        private static readonly Regex regex = new Regex(@"#[\w]+|\w+|""[a-zA-ZÀ-ÖØ-öø-ȳ\-\'\s]*""");
 
         public static FilterModel Parse(string filter, string[] reservedTerms = null)
         {

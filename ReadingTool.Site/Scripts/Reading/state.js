@@ -128,7 +128,7 @@
     };
 
     self.open = function (element) {
-        currentElement = $(element);
+        currentElement = $(element).closest('span');
         self._buildCurrentPopup();
         self._updateModalLocaion();
         self._load();
@@ -293,8 +293,8 @@
 
     self._load = function () {
         var text = word.text();
-        if (currentElement.closest('span').hasClass('mxx')) {
-            text = currentElement.closest('span').data('phrase');
+        if (currentElement.hasClass('mxx')) {
+            text = currentElement.data('phrase');
             word.text(text);
             $('#increaseWord').hide();
             $('#decreaseWord').hide();

@@ -93,7 +93,7 @@ namespace ReadingTool.Site.Controllers.Home
                 }
                 else
                 {
-                    terms = terms.Where(x => x.Phrase == term);
+                    terms = terms.Where(x => x.Phrase.StartsWith(term));
                 }
             }
 

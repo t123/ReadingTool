@@ -198,6 +198,11 @@ namespace ReadingTool.Site.Controllers.Home
                     Modified = word.Modified
                 };
 
+                if(t.State == TermState.Ignore)
+                {
+                    continue;
+                }
+
                 DateTime? nextReview = word.NextReview;
                 if(t.State != TermState.NotKnown)
                 {
