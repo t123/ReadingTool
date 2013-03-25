@@ -7,7 +7,7 @@ namespace ReadingTool.Site.Models.Terms
 {
     public class TermViewModel
     {
-        public Guid TermId { get; set; }
+        public long TermId { get; set; }
         public string State { get; set; }
         public string Phrase { get; set; }
         public string BasePhrase { get; set; }
