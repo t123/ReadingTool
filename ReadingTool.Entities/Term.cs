@@ -8,7 +8,7 @@ namespace ReadingTool.Entities
 {
     public class Term
     {
-        public virtual Guid TermId { get; set; }
+        public virtual long TermId { get; set; }
         public virtual TermState State { get; set; }
         public virtual string Phrase { get; set; }
         public virtual string BasePhrase { get; set; }
@@ -97,7 +97,7 @@ namespace ReadingTool.Entities
     {
         public TermMap()
         {
-            Id(x => x.TermId).GeneratedBy.GuidComb();
+            Id(x => x.TermId).GeneratedBy.Identity();
             Map(x => x.Length).Not.Nullable();
             Map(x => x.State).CustomType<TermState>();
             Map(x => x.Phrase).Length(50).Not.Nullable();

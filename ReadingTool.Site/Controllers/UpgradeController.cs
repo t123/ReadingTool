@@ -198,6 +198,15 @@ namespace ReadingTool.Site.Controllers.Home
                     Modified = word.Modified
                 };
 
+                string lid = word.LanguageId.ToString();
+                t.Language = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, Guid.Empty));
+
+                Regex regex = new Regex(@"([" + t.Language.Settings.RegexWordCharacters + @"])");
+                if(!regex.IsMatch(t.Phrase))
+                {
+                    t.State = TermState.Ignore;
+                }
+
                 if(t.State == TermState.Ignore)
                 {
                     continue;
@@ -217,8 +226,6 @@ namespace ReadingTool.Site.Controllers.Home
                     t.NextReview = nextReview.Value;
                 }
 
-                string lid = word.LanguageId.ToString();
-                t.Language = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, Guid.Empty));
 
                 string tid = word.ItemId.ToString();
                 t.Text = _textRepository.FindOne(tmap.GetValueOrDefault(tid, (Guid?)null));
@@ -243,12 +250,6 @@ namespace ReadingTool.Site.Controllers.Home
                 }
 
                 //t.HasTags = t.Tags.Count > 0;
-
-                Regex regex = new Regex(@"([" + t.Language.Settings.RegexWordCharacters + @"])");
-                if(!regex.IsMatch(t.Phrase))
-                {
-                    t.State = TermState.Ignore;
-                }
 
                 _termRepository.Save(t);
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using ReadingTool.Common;
@@ -50,7 +51,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [AjaxRoute]
         [HttpPost]
-        public JsonNetResult ResetTerm(Guid termId)
+        public JsonNetResult ResetTerm(long termId)
         {
             var term = _termRepository.FindOne(x => x.TermId == termId && x.User == _userRepository.LoadOne(UserId));
 
@@ -101,7 +102,7 @@ namespace ReadingTool.Site.Controllers.Home
             string message;
             short length = (short)model.Phrase.Trim().Split(' ').Length;
 
-            if(model.TermId == Guid.Empty)
+            if(model.TermId == 0 || model.TermId == null)
             {
                 term = new Term()
                     {
@@ -201,14 +202,14 @@ namespace ReadingTool.Site.Controllers.Home
 
         [AjaxRoute]
         [HttpPost]
-        public JsonNetResult FindTerm(Guid? termId, string spanTerm, Guid languageId)
+        public JsonNetResult FindTerm(long? termId, string spanTerm, Guid languageId)
         {
             spanTerm = (spanTerm ?? "").Trim();
             Term term = null;
 
             short length = (short)spanTerm.Split(' ').Length;
 
-            if(termId == null || termId == Guid.Empty)
+            if(termId == null || termId == 0)
             {
 
                 term = _termRepository.FindAll(x =>
@@ -266,13 +267,20 @@ namespace ReadingTool.Site.Controllers.Home
 
             try
             {
-                var language = _languageRepository.LoadOne(languageId);
+                var language = _languageRepository.FindOne(languageId);
                 var user = _userRepository.LoadOne(UserId);
                 var text = _textRepository.LoadOne(textId);
+
+                Regex regex = new Regex(@"([" + language.Settings.RegexWordCharacters + @"])", RegexOptions.Compiled);
 
                 foreach(var term in terms.Distinct(StringComparer.Create(CultureInfo.InvariantCulture, true)))
                 {
                     if(string.IsNullOrEmpty(term))
+                    {
+                        continue;
+                    }
+
+                    if(!regex.IsMatch(term))
                     {
                         continue;
                     }

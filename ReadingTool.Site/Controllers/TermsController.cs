@@ -171,7 +171,7 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult Edit(Guid id)
+        public ActionResult Edit(long id)
         {
             var term = _termRepository.FindOne(x => x.TermId == id && x.User == _userRepository.LoadOne(UserId));
 
@@ -188,7 +188,7 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Edit(Guid id, TermModel model)
+        public ActionResult Edit(long id, TermModel model)
         {
             if(!ModelState.IsValid)
             {

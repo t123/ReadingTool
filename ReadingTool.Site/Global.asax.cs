@@ -103,7 +103,7 @@ namespace ReadingTool.Site
 
         class TermModel
         {
-            public Guid TermId { get; set; }
+            public long TermId { get; set; }
             public TermState State { get; set; }
             public string Phrase { get; set; }
             public string BasePhrase { get; set; }

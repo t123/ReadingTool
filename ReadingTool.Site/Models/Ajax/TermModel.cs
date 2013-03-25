@@ -8,7 +8,7 @@ namespace ReadingTool.Site.Models.Ajax
 {
     public class TermModel
     {
-        public Guid TermId { get; set; }
+        public long TermId { get; set; }
         public string State { get; set; }
         public string Phrase { get; set; }
         public string BasePhrase { get; set; }
@@ -21,7 +21,7 @@ namespace ReadingTool.Site.Models.Ajax
 
         public bool Exists
         {
-            get { return TermId != Guid.Empty; }
+            get { return TermId != 0; }
         }
 
         public short Box { get; set; }
@@ -29,7 +29,7 @@ namespace ReadingTool.Site.Models.Ajax
 
     public class SaveTermModel
     {
-        public Guid? TermId { get; set; }
+        public long? TermId { get; set; }
         public Guid LanguageId { get; set; }
         public Guid TextId { get; set; }
         public string State { get; set; }

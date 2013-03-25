@@ -71,9 +71,9 @@ namespace ReadingTool.Site.Controllers.Home
 
             foreach(var key in Request.Form.AllKeys.Where(x => x.StartsWith("term_")))
             {
-                Guid termId;
+                long termId;
 
-                if(!Guid.TryParse(key.Remove(0, 5), out termId))
+                if(!long.TryParse(key.Remove(0, 5), out termId))
                 {
                     continue;
                 }

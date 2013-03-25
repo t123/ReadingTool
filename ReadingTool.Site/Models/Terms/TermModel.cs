@@ -9,7 +9,7 @@ namespace ReadingTool.Site.Models.Terms
 {
     public class TermModel
     {
-        public Guid TermId { get; set; }
+        public long TermId { get; set; }
         public TermState State { get; set; }
 
         [MaxLength(50, ErrorMessage = "Please use less than 50 characters")]
