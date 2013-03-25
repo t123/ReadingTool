@@ -20,7 +20,7 @@ namespace ReadingTool.Entities
         public virtual Language Language { get; set; }
         public virtual DateTime Created { get; set; }
         public virtual DateTime Modified { get; set; }
-        public virtual IList<Tag> Tags { get; set; }
+        public virtual ICollection<Tag> Tags { get; set; }
         public virtual User User { get; set; }
         public virtual short Length { get; set; }
 
@@ -28,7 +28,7 @@ namespace ReadingTool.Entities
         {
             Length = 1;
             Box = 1;
-            Tags = new List<Tag>();
+            Tags = new HashSet<Tag>();
         }
 
         public virtual string FullDefinition
@@ -119,6 +119,7 @@ namespace ReadingTool.Entities
                 .Cascade
                 .All()
                 .BatchSize(1000)
+                .AsSet()
                 ;
         }
     }
