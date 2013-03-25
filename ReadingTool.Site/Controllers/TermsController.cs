@@ -81,7 +81,7 @@ namespace ReadingTool.Site.Controllers.Home
                 }
                 else
                 {
-
+                    terms = terms.Where(x => x.Tags.Any(y => y.TagTerm == term));
                 }
             }
 

@@ -19,7 +19,7 @@ namespace ReadingTool.Entities
         public TagMap()
         {
             Id(x => x.TagId).GeneratedBy.Identity();
-            Map(x => x.TagTerm).Length(50).Not.Nullable().Unique();
+            Map(x => x.TagTerm).Length(50).Not.Nullable().Unique().Index("IDX_Tag_TagTerm");
         }
     }
 }

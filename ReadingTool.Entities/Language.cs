@@ -41,7 +41,7 @@ namespace ReadingTool.Entities
         public LanguageMap()
         {
             Id(x => x.LanguageId).GeneratedBy.GuidComb();
-            Map(x => x.Name).Length(50).Not.Nullable();
+            Map(x => x.Name).Length(50).Not.Nullable().Index("IDX_Language_Name");
             Map(x => x.Code).Length(2).Not.Nullable();
             Map(Reveal.Member<Language>("_jsonSettings")).Column("Settings").Length(10000);
             References(x => x.User).Not.Nullable();

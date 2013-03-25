@@ -43,7 +43,7 @@ namespace ReadingTool.Site.Controllers.Home
             //_languageRepository.DeleteAll(x => true);
             _userRepository.DeleteAll(x => true);
 
-            var user = _userService.CreateUser("travis", "travis");
+            var user = _userService.CreateUser("admin", "admin");
             if(user == null)
             {
                 throw new Exception("Could not construct user");
@@ -65,7 +65,7 @@ namespace ReadingTool.Site.Controllers.Home
                 _systemLanguageRepository.Save(l);
             }
 
-            return Redirect("/");
+            return RedirectToAction("Index", "~~Home");
         }
     }
 }

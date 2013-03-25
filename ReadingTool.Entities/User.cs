@@ -42,7 +42,7 @@ namespace ReadingTool.Entities
         public UserMap()
         {
             Id(x => x.UserId).GeneratedBy.GuidComb();
-            Map(x => x.Username).Length(50).Not.Nullable().UniqueKey("username");
+            Map(x => x.Username).Length(50).Not.Nullable().UniqueKey("username").Index("IDX_User_Username");
             Map(x => x.DisplayName).Length(50);
             Map(x => x.EmailAddress).Length(100);
             Map(x => x.Created);

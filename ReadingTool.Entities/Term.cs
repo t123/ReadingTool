@@ -99,8 +99,8 @@ namespace ReadingTool.Entities
         {
             Id(x => x.TermId).GeneratedBy.Identity();
             Map(x => x.Length).Not.Nullable();
-            Map(x => x.State).CustomType<TermState>();
-            Map(x => x.Phrase).Length(50).Not.Nullable();
+            Map(x => x.State).CustomType<TermState>().Index("IDX_Term_State");
+            Map(x => x.Phrase).Length(50).Not.Nullable().Index("IDX_Term_Phrase");
             Map(x => x.BasePhrase).Length(50);
             Map(x => x.Sentence).Length(500);
             Map(x => x.Definition).Length(500);
