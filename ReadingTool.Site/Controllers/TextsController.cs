@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using Ionic.Zip;
+using Newtonsoft.Json;
 using ReadingTool.Common.Search;
 using ReadingTool.Entities;
 using ReadingTool.Services;
@@ -317,19 +318,6 @@ namespace ReadingTool.Site.Controllers.Home
 
         private ReadModel Create(Text text, bool asParallel)
         {
-            //            text.L1Text = @"
-            //1. Pojken som överlevde
-            //Mr och mrs Dursley i nummer fyra på Privet Drive var med rätta stolta över att kunna säga att de var helt normala. De var de sista man kunde tänka sig inblandade i något konstigt eller mystiskt, för de godtog verkligen inga sådana dumheter.
-            //Mr Dursley var chef för en firma som hette Grunnings och som tillverkade borrar. Han var en stor, fläskig karl med nästan ingen hals, men däremot hade han en verkligt stor mustasch. Mrs Dursley var smal och blond och hade nästan dubbelt så mycket hals som folk brukade, och den kom mycket väl till pass eftersom hon tillbringade så stor del av sin tid med att spana över trädgårdsstaketet och spionera på grannarna. Paret Dursley hade en liten son som hette Dudley och enligt deras åsikt fanns det ingen finare pojke någonstans.
-            //Mr och mrs Dursley hade allt de kunde önska sig, men de hade också en hemlighet, och deras största fruktan var att någon skulle avslöja den. De trodde inte att de skulle stå ut med att någon fick kännedom om familjen Potter. Mrs Potter var mrs Dursleys syster, men de hade inte träffats på flera år; i själva verket låtsades mrs Dursley att hon inte hade någon syster, därför att systern och hennes odugling till man var så lite Dursley-aktiga man någonsin kunde bli.
-            //Mr och mrs Dursley ryste vid tanken på vad grannarna skulle säga om familjen Potter anlände till deras gata. Dursleys visste att Potters också hade en liten son, men de hade aldrig sett honom ens. Den pojken utgjorde ytterligare ett skäl till att hålla familjen Potter därifrån; de ville inte att Dudley skulle umgås med ett sådant barn.
-            //När mr och mrs Dursley vaknade den dystra, gråa tisdag då vår berättelse börjar, fanns det ingenting hos den molniga himlen utanför som antydde att konstiga och mystiska saker snart skulle hända runt omkring i landet. Mr Dursley gnolade medan han valde ut sin tråkigaste slips till dagens arbete och mrs Dursley pladdrade glatt medan hon tvingade ner en tjutande Dudley i hans barnstol.
-            //Ingen av dem lade märke till en stor gulspräcklig uggla somflaxade förbi fönstret.
-            //Klockan halv nio tog mr Dursley upp sin portfölj, gav mrs Dursley en hastig kyss på kinden och försökte pussa Dudley adjö men missade, för Dudley hade just ett raseriutbrott och slängde omkring flingorna i köket.
-            //""Den lille rackarungen"", skrockade mr Dursley på vägen ut ur huset.
-            //";
-            //            text.L2Text = text.L1Text;
-
             if(asParallel && text.Language2 == null)
             {
                 asParallel = false;
@@ -398,7 +386,7 @@ namespace ReadingTool.Site.Controllers.Home
                     };
                 };
 
-                TempData["SampleJson"] = ServiceStack.Text.JsonSerializer.SerializeToString(ti);
+                TempData["SampleJson"] = JsonConvert.SerializeObject(ti, Formatting.Indented);
                 this.FlashSuccess("Your sample is below. Please make sure your editor has UTF-8 encoding.");
             }
             else
@@ -436,7 +424,9 @@ namespace ReadingTool.Site.Controllers.Home
 
                             using(var sr = new StreamReader(data.OpenReader()))
                             {
-                                json = ServiceStack.Text.JsonSerializer.DeserializeFromStream<TextImport>(sr.BaseStream);
+                                JsonSerializer serializer = new JsonSerializer();
+                                json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
+
                                 if(json == null) throw new Exception("File is empty");
                                 if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
                             }
@@ -446,7 +436,9 @@ namespace ReadingTool.Site.Controllers.Home
                     {
                         using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
                         {
-                            json = ServiceStack.Text.JsonSerializer.DeserializeFromStream<TextImport>(sr.BaseStream);
+                            JsonSerializer serializer = new JsonSerializer();
+                            json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
+
                             if(json == null) throw new Exception("File is empty");
                             if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
                         }
