@@ -31,12 +31,17 @@ namespace ReadingTool.Site.Controllers.Home
             _userService = userService;
         }
 
+        private long UserId
+        {
+            get { return long.Parse(HttpContext.User.Identity.Name); }
+        }
+
         public ActionResult Index()
         {
             User user = null;
             try
             {
-                user = _userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name));
+                user = _userService.Repository.FindOne(x => x.UserId == UserId);
 
                 if(user == null)
                 {
@@ -61,7 +66,7 @@ namespace ReadingTool.Site.Controllers.Home
                 return View("Index", new AccountModel() { User = model });
             }
 
-            var user = _userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name));
+            var user = _userService.Repository.FindOne(x => x.UserId == UserId);
             user.DisplayName = model.DisplayName;
             user.EmailAddress = model.EmailAddress;
             _userService.Repository.Save(user);
@@ -86,7 +91,7 @@ namespace ReadingTool.Site.Controllers.Home
                 return View("Index", new AccountModel()
                     {
                         Password = model,
-                        User = Mapper.Map<User, AccountModel.UserModel>(_userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name)))
+                        User = Mapper.Map<User, AccountModel.UserModel>(_userService.Repository.FindOne(x => x.UserId == UserId))
                     });
             }
 
@@ -110,18 +115,18 @@ namespace ReadingTool.Site.Controllers.Home
             {
                 return View("Index", new AccountModel()
                 {
-                    User = Mapper.Map<User, AccountModel.UserModel>(_userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name)))
+                    User = Mapper.Map<User, AccountModel.UserModel>(_userService.Repository.FindOne(x => x.UserId == UserId))
                 });
             }
 
             this.FlashSuccess("Your account has been deleted.");
-            _userService.Repository.Delete(_userService.Repository.FindOne(x => x.UserId == Guid.Parse(HttpContext.User.Identity.Name)));
+            _userService.Repository.Delete(_userService.Repository.FindOne(x => x.UserId == UserId));
             return RedirectToAction("SignOut", "Home");
         }
 
         public FileStreamResult ExportAccount()
         {
-            var user = _userService.Repository.FindOne(Guid.Parse(HttpContext.User.Identity.Name));
+            var user = _userService.Repository.FindOne(UserId);
 
             if(user == null)
             {
@@ -167,7 +172,7 @@ namespace ReadingTool.Site.Controllers.Home
                             Definition = x.Definition,
                             Box = x.Box,
                             NextReview = x.NextReview,
-                            Text = x.Text == null ? (Guid?)null : x.Text.TextId,
+                            Text = x.Text == null ? (long?)null : x.Text.TextId,
                             Language = x.Language.Name,
                             Created = x.Created,
                             Modified = x.Modified,

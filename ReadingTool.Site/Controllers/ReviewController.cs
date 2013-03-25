@@ -22,9 +22,9 @@ namespace ReadingTool.Site.Controllers.Home
         private readonly Repository<Language> _languageRepository;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private Guid UserId
+        private long UserId
         {
-            get { return Guid.Parse(HttpContext.User.Identity.Name); }
+            get { return long.Parse(HttpContext.User.Identity.Name); }
         }
 
         public ReviewController(Repository<User> userRepository, Repository<Term> termRepository, Repository<Language> languageRepository)
@@ -35,10 +35,10 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult Index(Guid? id)
+        public ActionResult Index(long? id)
         {
             IQueryable<Term> terms;
-            if(id == null || id == Guid.Empty)
+            if(id == null || id == 0)
             {
                 terms = _termRepository.FindAll(x => x.User.UserId == UserId && x.State == TermState.NotKnown && x.NextReview < DateTime.Now);
 
@@ -56,7 +56,7 @@ namespace ReadingTool.Site.Controllers.Home
                 {
                     ReviewTotal = terms.Count(),
                     Terms = Mapper.Map<IEnumerable<Term>, IEnumerable<TermViewModel>>(terms),
-                    LanguageId = id ?? Guid.Empty,
+                    LanguageId = id ?? 0,
                     Languages = _languageRepository.FindAll(x => x.User == _userRepository.LoadOne(UserId)).OrderBy(x => x.Name).ToDictionary(x => x.LanguageId, x => x.Name)
                 };
 

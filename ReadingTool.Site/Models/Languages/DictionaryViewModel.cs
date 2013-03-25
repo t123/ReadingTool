@@ -4,8 +4,8 @@ namespace ReadingTool.Site.Models.Languages
 {
     public class DictionaryViewModel
     {
-        public Guid DictionaryId { get; set; }
-        public Guid LanguageId { get; set; }
+        public long DictionaryId { get; set; }
+        public long LanguageId { get; set; }
         public string Name { get; set; }
         public string Encoding { get; set; }
         public string WindowName { get; set; }

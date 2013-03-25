@@ -6,8 +6,8 @@ namespace ReadingTool.Services
     public interface ITextService
     {
         void Save(Text text);
-        void Delete(Guid id);
-        Text FindOne(Guid id);
+        void Delete(long id);
+        Text FindOne(long id);
         int Import(TextImport import);
     }
 }

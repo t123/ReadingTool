@@ -308,7 +308,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [AjaxRoute]
         [HttpPost]
-        public JsonResult EncodeTerm(Guid languageId, Guid dictionaryId, string input)
+        public JsonResult EncodeTerm(long languageId, long dictionaryId, string input)
         {
             try
             {

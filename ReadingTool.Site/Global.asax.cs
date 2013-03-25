@@ -111,13 +111,13 @@ namespace ReadingTool.Site
             public string Definition { get; set; }
             public short Box { get; set; }
             public virtual DateTime? NextReview { get; set; }
-            public virtual Guid Text { get; set; }
-            public virtual Guid Language { get; set; }
+            public virtual long Text { get; set; }
+            public virtual long Language { get; set; }
             public virtual DateTime Created { get; set; }
             public virtual DateTime Modified { get; set; }
             public virtual string[] Tags { get; set; }
             public virtual short Length { get; set; }
-            public virtual Guid User { get; set; }
+            public virtual long User { get; set; }
         }
 
         private void LogTerm(Term term)
@@ -141,7 +141,7 @@ namespace ReadingTool.Site
                     Sentence = term.Sentence,
                     State = term.State,
                     TermId = term.TermId,
-                    Text = term.Text == null ? Guid.Empty : term.Text.TextId,
+                    Text = term.Text == null ? 0 : term.Text.TextId,
                     User = term.User.UserId,
                     Tags = term.Tags.Select(x => x.TagTerm).ToArray()
                 };

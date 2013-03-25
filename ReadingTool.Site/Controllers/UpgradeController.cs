@@ -19,9 +19,9 @@ namespace ReadingTool.Site.Controllers.Home
     [NeedsPersistence]
     public class UpgradeController : Controller
     {
-        private Guid UserId
+        private long UserId
         {
-            get { return Guid.Parse(HttpContext.User.Identity.Name); }
+            get { return long.Parse(HttpContext.User.Identity.Name); }
         }
 
         private readonly Repository<User> _userRepository;
@@ -63,8 +63,8 @@ namespace ReadingTool.Site.Controllers.Home
 
             dynamic json = JsonConvert.DeserializeObject(jsonString);
 
-            var lmap = new Dictionary<string, Guid>();
-            var tmap = new Dictionary<string, Guid?>();
+            var lmap = new Dictionary<string, long>();
+            var tmap = new Dictionary<string, long?>();
 
             foreach(var language in json.Languages)
             {
@@ -169,7 +169,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
                 string lid = text.LanguageId.ToString();
-                t.Language1 = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, Guid.Empty));
+                t.Language1 = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, 0));
 
                 if(!string.IsNullOrEmpty(t.L2Text))
                 {
@@ -199,7 +199,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
                 string lid = word.LanguageId.ToString();
-                t.Language = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, Guid.Empty));
+                t.Language = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, 0));
 
                 Regex regex = new Regex(@"([" + t.Language.Settings.RegexWordCharacters + @"])");
                 if(!regex.IsMatch(t.Phrase))
@@ -228,7 +228,7 @@ namespace ReadingTool.Site.Controllers.Home
 
 
                 string tid = word.ItemId.ToString();
-                t.Text = _textRepository.FindOne(tmap.GetValueOrDefault(tid, (Guid?)null));
+                t.Text = _textRepository.FindOne(tmap.GetValueOrDefault(tid, (long?)null));
 
                 if(word.Tags != null)
                 {

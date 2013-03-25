@@ -39,7 +39,7 @@ namespace ReadingTool.Services
                 text.L2Text = string.Empty;
             }
 
-            if(text.TextId == Guid.Empty)
+            if(text.TextId == 0)
             {
                 text.Created = DateTime.Now;
             }
@@ -48,7 +48,7 @@ namespace ReadingTool.Services
             _textRepository.Save(text);
         }
 
-        public void Delete(Guid id)
+        public void Delete(long id)
         {
             var text = _textRepository.FindOne(id);
 
@@ -59,7 +59,7 @@ namespace ReadingTool.Services
             }
         }
 
-        public Text FindOne(Guid id)
+        public Text FindOne(long id)
         {
             Text text = _textRepository.FindOne(x => x.TextId == id && x.User.UserId == _identity.UserId);
 

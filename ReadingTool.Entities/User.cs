@@ -10,7 +10,7 @@ namespace ReadingTool.Entities
 {
     public class User
     {
-        public virtual Guid UserId { get; set; }
+        public virtual long UserId { get; set; }
         public virtual string Username { get; set; }
         public virtual string DisplayName { get; set; }
         public virtual string EmailAddress { get; set; }
@@ -41,7 +41,7 @@ namespace ReadingTool.Entities
     {
         public UserMap()
         {
-            Id(x => x.UserId).GeneratedBy.GuidComb();
+            Id(x => x.UserId).GeneratedBy.Identity();
             Map(x => x.Username).Length(50).Not.Nullable().UniqueKey("username").Index("IDX_User_Username");
             Map(x => x.DisplayName).Length(50);
             Map(x => x.EmailAddress).Length(100);

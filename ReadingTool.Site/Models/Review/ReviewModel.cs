@@ -10,7 +10,7 @@ namespace ReadingTool.Site.Models.Review
     {
         public IEnumerable<TermViewModel> Terms { get; set; }
         public int ReviewTotal { get; set; }
-        public Dictionary<Guid, string> Languages { get; set; }
-        public Guid LanguageId { get; set; }
+        public Dictionary<long, string> Languages { get; set; }
+        public long LanguageId { get; set; }
     }
 }

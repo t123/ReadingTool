@@ -4,7 +4,7 @@ namespace ReadingTool.Site.Models.Texts
 {
     public class TextViewModel
     {
-        public Guid TextId { get; set; }
+        public long TextId { get; set; }
         public string Title { get; set; }
         public string CollectionName { get; set; }
         public int? CollectionNo { get; set; }

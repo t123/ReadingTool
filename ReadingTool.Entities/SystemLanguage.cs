@@ -5,7 +5,7 @@ namespace ReadingTool.Entities
 {
     public class SystemLanguage
     {
-        public virtual Guid SystemLanguageId { get; set; }
+        public virtual int SystemLanguageId { get; set; }
         public virtual string Name { get; set; }
         public virtual string Code { get; set; }
     }
@@ -14,7 +14,7 @@ namespace ReadingTool.Entities
     {
         public SystemLanguageMap()
         {
-            Id(x => x.SystemLanguageId).GeneratedBy.GuidComb();
+            Id(x => x.SystemLanguageId).GeneratedBy.Identity();
             Map(x => x.Name).Length(50).Not.Nullable();
             Map(x => x.Code).Length(2).Not.Nullable().UniqueKey("LanguageCode");
         }

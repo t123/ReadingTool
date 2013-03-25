@@ -7,7 +7,7 @@ namespace ReadingTool.Site.Models.Languages
 {
     public class LanguageViewModel
     {
-        public Guid LanguageId { get; set; }
+        public long LanguageId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public IList<DictionaryViewModel> Dictionaries { get; set; }

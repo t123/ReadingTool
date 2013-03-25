@@ -21,9 +21,9 @@ namespace ReadingTool.Site.Controllers.Home
         private readonly Repository<User> _userRepository;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private Guid UserId
+        private long UserId
         {
-            get { return Guid.Parse(HttpContext.User.Identity.Name); }
+            get { return long.Parse(HttpContext.User.Identity.Name); }
         }
 
         public LanguagesController(
@@ -136,7 +136,7 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult Edit(Guid id)
+        public ActionResult Edit(long id)
         {
             var language = _languageRepository.FindOne(x => x.LanguageId == id && x.User.UserId == UserId);
 
@@ -167,7 +167,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Edit(Guid id, [Bind(Prefix = "Language")]LanguageModel model)
+        public ActionResult Edit(long id, [Bind(Prefix = "Language")]LanguageModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -206,7 +206,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id)
+        public ActionResult Delete(long id)
         {
             var language = _languageRepository.FindOne(x => x.LanguageId == id && x.User.UserId == UserId);
 
@@ -219,7 +219,7 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult AddDictionary(Guid id)
+        public ActionResult AddDictionary(long id)
         {
             var language = _languageRepository.FindOne(x => x.LanguageId == id && x.User.UserId == UserId);
 
@@ -264,7 +264,7 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult EditDictionary(Guid id, Guid dictionaryId)
+        public ActionResult EditDictionary(long id, long dictionaryId)
         {
             var language = _languageRepository.FindOne(x => x.LanguageId == id && x.User.UserId == UserId);
 
@@ -322,7 +322,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteDictionary(Guid id, Guid dictionaryId)
+        public ActionResult DeleteDictionary(long id, long dictionaryId)
         {
             var language = _languageRepository.FindOne(x => x.LanguageId == id && x.User.UserId == UserId);
 

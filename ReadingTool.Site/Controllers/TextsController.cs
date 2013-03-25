@@ -32,9 +32,9 @@ namespace ReadingTool.Site.Controllers.Home
         private readonly IParserService _parserService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private Guid UserId
+        private long UserId
         {
-            get { return Guid.Parse(HttpContext.User.Identity.Name); }
+            get { return long.Parse(HttpContext.User.Identity.Name); }
         }
 
         public TextsController(
@@ -201,7 +201,7 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult Edit(Guid id)
+        public ActionResult Edit(long id)
         {
             var text = _textRepository.FindOne(x => x.TextId == id && x.User.UserId == UserId);
 
@@ -216,7 +216,7 @@ namespace ReadingTool.Site.Controllers.Home
                     CollectionName = text.CollectionName,
                     CollectionNo = text.CollectionNo,
                     Language1Id = text.Language1.LanguageId,
-                    Language2Id = text.Language2 == null ? (Guid?)null : text.Language2.LanguageId,
+                    Language2Id = text.Language2 == null ? (long?)null : text.Language2.LanguageId,
                     TextId = text.TextId,
                     Title = text.Title,
                     AudioUrl = text.AudioUrl,
@@ -230,7 +230,7 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Edit(Guid id, TextModel model)
+        public ActionResult Edit(long id, TextModel model)
         {
             if(!string.IsNullOrEmpty(model.L2Text) && model.Language2Id == null)
             {
@@ -266,14 +266,14 @@ namespace ReadingTool.Site.Controllers.Home
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id)
+        public ActionResult Delete(long id)
         {
             _textService.Delete(id);
 
             return RedirectToAction("Index");
         }
 
-        public ActionResult Read(Guid id)
+        public ActionResult Read(long id)
         {
             var text = _textService.FindOne(id);
 
@@ -285,7 +285,7 @@ namespace ReadingTool.Site.Controllers.Home
             return View(Create(text, false));
         }
 
-        public ActionResult ReadParallel(Guid id)
+        public ActionResult ReadParallel(long id)
         {
             var text = _textService.FindOne(id);
 
@@ -297,7 +297,7 @@ namespace ReadingTool.Site.Controllers.Home
             return View("Read", Create(text, true));
         }
 
-        public FileContentResult DownloadLatex(Guid id)
+        public FileContentResult DownloadLatex(long id)
         {
             var text = _textService.FindOne(id);
 
@@ -339,7 +339,7 @@ namespace ReadingTool.Site.Controllers.Home
                     Text = Mapper.Map<Text, TextViewModel>(text),
                     Language = Mapper.Map<Language, LanguageViewModel>(text.Language1),
                     User = Mapper.Map<User, AccountModel.UserModel>(text.User),
-                    PagedTexts = new Tuple<Guid?, Guid?>(previousText == null ? (Guid?)null : previousText.TextId, nextText == null ? (Guid?)null : nextText.TextId)
+                    PagedTexts = new Tuple<long?, long?>(previousText == null ? (long?)null : previousText.TextId, nextText == null ? (long?)null : nextText.TextId)
                 };
         }
 

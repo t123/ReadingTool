@@ -23,9 +23,9 @@ namespace ReadingTool.Site.Controllers.Home
         private readonly Repository<Tag> _tagRepository;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private Guid UserId
+        private long UserId
         {
-            get { return Guid.Parse(HttpContext.User.Identity.Name); }
+            get { return long.Parse(HttpContext.User.Identity.Name); }
         }
 
         public TermsController(

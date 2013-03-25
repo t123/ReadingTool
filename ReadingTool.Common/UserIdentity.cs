@@ -37,7 +37,7 @@ namespace ReadingTool.Common
         public string AuthenticationType { get; private set; }
         public bool IsAuthenticated { get; private set; }
         public UserData Data { get; private set; }
-        public Guid UserId { get { return Guid.Parse(Name); } }
+        public long UserId { get { return long.Parse(Name); } }
 
         public UserIdentity(
             string userId,
@@ -45,12 +45,12 @@ namespace ReadingTool.Common
             string authenticationType,
             UserData data
             ) :
-            this(Guid.Parse(userId), isAuthenticated, authenticationType, data)
+            this(long.Parse(userId), isAuthenticated, authenticationType, data)
         {
         }
 
         public UserIdentity(
-            Guid userId,
+            long userId,
             bool isAuthenticated,
             string authenticationType,
             UserData data

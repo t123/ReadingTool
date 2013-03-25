@@ -10,7 +10,7 @@ namespace ReadingTool.Site.Models.Account
     {
         public class UserModel
         {
-            public Guid UserId { get; set; }
+            public long UserId { get; set; }
 
             [Display(Name = "Email Address")]
             [MaxLength(50, ErrorMessage = "Please use less than 100 characters.")]
