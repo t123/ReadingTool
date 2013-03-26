@@ -334,6 +334,11 @@ namespace ReadingTool.Services
                 {
                     element.SetAttributeValue("state", Term.TermStateToClass(termsAsDict[lower].State));
                     element.SetAttributeValue("data", termsAsDict[lower].FullDefinition);
+                    element.SetAttributeValue("new", "");
+                }
+                else
+                {
+                    element.SetAttributeValue("new", "_nw");
                 }
             }
 

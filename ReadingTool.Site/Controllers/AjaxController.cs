@@ -20,9 +20,9 @@ namespace ReadingTool.Site.Controllers.Home
     [NeedsPersistence]
     public class AjaxController : Controller
     {
-        private Guid UserId
+        private long UserId
         {
-            get { return Guid.Parse(HttpContext.User.Identity.Name); }
+            get { return long.Parse(HttpContext.User.Identity.Name); }
         }
 
         private readonly Repository<Language> _languageRepository;
@@ -202,7 +202,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [AjaxRoute]
         [HttpPost]
-        public JsonNetResult FindTerm(long? termId, string spanTerm, Guid languageId)
+        public JsonNetResult FindTerm(long? termId, string spanTerm, long languageId)
         {
             spanTerm = (spanTerm ?? "").Trim();
             Term term = null;
@@ -258,7 +258,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [HttpPost]
         [AjaxRoute]
-        public JsonNetResult MarkRemaingAsKnown(Guid languageId, Guid textId, string[] terms)
+        public JsonNetResult MarkRemaingAsKnown(long languageId, long textId, string[] terms)
         {
             if(terms == null || terms.Length == 0)
             {

@@ -30,8 +30,8 @@ namespace ReadingTool.Site.Models.Ajax
     public class SaveTermModel
     {
         public long? TermId { get; set; }
-        public Guid LanguageId { get; set; }
-        public Guid TextId { get; set; }
+        public long LanguageId { get; set; }
+        public long TextId { get; set; }
         public string State { get; set; }
         [MaxLength(50)]
         public string Phrase { get; set; }

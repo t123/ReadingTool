@@ -157,6 +157,8 @@
             &lt;xsl:value-of select='@lower' /&gt;
             &lt;xsl:text&gt; &lt;/xsl:text&gt;
             &lt;xsl:value-of select='@box' /&gt;
+			&lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;xsl:value-of select='@new' /&gt;
           &lt;/xsl:attribute&gt;
           &lt;xsl:choose&gt;
             &lt;xsl:when test="@data"&gt;
@@ -455,6 +457,8 @@
             &lt;xsl:value-of select='@lower' /&gt;
             &lt;xsl:text&gt; &lt;/xsl:text&gt;
             &lt;xsl:value-of select='@box' /&gt;
+			&lt;xsl:text&gt; &lt;/xsl:text&gt;
+            &lt;xsl:value-of select='@new' /&gt;
           &lt;/xsl:attribute&gt;
           &lt;xsl:choose&gt;
             &lt;xsl:when test="@data"&gt;

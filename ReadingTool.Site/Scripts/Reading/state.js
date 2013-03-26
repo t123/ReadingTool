@@ -100,6 +100,10 @@
                 state: $('input[name="state"]:checked').val(),
             }
         }).done(function (data) {
+            $('#readingareainner .' + data.phrase).each(function () {
+                $(this).removeClass('_nw');
+            });
+
             hasChanged = false;
             self._populateModal(data);
             self._updateTips(data);
@@ -115,6 +119,7 @@
                 termId: termId.val(),
             }
         }).done(function (data) {
+            currentElement.removeClass("_nw");
             hasChanged = false;
             self._populateModal(data);
             self._updateTips(data);
@@ -232,7 +237,7 @@
             markRemainingMessage.show();
         });
 
-        toWorkOn.removeClass('_n').addClass('_k');
+        toWorkOn.removeClass('_n').removeClass('_nw').addClass('_k');
     };
 
     self._updateDictionaries = function () {
@@ -303,23 +308,42 @@
             $('#decreaseWord').show();
         }
 
-        $.ajax({
-            url: self.routes.ajax.findTerm,
-            type: 'POST',
-            data: {
-                termId: termId.val(),
-                languageId: settings.languageId,
-                spanTerm: text
-            }
-        }).done(function (data) {
+        if (currentElement.hasClass("_nw") && currentLength == 1) {
+            var data = {
+                length: 1,
+                termId: 0,
+                state: 'NotKnown',
+                message: 'New word, default to <strong>UNKNOWN</strong>',
+                phrase: text
+            };
             self._populateModal(data);
             self._updateDictionaries();
             message.html(data.message);
-        });
+        } else {
+            message.html('<strong>Fetching word....</strong>');
+            $('#btnSave').hide();
+            $('#btnReset').hide();
+
+            $.ajax({
+                url: self.routes.ajax.findTerm,
+                type: 'POST',
+                data: {
+                    termId: termId.val(),
+                    languageId: settings.languageId,
+                    spanTerm: text
+                }
+            }).done(function (data) {
+                self._populateModal(data);
+                self._updateDictionaries();
+                message.html(data.message);
+                $('#btnSave').show();
+                $('#btnReset').show();
+            });
+        }
     };
 
     self._populateModal = function (data) {
-        if (data.exists) {
+        if (data != null && data.exists) {
             sentence.val(data.sentence);
             baseWord.val(data.basePhrase);
             definition.val(data.definition);
