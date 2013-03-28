@@ -66,6 +66,9 @@ namespace ReadingTool.Site.Models.Languages
         [Display(Name = "Display Spaces?")]
         public bool ShowSpaces { get; set; }
 
+        [Display(Name = "Open dictionaries in modal?")]
+        public bool Modal { get; set; }
+
         public Dictionary<string, string> Languages { get; set; }
     }
 }

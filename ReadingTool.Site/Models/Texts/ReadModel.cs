@@ -14,6 +14,7 @@ namespace ReadingTool.Site.Models.Texts
         public Tuple<long?, long?> PagedTexts { get; set; }
 
         public LanguageViewModel Language { get; set; }
+        public LanguageViewModel Language2 { get; set; }
         public AccountModel.UserModel User { get; set; }
         public TextViewModel Text { get; set; }
     }

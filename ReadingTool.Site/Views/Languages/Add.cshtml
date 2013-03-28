@@ -12,57 +12,64 @@
 <div class="row-fluid">
     <div class="span1"></div>
     <div class="span10">
-        @using(Html.BeginForm("Add", "Languages", FormMethod.Post, new { @class="form-horizontal"}))
+        @using(Html.BeginForm("Add", "Languages", FormMethod.Post, new { @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()
-            @Html.HiddenFor(x=>x.LanguageId)
+            @Html.HiddenFor(x => x.LanguageId)
             <fieldset>
                 <legend>Add Language</legend>
                 <div class="control-group">
-                    @Html.LabelFor(x => x.Name, new {@class = "control-label"})
+                    @Html.LabelFor(x => x.Name, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Name, new {@placeholder = "your name for the language", @class="input-xlarge"})
-                        @Html.ValidationMessageFor(x=>x.Name)
+                        @Html.TextBoxFor(x => x.Name, new { @placeholder = "your name for the language", @class = "input-xlarge" })
+                        @Html.ValidationMessageFor(x => x.Name)
                     </div>
                 </div>
                 <div class="control-group">
-                    @Html.LabelFor(x => x.Code, new {@class = "control-label"})
+                    @Html.LabelFor(x => x.Code, new { @class = "control-label" })
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Code, new SelectList(Model.Languages, "Key", "Value"))
-                        @Html.ValidationMessageFor(x=>x.Code)
+                        @Html.ValidationMessageFor(x => x.Code)
                     </div>
                 </div>
-                </fieldset>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Modal, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.CheckBoxFor(x => x.Modal, new { @placeholder = "open dictionaries in a modal dialog" })
+                        @Html.ValidationMessageFor(x => x.Modal)
+                    </div>
+                </div>
+            </fieldset>
             <fieldset>
                 <legend>Parser Settings</legend>
                 @Html.FlashMessage(@"For a language like French, if you want to treat words like <i>est-ce</i>, <i>là-bas</i> or <i>s'il</i> 
 as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'</strong> instead.", htmlEncode: false)
                 <div class="control-group">
-                    @Html.LabelFor(x => x.RegexWordCharacters, new {@class = "control-label"})
+                    @Html.LabelFor(x => x.RegexWordCharacters, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.RegexWordCharacters, new { @placeholder = "word test regular expression, add \\-\\' for French", @class="input-xxlarge" })
-                        @Html.ValidationMessageFor(x=>x.RegexWordCharacters)
+                        @Html.TextBoxFor(x => x.RegexWordCharacters, new { @placeholder = "word test regular expression, add \\-\\' for French", @class = "input-xxlarge" })
+                        @Html.ValidationMessageFor(x => x.RegexWordCharacters)
                     </div>
                 </div>
                 <div class="control-group">
-                    @Html.LabelFor(x => x.RegexSplitSentences, new {@class = "control-label"})
+                    @Html.LabelFor(x => x.RegexSplitSentences, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.RegexSplitSentences, new { @placeholder = "end of sentence characters", @class="input-xxlarge" })
-                        @Html.ValidationMessageFor(x=>x.RegexSplitSentences)
+                        @Html.TextBoxFor(x => x.RegexSplitSentences, new { @placeholder = "end of sentence characters", @class = "input-xxlarge" })
+                        @Html.ValidationMessageFor(x => x.RegexSplitSentences)
                     </div>
                 </div>
                 <div class="control-group">
-                    @Html.LabelFor(x => x.Name, new {@class = "control-label"})
+                    @Html.LabelFor(x => x.Name, new { @class = "control-label" })
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Direction, new SelectList(directions, "Key", "Value"))
-                        @Html.ValidationMessageFor(x=>x.Direction)
+                        @Html.ValidationMessageFor(x => x.Direction)
                     </div>
                 </div>
                 <div class="control-group">
-                    @Html.LabelFor(x => x.ShowSpaces, new {@class = "control-label"})
+                    @Html.LabelFor(x => x.ShowSpaces, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.CheckBoxFor(x => x.ShowSpaces, new {@placeholder = "show spaces in the text"})
-                        @Html.ValidationMessageFor(x=>x.ShowSpaces)
+                        @Html.CheckBoxFor(x => x.ShowSpaces, new { @placeholder = "show spaces in the text" })
+                        @Html.ValidationMessageFor(x => x.ShowSpaces)
                     </div>
                 </div>
                 <div class="form-actions">

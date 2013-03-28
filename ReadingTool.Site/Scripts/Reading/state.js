@@ -70,6 +70,17 @@
             self.markRemainingAsKnown();
         });
 
+        $('a.dictionary').click(function (e) {
+            if (settings.modal) {
+                $('#dictionaryiframe').attr('src', e.srcElement.href);
+                $('#dictionary-content').modal({
+                    overlayClose: true,
+                    autoResize: true
+                });
+                return false;
+            }
+        });
+
         $(document).keyup(function (event) {
             var code = (event.keyCode ? event.keyCode : event.which);
 

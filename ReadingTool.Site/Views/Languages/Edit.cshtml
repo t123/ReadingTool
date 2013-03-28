@@ -32,6 +32,13 @@
                         @Html.ValidationMessageFor(x => x.Language.Code)
                     </div>
                 </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Language.Modal, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.CheckBoxFor(x => x.Language.Modal, new { @placeholder = "open dictionaries in a modal dialog" })
+                        @Html.ValidationMessageFor(x => x.Language.Modal)
+                    </div>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>Parser Settings</legend>

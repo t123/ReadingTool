@@ -1,4 +1,5 @@
-﻿@model ReadingTool.Site.Models.Account.AccountModel
+﻿@using ReadingTool.Common.Extensions
+@model ReadingTool.Site.Models.Account.AccountModel
 @{
     ViewBag.Title = "My Account";
 }
@@ -12,13 +13,16 @@
             @Html.HiddenFor(x => x.User.Created)
             @Html.HiddenFor(x => x.User.Username)
             <fieldset>
-                <legend>My Account</legend>
-                <div class="control-group">
-                    @Html.LabelFor(x => x.User.Username, new { @class = "control-label" })
-                    <div class="controls">
-                        @Html.TextBoxFor(x => x.User.Username, new { @readonly = "readonly", disabled = "disabled" })
+                <div class="media">
+                    <a class="pull-left" href="http://www.gravatar.com">
+                        @Html.Gravatar(Model.User.EmailAddress, Model.User.DisplayName, "media-object")
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">@Model.User.Username</h4>
+                        member since @Model.User.Created.ToString("dd MMMM yyyy")
                     </div>
                 </div>
+                <div class="clr10"></div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.User.DisplayName, new { @class = "control-label" })
                     <div class="controls">

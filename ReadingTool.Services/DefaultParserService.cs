@@ -147,16 +147,17 @@ namespace ReadingTool.Services
 
                     if(token == " ")
                     {
-                        if(settings.ShowSpaces)
-                        {
+                        //if(settings.ShowSpaces)
+                        //{
                             t = new XElement("t");
                             t.SetAttributeValue("type", "space");
-                            t.SetAttributeValue("inSpan", asParallel ? "false" : "true");
-                        }
-                        else
-                        {
-                            continue;
-                        }
+                            //t.SetAttributeValue("inSpan", asParallel ? "false" : "true");
+                            t.SetAttributeValue("inSpan", true);
+                        //}
+                        //else
+                        //{
+                        //    continue;
+                        //}
                     }
                     else if(_termTest.Match(token).Success)
                     {

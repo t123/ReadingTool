@@ -338,6 +338,7 @@ namespace ReadingTool.Site.Controllers.Home
                     ParsedText = parsed,
                     Text = Mapper.Map<Text, TextViewModel>(text),
                     Language = Mapper.Map<Language, LanguageViewModel>(text.Language1),
+                    Language2 = !asParallel || text.Language2 == null ? null : Mapper.Map<Language, LanguageViewModel>(text.Language2),
                     User = Mapper.Map<User, AccountModel.UserModel>(text.User),
                     PagedTexts = new Tuple<long?, long?>(previousText == null ? (long?)null : previousText.TextId, nextText == null ? (long?)null : nextText.TextId)
                 };

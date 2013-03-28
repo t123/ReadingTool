@@ -25,6 +25,7 @@ namespace ReadingTool.Entities
         public class LanguageSettings
         {
             public bool ShowSpaces { get; set; }
+            public bool Modal { get; set; }
             public string RegexSplitSentences { get; set; }
             public string RegexWordCharacters { get; set; }
             public LanguageDirection Direction { get; set; }

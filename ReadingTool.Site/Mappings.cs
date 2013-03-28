@@ -19,7 +19,11 @@ namespace ReadingTool.Site
         {
             Mapper.CreateMap<UserDictionary, DictionaryModel>();
             Mapper.CreateMap<UserDictionary, DictionaryViewModel>();
-            Mapper.CreateMap<Language, LanguageViewModel>();
+            Mapper.CreateMap<Language, LanguageViewModel>()
+                .ForMember(x => x.Modal, y => y.MapFrom(z => z.Settings.Modal))
+                .ForMember(x => x.ShowSpaces, y => y.MapFrom(z => z.Settings.ShowSpaces))
+                ;
+
             Mapper.CreateMap<Text, TextViewModel>()
                 .ForMember(x => x.Title, y => y.MapFrom(z => (z.CollectionNo.HasValue ? string.Format("{0:00}. ", z.CollectionNo.Value) : "") + z.Title))
                 .ForMember(x => x.Language1, y => y.MapFrom(z => z.Language1.Name))

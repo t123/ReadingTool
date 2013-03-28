@@ -102,7 +102,8 @@ namespace ReadingTool.Site.Controllers.Home
                     RegexSplitSentences = @".!?:;",
                     RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ",
                     Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
-                    ShowSpaces = true
+                    ShowSpaces = true,
+                    Modal = false
                 });
         }
 
@@ -125,7 +126,8 @@ namespace ReadingTool.Site.Controllers.Home
                             Direction = model.Direction,
                             RegexSplitSentences = model.RegexSplitSentences,
                             RegexWordCharacters = model.RegexWordCharacters,
-                            ShowSpaces = model.ShowSpaces
+                            ShowSpaces = model.ShowSpaces,
+                            Modal = model.Modal
                         },
                     User = _userRepository.LoadOne(UserId)
                 };
@@ -156,7 +158,8 @@ namespace ReadingTool.Site.Controllers.Home
                             Name = language.Name,
                             RegexSplitSentences = language.Settings.RegexSplitSentences,
                             RegexWordCharacters = language.Settings.RegexWordCharacters,
-                            ShowSpaces = language.Settings.ShowSpaces
+                            ShowSpaces = language.Settings.ShowSpaces,
+                            Modal = language.Settings.Modal
                         }
                 };
 
@@ -197,8 +200,10 @@ namespace ReadingTool.Site.Controllers.Home
                     Direction = model.Direction,
                     RegexSplitSentences = model.RegexSplitSentences,
                     RegexWordCharacters = model.RegexWordCharacters,
-                    ShowSpaces = model.ShowSpaces
+                    ShowSpaces = model.ShowSpaces,
+                    Modal = model.Modal
                 };
+
             _languageRepository.Save(language);
 
             return RedirectToAction("Edit", new { id = id });

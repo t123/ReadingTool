@@ -11,6 +11,8 @@ namespace ReadingTool.Site.Models.Languages
         public string Name { get; set; }
         public string Code { get; set; }
         public IList<DictionaryViewModel> Dictionaries { get; set; }
+        public bool Modal { get; set; }
+        public bool ShowSpaces { get; set; }
 
         public LanguageViewModel()
         {
