@@ -59,7 +59,7 @@ as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'
                     </div>
                 </div>
                 <div class="control-group">
-                    @Html.LabelFor(x => x.Name, new { @class = "control-label" })
+                    @Html.LabelFor(x => x.Direction, new { @class = "control-label" })
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Direction, new SelectList(directions, "Key", "Value"))
                         @Html.ValidationMessageFor(x => x.Direction)
