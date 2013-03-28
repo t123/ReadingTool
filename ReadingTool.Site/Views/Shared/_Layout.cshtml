@@ -45,7 +45,14 @@
             </div>
             <div class="span1"></div>
         </div>
-        @Html.Flash()
+        <div class="row-fluid">
+            <div class="span1"></div>
+            <div class="span10">
+                @Html.Flash()
+            </div>
+            <div class="span1"></div>
+        </div>
+        
         @RenderBody()
     </div>
     <div class="clr50"></div>

@@ -70,14 +70,13 @@ namespace ReadingTool.Services
 
         public int Import(TextImport import)
         {
-            var languages = _languageRepository.FindAll();
-            var languageNameToId = languages.ToDictionary(x => x.Name, x => x);
-            //var ltrWithSpaces = _languageService.FindByName("Left to Right, with spaces", publicLanguage: true);
+            var languages = _languageRepository.FindAll(x => x.User.UserId == _identity.UserId);
+            var languageNameToLanguage = languages.ToDictionary(x => x.Name, x => x);
 
-            dynamic defaults = new
+            var defaults = new TextImport.JsonDefaults
             {
-                Language1 = (Language)null,
-                Language2 = (Language)null,
+                L1LanguageName = "",
+                L2LanguageName = "",
                 AutoNumberCollection = (bool?)null,
                 CollectionName = "",
                 StartCollectionWithNumber = (int?)null,
@@ -88,28 +87,28 @@ namespace ReadingTool.Services
                 #region defaults for languages
                 if(!string.IsNullOrEmpty(import.Defaults.L1LanguageName))
                 {
-                    if(!languageNameToId.ContainsKey(import.Defaults.L1LanguageName))
+                    if(!languageNameToLanguage.ContainsKey(import.Defaults.L1LanguageName))
                     {
                         throw new Exception(string.Format("The language name {0} in the defaults is not in your language list", import.Defaults.L1LanguageName));
                     }
 
-                    defaults.Language1 = languageNameToId[import.Defaults.L1LanguageName];
+                    defaults.L1LanguageName = import.Defaults.L1LanguageName;
                 }
 
                 if(!string.IsNullOrEmpty(import.Defaults.L2LanguageName))
                 {
-                    if(!languageNameToId.ContainsKey(import.Defaults.L2LanguageName))
+                    if(!languageNameToLanguage.ContainsKey(import.Defaults.L2LanguageName))
                     {
                         throw new Exception(string.Format("The language name {0} in the defaults is not in your language list", import.Defaults.L2LanguageName));
                     }
 
-                    defaults.Language2 = languageNameToId[import.Defaults.L2LanguageName];
+                    defaults.L2LanguageName = import.Defaults.L2LanguageName;
                 }
                 #endregion
 
-                defaults.AutoNumberCollection = defaults.Defaults.AutoNumberCollection;
-                defaults.CollectionName = defaults.Defaults.CollectionName;
-                defaults.StartCollectionWithNumber = defaults.Defaults.StartCollectionWithNumber;
+                defaults.AutoNumberCollection = import.Defaults.AutoNumberCollection;
+                defaults.CollectionName = import.Defaults.CollectionName;
+                defaults.StartCollectionWithNumber = import.Defaults.StartCollectionWithNumber;
             }
 
             #region test texts and get the languageIds
@@ -119,22 +118,24 @@ namespace ReadingTool.Services
             foreach(var text in import.Items)
             {
                 #region get languages
-                if(!languageNameToId.ContainsKey(text.L1LanguageName ?? "") && defaults.Language1 == null)
+                if(!string.IsNullOrEmpty(text.L1LanguageName) && !languageNameToLanguage.ContainsKey(text.L1LanguageName))
                 {
-                    if(string.IsNullOrEmpty(text.L1LanguageName))
-                    {
-                        errors.AppendFormat("The language '<b>{0}</b>' was not found in the text items, and no default was specified for item {1}<br/>", text.L1LanguageName ?? "none", counter);
-                    }
-                    else
-                    {
-                        errors.AppendFormat("No language or default was specified for item {0}<br/>", counter);
-                    }
+                    errors.AppendFormat("The language '<b>{0}</b>' was not found in the text items for item {1}<br/>", text.L1LanguageName, counter);
+                }
+                else if(string.IsNullOrEmpty(text.L1LanguageName) && string.IsNullOrEmpty(defaults.L1LanguageName))
+                {
+                    errors.AppendFormat("No language and no default language specified for item {0}<br/>", counter);
                 }
 
-                if(!string.IsNullOrEmpty(text.L2LanguageName) && !languageNameToId.ContainsKey(text.L2LanguageName))
+                if(!string.IsNullOrEmpty(text.L2LanguageName) && !languageNameToLanguage.ContainsKey(text.L2LanguageName))
                 {
-                    errors.AppendFormat("The language '<b>{0}</b>' was not found in the text items, and no default was specified for item {1}<br/>", text.L2LanguageName, counter);
+                    errors.AppendFormat("The language '<b>{0}</b>' was not found in the text items for item {1}<br/>", text.L2LanguageName, counter);
                 }
+                else if(string.IsNullOrEmpty(text.L2LanguageName) && string.IsNullOrEmpty(defaults.L2LanguageName) && !string.IsNullOrEmpty(text.L2Text))
+                {
+                    errors.AppendFormat("No (parallel) language and no default language specified for item {0}<br/>", counter);
+                }
+
                 #endregion
 
                 if(string.IsNullOrEmpty(text.Title))
@@ -169,7 +170,7 @@ namespace ReadingTool.Services
                     AudioUrl = text.AudioUrl,
                     CollectionName = string.IsNullOrEmpty(text.CollectionName) ? defaults.CollectionName : text.CollectionName,
                     User = _userRepository.LoadOne(_identity.UserId),
-                    Language1 = languageNameToId.GetValueOrDefault(text.L1LanguageName, (Language)defaults.Language1),
+                    Language1 = languageNameToLanguage.GetValueOrDefault(text.L1LanguageName, languageNameToLanguage[defaults.L1LanguageName]),
                     L1Text = text.L1Text,
                     L2Text = text.L2Text,
                     Title = text.Title ?? "Import " + imported,
@@ -177,11 +178,11 @@ namespace ReadingTool.Services
 
                 if(string.IsNullOrEmpty(text.L2LanguageName))
                 {
-                    if(defaults.Language2 == null)
+                    if(string.IsNullOrEmpty(defaults.L2LanguageName))
                     {
                         if(!string.IsNullOrEmpty(newText.L2Text))
                         {
-                            newText.Language2 = ((Language)defaults.Language2);
+                            newText.Language2 = languageNameToLanguage.FirstOrDefault().Value;
                         }
                         else
                         {
@@ -190,12 +191,19 @@ namespace ReadingTool.Services
                     }
                     else
                     {
-                        newText.Language2 = ((Language)defaults.Language2);
+                        if(!string.IsNullOrEmpty(newText.L2Text))
+                        {
+                            newText.Language2 = languageNameToLanguage[defaults.L2LanguageName];
+                        }
+                        else
+                        {
+                            newText.Language2 = null;
+                        }
                     }
                 }
                 else
                 {
-                    newText.Language2 = languageNameToId[text.L2LanguageName];
+                    newText.Language2 = languageNameToLanguage[text.L2LanguageName];
                 }
 
                 if(text.CollectionNo != null)
