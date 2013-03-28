@@ -1,0 +1,37 @@
+﻿@using ReadingTool.Common
+@model ReadingTool.Site.Models.Admin.SystemLanguageModel
+@{
+    ViewBag.Title = "Edit System Language";
+}
+
+<div class="row-fluid">
+    <div class="span1"></div>
+    <div class="span10">
+        @using(Html.BeginForm("EditLanguage", "Admin", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x=>x.SystemLanguageId)
+            <fieldset>
+                <legend>Edit System Language</legend>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Code, new { @class = "control-label" } )
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Code, new { @placeholder = "2 letter ISO code", @class="input-xxlarge", @maxlength="2" })
+                        @Html.ValidationMessageFor(x => x.Code)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Name, new { @class = "control-label" } )
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.Name, new { @placeholder = "Language name", @class="input-xxlarge" })
+                        @Html.ValidationMessageFor(x => x.Name)
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </fieldset>
+        }
+    </div>
+    <div class="span1"></div>
+</div>

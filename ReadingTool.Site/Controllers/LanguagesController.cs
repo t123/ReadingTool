@@ -8,6 +8,7 @@ using ReadingTool.Common.Search;
 using ReadingTool.Entities;
 using ReadingTool.Site.Attributes;
 using ReadingTool.Repository;
+using ReadingTool.Site.Helpers;
 using ReadingTool.Site.Models.Languages;
 
 namespace ReadingTool.Site.Controllers.Home
@@ -133,6 +134,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
             _languageRepository.Save(l);
+            this.FlashSuccess("Language added.");
 
             return RedirectToAction("Index");
         }
@@ -205,6 +207,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
             _languageRepository.Save(language);
+            this.FlashSuccess("Language updated.");
 
             return RedirectToAction("Edit", new { id = id });
         }
@@ -219,6 +222,7 @@ namespace ReadingTool.Site.Controllers.Home
             {
                 _languageRepository.Delete(language);
             }
+            this.FlashSuccess("Language deleted.");
 
             return RedirectToAction("Index");
         }
@@ -264,6 +268,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             language.Dictionaries.Add(dictionary);
             _languageRepository.Save(language);
+            this.FlashSuccess("Dictionary added.");
 
             return RedirectToAction("Edit", new { id = model.LanguageId });
         }
@@ -321,6 +326,7 @@ namespace ReadingTool.Site.Controllers.Home
             dictionary.AutoOpen = model.AutoOpen;
 
             _languageRepository.Save(language);
+            this.FlashSuccess("Dictionary updated.");
 
             return RedirectToAction("Edit", new { id = model.LanguageId });
         }
@@ -341,6 +347,8 @@ namespace ReadingTool.Site.Controllers.Home
                     _languageRepository.Save(language);
                 }
             }
+
+            this.FlashSuccess("Dictionary deleted.");
 
             return RedirectToAction("Edit", new { id = id });
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if DEBUG
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,7 @@ using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Controllers.Home
 {
-    [Authorize]
+    [Authorize(Roles = "ADMIN")]
     [NeedsPersistence]
     public class UpgradeController : Controller
     {
@@ -258,3 +259,4 @@ namespace ReadingTool.Site.Controllers.Home
         }
     }
 }
+#endif

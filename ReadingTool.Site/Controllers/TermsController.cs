@@ -10,6 +10,7 @@ using ReadingTool.Common.Search;
 using ReadingTool.Entities;
 using ReadingTool.Repository;
 using ReadingTool.Site.Attributes;
+using ReadingTool.Site.Helpers;
 using ReadingTool.Site.Models.Terms;
 
 namespace ReadingTool.Site.Controllers.Home
@@ -233,6 +234,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             //term.HasTags = term.Tags.Count > 0;
             _termRepository.Save(term);
+            this.FlashSuccess("Term added.");
 
             return RedirectToAction("Edit", new { id = id });
         }

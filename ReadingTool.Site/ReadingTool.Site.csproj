@@ -174,6 +174,7 @@
   <ItemGroup>
     <Compile Include="App_Start\NinjectWeb.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
+    <Compile Include="Attributes\AuthorizeAttribute.cs" />
     <Compile Include="Attributes\AutoMapFilter.cs" />
     <Compile Include="Attributes\AjaxRouteAttribute.cs" />
     <Compile Include="Attributes\NeedsPersistenceAttribute.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="Controllers\ConstructController.cs" />
     <Compile Include="Controllers\ReviewController.cs" />
     <Compile Include="Controllers\RoutesController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\TermsController.cs" />
     <Compile Include="Controllers\TextsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -205,6 +207,8 @@
     <Compile Include="Models\Languages\LanguageModel.cs" />
     <Compile Include="Models\Languages\LanguageViewModel.cs" />
     <Compile Include="Models\Review\ReviewModel.cs" />
+    <Compile Include="Models\Admin\SystemLanguageIndexModel.cs" />
+    <Compile Include="Models\Admin\SystemLanguageModel.cs" />
     <Compile Include="Models\Terms\TermModel.cs" />
     <Compile Include="Models\Terms\TermViewModel.cs" />
     <Compile Include="Models\Texts\JsonSampleModel.cs" />
@@ -282,6 +286,10 @@
     <Content Include="Views\Texts\Partials\_createSample.cshtml" />
     <Content Include="App_Data\account.json" />
     <Content Include="Views\Upgrade\Index.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\Languages.cshtml" />
+    <Content Include="Views\Admin\AddLanguage.cshtml" />
+    <Content Include="Views\Admin\EditLanguage.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

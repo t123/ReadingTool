@@ -8,6 +8,7 @@ using ReadingTool.Common.Extensions;
 using ReadingTool.Entities;
 using ReadingTool.Site.Models.Account;
 using ReadingTool.Site.Models.Languages;
+using ReadingTool.Site.Models.Admin;
 using ReadingTool.Site.Models.Terms;
 using ReadingTool.Site.Models.Texts;
 
@@ -46,6 +47,9 @@ namespace ReadingTool.Site
             Mapper.CreateMap<Term, TermModel>()
                 .ForMember(x => x.Tags, y => y.MapFrom(z => Tags.ToString(z.Tags.Select(w => w.TagTerm))))
                 ;
+
+            Mapper.CreateMap<SystemLanguage, SystemLanguageModel>();
+            Mapper.CreateMap<SystemLanguage, SystemLanguageIndexModel>();
         }
     }
 }

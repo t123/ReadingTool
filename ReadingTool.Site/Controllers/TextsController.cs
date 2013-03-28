@@ -196,6 +196,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
             _textService.Save(text);
+            this.FlashSuccess("Text added.");
 
             return RedirectToAction("Index");
         }
@@ -261,6 +262,8 @@ namespace ReadingTool.Site.Controllers.Home
 
             _textService.Save(text);
 
+            this.FlashSuccess("Text updated.");
+
             return RedirectToAction("Edit", new { id = id });
         }
 
@@ -269,6 +272,7 @@ namespace ReadingTool.Site.Controllers.Home
         public ActionResult Delete(long id)
         {
             _textService.Delete(id);
+            this.FlashSuccess("Text Deleted.");
 
             return RedirectToAction("Index");
         }
