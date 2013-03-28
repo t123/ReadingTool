@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -43,6 +44,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         public ActionResult Index()
         {
+            ViewBag.Languages = _languageRepository.FindAll(x => x.User == _userRepository.LoadOne(UserId)).OrderBy(x => x.Name).ToDictionary(x => x.LanguageId, x => x.Name);
             return View();
         }
 
@@ -233,6 +235,71 @@ namespace ReadingTool.Site.Controllers.Home
             _termRepository.Save(term);
 
             return RedirectToAction("Edit", new { id = id });
+        }
+
+        public FileContentResult Export(long id, bool all)
+        {
+            IEnumerable<Term> terms;
+
+            if(id == 0)
+            {
+                if(all)
+                {
+                    terms = _termRepository
+                        .FindAll(x => x.User == _userRepository.LoadOne(UserId))
+                        .OrderBy(x => x.Language.Name)
+                        .ThenBy(x => x.Phrase);
+                }
+                else
+                {
+                    terms = _termRepository
+                        .FindAll(x => x.User == _userRepository.LoadOne(UserId) && x.State == TermState.NotKnown)
+                        .OrderBy(x => x.Language.Name)
+                        .ThenBy(x => x.Phrase);
+                }
+            }
+            else
+            {
+                if(all)
+                {
+                    terms = _termRepository
+                        .FindAll(x => x.User == _userRepository.LoadOne(UserId) && x.Language == _languageRepository.LoadOne(id))
+                        .OrderBy(x => x.Language.Name)
+                        .ThenBy(x => x.Phrase);
+                }
+                else
+                {
+                    terms = _termRepository
+                        .FindAll(x => x.User == _userRepository.LoadOne(UserId) && x.Language == _languageRepository.LoadOne(id) && x.State == TermState.NotKnown)
+                        .OrderBy(x => x.Language.Name)
+                        .ThenBy(x => x.Phrase);
+                }
+            }
+
+            StringBuilder csv = new StringBuilder();
+
+            foreach(var term in terms)
+            {
+                csv.AppendFormat("{0}\t", term.TermId);
+                csv.AppendFormat("{0}\t", term.State);
+                csv.AppendFormat("{0}\t", term.Phrase);
+                csv.AppendFormat("{0}\t", term.BasePhrase);
+                csv.AppendFormat("{0}\t", term.Sentence);
+                csv.AppendFormat("{0}\t", term.Definition.Replace("\n", "<br/>"));
+                csv.AppendFormat("{0}\t", String.Join(" ", term.Tags.Select(x => x.TagTerm)));
+
+                csv.AppendFormat("{0}\t", term.Created);
+                csv.AppendFormat("{0}\t", term.Modified);
+                csv.AppendFormat("{0}\t", term.Length);
+                csv.AppendFormat("{0}\t", term.Box);
+                csv.AppendFormat("{0}\t", term.Language.LanguageId);
+                csv.AppendFormat("{0}\t", term.NextReview);
+                csv.AppendFormat("{0}\t", term.Text.TextId);
+                csv.Append("\n");
+            }
+
+            csv.Remove(csv.Length - 1, 1);
+            return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/plain", "words.tsv");
         }
     }
 }

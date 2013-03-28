@@ -41,7 +41,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="@Url.Action("Index", new {id = Guid.Empty})">All languages</a>
+                        <a href="@Url.Action("Index", new {id = 0})">All languages</a>
                     </li>
                     @foreach(var kvp in Model.Languages)
                     {
