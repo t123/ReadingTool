@@ -71,7 +71,8 @@
         });
 
         $('a.dictionary').click(function (e) {
-            if (settings.modal) {
+            var url = $(e.srcElement).data('url');
+            if (settings.modal && url.indexOf("translate.google")<0) {
                 $('#dictionaryiframe').attr('src', e.srcElement.href);
                 $('#dictionary-content').modal({
                     overlayClose: true,
