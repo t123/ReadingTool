@@ -81,7 +81,7 @@ namespace ReadingTool.Services
             return null;
         }
 
-        public User ValidateUser(Guid userId, string password)
+        public User ValidateUser(long userId, string password)
         {
             var user = _userRepository.FindOne(userId);
 

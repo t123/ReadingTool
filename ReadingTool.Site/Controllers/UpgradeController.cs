@@ -33,7 +33,7 @@ using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Controllers.Home
 {
-    [Authorize(Roles = "ADMIN")]
+    [Authorize]
     [NeedsPersistence]
     public class UpgradeController : Controller
     {

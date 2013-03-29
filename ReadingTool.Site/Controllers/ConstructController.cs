@@ -65,15 +65,32 @@ namespace ReadingTool.Site.Controllers.Home
                 throw new Exception("Could not construct user");
             }
 
-            var systemLanguages = new[] 
+            var systemLanguages = new[]
                 {
-                    new SystemLanguage { Code = "en", Name = "English"},
-                    new SystemLanguage { Code = "fr", Name = "French"},
-                    new SystemLanguage { Code = "lv", Name = "Latvian"},
-                    new SystemLanguage { Code = "de", Name = "German"},
-                    new SystemLanguage { Code = "sw", Name = "Swedish"},
-                    new SystemLanguage { Code = "tr", Name = "Turkish"},
-                    new SystemLanguage { Code = "pl", Name = "Polish"},
+                    new SystemLanguage {Name = "Spanish", Code = "es"},
+                    new SystemLanguage {Name = "English", Code = "en"},
+                    new SystemLanguage {Name = "Arabic", Code = "ar"},
+                    new SystemLanguage {Name = "Portuguese", Code = "pt"},
+                    new SystemLanguage {Name = "Russian", Code = "ru"},
+                    new SystemLanguage {Name = "German", Code = "de"},
+                    new SystemLanguage {Name = "Vietnamese", Code = "vi"},
+                    new SystemLanguage {Name = "Korean", Code = "ko"},
+                    new SystemLanguage {Name = "French", Code = "fr"},
+                    new SystemLanguage {Name = "Persian", Code = "fa"},
+                    new SystemLanguage {Name = "Turkish", Code = "tr"},
+                    new SystemLanguage {Name = "Polish", Code = "pl"},
+                    new SystemLanguage {Name = "Ukrainian", Code = "uk"},
+                    new SystemLanguage {Name = "Romanian", Code = "ro"},
+                    new SystemLanguage {Name = "Dutch", Code = "nl"},
+                    new SystemLanguage {Name = "Greek", Code = "el"},
+                    new SystemLanguage {Name = "Hungarian", Code = "hu"},
+                    new SystemLanguage {Name = "Czech", Code = "cs"},
+                    new SystemLanguage {Name = "Swedish", Code = "sw"},
+                    new SystemLanguage {Name = "Danish", Code = "da"},
+                    new SystemLanguage {Name = "Norwegian", Code = "no"},
+                    new SystemLanguage {Name = "Italian", Code = "it"},
+                    new SystemLanguage {Name = "Latvian", Code = "lv"},
+                    new SystemLanguage {Name = "Lithuanian", Code = "lt"},
                 };
 
             foreach(var l in systemLanguages)

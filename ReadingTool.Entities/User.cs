@@ -34,7 +34,7 @@ namespace ReadingTool.Entities
         public virtual string Password { get; set; }
 
         private string _roles;
-        public virtual string[] Roles { get { return _roles.Split(','); } set { _roles = string.Join(",", value ?? new string[] { }); } }
+        public virtual string[] Roles { get { return (_roles ?? "").Split(','); } set { _roles = string.Join(",", value ?? new string[] { }); } }
 
         public virtual IList<Text> Texts { get; set; }
         public virtual IList<Term> Terms { get; set; }

@@ -94,7 +94,7 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpPost]
         public ActionResult ChangePassword([Bind(Prefix = "Password")]AccountModel.PasswordModel model)
         {
-            var user = _userService.ValidateUser(Guid.Parse(HttpContext.User.Identity.Name), model.OldPassword);
+            var user = _userService.ValidateUser(UserId, model.OldPassword);
 
             if(user == null)
             {
@@ -119,7 +119,7 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpPost]
         public ActionResult Delete([Bind(Prefix = "Delete")]AccountModel.DeleteModel model)
         {
-            var user = _userService.ValidateUser(Guid.Parse(HttpContext.User.Identity.Name), model.Password);
+            var user = _userService.ValidateUser(UserId, model.Password);
 
             if(user == null)
             {
