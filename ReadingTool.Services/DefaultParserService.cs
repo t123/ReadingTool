@@ -147,10 +147,10 @@ namespace ReadingTool.Services
                     {
                         //if(settings.ShowSpaces)
                         //{
-                            t = new XElement("t");
-                            t.SetAttributeValue("type", "space");
-                            //t.SetAttributeValue("inSpan", asParallel ? "false" : "true");
-                            t.SetAttributeValue("inSpan", true);
+                        t = new XElement("t");
+                        t.SetAttributeValue("type", "space");
+                        //t.SetAttributeValue("inSpan", asParallel ? "false" : "true");
+                        t.SetAttributeValue("inSpan", true);
                         //}
                         //else
                         //{
@@ -279,9 +279,7 @@ namespace ReadingTool.Services
             //Multilength
             foreach(var multi in _singleTerms.Where(x => x.Length > 1))
             {
-                string lower = multi.Phrase.ToLowerInvariant();
-
-                var first = lower.Split(' ').First();
+                var first = multi.PhraseLower.Split(' ').First();
                 var partials = document
                     .Descendants("t")
                     .Where(x =>
@@ -299,7 +297,7 @@ namespace ReadingTool.Services
                             .Select(x => x.Attribute("lower").Value)
                             );
 
-                    if(!lower.Equals(nodeString, StringComparison.InvariantCultureIgnoreCase))
+                    if(!multi.PhraseLower.Equals(nodeString, StringComparison.InvariantCultureIgnoreCase))
                     {
                         continue;
                     }
@@ -313,7 +311,7 @@ namespace ReadingTool.Services
                     }
 
                     node.SetAttributeValue("length", multi.Length);
-                    node.SetAttributeValue("lower", lower);
+                    node.SetAttributeValue("lower", multi.PhraseLower);
                     node.SetAttributeValue("state", Term.TermStateToClass(multi.State));
                     node.SetAttributeValue("id", multi.TermId.ToString());
                     node.SetAttributeValue("data", multi.FullDefinition);
@@ -323,7 +321,7 @@ namespace ReadingTool.Services
             }
 
             var elements = document.Descendants("t").Where(x => x.Attribute("type").Value == "term");
-            var termsAsDict = _singleTerms.Where(x => x.Length == 1).ToDictionary(x => x.Phrase.ToLowerInvariant(), x => new { State = x.State, FullDefinition = x.FullDefinition });
+            var termsAsDict = _singleTerms.Where(x => x.Length == 1).ToDictionary(x => x.PhraseLower, x => new { State = x.State, FullDefinition = x.FullDefinition });
 
             foreach(var element in elements)
             {
