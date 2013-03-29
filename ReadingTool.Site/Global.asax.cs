@@ -25,39 +25,9 @@ namespace ReadingTool.Site
     public class MvcApplication : System.Web.HttpApplication
     {
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        public static ISessionFactory SessionFactory { get; private set; }
-
-        private void InitNHibernate()
-        {
-            var cfg = Fluently.Configure()
-                .Database(
-                    MsSqlConfiguration
-                        .MsSql2008
-                        .ConnectionString(ConfigurationSettings.AppSettings["connectionString"])
-                        .ShowSql()
-                        .AdoNetBatchSize(200)
-                )
-                .CurrentSessionContext<WebSessionContext>()
-                .Cache(x => x.UseQueryCache())
-                .Cache(x => x.UseSecondLevelCache())
-                .Cache(x => x.ProviderClass("NHibernate.Caches.SysCache2.SysCacheProvider, NHibernate.Caches.SysCache2"))
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<ReadingTool.Entities.User>())
-                .ExposeConfiguration(config => new SchemaUpdate(config).Execute(false, true))
-                .ExposeConfiguration(x =>
-                {
-                    x.EventListeners.PreInsertEventListeners = new IPreInsertEventListener[] { new AuditEventListener() };
-                    x.EventListeners.PreUpdateEventListeners = new IPreUpdateEventListener[] { new AuditEventListener() };
-                }
-                )
-                ;
-
-            SessionFactory = cfg.BuildSessionFactory();
-        }
 
         protected void Application_Start()
         {
-            InitNHibernate();
-
             AreaRegistration.RegisterAllAreas();
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -101,7 +71,7 @@ namespace ReadingTool.Site
     {
         private log4net.ILog _logger = log4net.LogManager.GetLogger("TermAppender");
 
-        class TermModel
+        private class TermModel
         {
             public long TermId { get; set; }
             public TermState State { get; set; }
@@ -111,14 +81,14 @@ namespace ReadingTool.Site
             public string Sentence { get; set; }
             public string Definition { get; set; }
             public short Box { get; set; }
-            public virtual DateTime? NextReview { get; set; }
-            public virtual long Text { get; set; }
-            public virtual long Language { get; set; }
-            public virtual DateTime Created { get; set; }
-            public virtual DateTime Modified { get; set; }
-            public virtual string[] Tags { get; set; }
-            public virtual short Length { get; set; }
-            public virtual long User { get; set; }
+            public DateTime? NextReview { get; set; }
+            public long Text { get; set; }
+            public long Language { get; set; }
+            public DateTime Created { get; set; }
+            public DateTime Modified { get; set; }
+            public string[] Tags { get; set; }
+            public short Length { get; set; }
+            public long User { get; set; }
         }
 
         private void LogTerm(Term term)

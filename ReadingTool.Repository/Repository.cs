@@ -13,18 +13,22 @@ namespace ReadingTool.Repository
     {
         private static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        protected readonly ISessionFactory _sessionFactory;
+        //protected readonly ISessionFactory _sessionFactory;
 
         public ISession Session { get { return _session; } }
 
-        protected ISession _session
-        {
-            get { return _sessionFactory.GetCurrentSession(); }
-        }
+        protected ISession _session;
+        //{
+        //    get { return _sessionFactory.GetCurrentSession(); }
+        //}
 
-        public Repository(ISessionFactory sessionFactory)
+        //public Repository(ISessionFactory sessionFactory)
+        //{
+        //    _sessionFactory = sessionFactory;
+        //}
+        public Repository(ISession session)
         {
-            _sessionFactory = sessionFactory;
+            _session = session;
         }
 
         #region repository methods

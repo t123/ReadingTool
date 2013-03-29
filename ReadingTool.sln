@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Services", "Rea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Repository", "ReadingTool.Repository\ReadingTool.Repository.csproj", "{5E141890-8892-43C8-8738-93C43BEB565C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTool.Api", "ReadingTool.Api\ReadingTool.Api.csproj", "{B1764E62-E015-4152-B74B-9F8134F8680F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{5E141890-8892-43C8-8738-93C43BEB565C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E141890-8892-43C8-8738-93C43BEB565C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E141890-8892-43C8-8738-93C43BEB565C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1764E62-E015-4152-B74B-9F8134F8680F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1764E62-E015-4152-B74B-9F8134F8680F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1764E62-E015-4152-B74B-9F8134F8680F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1764E62-E015-4152-B74B-9F8134F8680F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,15 @@
+using System.Collections.Generic;
+using System.Configuration;
 using System.Security.Principal;
 using System.Web.Mvc;
 using System.Web.Routing;
+using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 using NHibernate;
+using NHibernate.Context;
+using NHibernate.Event;
+using NHibernate.Tool.hbm2ddl;
+using Ninject.Activation;
 using ReadingTool.Services;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(ReadingTool.Site.App_Start.NinjectWebCommon), "Start")]
@@ -27,6 +35,34 @@ namespace ReadingTool.Site.App_Start
         protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
         {
             return (controllerType == null) ? null : (IController)ninjectKernel.Get(controllerType);
+        }
+    }
+
+    public class NinjectDependencyResolver : IDependencyResolver
+    {
+        private readonly IKernel _container;
+        public IKernel Container
+        {
+            get { return _container; }
+        }
+        public NinjectDependencyResolver(IKernel container)
+        {
+            _container = container;
+        }
+
+        public void Dispose()
+        {
+            // noop
+        }
+
+        public object GetService(Type serviceType)
+        {
+            return _container.TryGet(serviceType);
+        }
+
+        public IEnumerable<object> GetServices(Type serviceType)
+        {
+            return _container.GetAll(serviceType);
         }
     }
 
@@ -66,6 +102,9 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
             RegisterServices(kernel);
+
+            DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
+
             return kernel;
         }
 
@@ -75,11 +114,53 @@ namespace ReadingTool.Site.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            InitNHibernate(kernel);
+
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<ITextService>().To<TextService>();
             kernel.Bind<IParserService>().To<DefaultParserService>();
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
-            kernel.Bind<ISessionFactory>().ToMethod(x => MvcApplication.SessionFactory);
+        }
+
+        private static void InitNHibernate(IKernel kernel)
+        {
+            var cfg = Fluently.Configure()
+                .Database(
+                    MsSqlConfiguration
+                        .MsSql2008
+                        .ConnectionString(ConfigurationManager.AppSettings["connectionString"])
+                        .ShowSql()
+                        .AdoNetBatchSize(200)
+                )
+                .CurrentSessionContext<WebSessionContext>()
+                .Cache(x => x.UseQueryCache())
+                .Cache(x => x.UseSecondLevelCache())
+                .Cache(x => x.ProviderClass("NHibernate.Caches.SysCache2.SysCacheProvider, NHibernate.Caches.SysCache2"))
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<ReadingTool.Entities.User>())
+                .ExposeConfiguration(config => new SchemaUpdate(config).Execute(false, true))
+                .ExposeConfiguration(x =>
+                {
+                    x.EventListeners.PreInsertEventListeners = new IPreInsertEventListener[] { new AuditEventListener() };
+                    x.EventListeners.PreUpdateEventListeners = new IPreUpdateEventListener[] { new AuditEventListener() };
+                }
+                )
+                ;
+
+            var sessionFactory = cfg.BuildSessionFactory();
+            kernel.Bind<ISessionFactory>().ToConstant(sessionFactory);
+            kernel.Bind<ISession>().ToMethod(CreateSession);
+        }
+
+        private static ISession CreateSession(IContext context)
+        {
+            var sessionFactory = context.Kernel.Get<ISessionFactory>();
+            if(!CurrentSessionContext.HasBind(sessionFactory))
+            {
+                // Open new ISession and bind it to the current session context
+                var session = sessionFactory.OpenSession();
+                CurrentSessionContext.Bind(session);
+            }
+            return sessionFactory.GetCurrentSession();
         }
     }
 }

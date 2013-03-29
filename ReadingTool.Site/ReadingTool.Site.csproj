@@ -15,7 +15,7 @@
     <AssemblyName>ReadingTool.Site</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -178,7 +178,6 @@
     <Compile Include="Attributes\AutoMapFilter.cs" />
     <Compile Include="Attributes\AjaxRouteAttribute.cs" />
     <Compile Include="Attributes\NeedsPersistenceAttribute.cs" />
-    <Compile Include="Attributes\NHibernateSessionAttribute.cs" />
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AjaxController.cs" />
@@ -363,7 +362,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>41903</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/ReadingTool.Site</IISUrl>
+          <IISUrl>http://localhost:16229/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

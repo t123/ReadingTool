@@ -6,6 +6,8 @@
 
     $('#clearText').click(function () {
         filter.val('');
+        state.filter = '';
+        state.page = 1;
         _updateGrid();
         return false;
     });
@@ -111,8 +113,6 @@
         if (this.options.useState) {
             localStorage[this.options.storageKey] = JSON.stringify(state);
         }
-
-        console.log(self.options.data);
 
         $.ajax({
             type: 'POST',
