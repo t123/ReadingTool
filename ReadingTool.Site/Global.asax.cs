@@ -97,7 +97,7 @@ namespace ReadingTool.Site
         }
     }
 
-    internal class AuditEventListener : IPreInsertEventListener, IPreUpdateEventListener
+    internal class AuditEventListener : IPreInsertEventListener, IPreUpdateEventListener, IPreDeleteEventListener
     {
         private log4net.ILog _logger = log4net.LogManager.GetLogger("TermAppender");
 
@@ -106,6 +106,7 @@ namespace ReadingTool.Site
             public long TermId { get; set; }
             public TermState State { get; set; }
             public string Phrase { get; set; }
+            public string PhraseLower { get; set; }
             public string BasePhrase { get; set; }
             public string Sentence { get; set; }
             public string Definition { get; set; }
@@ -138,6 +139,7 @@ namespace ReadingTool.Site
                     Modified = term.Modified,
                     NextReview = term.NextReview,
                     Phrase = term.Phrase,
+                    PhraseLower = term.PhraseLower,
                     Sentence = term.Sentence,
                     State = term.State,
                     TermId = term.TermId,
@@ -161,6 +163,16 @@ namespace ReadingTool.Site
         }
 
         public bool OnPreUpdate(PreUpdateEvent @event)
+        {
+            if(@event.Entity is Term)
+            {
+                LogTerm(@event.Entity as Term);
+            }
+
+            return false;
+        }
+
+        public bool OnPreDelete(PreDeleteEvent @event)
         {
             if(@event.Entity is Term)
             {

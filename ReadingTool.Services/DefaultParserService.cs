@@ -56,8 +56,6 @@ namespace ReadingTool.Services
 
         protected virtual string BuildTextWithTitle(string inputText)
         {
-            return inputText;
-
             return (_text.CollectionNo.HasValue ? _text.CollectionNo + ". " : "") +
                    _text.Title +
                    (string.IsNullOrEmpty(_text.CollectionName) ? "" : " (" + _text.CollectionName + ")") +

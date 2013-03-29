@@ -10,7 +10,28 @@ namespace ReadingTool.Entities
     {
         public virtual long TermId { get; set; }
         public virtual TermState State { get; set; }
-        public virtual string Phrase { get; set; }
+
+        private string _phrase;
+        private string _phraseLower;
+
+        public virtual string Phrase
+        {
+            get { return _phrase; }
+            set
+            {
+                _phrase = value;
+                if(string.IsNullOrWhiteSpace(value))
+                {
+                    _phraseLower = "";
+                }
+                else
+                {
+                    _phraseLower = _phrase.ToLowerInvariant();
+                }
+            }
+        }
+
+        public virtual string PhraseLower { get { return _phraseLower; } }
         public virtual string BasePhrase { get; set; }
         public virtual string Sentence { get; set; }
         public virtual string Definition { get; set; }
@@ -100,15 +121,23 @@ namespace ReadingTool.Entities
             Id(x => x.TermId).GeneratedBy.Identity();
             Map(x => x.Length).Not.Nullable();
             Map(x => x.State).CustomType<TermState>().Index("IDX_Term_State");
-            Map(x => x.Phrase).Length(50).Not.Nullable().Index("IDX_Term_Phrase");
+            Map(x => x.Phrase).Length(50).Not.Nullable();
+            Map(x => x.PhraseLower)
+                .CustomSqlType("nvarchar(50) collate Latin1_General_Bin ")
+                .Length(50)
+                .Not.Nullable()
+                .Index("IDX_Term_Phrase")
+                .UniqueKey("IDX_Unique_Term")
+                ;
+
             Map(x => x.BasePhrase).Length(50);
             Map(x => x.Sentence).Length(500);
             Map(x => x.Definition).Length(500);
             References(x => x.Text);
-            References(x => x.Language).Not.Nullable();
+            References(x => x.Language).Not.Nullable().UniqueKey("IDX_Unique_Term");
             Map(x => x.Created);
             Map(x => x.Modified);
-            References(x => x.User).Not.Nullable();
+            References(x => x.User).Not.Nullable().UniqueKey("IDX_Unique_Term");
             Map(x => x.Box);
             Map(x => x.NextReview);
 

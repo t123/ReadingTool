@@ -213,7 +213,7 @@ namespace ReadingTool.Site.Controllers.Home
             {
 
                 term = _termRepository.FindAll(x =>
-                                                   x.Phrase.Equals(spanTerm) &&
+                                                   x.PhraseLower.Equals(spanTerm.ToLowerInvariant()) &&
                                                    x.User == _userRepository.LoadOne(UserId) &&
                                                    x.Language == _languageRepository.LoadOne(languageId)
                                                    )

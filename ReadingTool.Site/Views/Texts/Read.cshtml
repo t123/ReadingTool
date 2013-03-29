@@ -2,7 +2,7 @@
 @model ReadingTool.Site.Models.Texts.ReadModel
 @{
     string action = Model.AsParallel ? "ReadParallel" : "Read";
-    ViewBag.Title = "Read Text";
+    ViewBag.Title = Model.Text.Title + " - " + Model.Text.CollectionName;
     Bundles.Reference("Content/Reading");
     Bundles.Reference("Scripts/Reading", "inline");
     Bundles.Reference("Scripts/SimpleModal", "inline");
@@ -41,7 +41,7 @@
 }
 
 @section MenuAdditional {
-    @if (Model.PagedTexts.Item2 != null)
+    @if (Model.PagedTexts.Item2>0)
     {
         <li class="pull-right">
             <a href="@Url.Action(action, new {id = Model.PagedTexts.Item2})">next</a>
@@ -58,11 +58,11 @@
                     <a href="@Url.Action("Read", new {id = Model.Text.TextId})">read single mode</a>
                     <a href="@Url.Action("ReadParallel", new {id = Model.Text.TextId})">read in parallel</a>
                     <a href="@Url.Action("DownloadLatex", new {id = Model.Text.TextId})">download latex</a>
-                    @if (Model.PagedTexts.Item1 != null)
+                    @if (Model.PagedTexts.Item1>0)
                     {
                         <a href="@Url.Action(action, new {id = Model.PagedTexts.Item1})">previous text</a>
                     }
-                    @if (Model.PagedTexts.Item2 != null)
+                    @if (Model.PagedTexts.Item2>0)
                     {
                         <a href="@Url.Action(action, new {id = Model.PagedTexts.Item2})">next text</a>
                     }
@@ -72,7 +72,7 @@
             </ul>
         </div>
     </li>
-    @if (Model.PagedTexts.Item1 != null)
+    @if (Model.PagedTexts.Item1>0)
     {
         <li class="pull-right">
             <a href="@Url.Action(action, new {id = Model.PagedTexts.Item1})">previous</a>
@@ -90,11 +90,11 @@
         @Html.Raw(@Model.ParsedText)
     </div>
     <div class="clr50"></div>
-    @if(Model.PagedTexts.Item1 != null)
+    @if(Model.PagedTexts.Item1>0)
     {
         <a href="@Url.Action(action, new { id = Model.PagedTexts.Item1 })" class="btn">previous text</a>
     }
-    @if(Model.PagedTexts.Item2 != null)
+    @if(Model.PagedTexts.Item2>0)
     {
         <a href="@Url.Action(action, new { id = Model.PagedTexts.Item2 })" class="btn">next text</a>
     }

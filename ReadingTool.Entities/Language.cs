@@ -46,7 +46,11 @@ namespace ReadingTool.Entities
             Map(x => x.Code).Length(2).Not.Nullable();
             Map(Reveal.Member<Language>("_jsonSettings")).Column("Settings").Length(10000);
             References(x => x.User).Not.Nullable();
-            HasMany(x => x.Dictionaries).Not.LazyLoad().Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.Dictionaries)
+                //.Not.LazyLoad()
+                .Cascade
+                .AllDeleteOrphan()
+                .Inverse();
         }
     }
 }

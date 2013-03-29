@@ -204,7 +204,7 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpGet]
         public ActionResult Edit(long id)
         {
-            var text = _textRepository.FindOne(x => x.TextId == id && x.User.UserId == UserId);
+            var text = _textService.FindOne(id);
 
             if(text == null)
             {
@@ -244,7 +244,7 @@ namespace ReadingTool.Site.Controllers.Home
                 return View(model);
             }
 
-            var text = _textRepository.FindOne(x => x.TextId == id && x.User.UserId == UserId);
+            var text = _textService.FindOne(id);
 
             if(text == null || id != model.TextId)
             {
@@ -330,8 +330,8 @@ namespace ReadingTool.Site.Controllers.Home
             var terms = _termRepository.FindAll(x => x.Language == text.Language1 && x.User == _userRepository.LoadOne(UserId)).ToArray();
             var parsed = _parserService.Parse(asParallel, text.Language1, text.Language2, terms, text);
 
-            var nextText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo > text.CollectionNo).OrderBy(x => x.CollectionNo).FirstOrDefault();
-            var previousText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo < text.CollectionNo).OrderByDescending(x => x.CollectionNo).FirstOrDefault();
+            long nextText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo > text.CollectionNo).OrderBy(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
+            long previousText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo < text.CollectionNo).OrderByDescending(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
 
             text.LastRead = DateTime.Now;
             _textRepository.Save(text);
@@ -344,7 +344,7 @@ namespace ReadingTool.Site.Controllers.Home
                     Language = Mapper.Map<Language, LanguageViewModel>(text.Language1),
                     Language2 = !asParallel || text.Language2 == null ? null : Mapper.Map<Language, LanguageViewModel>(text.Language2),
                     User = Mapper.Map<User, AccountModel.UserModel>(text.User),
-                    PagedTexts = new Tuple<long?, long?>(previousText == null ? (long?)null : previousText.TextId, nextText == null ? (long?)null : nextText.TextId)
+                    PagedTexts = new Tuple<long, long>(previousText, nextText)
                 };
         }
 
