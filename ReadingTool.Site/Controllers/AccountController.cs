@@ -178,7 +178,7 @@ namespace ReadingTool.Site.Controllers.Home
                             L1Text = x.L1Text,
                             L2Text = x.L2Text
                         }),
-                    Term = user.Terms.Select(x => new
+                    Terms = user.Terms.Select(x => new
                         {
                             State = x.State,
                             Phrase = x.Phrase,
