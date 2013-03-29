@@ -1,15 +1,39 @@
+#region License
+// NinjectWebCommon.cs is part of ReadingTool.Site
+// 
+// ReadingTool.Site is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// ReadingTool.Site is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+// 
+// You should have received a copy of the GNU Affero General Public License
+// along with ReadingTool.Site. If not, see <http://www.gnu.org/licenses/>.
+// 
+// Copyright (C) 2013 Travis Watt
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Security.Principal;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using NHibernate;
 using NHibernate.Context;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
+using Ninject;
 using Ninject.Activation;
+using Ninject.Web.Common;
 using ReadingTool.Services;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(ReadingTool.Site.App_Start.NinjectWebCommon), "Start")]
@@ -17,14 +41,6 @@ using ReadingTool.Services;
 
 namespace ReadingTool.Site.App_Start
 {
-    using System;
-    using System.Web;
-
-    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
-    using Ninject;
-    using Ninject.Web.Common;
-
     public class NinjectControllerFactory : DefaultControllerFactory
     {
         private IKernel ninjectKernel;
