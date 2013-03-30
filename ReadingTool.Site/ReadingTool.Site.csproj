@@ -237,8 +237,10 @@
     <Content Include="Content\fineuploader\loading.gif" />
     <Content Include="Content\fineuploader\processing.gif" />
     <Content Include="Content\fonts\DroidSans-webfont.svg" />
+    <Content Include="Content\img\challenge.png" />
     <Content Include="Content\img\glyphicons-halflings-white.png" />
     <Content Include="Content\img\glyphicons-halflings.png" />
+    <Content Include="Content\img\misc-jackie-chan.png" />
     <Content Include="Content\img\x.png" />
     <Content Include="Content\reading\read.css">
       <DependentUpon>read.less</DependentUpon>

@@ -167,10 +167,5 @@ namespace ReadingTool.Site.Controllers.Home
 
             return View();
         }
-
-        public ActionResult Exception()
-        {
-            throw new Exception("Test exception");
-        }
     }
 }

@@ -59,7 +59,7 @@ namespace ReadingTool.Site
                 if(httpException.GetHttpCode() == (int)HttpStatusCode.NotFound)
                 {
                     string url = ((HttpContext)e.Context).Request.RawUrl;
-                    string[] ignoreExtensions = new string[] { ".php", ".asp", ".aspx", ".gif", ".png", ".ico" };
+                    string[] ignoreExtensions = new string[] { ".php", ".asp", ".aspx", ".gif", ".png", ".ico", ".woff" };
 
                     if(url.StartsWith("/apple-touch"))
                     {
