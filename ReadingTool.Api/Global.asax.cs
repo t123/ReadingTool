@@ -23,7 +23,9 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using AutoMapper;
+using Newtonsoft.Json.Serialization;
 using ReadingTool.Api.Handler;
+using ReadingTool.Api.Models;
 using ReadingTool.Api.Models.Languages;
 using ReadingTool.Api.Models.Terms;
 using ReadingTool.Entities;
@@ -47,7 +49,9 @@ namespace ReadingTool.Api
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             //GlobalConfiguration.Configuration.MessageHandlers.Add(new HttpsHandler());
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new BasicAuthenticationMessageHandler());
+            //GlobalConfiguration.Configuration.MessageHandlers.Add(new BasicAuthenticationMessageHandler());
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new CorsHandler());
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenMessageHandler());
 
             Mapper.CreateMap<Language, LanguageResponseModel>()
                 .ForMember(x => x.Direction, y => y.MapFrom(z => z.Settings.Direction.ToString()))
@@ -63,6 +67,9 @@ namespace ReadingTool.Api
                 .ForMember(x => x.LanguageId, y => y.MapFrom(z => z.Language.LanguageId))
                 .ForMember(x => x.TextId, y => y.MapFrom(z => z.Text.TextId))
                 ;
+
+            var json = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
+            json.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
     }
 }

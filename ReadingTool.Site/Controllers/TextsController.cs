@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -357,7 +358,8 @@ namespace ReadingTool.Site.Controllers.Home
                     Language = Mapper.Map<Language, LanguageViewModel>(text.Language1),
                     Language2 = !asParallel || text.Language2 == null ? null : Mapper.Map<Language, LanguageViewModel>(text.Language2),
                     User = Mapper.Map<User, AccountModel.UserModel>(text.User),
-                    PagedTexts = new Tuple<Guid, Guid>(previousText, nextText)
+                    PagedTexts = new Tuple<Guid, Guid>(previousText, nextText),
+                    ApiDomain = ConfigurationManager.AppSettings["ApiDomain"]
                 };
         }
 

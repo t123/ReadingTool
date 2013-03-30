@@ -183,6 +183,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Attributes\NeedsPersistenceAttribute.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\LanguagesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TermsController.cs" />
@@ -190,9 +191,14 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Handler\BasicAuthenticationMessageHandler.cs" />
+    <Compile Include="Handler\CorsHandler.cs" />
+    <Compile Include="Handler\TokenMessageHandler.cs" />
     <Compile Include="Handler\HttpsHandler.cs" />
     <Compile Include="Models\Languages\LanguageResponseModel.cs" />
-    <Compile Include="Models\Terms\TermResponseModel.cs" />
+    <Compile Include="Models\Read\TermResponseModel.cs" />
+    <Compile Include="Models\Terms\TermResponseModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

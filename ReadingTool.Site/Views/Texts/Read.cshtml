@@ -15,8 +15,7 @@
                                          var settings = {
                                              textId: '@Model.Text.TextId',  
                                              languageId: '@Model.Language.LanguageId',
-                                             modal: @Model.Language.Modal.ToString().ToLowerInvariant(),
-                                             apiKey: '@Model.User.ApiKey.ToBase64()'
+                                             modal: @Model.Language.Modal.ToString().ToLowerInvariant()
                                          };
                                          
                                          var modalHandler = new ModalHandler(routes, settings);

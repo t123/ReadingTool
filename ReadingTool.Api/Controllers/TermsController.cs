@@ -40,9 +40,9 @@ namespace ReadingTool.Api.Controllers
         private readonly Repository<Term> _termRepository;
         private readonly Repository<User> _userRepository;
 
-        private long UserId
+        private Guid UserId
         {
-            get { return long.Parse(HttpContext.Current.User.Identity.Name); }
+            get { return Guid.Parse(HttpContext.Current.User.Identity.Name); }
         }
 
         public TermsController(
@@ -54,7 +54,6 @@ namespace ReadingTool.Api.Controllers
             _userRepository = userRepository;
         }
 
-        // GET api/terms
         public IEnumerable<TermResponseModel> Get(int page = 1, string state = "all", Guid? language = null)
         {
             if(page < 1)
@@ -98,7 +97,6 @@ namespace ReadingTool.Api.Controllers
             return Mapper.Map<IEnumerable<Term>, IEnumerable<TermResponseModel>>(terms);
         }
 
-        // GET api/terms/5
         public TermResponseModel Get(Guid id)
         {
             var term = _termRepository.FindOne(x => x.TermId == id && x.User == _userRepository.LoadOne(UserId));

@@ -121,5 +121,10 @@ namespace ReadingTool.Services
         {
             return System.Web.Security.Membership.GeneratePassword(50, 15);
         }
+
+        public User GetUserByApiKey(string apiKey)
+        {
+            return _userRepository.FindOne(x => x.ApiKey == apiKey);
+        }
     }
 }

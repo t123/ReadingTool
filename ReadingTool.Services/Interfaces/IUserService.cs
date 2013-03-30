@@ -32,5 +32,6 @@ namespace ReadingTool.Services
         bool UsernameExists(string username);
         bool UpdatePassword(User user, string password);
         string CreateApiKey();
+        User GetUserByApiKey(string apiKey);
     }
 }
