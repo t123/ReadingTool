@@ -17,13 +17,14 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ReadingTool.Site.Models.Ajax
 {
     public class TermModel
     {
-        public long TermId { get; set; }
+        public Guid TermId { get; set; }
         public string State { get; set; }
         public string Phrase { get; set; }
         public string BasePhrase { get; set; }
@@ -36,7 +37,7 @@ namespace ReadingTool.Site.Models.Ajax
 
         public bool Exists
         {
-            get { return TermId != 0; }
+            get { return TermId != Guid.Empty; }
         }
 
         public short Box { get; set; }
@@ -44,9 +45,9 @@ namespace ReadingTool.Site.Models.Ajax
 
     public class SaveTermModel
     {
-        public long? TermId { get; set; }
-        public long LanguageId { get; set; }
-        public long TextId { get; set; }
+        public Guid? TermId { get; set; }
+        public Guid LanguageId { get; set; }
+        public Guid TextId { get; set; }
         public string State { get; set; }
         [MaxLength(50)]
         public string Phrase { get; set; }

@@ -35,13 +35,8 @@ namespace ReadingTool.Site.Controllers.Home
 {
     [Authorize]
     [NeedsPersistence]
-    public class UpgradeController : Controller
+    public class UpgradeController : BaseController
     {
-        private long UserId
-        {
-            get { return long.Parse(HttpContext.User.Identity.Name); }
-        }
-
         private readonly Repository<User> _userRepository;
         private readonly Repository<Term> _termRepository;
         private readonly Repository<Text> _textRepository;
@@ -81,8 +76,8 @@ namespace ReadingTool.Site.Controllers.Home
 
             dynamic json = JsonConvert.DeserializeObject(jsonString);
 
-            var lmap = new Dictionary<string, long>();
-            var tmap = new Dictionary<string, long?>();
+            var lmap = new Dictionary<string, Guid>();
+            var tmap = new Dictionary<string, Guid?>();
 
             foreach(var language in json.Languages)
             {
@@ -187,7 +182,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
                 string lid = text.LanguageId.ToString();
-                t.Language1 = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, 0));
+                t.Language1 = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, Guid.Empty));
 
                 if(!string.IsNullOrEmpty(t.L2Text))
                 {
@@ -217,7 +212,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
                 string lid = word.LanguageId.ToString();
-                t.Language = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, 0));
+                t.Language = _languageRepository.FindOne(lmap.GetValueOrDefault(lid, Guid.Empty));
 
                 Regex regex = new Regex(@"([" + t.Language.Settings.RegexWordCharacters + @"])");
                 if(!regex.IsMatch(t.Phrase))
@@ -246,7 +241,7 @@ namespace ReadingTool.Site.Controllers.Home
 
 
                 string tid = word.ItemId.ToString();
-                t.Text = _textRepository.FindOne(tmap.GetValueOrDefault(tid, (long?)null));
+                t.Text = _textRepository.FindOne(tmap.GetValueOrDefault(tid, (Guid?)null));
 
                 if(word.Tags != null)
                 {

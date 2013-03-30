@@ -28,8 +28,9 @@ namespace ReadingTool.Services
         Repository<User> Repository { get; }
         User CreateUser(string username, string password);
         User ValidateUser(string username, string password);
-        User ValidateUser(long userId, string password);
+        User ValidateUser(Guid userId, string password);
         bool UsernameExists(string username);
         bool UpdatePassword(User user, string password);
+        string CreateApiKey();
     }
 }

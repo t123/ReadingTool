@@ -23,6 +23,13 @@
                 </div>
                 <div class="clr10"></div>
                 <div class="control-group">
+                    @Html.LabelFor(x => x.User.ApiKey, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.TextBoxFor(x => x.User.ApiKey, new { @placeholder = "your API key", @class = "input-xxlarge", disabled="disabled", @readonly="readonly" })
+                        @Html.ValidationMessageFor(x => x.User.ApiKey)
+                    </div>
+                </div>
+                <div class="control-group">
                     @Html.LabelFor(x => x.User.DisplayName, new { @class = "control-label" })
                     <div class="controls">
                         @Html.TextBoxFor(x => x.User.DisplayName, new { @placeholder = "display name, what others users see", @class = "input-xxlarge" })
@@ -38,7 +45,8 @@
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Save changes</button>
-                    <a href="@Url.Action("ExportAccount")" class="btn">Export account</a>
+                    <a href="@Url.Action("ExportAccount")" class="btn">Export account data</a>
+                    <a href="@Url.Action("NewApiKey")" class="btn">Create a new API key</a>
                 </div>
             </fieldset>
         }

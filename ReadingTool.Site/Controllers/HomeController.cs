@@ -32,7 +32,7 @@ using ReadingTool.Site.Models.Home;
 namespace ReadingTool.Site.Controllers.Home
 {
     [NeedsPersistence]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly IUserService _userService;
 

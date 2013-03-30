@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ReadingTool.Common;
@@ -36,8 +37,8 @@ namespace ReadingTool.Site.Models.Languages
 
     public class DictionaryModel
     {
-        public long DictionaryId { get; set; }
-        public long LanguageId { get; set; }
+        public Guid DictionaryId { get; set; }
+        public Guid LanguageId { get; set; }
 
         [Required(ErrorMessage = "Please enter the name.")]
         [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]
@@ -62,7 +63,7 @@ namespace ReadingTool.Site.Models.Languages
 
     public class LanguageModel
     {
-        public long LanguageId { get; set; }
+        public Guid LanguageId { get; set; }
 
         [Required(ErrorMessage = "Please enter a name.")]
         [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]

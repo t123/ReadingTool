@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.Collections.Generic;
 using FluentNHibernate;
 using FluentNHibernate.Mapping;
@@ -26,7 +27,7 @@ namespace ReadingTool.Entities
 {
     public class Language
     {
-        public virtual long LanguageId { get; set; }
+        public virtual Guid LanguageId { get; set; }
         public virtual string Name { get; set; }
         public virtual string Code { get; set; }
         public virtual User User { get; set; }
@@ -59,7 +60,7 @@ namespace ReadingTool.Entities
     {
         public LanguageMap()
         {
-            Id(x => x.LanguageId).GeneratedBy.Identity();
+            Id(x => x.LanguageId).GeneratedBy.GuidComb();
             Map(x => x.Name).Length(50).Not.Nullable().Index("IDX_Language_Name");
             Map(x => x.Code).Length(2).Not.Nullable();
             Map(Reveal.Member<Language>("_jsonSettings")).Column("Settings").Length(10000);

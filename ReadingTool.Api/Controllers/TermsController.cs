@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -54,7 +55,7 @@ namespace ReadingTool.Api.Controllers
         }
 
         // GET api/terms
-        public IEnumerable<TermResponseModel> Get(int page = 1, string state = "all", int language = 0)
+        public IEnumerable<TermResponseModel> Get(int page = 1, string state = "all", Guid? language = null)
         {
             if(page < 1)
             {
@@ -86,7 +87,7 @@ namespace ReadingTool.Api.Controllers
                     break;
             }
 
-            if(language > 0)
+            if(language != null && language != Guid.Empty)
             {
                 terms = terms.Where(x => x.Language.LanguageId == language);
             }
@@ -98,7 +99,7 @@ namespace ReadingTool.Api.Controllers
         }
 
         // GET api/terms/5
-        public TermResponseModel Get(long id)
+        public TermResponseModel Get(Guid id)
         {
             var term = _termRepository.FindOne(x => x.TermId == id && x.User == _userRepository.LoadOne(UserId));
 

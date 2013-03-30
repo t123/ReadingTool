@@ -17,13 +17,14 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using FluentNHibernate.Mapping;
 
 namespace ReadingTool.Entities
 {
     public class Tag
     {
-        public virtual long TagId { get; set; }
+        public virtual Guid TagId { get; set; }
         private string _tagTerm;
         public virtual string TagTerm
         {
@@ -36,7 +37,7 @@ namespace ReadingTool.Entities
     {
         public TagMap()
         {
-            Id(x => x.TagId).GeneratedBy.Identity();
+            Id(x => x.TagId).GeneratedBy.GuidComb();
             Map(x => x.TagTerm).Length(50).Not.Nullable().Unique().Index("IDX_Tag_TagTerm");
         }
     }

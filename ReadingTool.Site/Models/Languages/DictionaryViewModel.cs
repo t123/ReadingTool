@@ -17,12 +17,14 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
+
 namespace ReadingTool.Site.Models.Languages
 {
     public class DictionaryViewModel
     {
-        public long DictionaryId { get; set; }
-        public long LanguageId { get; set; }
+        public Guid DictionaryId { get; set; }
+        public Guid LanguageId { get; set; }
         public string Name { get; set; }
         public string Encoding { get; set; }
         public string WindowName { get; set; }

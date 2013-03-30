@@ -1,8 +1,11 @@
 ﻿@model ReadingTool.Site.Models.Texts.TextModel
+@section bottomJS
+{
+    <script language="javascript" src="~/ScriptsOther/CodeMirror/codemirror.min.js"></script>
+}
 @{
     ViewBag.Title = "Add Text";
     Bundles.Reference("/Content/CodeMirror");
-    Bundles.Reference("/Scripts/CodeMirror");
     
     Bundles.AddInlineScript(@<text><script language="javascript">
                                        function checkL2() {

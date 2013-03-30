@@ -40,7 +40,7 @@ namespace ReadingTool.Site.Controllers.Home
 {
     [Authorize]
     [NeedsPersistence]
-    public class TextsController : Controller
+    public class TextsController : BaseController
     {
         private readonly Repository<Language> _languageRepository;
         private readonly Repository<Text> _textRepository;
@@ -49,11 +49,6 @@ namespace ReadingTool.Site.Controllers.Home
         private readonly ITextService _textService;
         private readonly IParserService _parserService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private long UserId
-        {
-            get { return long.Parse(HttpContext.User.Identity.Name); }
-        }
 
         public TextsController(
             Repository<Language> languageRepository,
@@ -220,7 +215,7 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult Edit(long id)
+        public ActionResult Edit(Guid id)
         {
             var text = _textService.FindOne(id);
 
@@ -235,7 +230,7 @@ namespace ReadingTool.Site.Controllers.Home
                     CollectionName = text.CollectionName,
                     CollectionNo = text.CollectionNo,
                     Language1Id = text.Language1.LanguageId,
-                    Language2Id = text.Language2 == null ? (long?)null : text.Language2.LanguageId,
+                    Language2Id = text.Language2 == null ? (Guid?)null : text.Language2.LanguageId,
                     TextId = text.TextId,
                     Title = text.Title,
                     AudioUrl = text.AudioUrl,
@@ -249,7 +244,7 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Edit(long id, TextModel model)
+        public ActionResult Edit(Guid id, TextModel model)
         {
             if(!string.IsNullOrEmpty(model.L2Text) && model.Language2Id == null)
             {
@@ -287,7 +282,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(long id)
+        public ActionResult Delete(Guid id)
         {
             _textService.Delete(id);
             this.FlashSuccess("Text Deleted.");
@@ -295,7 +290,7 @@ namespace ReadingTool.Site.Controllers.Home
             return RedirectToAction("Index");
         }
 
-        public ActionResult Read(long id)
+        public ActionResult Read(Guid id)
         {
             var text = _textService.FindOne(id);
 
@@ -307,7 +302,7 @@ namespace ReadingTool.Site.Controllers.Home
             return View(Create(text, false));
         }
 
-        public ActionResult ReadParallel(long id)
+        public ActionResult ReadParallel(Guid id)
         {
             var text = _textService.FindOne(id);
 
@@ -319,7 +314,7 @@ namespace ReadingTool.Site.Controllers.Home
             return View("Read", Create(text, true));
         }
 
-        public FileContentResult DownloadLatex(long id)
+        public FileContentResult DownloadLatex(Guid id)
         {
             var text = _textService.FindOne(id);
 
@@ -348,8 +343,8 @@ namespace ReadingTool.Site.Controllers.Home
             var terms = _termRepository.FindAll(x => x.Language == text.Language1 && x.User == _userRepository.LoadOne(UserId)).ToArray();
             var parsed = _parserService.Parse(asParallel, text.Language1, text.Language2, terms, text);
 
-            long nextText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo > text.CollectionNo).OrderBy(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
-            long previousText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo < text.CollectionNo).OrderByDescending(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
+            Guid nextText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo > text.CollectionNo).OrderBy(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
+            Guid previousText = _textRepository.FindAll(x => x.User == text.User && x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo < text.CollectionNo).OrderByDescending(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
 
             text.LastRead = DateTime.Now;
             _textRepository.Save(text);
@@ -362,7 +357,7 @@ namespace ReadingTool.Site.Controllers.Home
                     Language = Mapper.Map<Language, LanguageViewModel>(text.Language1),
                     Language2 = !asParallel || text.Language2 == null ? null : Mapper.Map<Language, LanguageViewModel>(text.Language2),
                     User = Mapper.Map<User, AccountModel.UserModel>(text.User),
-                    PagedTexts = new Tuple<long, long>(previousText, nextText)
+                    PagedTexts = new Tuple<Guid, Guid>(previousText, nextText)
                 };
         }
 

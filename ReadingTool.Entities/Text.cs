@@ -28,7 +28,7 @@ namespace ReadingTool.Entities
 {
     public class Text
     {
-        public virtual long TextId { get; set; }
+        public virtual Guid TextId { get; set; }
         public virtual string Title { get; set; }
         public virtual string CollectionName { get; set; }
         public virtual int? CollectionNo { get; set; }
@@ -156,7 +156,7 @@ namespace ReadingTool.Entities
     {
         public TextMap()
         {
-            Id(x => x.TextId).GeneratedBy.Identity();
+            Id(x => x.TextId).GeneratedBy.GuidComb();
             Map(x => x.Title).Length(250).Not.Nullable().Index("IDX_Text_Title");
             Map(x => x.CollectionName).Length(50).Index("IDX_Text_CollectionName");
             Map(x => x.CollectionNo);

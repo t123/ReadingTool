@@ -36,13 +36,8 @@ namespace ReadingTool.Site.Controllers.Home
 {
     [Authorize]
     [NeedsPersistence]
-    public class AjaxController : Controller
+    public class AjaxController : BaseController
     {
-        private long UserId
-        {
-            get { return long.Parse(HttpContext.User.Identity.Name); }
-        }
-
         private readonly Repository<Language> _languageRepository;
         private readonly Repository<Text> _textRepository;
         private readonly Repository<User> _userRepository;
@@ -69,7 +64,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [AjaxRoute]
         [HttpPost]
-        public JsonNetResult ResetTerm(long termId)
+        public JsonNetResult ResetTerm(Guid termId)
         {
             var term = _termRepository.FindOne(x => x.TermId == termId && x.User == _userRepository.LoadOne(UserId));
 
@@ -120,7 +115,7 @@ namespace ReadingTool.Site.Controllers.Home
             string message;
             short length = (short)model.Phrase.Trim().Split(' ').Length;
 
-            if(model.TermId == 0 || model.TermId == null)
+            if(model.TermId == null || model.TermId == Guid.Empty)
             {
                 term = new Term()
                     {
@@ -220,14 +215,14 @@ namespace ReadingTool.Site.Controllers.Home
 
         [AjaxRoute]
         [HttpPost]
-        public JsonNetResult FindTerm(long? termId, string spanTerm, long languageId)
+        public JsonNetResult FindTerm(Guid? termId, string spanTerm, Guid languageId)
         {
             spanTerm = (spanTerm ?? "").Trim();
             Term term = null;
 
             short length = (short)spanTerm.Split(' ').Length;
 
-            if(termId == null || termId == 0)
+            if(termId == null || termId == Guid.Empty)
             {
 
                 term = _termRepository.FindAll(x =>
@@ -276,7 +271,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [HttpPost]
         [AjaxRoute]
-        public JsonNetResult MarkRemaingAsKnown(long languageId, long textId, string[] terms)
+        public JsonNetResult MarkRemaingAsKnown(Guid languageId, Guid textId, string[] terms)
         {
             if(terms == null || terms.Length == 0)
             {
@@ -326,7 +321,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [AjaxRoute]
         [HttpPost]
-        public JsonResult EncodeTerm(long languageId, long dictionaryId, string input)
+        public JsonResult EncodeTerm(Guid languageId, Guid dictionaryId, string input)
         {
             try
             {

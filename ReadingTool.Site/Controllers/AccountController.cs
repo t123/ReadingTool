@@ -36,7 +36,7 @@ namespace ReadingTool.Site.Controllers.Home
 {
     [Authorize]
     [NeedsPersistence]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IUserService _userService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -44,11 +44,6 @@ namespace ReadingTool.Site.Controllers.Home
         public AccountController(IUserService userService)
         {
             _userService = userService;
-        }
-
-        private long UserId
-        {
-            get { return long.Parse(HttpContext.User.Identity.Name); }
         }
 
         public ActionResult Index()
@@ -87,6 +82,17 @@ namespace ReadingTool.Site.Controllers.Home
             _userService.Repository.Save(user);
 
             this.FlashSuccess("Your account has been updated.");
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult NewApiKey()
+        {
+            var user = _userService.Repository.FindOne(x => x.UserId == UserId);
+            user.ApiKey = _userService.CreateApiKey();
+            _userService.Repository.Save(user);
+
+            this.FlashSuccess("A new API key was created.");
+
             return RedirectToAction("Index");
         }
 
@@ -187,7 +193,7 @@ namespace ReadingTool.Site.Controllers.Home
                             Definition = x.Definition,
                             Box = x.Box,
                             NextReview = x.NextReview,
-                            Text = x.Text == null ? (long?)null : x.Text.TextId,
+                            Text = x.Text == null ? (Guid?)null : x.Text.TextId,
                             Language = x.Language.Name,
                             Created = x.Created,
                             Modified = x.Modified,

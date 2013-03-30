@@ -57,6 +57,7 @@
     </div>
     <div class="clr50"></div>
     @Bundles.RenderScripts("body")
+    @RenderSection("bottomJS", false) @*work around for codemirror*@
     @Bundles.RenderScripts("footer")
     @Bundles.RenderScripts("inline")
 </body>

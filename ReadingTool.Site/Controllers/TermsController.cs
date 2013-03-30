@@ -35,18 +35,13 @@ namespace ReadingTool.Site.Controllers.Home
 {
     [Authorize]
     [NeedsPersistence]
-    public class TermsController : Controller
+    public class TermsController : BaseController
     {
         private readonly Repository<User> _userRepository;
         private readonly Repository<Term> _termRepository;
         private readonly Repository<Language> _languageRepository;
         private readonly Repository<Tag> _tagRepository;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private long UserId
-        {
-            get { return long.Parse(HttpContext.User.Identity.Name); }
-        }
 
         public TermsController(
             Repository<User> userRepository,
@@ -192,7 +187,7 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult Edit(long id)
+        public ActionResult Edit(Guid id)
         {
             var term = _termRepository.FindOne(x => x.TermId == id && x.User == _userRepository.LoadOne(UserId));
 
@@ -209,7 +204,7 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Edit(long id, TermModel model)
+        public ActionResult Edit(Guid id, TermModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -257,11 +252,11 @@ namespace ReadingTool.Site.Controllers.Home
             return RedirectToAction("Edit", new { id = id });
         }
 
-        public FileContentResult Export(long id, bool all)
+        public FileContentResult Export(Guid id, bool all)
         {
             IEnumerable<Term> terms;
 
-            if(id == 0)
+            if(id == Guid.Empty)
             {
                 if(all)
                 {

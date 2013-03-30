@@ -33,17 +33,12 @@ namespace ReadingTool.Site.Controllers.Home
 {
     [Authorize]
     [NeedsPersistence]
-    public class ReviewController : Controller
+    public class ReviewController : BaseController
     {
         private readonly Repository<User> _userRepository;
         private readonly Repository<Term> _termRepository;
         private readonly Repository<Language> _languageRepository;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private long UserId
-        {
-            get { return long.Parse(HttpContext.User.Identity.Name); }
-        }
 
         public ReviewController(Repository<User> userRepository, Repository<Term> termRepository, Repository<Language> languageRepository)
         {
@@ -53,10 +48,10 @@ namespace ReadingTool.Site.Controllers.Home
         }
 
         [HttpGet]
-        public ActionResult Index(long? id)
+        public ActionResult Index(Guid? id)
         {
             IQueryable<Term> terms;
-            if(id == null || id == 0)
+            if(id == null || id == Guid.Empty)
             {
                 terms = _termRepository.FindAll(x => x.User.UserId == UserId && x.State == TermState.NotKnown && x.NextReview < DateTime.Now);
 
@@ -74,7 +69,7 @@ namespace ReadingTool.Site.Controllers.Home
                 {
                     ReviewTotal = terms.Count(),
                     Terms = Mapper.Map<IEnumerable<Term>, IEnumerable<TermViewModel>>(terms),
-                    LanguageId = id ?? 0,
+                    LanguageId = id ?? Guid.Empty,
                     Languages = _languageRepository.FindAll(x => x.User == _userRepository.LoadOne(UserId)).OrderBy(x => x.Name).ToDictionary(x => x.LanguageId, x => x.Name)
                 };
 
@@ -89,9 +84,9 @@ namespace ReadingTool.Site.Controllers.Home
 
             foreach(var key in Request.Form.AllKeys.Where(x => x.StartsWith("term_")))
             {
-                long termId;
+                Guid termId;
 
-                if(!long.TryParse(key.Remove(0, 5), out termId))
+                if(!Guid.TryParse(key.Remove(0, 5), out termId))
                 {
                     continue;
                 }

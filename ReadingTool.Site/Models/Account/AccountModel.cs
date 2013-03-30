@@ -26,7 +26,7 @@ namespace ReadingTool.Site.Models.Account
     {
         public class UserModel
         {
-            public long UserId { get; set; }
+            public Guid UserId { get; set; }
 
             [Display(Name = "Email Address")]
             [MaxLength(50, ErrorMessage = "Please use less than 100 characters.")]
@@ -36,7 +36,10 @@ namespace ReadingTool.Site.Models.Account
             [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]
             public string DisplayName { get; set; }
             public DateTime Created { get; set; }
-            public string[] Roles { get; set; }
+            //public string[] Roles { get; set; }
+
+            [Display(Name = "Your API Key")]
+            public string ApiKey { get; set; }
         }
 
         public class PasswordModel

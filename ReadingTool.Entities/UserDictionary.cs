@@ -17,13 +17,14 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using FluentNHibernate.Mapping;
 
 namespace ReadingTool.Entities
 {
     public class UserDictionary
     {
-        public virtual long DictionaryId { get; set; }
+        public virtual Guid DictionaryId { get; set; }
         public virtual string Name { get; set; }
         public virtual string Encoding { get; set; }
         public virtual string WindowName { get; set; }
@@ -37,7 +38,7 @@ namespace ReadingTool.Entities
     {
         public UserDictionaryMap()
         {
-            Id(x => x.DictionaryId).GeneratedBy.Identity();
+            Id(x => x.DictionaryId).GeneratedBy.GuidComb();
             Map(x => x.Name).Length(50);
             Map(x => x.Encoding).Length(10);
             Map(x => x.WindowName).Length(20);

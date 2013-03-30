@@ -24,7 +24,7 @@ namespace ReadingTool.Api.Models.Terms
 {
     public class TermResponseModel
     {
-        public long TermId { get; set; }
+        public Guid TermId { get; set; }
         public string State { get; set; }
         public string Phrase { get; set; }
         public string PhraseLower { get; set; }
@@ -33,8 +33,8 @@ namespace ReadingTool.Api.Models.Terms
         public string Definition { get; set; }
         public short Box { get; set; }
         public DateTime? NextReview { get; set; }
-        public long TextId { get; set; }
-        public long LanguageId { get; set; }
+        public Guid TextId { get; set; }
+        public Guid LanguageId { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
         public ICollection<string> Tags { get; set; }

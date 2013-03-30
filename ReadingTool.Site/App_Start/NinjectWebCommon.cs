@@ -155,10 +155,10 @@ namespace ReadingTool.Site.App_Start
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<ReadingTool.Entities.User>())
                 .ExposeConfiguration(config => new SchemaUpdate(config).Execute(false, true))
                 .ExposeConfiguration(x =>
-                {
-                    x.EventListeners.PreInsertEventListeners = new IPreInsertEventListener[] { new AuditEventListener() };
-                    x.EventListeners.PreUpdateEventListeners = new IPreUpdateEventListener[] { new AuditEventListener() };
-                }
+                    {
+                        x.EventListeners.PreInsertEventListeners = new IPreInsertEventListener[] { new AuditEventListener() };
+                        x.EventListeners.PreUpdateEventListeners = new IPreUpdateEventListener[] { new AuditEventListener() };
+                    }
                 )
                 ;
 
@@ -172,7 +172,6 @@ namespace ReadingTool.Site.App_Start
             var sessionFactory = context.Kernel.Get<ISessionFactory>();
             if(!CurrentSessionContext.HasBind(sessionFactory))
             {
-                // Open new ISession and bind it to the current session context
                 var session = sessionFactory.OpenSession();
                 CurrentSessionContext.Bind(session);
             }

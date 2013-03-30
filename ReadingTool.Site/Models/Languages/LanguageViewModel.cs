@@ -17,13 +17,14 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.Collections.Generic;
 
 namespace ReadingTool.Site.Models.Languages
 {
     public class LanguageViewModel
     {
-        public long LanguageId { get; set; }
+        public Guid LanguageId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public IList<DictionaryViewModel> Dictionaries { get; set; }

@@ -83,7 +83,7 @@ namespace ReadingTool.Site
 
         private class TermModel
         {
-            public long TermId { get; set; }
+            public Guid TermId { get; set; }
             public TermState State { get; set; }
             public string Phrase { get; set; }
             public string PhraseLower { get; set; }
@@ -92,13 +92,13 @@ namespace ReadingTool.Site
             public string Definition { get; set; }
             public short Box { get; set; }
             public DateTime? NextReview { get; set; }
-            public long Text { get; set; }
-            public long Language { get; set; }
+            public Guid Text { get; set; }
+            public Guid Language { get; set; }
             public DateTime Created { get; set; }
             public DateTime Modified { get; set; }
             public string[] Tags { get; set; }
             public short Length { get; set; }
-            public long User { get; set; }
+            public Guid User { get; set; }
         }
 
         private void LogTerm(Term term)
@@ -123,7 +123,7 @@ namespace ReadingTool.Site
                     Sentence = term.Sentence,
                     State = term.State,
                     TermId = term.TermId,
-                    Text = term.Text == null ? 0 : term.Text.TextId,
+                    Text = term.Text == null ? Guid.Empty : term.Text.TextId,
                     User = term.User.UserId,
                     Tags = term.Tags.Select(x => x.TagTerm).ToArray()
                 };

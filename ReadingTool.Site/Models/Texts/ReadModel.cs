@@ -27,7 +27,7 @@ namespace ReadingTool.Site.Models.Texts
     {
         public bool AsParallel { get; set; }
         public string ParsedText { get; set; }
-        public Tuple<long, long> PagedTexts { get; set; }
+        public Tuple<Guid, Guid> PagedTexts { get; set; }
 
         public LanguageViewModel Language { get; set; }
         public LanguageViewModel Language2 { get; set; }

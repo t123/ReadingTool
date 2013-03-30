@@ -47,6 +47,7 @@ namespace ReadingTool.Services
                         Created = DateTime.Now,
                         Username = username.Trim(),
                         Password = BCrypt.Net.BCrypt.HashPassword(password),
+                        ApiKey = CreateApiKey(),
                     };
 
                 if(userCount == 0)
@@ -81,7 +82,7 @@ namespace ReadingTool.Services
             return null;
         }
 
-        public User ValidateUser(long userId, string password)
+        public User ValidateUser(Guid userId, string password)
         {
             var user = _userRepository.FindOne(userId);
 
@@ -114,6 +115,11 @@ namespace ReadingTool.Services
             _userRepository.Save(user);
 
             return true;
+        }
+
+        public string CreateApiKey()
+        {
+            return System.Web.Security.Membership.GeneratePassword(50, 15);
         }
     }
 }

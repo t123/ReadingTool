@@ -17,11 +17,13 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
+
 namespace ReadingTool.Api.Models.Languages
 {
     public class LanguageResponseModel
     {
-        public virtual long LanguageId { get; set; }
+        public virtual Guid LanguageId { get; set; }
         public virtual string Name { get; set; }
         public virtual string Code { get; set; }
         public bool ShowSpaces { get; set; }

@@ -55,8 +55,8 @@ namespace ReadingTool.Site.Controllers.Home
                     .GetExecutingAssembly()
                     .GetTypes()
                     .FirstOrDefault(x =>
-                                    x.Name.Equals(actualControllerName, StringComparison.InvariantCultureIgnoreCase) &&
-                                    x.BaseType == typeof(Controller)
+                                    x.Name.Equals(actualControllerName, StringComparison.InvariantCultureIgnoreCase) //&&
+                                    //x.BaseType == typeof(Controller)
                     );
 
                 if(controller == null)

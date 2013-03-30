@@ -26,7 +26,7 @@ namespace ReadingTool.Entities
 {
     public class User
     {
-        public virtual long UserId { get; set; }
+        public virtual Guid UserId { get; set; }
         public virtual string Username { get; set; }
         public virtual string DisplayName { get; set; }
         public virtual string EmailAddress { get; set; }
@@ -40,10 +40,7 @@ namespace ReadingTool.Entities
         public virtual IList<Term> Terms { get; set; }
         public virtual IList<Language> Languages { get; set; }
 
-        //public virtual string CurrentName
-        //{
-        //    get { return string.IsNullOrWhiteSpace(DisplayName) ? Username : DisplayName; }
-        //}
+        public virtual string ApiKey { get; set; }
 
         public User()
         {
@@ -57,12 +54,13 @@ namespace ReadingTool.Entities
     {
         public UserMap()
         {
-            Id(x => x.UserId).GeneratedBy.Identity();
+            Id(x => x.UserId).GeneratedBy.GuidComb();
             Map(x => x.Username).Length(50).Not.Nullable().UniqueKey("username").Index("IDX_User_Username");
             Map(x => x.DisplayName).Length(50);
             Map(x => x.EmailAddress).Length(100);
             Map(x => x.Created);
             Map(x => x.Password).Length(100).Not.Nullable();
+            Map(x => x.ApiKey).Length(50).Not.Nullable();
             Map(Reveal.Member<User>("_roles")).Column("Roles").Length(25);
             HasMany(x => x.Terms).Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Texts).Cascade.AllDeleteOrphan().Inverse();

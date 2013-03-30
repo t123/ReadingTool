@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using ReadingTool.Common;
 
@@ -24,7 +25,7 @@ namespace ReadingTool.Site.Models.Terms
 {
     public class TermModel
     {
-        public long TermId { get; set; }
+        public Guid TermId { get; set; }
         public TermState State { get; set; }
 
         [MaxLength(50, ErrorMessage = "Please use less than 50 characters")]

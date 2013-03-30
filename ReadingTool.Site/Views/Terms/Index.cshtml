@@ -45,7 +45,7 @@
                 <li>
                     <a href="@Url.Action("Export", new { id = 0, all = false })">All languages</a>
                 </li>
-                @foreach(var kvp in ViewBag.Languages as Dictionary<long, string>)
+                @foreach(var kvp in ViewBag.Languages as Dictionary<Guid, string>)
                 {
                     <li>
                         <a href="@Url.Action("Export", new { id = kvp.Key, all = false })">@kvp.Value</a>
@@ -61,7 +61,7 @@
                 <li>
                     <a href="@Url.Action("Export", new { id = 0, all = true })">All languages</a>
                 </li>
-                @foreach(var kvp in ViewBag.Languages as Dictionary<long, string>)
+                @foreach(var kvp in ViewBag.Languages as Dictionary<Guid, string>)
                 {
                     <li>
                         <a href="@Url.Action("Export", new { id = kvp.Key, all = true })">@kvp.Value</a>

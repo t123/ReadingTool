@@ -27,7 +27,7 @@ using ReadingTool.Site.Attributes;
 namespace ReadingTool.Site.Controllers.Home
 {
     [NeedsPersistence]
-    public class ConstructController : Controller
+    public class ConstructController : BaseController
     {
         private readonly Repository<User> _userRepository;
         private readonly Repository<SystemLanguage> _systemLanguageRepository;

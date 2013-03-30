@@ -323,7 +323,7 @@
         if (currentElement.hasClass("_nw") && currentLength == 1) {
             var data = {
                 length: 1,
-                termId: 0,
+                termId: '00000000-0000-0000-0000-000000000000',
                 state: 'NotKnown',
                 message: 'New word, default to <strong>UNKNOWN</strong>',
                 phrase: text

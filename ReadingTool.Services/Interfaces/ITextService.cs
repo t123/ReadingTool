@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using ReadingTool.Entities;
 
 namespace ReadingTool.Services
@@ -24,8 +25,8 @@ namespace ReadingTool.Services
     public interface ITextService
     {
         void Save(Text text);
-        void Delete(long id);
-        Text FindOne(long id);
+        void Delete(Guid id);
+        Text FindOne(Guid id);
         int Import(TextImport import);
     }
 }

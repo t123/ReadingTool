@@ -39,7 +39,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin">
+    <Reference Include="AjaxMin, Version=4.60.4609.17023, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AjaxMin.4.60.4609.17023\lib\net20\AjaxMin.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper">
@@ -48,13 +49,16 @@
     <Reference Include="BCrypt.Net">
       <HintPath>..\packages\BCrypt-Official.0.1.107\lib\BCrypt.Net.dll</HintPath>
     </Reference>
-    <Reference Include="Cassette">
+    <Reference Include="Cassette, Version=2.0.0.17974, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Cassette.2.0.0\lib\net40-client\Cassette.dll</HintPath>
     </Reference>
-    <Reference Include="Cassette.Aspnet">
+    <Reference Include="Cassette.Aspnet, Version=2.0.0.17975, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Cassette.Aspnet.2.0.0\lib\net40\Cassette.Aspnet.dll</HintPath>
     </Reference>
-    <Reference Include="Cassette.Views">
+    <Reference Include="Cassette.Views, Version=2.0.0.17975, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Cassette.Views.2.0.0\lib\net40\Cassette.Views.dll</HintPath>
     </Reference>
     <Reference Include="Elmah">
@@ -181,6 +185,7 @@
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AjaxController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConstructController.cs" />
     <Compile Include="Controllers\ReviewController.cs" />
     <Compile Include="Controllers\RoutesController.cs" />
@@ -243,19 +248,9 @@
     </Content>
     <Content Include="Global.asax" />
     <Content Include="LICENSE.txt" />
+    <Content Include="ScriptsOther\CodeMirror\codemirror.js" />
     <Content Include="Scripts\Body\bootstrap.js" />
     <Content Include="Scripts\Body\webgrid.js" />
-    <Content Include="Scripts\CodeMirror\codemirror.js" />
-    <Content Include="Scripts\FineUploader\button.js" />
-    <Content Include="Scripts\FineUploader\dnd.js" />
-    <Content Include="Scripts\FineUploader\handler.base.js" />
-    <Content Include="Scripts\FineUploader\handler.form.js" />
-    <Content Include="Scripts\FineUploader\handler.xhr.js" />
-    <Content Include="Scripts\FineUploader\header.js" />
-    <Content Include="Scripts\FineUploader\jquery-plugin.js" />
-    <Content Include="Scripts\FineUploader\uploader.basic.js" />
-    <Content Include="Scripts\FineUploader\uploader.js" />
-    <Content Include="Scripts\FineUploader\util.js" />
     <Content Include="Scripts\Reading\state.js" />
     <Content Include="Scripts\Required\jquery-1.8.3.min.js" />
     <Content Include="Scripts\SimpleModal\jquery.simplemodal-1.4.4.js" />
@@ -289,6 +284,8 @@
     <Content Include="Views\Admin\Languages.cshtml" />
     <Content Include="Views\Admin\AddLanguage.cshtml" />
     <Content Include="Views\Admin\EditLanguage.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="ScriptsOther\CodeMirror\codemirror.min.js" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

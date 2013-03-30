@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -57,7 +58,7 @@ namespace ReadingTool.Api.Controllers
             return Mapper.Map<IEnumerable<Language>, IEnumerable<LanguageResponseModel>>(languages);
         }
 
-        public LanguageResponseModel Get(long id)
+        public LanguageResponseModel Get(Guid id)
         {
             var language = _languageRepository.FindOne(x => x.LanguageId == id && x.User == _userRepository.LoadOne(UserId));
 

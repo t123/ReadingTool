@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 
+using System;
 using System.Linq;
 using System.Security.Principal;
 
@@ -52,7 +53,7 @@ namespace ReadingTool.Common
         public string AuthenticationType { get; private set; }
         public bool IsAuthenticated { get; private set; }
         public UserData Data { get; private set; }
-        public long UserId { get { return long.Parse(Name); } }
+        public Guid UserId { get { return Guid.Parse(Name); } }
 
         public UserIdentity(
             string userId,
@@ -60,12 +61,12 @@ namespace ReadingTool.Common
             string authenticationType,
             UserData data
             ) :
-            this(long.Parse(userId), isAuthenticated, authenticationType, data)
+            this(Guid.Parse(userId), isAuthenticated, authenticationType, data)
         {
         }
 
         public UserIdentity(
-            long userId,
+            Guid userId,
             bool isAuthenticated,
             string authenticationType,
             UserData data
