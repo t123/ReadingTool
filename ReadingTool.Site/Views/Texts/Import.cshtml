@@ -8,8 +8,7 @@
 }
 
 <div class="row-fluid">
-    <div class="span1"></div>
-    <div class="span10">
+    <div class="span12">
         @if(languages.Any())
         {
             <div class="alert alert-info">
@@ -48,5 +47,4 @@
             @Html.FlashMessage("You must first add some languages before you can import any texts", FlashHelper.Level.Alert)
         }
     </div>
-    <div class="span1"></div>
 </div>

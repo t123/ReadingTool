@@ -15,8 +15,7 @@
 <body>
     <div class="container-fluid">
         <div class="row-fluid">
-            <div class="span1"></div>
-            <div class="span10">
+            <div class="span12">
                 <ul class="nav nav-pills">
                     @{
                         string controller = Request.RequestContext.RouteData.Values["controller"].ToString().ToLowerInvariant();
@@ -42,15 +41,8 @@
                     @RenderSection("MenuAdditional", false)
                 </ul>
             </div>
-            <div class="span1"></div>
         </div>
-        <div class="row-fluid">
-            <div class="span1"></div>
-            <div class="span10">
-                @Html.Flash()
-            </div>
-            <div class="span1"></div>
-        </div>
+        @Html.Flash()
         
         @RenderBody()
     </div>

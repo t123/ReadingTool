@@ -286,6 +286,7 @@
     <Content Include="Views\Admin\EditLanguage.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="ScriptsOther\CodeMirror\codemirror.min.js" />
+    <Content Include="Views\Shared\PageNotFound.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

@@ -7,8 +7,7 @@
 }
 
 <div class="row-fluid">
-    <div class="span1"></div>
-    <div class="span10">
+    <div class="span12">
         @using(Html.BeginForm("Edit", "Terms", new { id = Model.TermId }, FormMethod.Post, new { @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()
@@ -58,5 +57,4 @@
             </fieldset>
         }
     </div>
-    <div class="span1"></div>
 </div>

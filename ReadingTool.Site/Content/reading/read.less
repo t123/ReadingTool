@@ -1,4 +1,8 @@
-﻿@font-face
+﻿body {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+@font-face
 {
     font-family: 'DroidSansRegular';
     src: url('/content/fonts/DroidSans-webfont.eot');
@@ -9,11 +13,21 @@
 
 .container-fluid
 {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.nav-pills {
+    padding-left: 40px;
 }
 
 #readingareaouter
 {
-    background: #fff;
+    background: #565656;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
 }
 
 #readingareainner
@@ -22,11 +36,14 @@
     line-height: 25px;
     font-family: 'DroidSansRegular', Tahoma, Arial;
     background: #fff;
+    padding-left: 15px;
+    padding-right: 15px;
 
     table
     {
         border-collapse: collapse;
         width: 100%;
+        margin-bottom:0px;
     }
 
         table td.f

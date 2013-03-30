@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -150,6 +151,26 @@ namespace ReadingTool.Site.Controllers.Home
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Error()
+        {
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            return View();
+        }
+
+        public ActionResult PageNotFound()
+        {
+            Elmah.ErrorSignal.FromCurrentContext().Raise(new HttpException(404, "Page not found: " + Request.RawUrl));
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+
+            return View();
+        }
+
+        public ActionResult Exception()
+        {
+            throw new Exception("Test exception");
         }
     }
 }

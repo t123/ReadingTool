@@ -219,7 +219,9 @@ namespace ReadingTool.Site.Helpers
             p2.InnerHtml = span.ToString();
             div.InnerHtml += p1.ToString() + p2.ToString();
 
-            return new MvcHtmlString(div.ToString());
+            return new MvcHtmlString(
+                @"<div class=""row-fluid""><div class=""span12"">" + div.ToString() + @"</div></div>"
+            );
         }
     }
 }

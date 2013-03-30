@@ -4,8 +4,7 @@
 }
 
 <div class="row-fluid">
-    <div class="span1"></div>
-    <div class="span10">
+    <div class="span12">
         @using(Html.BeginForm("AddLanguage", "Admin", FormMethod.Post, new { @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()
@@ -31,5 +30,4 @@
             </fieldset>
         }
     </div>
-    <div class="span1"></div>
 </div>

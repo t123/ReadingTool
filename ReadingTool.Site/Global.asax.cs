@@ -19,11 +19,13 @@
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
+using Elmah;
 using NHibernate.Event;
 using ReadingTool.Common;
 using ReadingTool.Entities;
@@ -46,6 +48,34 @@ namespace ReadingTool.Site
             ModelBinders.Binders.DefaultBinder = new EmptyStringModelBinder();
 
             Mappings.Register();
+        }
+
+        void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)
+        {
+            var exception = e.Exception.GetBaseException();
+            var httpException = exception as HttpException;
+            if(httpException != null)
+            {
+                if(httpException.GetHttpCode() == (int)HttpStatusCode.NotFound)
+                {
+                    string url = ((HttpContext)e.Context).Request.RawUrl;
+                    string[] ignoreExtensions = new string[] { ".php", ".asp", ".aspx", ".gif", ".png", ".ico" };
+
+                    if(url.StartsWith("/apple-touch"))
+                    {
+                        e.Dismiss();
+                    }
+
+                    foreach(var ending in ignoreExtensions)
+                    {
+                        if(url.EndsWith(ending))
+                        {
+                            e.Dismiss();
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)

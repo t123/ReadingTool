@@ -91,20 +91,22 @@
     <div id="readingareainner">
         @Html.Raw(@Model.ParsedText)
     </div>
-    <div class="clr50"></div>
-    @if(Model.PagedTexts.Item1 != Guid.Empty)
-    {
-        <a href="@Url.Action(action, new { id = Model.PagedTexts.Item1 })" class="btn">previous text</a>
-    }
-    @if(Model.PagedTexts.Item2 != Guid.Empty)
-    {
-        <a href="@Url.Action(action, new { id = Model.PagedTexts.Item2 })" class="btn">next text</a>
-    }
-    <div class="clr10"></div>
-    <button type="button" id="btnMarkRemainingAsKnown"class="btn">mark the remaining words as known</button>
-    <div class="clr10"></div>
-    <div id="markRemainingAsKnownProgress" class="alert alert-block" style="display: none"></div>
-    <div class="clr100"></div>
+    <div style="background-color: #fff; padding-left:15px;">
+        <div class="clr50"></div>
+        @if(Model.PagedTexts.Item1 != Guid.Empty)
+        {
+            <a href="@Url.Action(action, new { id = Model.PagedTexts.Item1 })" class="btn">previous text</a>
+        }
+        @if(Model.PagedTexts.Item2 != Guid.Empty)
+        {
+            <a href="@Url.Action(action, new { id = Model.PagedTexts.Item2 })" class="btn">next text</a>
+        }
+        <div class="clr10"></div>
+        <button type="button" id="btnMarkRemainingAsKnown"class="btn">mark the remaining words as known</button>
+        <div class="clr10"></div>
+        <div id="markRemainingAsKnownProgress" class="alert alert-block" style="display: none"></div>
+        <div class="clr100"></div>
+    </div>
 </div>
 
 <div id="textModal" style="display: none;">

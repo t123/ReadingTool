@@ -33,8 +33,7 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x=>x.LanguageId)
     <div class="row-fluid">
-        <div class="span1"></div>
-        <div class="span10">
+        <div class="span12">
             <div class="btn-group">
                 <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
                     review words in&nbsp;<span class="caret"></span>
@@ -64,12 +63,10 @@
                 <text>There are <strong>@Model.ReviewTotal</strong> terms due</text>
             }
         </div>
-        <div class="span1"></div>
     </div>
     <div class="clr10"></div>
     <div class="row-fluid">
-        <div class="span1"></div>
-        <div class="span10">
+        <div class="span12">
             @if(Model.ReviewTotal>0)
             {
                 <table class="table table-bordered review">
@@ -113,16 +110,13 @@
                 <h4>Nothing to review</h4>
             }
         </div>
-        <div class="span1"></div>
     </div>
     if(Model.ReviewTotal>0)
     {
         <div class="row-fluid">
-            <div class="span1"></div>
-            <div class="span10">
+            <div class="span12">
                 <input type="submit" class="btn btn-primary" value="Review these words"/>
             </div>
-            <div class="span1"></div>
         </div>
     }
 }
