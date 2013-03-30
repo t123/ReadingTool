@@ -8,19 +8,27 @@
     Bundles.Reference("Scripts/Reading", "inline");
     Bundles.Reference("Scripts/SimpleModal", "inline");
 
+    if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+    {
+        Bundles.Reference("content/jPlayer");
+        Bundles.Reference("Scripts/jPlayer", "inline");
+    }
+    
     Bundles.AddInlineScript(@<text>
                                  <script src="@Url.Action("Index", "Routes", new { @c="Ajax"})" type="text/javascript"></script>
                                  <script language="javascript">
                                      $(function () {
                                          var settings = {
-                                             textId: '@Model.Text.TextId',  
+                                             textId: '@Model.Text.TextId',
                                              languageId: '@Model.Language.LanguageId',
                                              modal: @Model.Language.Modal.ToString().ToLowerInvariant(),
-                                             modalBehaviour: '@Model.Language.ModalBehaviour.ToLowerInvariant()'
+                                             autoPause: @Model.Language.Modal.ToString().ToLowerInvariant(),
+                                             modalBehaviour: '@Model.Language.ModalBehaviour.ToLowerInvariant()',
+                                             hasAudio: @((!string.IsNullOrEmpty(Model.Text.AudioUrl)==true).ToString().ToLowerInvariant())
                                          };
-                                         
+
                                          var modalHandler = new ModalHandler(routes, settings);
-                                         
+
                                          @if(!Model.Language.ShowSpaces)
                                          {
                                              if(Model.AsParallel)
@@ -32,10 +40,25 @@
                                                  <text>$('.sentence .wsx').hide();</text>
                                              }
                                          }
-                                         
+
                                          @if(Model.AsParallel && !Model.Language2.ShowSpaces)
                                          {
                                             <text>$('td.s .wsx').hide();</text>
+                                         }
+
+                                         @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+                                         {
+                                             <text>
+                                         $("#jplayer").jPlayer({
+                                             ready: function (event) {
+                                                 $(this).jPlayer("setMedia", {
+                                                     mp3:"@Model.Text.AudioUrl"
+                                                 });
+                                             },
+                                             swfPath: "/scripts/jPlayer/",
+                                             supplied: "mp3",
+                                             wmode: "window"
+                                         });                                             </text>
                                          }
                                      });
                                  </script>
@@ -70,6 +93,10 @@
                     }
                     <a href="@Url.Action("Edit", "Languages", new {id = Model.Language.LanguageId})">edit language</a>
                     <a href="#stats" onclick="$('#stats').show();">go to statistics</a>
+                    @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+                    {
+                        <a href="#" onclick="$('#jp_container_1').toggle(); return false;">show/hide audio</a>
+                    }
                 </li>
             </ul>
         </div>
@@ -178,3 +205,44 @@
         </div>
     </div>
 </div>
+
+@if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+{
+    <div id="jplayer" class="jp-jplayer"></div>
+    <div id="audiocontainer">
+        <a href="#" onclick="$('#jp_container_1').toggle(); return false;" class="closelink" title="toggle audio player">X</a>
+        <div id="jp_container_1" class="jp-audio">
+            <div class="jp-type-single">
+                <div class="jp-gui jp-interface">
+                    <ul class="jp-controls">
+                        <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+                        <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+                        <li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
+                        <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
+                        <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+                        <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+                    </ul>
+                    <div class="jp-progress">
+                        <div class="jp-seek-bar">
+                            <div class="jp-play-bar"></div>
+                        </div>
+                    </div>
+                    <div class="jp-volume-bar">
+                        <div class="jp-volume-bar-value"></div>
+                    </div>
+                    <div class="jp-time-holder">
+                        <div class="jp-current-time"></div>
+                        <div class="jp-duration"></div>
+
+                        <ul class="jp-toggles">
+                            <li><a href="javascript:;" class="jp-repeat" tabindex="1" title="repeat">repeat</a></li>
+                            <li><a href="javascript:;" class="jp-repeat-off" tabindex="1" title="repeat off">repeat off</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="jp-no-solution">
+                    <span>Update Required</span>
+                    To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+                </div>
+            </div>
+        </div>    </div>}

@@ -14,7 +14,8 @@
     var markRemainingMessage = $('#markRemainingAsKnownProgress');
     var currentLength;
     var isIpad = navigator.userAgent.indexOf('iPad') != -1;
-
+    var jPlayer = $('#jplayer');
+    
     var hasChanged = false;
     var currentElement;
 
@@ -138,6 +139,29 @@
                     self.save();
                     self.close();
                 }
+            } else {
+                if (settings.hasAudio) {
+                    switch (code) {
+                        case 90://z Restart
+                            jPlayer.jPlayer("play", 0);
+                            break;
+                        case 88://x Rewind
+                            jPlayer.jPlayer("pause").jPlayer("play", jPlayer.data().jPlayer.status.currentTime - 1);
+                            break;
+                        case 67://c play/pause
+                            if (jPlayer.data().jPlayer.status.paused) {
+                                jPlayer.jPlayer("play");
+                            } else {
+                                jPlayer.jPlayer("pause");
+                            }
+                            break;
+                        case 86://v Forward
+                            jPlayer.jPlayer("pause").jPlayer("play", jPlayer.data().jPlayer.status.currentTime + 1);
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         });
     };
@@ -188,9 +212,17 @@
     self.close = function () {
         termId.val('');
         textModal.hide();
+        
+        if (settings.hasAudio) {
+            jPlayer.jPlayer("play", jPlayer.data().jPlayer.status.currentTime - 1);
+        }
     };
 
     self.open = function (element) {
+        if (settings.hasAudio) {
+            jPlayer.jPlayer('pause');
+        }
+        
         currentElement = $(element).closest('span');
         self._buildCurrentPopup();
         self._updateModalLocaion();

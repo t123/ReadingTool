@@ -138,3 +138,16 @@
 #textModal textarea.changed {
   background-color: #F5B8A9;
 }
+#audiocontainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+#audiocontainer .closelink {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  z-index: 100;
+  font-size: smaller;
+  font-weight: bold;
+}

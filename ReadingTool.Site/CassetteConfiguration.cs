@@ -32,8 +32,8 @@ namespace ReadingTool.Site
         {
             bundles.Add<StylesheetBundle>("Content/css", new[] { "bootstrap.css", "site.css" });
             bundles.Add<StylesheetBundle>("Content/reading", new[] { "read.css" });
-            bundles.Add<StylesheetBundle>("Content/fineuploader", new[] { "fineuploader.css" });
             bundles.Add<StylesheetBundle>("Content/codemirror", new[] { "codemirror.css" });
+            bundles.Add<StylesheetBundle>("Content/jPlayer", new[] { "jplayer.blue.monday.css" });
             bundles.AddPerSubDirectory<ScriptBundle>("Scripts/");
         }
     }

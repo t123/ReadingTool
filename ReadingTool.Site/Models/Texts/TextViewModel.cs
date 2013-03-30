@@ -32,5 +32,6 @@ namespace ReadingTool.Site.Models.Texts
         public string Modified { get; set; }
         public string LastRead { get; set; }
         public bool IsParallel { get; set; }
+        public string AudioUrl { get; set; }
     }
 }

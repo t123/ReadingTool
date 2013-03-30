@@ -91,6 +91,9 @@ namespace ReadingTool.Site.Models.Languages
         [Display(Name = "When does the word modal open?")]
         public ModalBehaviour ModalBehaviour { get; set; }
 
+        [Display(Name = "Pause audio when word moodal opens?")]
+        public bool AutoPause { get; set; }
+
         public Dictionary<string, string> Languages { get; set; }
     }
 }

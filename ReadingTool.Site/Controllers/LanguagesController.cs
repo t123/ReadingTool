@@ -119,7 +119,8 @@ namespace ReadingTool.Site.Controllers.Home
                     Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
                     ShowSpaces = true,
                     Modal = false,
-                    ModalBehaviour = ModalBehaviour.LeftClick
+                    ModalBehaviour = ModalBehaviour.LeftClick,
+                    AutoPause = true
                 });
         }
 
@@ -144,7 +145,8 @@ namespace ReadingTool.Site.Controllers.Home
                             RegexWordCharacters = model.RegexWordCharacters,
                             ShowSpaces = model.ShowSpaces,
                             Modal = model.Modal,
-                            ModalBehaviour = model.ModalBehaviour
+                            ModalBehaviour = model.ModalBehaviour,
+                            AutoPause = model.AutoPause
                         },
                     User = _userRepository.LoadOne(UserId)
                 };
@@ -178,7 +180,8 @@ namespace ReadingTool.Site.Controllers.Home
                             RegexWordCharacters = language.Settings.RegexWordCharacters,
                             ShowSpaces = language.Settings.ShowSpaces,
                             Modal = language.Settings.Modal,
-                            ModalBehaviour = language.Settings.ModalBehaviour
+                            ModalBehaviour = language.Settings.ModalBehaviour,
+                            AutoPause = language.Settings.AutoPause
                         }
                 };
 
@@ -221,7 +224,8 @@ namespace ReadingTool.Site.Controllers.Home
                     RegexWordCharacters = model.RegexWordCharacters,
                     ShowSpaces = model.ShowSpaces,
                     Modal = model.Modal,
-                    ModalBehaviour = model.ModalBehaviour
+                    ModalBehaviour = model.ModalBehaviour,
+                    AutoPause = model.AutoPause
                 };
 
             _languageRepository.Save(language);

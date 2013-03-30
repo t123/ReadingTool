@@ -233,15 +233,16 @@
     <Content Include="Content\css\site.min.css">
       <DependentUpon>site.less</DependentUpon>
     </Content>
-    <Content Include="Content\fineuploader\fineuploader.css" />
-    <Content Include="Content\fineuploader\loading.gif" />
-    <Content Include="Content\fineuploader\processing.gif" />
     <Content Include="Content\fonts\DroidSans-webfont.svg" />
     <Content Include="Content\img\challenge.png" />
     <Content Include="Content\img\glyphicons-halflings-white.png" />
     <Content Include="Content\img\glyphicons-halflings.png" />
     <Content Include="Content\img\misc-jackie-chan.png" />
     <Content Include="Content\img\x.png" />
+    <Content Include="Content\jPlayer\jplayer.blue.monday.css" />
+    <Content Include="Content\jPlayer\jplayer.blue.monday.jpg" />
+    <Content Include="Content\jPlayer\jplayer.blue.monday.seeking.gif" />
+    <Content Include="Content\jPlayer\jplayer.blue.monday.video.play.png" />
     <Content Include="Content\reading\read.css">
       <DependentUpon>read.less</DependentUpon>
     </Content>
@@ -253,6 +254,8 @@
     <Content Include="ScriptsOther\CodeMirror\codemirror.js" />
     <Content Include="Scripts\Body\bootstrap.js" />
     <Content Include="Scripts\Body\webgrid.js" />
+    <Content Include="Scripts\jPlayer\Jplayer.swf" />
+    <Content Include="Scripts\jPlayer\jquery.jplayer.min.js" />
     <Content Include="Scripts\Reading\state.js" />
     <Content Include="Scripts\Required\jquery-1.8.3.min.js" />
     <Content Include="Scripts\SimpleModal\jquery.simplemodal-1.4.4.js" />

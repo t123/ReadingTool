@@ -46,6 +46,13 @@
                         @Html.ValidationMessageFor(x => x.Language.Modal)
                     </div>
                 </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Language.AutoPause, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.CheckBoxFor(x => x.Language.AutoPause, new { @placeholder = "automatically pause audio" })
+                        @Html.ValidationMessageFor(x => x.Language.AutoPause)
+                    </div>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>Parser Settings</legend>
