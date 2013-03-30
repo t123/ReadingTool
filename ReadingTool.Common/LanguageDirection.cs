@@ -29,4 +29,24 @@ namespace ReadingTool.Common
         [Description("Right To Left")]
         RTL = 2
     }
+
+    public enum ModalBehaviour
+    {
+        [Description("Left click")]
+        LeftClick = 0,
+
+        //Rollover = 2, //This is unusable
+
+        [Description("Control left click")]
+        CtrlLeftClick = 3,
+
+        [Description("Shift left click")]
+        ShiftLeftClick = 4,
+
+        [Description("Middle click")]
+        MiddleClick = 5,
+
+        [Description("Right click")]
+        RightClick = 6
+    }
 }

@@ -40,6 +40,7 @@ namespace ReadingTool.Site
             Mapper.CreateMap<Language, LanguageViewModel>()
                 .ForMember(x => x.Modal, y => y.MapFrom(z => z.Settings.Modal))
                 .ForMember(x => x.ShowSpaces, y => y.MapFrom(z => z.Settings.ShowSpaces))
+                .ForMember(x => x.ModalBehaviour, y => y.MapFrom(z => z.Settings.ModalBehaviour))
                 ;
 
             Mapper.CreateMap<Text, TextViewModel>()

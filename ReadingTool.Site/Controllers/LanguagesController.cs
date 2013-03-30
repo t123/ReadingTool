@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using ReadingTool.Common;
 using ReadingTool.Common.Search;
 using ReadingTool.Entities;
 using ReadingTool.Repository;
@@ -117,7 +118,8 @@ namespace ReadingTool.Site.Controllers.Home
                     RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ",
                     Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
                     ShowSpaces = true,
-                    Modal = false
+                    Modal = false,
+                    ModalBehaviour = ModalBehaviour.LeftClick
                 });
         }
 
@@ -141,7 +143,8 @@ namespace ReadingTool.Site.Controllers.Home
                             RegexSplitSentences = model.RegexSplitSentences,
                             RegexWordCharacters = model.RegexWordCharacters,
                             ShowSpaces = model.ShowSpaces,
-                            Modal = model.Modal
+                            Modal = model.Modal,
+                            ModalBehaviour = model.ModalBehaviour
                         },
                     User = _userRepository.LoadOne(UserId)
                 };
@@ -174,7 +177,8 @@ namespace ReadingTool.Site.Controllers.Home
                             RegexSplitSentences = language.Settings.RegexSplitSentences,
                             RegexWordCharacters = language.Settings.RegexWordCharacters,
                             ShowSpaces = language.Settings.ShowSpaces,
-                            Modal = language.Settings.Modal
+                            Modal = language.Settings.Modal,
+                            ModalBehaviour = language.Settings.ModalBehaviour
                         }
                 };
 
@@ -216,7 +220,8 @@ namespace ReadingTool.Site.Controllers.Home
                     RegexSplitSentences = model.RegexSplitSentences,
                     RegexWordCharacters = model.RegexWordCharacters,
                     ShowSpaces = model.ShowSpaces,
-                    Modal = model.Modal
+                    Modal = model.Modal,
+                    ModalBehaviour = model.ModalBehaviour
                 };
 
             _languageRepository.Save(language);

@@ -13,6 +13,7 @@
     var state = $('#state');
     var markRemainingMessage = $('#markRemainingAsKnownProgress');
     var currentLength;
+    var isIpad = navigator.userAgent.indexOf('iPad') != -1;
 
     var hasChanged = false;
     var currentElement;
@@ -28,15 +29,60 @@
             self.close();
         });
 
-        $('#readingareainner p span span').live('mousedown', function (e) {
+        $('#readingareainner p span span').live('contextmenu', function (e) {
+            return settings.modalBehaviour != 'rightclick';
+        });
+
+        $('#readingareainner p span span').live('mousedown', function (event) {
             if (textModal.is(":visible")) {
                 if (!hasChanged) {
                     self.close();
                 }
             } else {
-                self.open(e.srcElement);
+                switch (settings.modalBehaviour) {
+                    case 'leftclick':
+                        if (event.which != 1) return;
+                        if (event.altKey || event.shiftKey || event.ctrlKey) return;
+                        break;
+
+                    case 'ctrlleftclick':
+                        if (event.which != 1 || !event.ctrlKey) return;
+                        if (event.altKey || event.shiftKey) return;
+                        break;
+
+                    case 'shiftleftclick':
+                        if (event.which != 1 || !event.shiftKey) return;
+                        if (event.altKey || event.ctrlKey) return;
+                        break;
+
+                    case 'middleclick':
+                        if (event.which != 2) return;
+                        if (event.altKey || event.shiftKey || event.ctrlKey) return;
+                        break;
+
+                    case 'rightclick':
+                        if (event.which != 3) return;
+                        if (event.altKey || event.shiftKey || event.ctrlKey) return;
+                        break;
+
+                    default: return;
+                }
+
+                self.open(event.target || event.srcElement || event.originalTarget);
             }
         });
+
+        if (isIpad) {
+            $('#readingareainner p span span').live('touchstart', function (event) {
+                if (textModal.is(":visible")) {
+                    if (!hasChanged) {
+                        self.close();
+                    }
+                } else {
+                    self.open(event.target || event.srcElement || event.originalTarget);
+                }
+            });
+        }
 
         $('#increaseWord').click(function () {
             self.increaseWord();
@@ -71,9 +117,9 @@
         });
 
         $('a.dictionary').click(function (e) {
-            var url = $(e.srcElement).data('url');
-            if (settings.modal && url.indexOf("translate.google")<0) {
-                $('#dictionaryiframe').attr('src', e.srcElement.href);
+            var url = $(e.target || e.srcElement || e.originalTarget).data('url');
+            if (settings.modal && url.indexOf("translate.google") < 0) {
+                $('#dictionaryiframe').attr('src', (e.target || e.srcElement || e.originalTarget).href);
                 $('#dictionary-content').modal({
                     overlayClose: true,
                     autoResize: true
@@ -372,26 +418,31 @@
     };
 
     self._updateModalLocaion = function () {
-        var offset = currentElement.offset();
-
-        var newLeft = offset.left;
-
-        if (newLeft + 700 > $(document).width()) {
-            newLeft -= 660;
-        }
-
-        var newTop = offset.top;
-        var windowHeight = $(window).height() - 80;
-        var modalHeight = textModal.height();
-
-        if (newTop + modalHeight > windowHeight) {
-            newTop -= (modalHeight + 20);
+        if (isIpad) {
+            textModal.show();
+            textModal.center();
         } else {
-            newTop = offset.top + 20;
-        }
+            var offset = currentElement.offset();
 
-        textModal.show();
-        textModal.offset({ top: newTop, left: newLeft });
+            var newLeft = offset.left;
+
+            if (newLeft + 700 > $(window).width()) {
+                newLeft -= 660;
+            }
+
+            var newTop = offset.top;
+            var windowHeight = $(window).height() - 80;
+            var modalHeight = textModal.height();
+
+            if (newTop + modalHeight > windowHeight) {
+                newTop -= (modalHeight + 20);
+            } else {
+                newTop = offset.top + 20;
+            }
+
+            textModal.show();
+            textModal.offset({ top: newTop, left: newLeft });
+        }
     };
 
     self._buildCurrentPopup = function () {
@@ -438,3 +489,10 @@
 
     self.init();
 };
+
+jQuery.fn.center = function () {
+    this.css("position", "absolute");
+    this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + $(window).scrollTop()) + "px");
+    this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+    return this;
+}

@@ -15,7 +15,8 @@
                                          var settings = {
                                              textId: '@Model.Text.TextId',  
                                              languageId: '@Model.Language.LanguageId',
-                                             modal: @Model.Language.Modal.ToString().ToLowerInvariant()
+                                             modal: @Model.Language.Modal.ToString().ToLowerInvariant(),
+                                             modalBehaviour: '@Model.Language.ModalBehaviour.ToLowerInvariant()'
                                          };
                                          
                                          var modalHandler = new ModalHandler(routes, settings);

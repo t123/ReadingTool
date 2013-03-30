@@ -30,6 +30,7 @@ namespace ReadingTool.Site.Models.Languages
         public IList<DictionaryViewModel> Dictionaries { get; set; }
         public bool Modal { get; set; }
         public bool ShowSpaces { get; set; }
+        public string ModalBehaviour { get; set; }
 
         public LanguageViewModel()
         {

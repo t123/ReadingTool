@@ -102,9 +102,6 @@
 .CodeMirror {
   border: 1px solid #cecece;
 }
-#basic-modal-content {
-  display: none;
-}
 /* Overlay */
 #simplemodal-overlay {
   background-color: #000;

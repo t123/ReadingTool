@@ -1,4 +1,5 @@
 ﻿@using ReadingTool.Common
+@using ReadingTool.Common.Extensions
 @model ReadingTool.Site.Models.Languages.LanguageEditModel
 @{
     ViewBag.Title = "Edit Language";
@@ -30,6 +31,13 @@
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Language.Code, new SelectList(Model.Language.Languages, "Key", "Value"))
                         @Html.ValidationMessageFor(x => x.Language.Code)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(x => x.Language.ModalBehaviour, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.DropDownListFor(x => x.Language.ModalBehaviour, new SelectList(from ModalBehaviour m in Enum.GetValues(typeof(ModalBehaviour)) select new { Key=m, Value=m.ToDescription()}, "Key", "Value"))
+                        @Html.ValidationMessageFor(x => x.Language.ModalBehaviour)
                     </div>
                 </div>
                 <div class="control-group">
