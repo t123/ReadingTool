@@ -17,6 +17,17 @@
     Bundles.AddInlineScript(@<text>
                                  <script src="@Url.Action("Index", "Routes", new { @c="Ajax"})" type="text/javascript"></script>
                                  <script language="javascript">
+                                     @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+                                     {
+                                         <text>function toggleAudio() {                                         $('#jp_container_1').toggle();
+                                         
+                                         if($('#jp_container_1').is(':visible')) {
+                                             $('.closelink').html('&rArr;');
+                                         } else {
+                                             $('.closelink').html('&lArr;');
+                                         }                                     }</text>
+                                     }
+                                     
                                      $(function () {
                                          var settings = {
                                              textId: '@Model.Text.TextId',
@@ -59,6 +70,9 @@
                                              supplied: "mp3",
                                              wmode: "window",
                                              volume: localStorage['jPlayer_Volume'] || 0.5
+                                         });                                         $('.closelink').click(function(e) {
+                                             toggleAudio();
+                                             return false;
                                          });                                             </text>
                                          }
                                      });
@@ -96,7 +110,7 @@
                     <a href="#stats" onclick="$('#stats').show();">go to statistics</a>
                     @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
                     {
-                        <a href="#" onclick="$('#jp_container_1').toggle(); return false;">show/hide audio</a>
+                        <a href="#" onclick="toggleAudio(); return false;">show/hide audio</a>
                     }
                 </li>
             </ul>
@@ -211,7 +225,7 @@
 {
     <div id="jplayer" class="jp-jplayer"></div>
     <div id="audiocontainer">
-        <a href="#" onclick="$('#jp_container_1').toggle(); return false;" class="closelink" title="toggle audio player">X</a>
+        <a href="#" class="closelink" title="toggle audio player">&rArr;</a>
         <div id="jp_container_1" class="jp-audio">
             <div class="jp-type-single">
                 <div class="jp-gui jp-interface">
