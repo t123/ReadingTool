@@ -84,6 +84,12 @@
                 }
             });
         }
+        
+        if(settings.hasAudio) {
+            jPlayer.bind($.jPlayer.event.volumechange, function (e) {
+                localStorage['jPlayer_Volume'] = e.jPlayer.options.volume;
+            });
+        }
 
         $('#increaseWord').click(function () {
             self.increaseWord();
