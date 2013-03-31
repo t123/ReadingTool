@@ -9,5 +9,12 @@ namespace ReadingTool.Common.Extensions
             byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(theString);
             return Convert.ToBase64String(toEncodeAsBytes);
         }
+
+        public static string NewlineToBreak(this String theString)
+        {
+            if(string.IsNullOrEmpty(theString)) return theString;
+
+            return theString.Replace("\n", "<br/>");
+        }
     }
 }

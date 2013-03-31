@@ -1,4 +1,5 @@
-﻿@model ReadingTool.Site.Models.Review.ReviewModel
+﻿@using ReadingTool.Common.Extensions
+@model ReadingTool.Site.Models.Review.ReviewModel
 @{
     ViewBag.Title = "Review Terms";
 
@@ -23,6 +24,13 @@
                                          } else {
                                              td.css('background-color', '#fff');
                                          }
+                                     });
+
+                                     $(function() {
+                                         $('.phrasepopover').popover({
+                                             animation: false,
+                                             html: true
+                                         });
                                      });
                                  </script>
                              </text>, "inline");
@@ -89,12 +97,16 @@
                                     <td><input type="radio" name="term_@term.TermId" value="skip"/></td>
                                     <td><input type="radio" name="term_@term.TermId" value="know"/></td>
                                     <td><input type="radio" name="term_@term.TermId" value="dontknow"/></td>
-                                    <td @Html.Raw(style)>@term.Phrase</td>
+                                    <td @Html.Raw(style)>
+                                        <a class="phrasepopover" data-toggle="popover" data-placement="right" data-content="@term.FullDefinition.NewlineToBreak()" data-original-title="@term.Phrase">
+                                            @term.Phrase
+                                        </a>
+                                    </td>
                                     <td @Html.Raw(style)>
                                         @{
                                             var sentence = Html.Encode(term.Sentence);
                                         }
-                                        @Html.Raw(sentence.Replace(term.Phrase, @"<a title=""" + @term.FullDefinition+ @""">" + @term.Phrase + "</a>"));
+                                        @Html.Raw(sentence.Replace(term.Phrase, @"<a class=""phrasepopover"" data-placement=""top""  data-content=""" + @term.FullDefinition+ @""" data-original-title="""+ @term.Phrase + @""">" + @term.Phrase + "</a>"))
                                     </td>
                                 </tr>
                                 counter++;
