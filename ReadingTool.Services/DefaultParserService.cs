@@ -127,6 +127,31 @@ namespace ReadingTool.Services
             return document;
         }
 
+        //private bool isBold = false;
+        //private bool isUnderline = false;
+        //private bool isItalic = false;
+
+        //private void UpdateState(string tag, bool open)
+        //{
+        //    switch(tag)
+        //    {
+        //        case "b":
+        //            isBold = open;
+        //            break;
+
+        //        case "u":
+        //            isUnderline = open;
+        //            break;
+
+        //        case "i":
+        //            isItalic = open;
+        //            break;
+
+        //        default:
+        //            break;
+        //    }
+        //}
+
         protected virtual XElement CreateParagraph(string paragraph, bool asParallel, Language.LanguageSettings settings, Splitter splitter)
         {
             var thisParagraph = new XElement("p");
@@ -167,6 +192,48 @@ namespace ReadingTool.Services
                         t.SetAttributeValue("type", "space");
                         t.SetAttributeValue("inSpan", true);
                     }
+                    //else if(token == "[")
+                    //{
+                    //    string tag = "";
+                    //    for(int k = j + 1; k < tokens.Length; k++)
+                    //    {
+                    //        if(tokens[k] == "]")
+                    //        {
+                    //            j = k;
+                    //            break;
+                    //        }
+
+                    //        tag += tokens[k];
+                    //    }
+
+                    //    if(!string.IsNullOrEmpty(tag))
+                    //    {
+                    //        UpdateState(tag, true);
+                    //    }
+
+                    //    continue;
+                    //}
+                    //else if(token == "[/")
+                    //{
+                    //    string tag = "";
+                    //    for(int k = j + 1; k < tokens.Length; k++)
+                    //    {
+                    //        if(tokens[k] == "]")
+                    //        {
+                    //            j = k;
+                    //            break;
+                    //        }
+
+                    //        tag += tokens[k];
+                    //    }
+
+                    //    if(!string.IsNullOrEmpty(tag))
+                    //    {
+                    //        UpdateState(tag, false);
+                    //    }
+
+                    //    continue;
+                    //}
                     else if(_termTest.Match(token).Success)
                     {
                         t = new XElement("t");
@@ -181,6 +248,10 @@ namespace ReadingTool.Services
                             string lower = token.ToLowerInvariant();
                             t.SetAttributeValue("lower", lower);
                             t.SetAttributeValue("state", Term.TermStateToClass(TermState.NotSeen));
+
+                            //if(isBold) t.SetAttributeValue("bold", "_bx");
+                            //if(isUnderline) t.SetAttributeValue("underline", "_ux");
+                            //if(isItalic) t.SetAttributeValue("italic", "_ix");
                         }
 
                         t.SetAttributeValue("value", token);
@@ -191,6 +262,10 @@ namespace ReadingTool.Services
                         t.SetAttributeValue("type", "punctuation");
                         t.SetAttributeValue("inSpan", asParallel ? "false" : "true");
                         t.SetAttributeValue("value", token);
+
+                        //if(isBold) t.SetAttributeValue("bold", "_bx");
+                        //if(isUnderline) t.SetAttributeValue("underline", "_ux");
+                        //if(isItalic) t.SetAttributeValue("italic", "_ix");
                     }
 
                     thisSentence.Add(t);

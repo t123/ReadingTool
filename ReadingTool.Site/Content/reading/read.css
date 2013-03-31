@@ -65,6 +65,15 @@
 #readingareainner span._i {
   background-color: white;
 }
+#readingareainner span._bx {
+  font-weight: bold;
+}
+#readingareainner span._ux {
+  text-decoration: underline;
+}
+#readingareainner span._ix {
+  font-style: italic;
+}
 #readingareainner span.box1 {
   background-color: #F5B8A9;
 }
