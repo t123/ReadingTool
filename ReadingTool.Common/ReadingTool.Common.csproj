@@ -64,9 +64,11 @@
     <Compile Include="Search\SearchGridResult.cs" />
     <Compile Include="Search\SearchOptions.cs" />
     <Compile Include="Search\SearchResult.cs" />
+    <Compile Include="SequentialGuid.cs" />
     <Compile Include="Splitter.cs" />
     <Compile Include="Tags.cs" />
     <Compile Include="TermState.cs" />
+    <Compile Include="UserDirectory.cs" />
     <Compile Include="UserIdentity.cs" />
   </ItemGroup>
   <ItemGroup>

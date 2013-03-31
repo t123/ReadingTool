@@ -18,7 +18,9 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using ReadingTool.Common;
 using ReadingTool.Entities;
 using ReadingTool.Repository;
@@ -30,10 +32,12 @@ namespace ReadingTool.Services
         private readonly Repository<User> _userRepository;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public Repository<User> Repository { get { return _userRepository; } }
+        private readonly UserIdentity _identity;
 
-        public UserService(Repository<User> userRepository)
+        public UserService(Repository<User> userRepository, IPrincipal principal)
         {
             _userRepository = userRepository;
+            _identity = principal.Identity as UserIdentity;
         }
 
         public User CreateUser(string username, string password)
@@ -101,6 +105,7 @@ namespace ReadingTool.Services
 
         public bool UsernameExists(string username)
         {
+            username = (username ?? "").Trim();
             return _userRepository.FindAll(x => x.Username == username).Any();
         }
 
@@ -125,6 +130,25 @@ namespace ReadingTool.Services
         public User GetUserByApiKey(string apiKey)
         {
             return _userRepository.FindOne(x => x.ApiKey == apiKey);
+        }
+
+        public void DeleteAccount()
+        {
+            var user = _userRepository.FindOne(_identity.UserId);
+
+            if(user == null)
+            {
+                return;
+            }
+
+            _userRepository.Delete(user);
+
+            string path = UserDirectory.GetDirectory(_identity.UserId);
+
+            if(Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
         }
     }
 }

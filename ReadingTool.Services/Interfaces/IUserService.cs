@@ -33,5 +33,6 @@ namespace ReadingTool.Services
         bool UpdatePassword(User user, string password);
         string CreateApiKey();
         User GetUserByApiKey(string apiKey);
+        void DeleteAccount();
     }
 }

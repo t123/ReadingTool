@@ -18,6 +18,8 @@
 #endregion
 
 using System;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -58,11 +60,132 @@ namespace ReadingTool.Services
             if(text.TextId == Guid.Empty)
             {
                 text.Created = DateTime.Now;
+                text.TextId = SequentialGuid.NewGuid();
             }
 
             text.Modified = DateTime.Now;
+            SaveTextContents(text);
             _textRepository.Save(text);
         }
+
+        #region blob storage
+        private string GetTextDirectory()
+        {
+            string path = UserDirectory.GetDirectory(_identity.UserId);
+
+            if(!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
+        }
+
+        private string GetTextName(Text text, bool l1)
+        {
+            string basePath = GetTextDirectory();
+
+            if(l1)
+            {
+                return Path.Combine(basePath, string.Format("{0}.l1.zip", text.TextId.ToString()));
+            }
+            else
+            {
+                return Path.Combine(basePath, string.Format("{0}.l2.zip", text.TextId.ToString()));
+            }
+        }
+
+        private Text ReadTextContents(Text text)
+        {
+            if(text == null)
+            {
+                return null;
+            }
+
+            string l1TextFilename = GetTextName(text, true);
+            string l2TextFilename = GetTextName(text, false);
+
+            if(File.Exists(l1TextFilename))
+            {
+                var contents = ReadFile(l1TextFilename);
+                text.L1Text = Decompress(contents);
+            }
+
+            if(File.Exists(l2TextFilename))
+            {
+                var contents = ReadFile(l2TextFilename);
+                text.L2Text = Decompress(contents);
+            }
+
+            return text;
+        }
+
+        private void SaveTextContents(Text text)
+        {
+            if(!string.IsNullOrEmpty(text.L1Text))
+            {
+                string filename = GetTextName(text, true);
+                var bytes = Compress(text.L1Text);
+                WriteFile(filename, bytes);
+            }
+
+            if(!string.IsNullOrEmpty(text.L2Text))
+            {
+                string filename = GetTextName(text, false);
+                var bytes = Compress(text.L2Text);
+                WriteFile(filename, bytes);
+            }
+        }
+
+        private byte[] ReadFile(string filename)
+        {
+            return File.ReadAllBytes(filename);
+        }
+
+        private void WriteFile(string filename, byte[] bytes)
+        {
+            File.WriteAllBytes(filename, bytes);
+        }
+
+        private byte[] Compress(string text)
+        {
+            Byte[] bytes = Encoding.UTF8.GetBytes(text ?? "");
+
+            using(MemoryStream ms = new MemoryStream())
+            {
+                using(GZipStream gzip = new GZipStream(ms, CompressionMode.Compress))
+                {
+                    gzip.Write(bytes, 0, bytes.Length);
+                    gzip.Close();
+                }
+
+                return ms.ToArray();
+            }
+        }
+
+        private string Decompress(byte[] text)
+        {
+            using(GZipStream stream = new GZipStream(new MemoryStream(text), CompressionMode.Decompress))
+            {
+                const int size = 262144;
+                byte[] buffer = new byte[size];
+                using(MemoryStream memory = new MemoryStream())
+                {
+                    int count = 0;
+                    do
+                    {
+                        count = stream.Read(buffer, 0, size);
+                        if(count > 0)
+                        {
+                            memory.Write(buffer, 0, count);
+                        }
+                    }
+                    while(count > 0);
+                    return Encoding.UTF8.GetString(memory.ToArray());
+                }
+            }
+        }
+        #endregion
 
         public void Delete(Guid id)
         {
@@ -70,17 +193,21 @@ namespace ReadingTool.Services
 
             if(text != null)
             {
-                //TODO delete blob
                 _textRepository.Delete(id);
+            }
+
+            var textDirectory = GetTextDirectory();
+
+            if(Directory.Exists(textDirectory))
+            {
+                Directory.Delete(textDirectory, true);
             }
         }
 
         public Text FindOne(Guid id)
         {
             Text text = _textRepository.FindOne(x => x.TextId == id && x.User.UserId == _identity.UserId);
-
-            //TODO Fetch texts from blob
-
+            text = ReadTextContents(text);
             return text;
         }
 

@@ -27,6 +27,7 @@ namespace ReadingTool.Site.Models.Home
         {
             [Required(ErrorMessage = "Please enter a username.")]
             [MinLength(3, ErrorMessage = "The username must be more than 3 letters.")]
+            [RegularExpression(@"([A-Za-z0-9\\\-\\_]+)", ErrorMessage = "Only letters, numbers, hyphens and underscores are allowed.")]
             public string Username { get; set; }
 
             [Required(ErrorMessage = "Please enter a password.")]

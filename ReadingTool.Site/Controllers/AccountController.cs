@@ -141,7 +141,8 @@ namespace ReadingTool.Site.Controllers.Home
             }
 
             this.FlashSuccess("Your account has been deleted.");
-            _userService.Repository.Delete(_userService.Repository.FindOne(x => x.UserId == UserId));
+            _userService.DeleteAccount();
+
             return RedirectToAction("SignOut", "Home");
         }
 
@@ -180,9 +181,7 @@ namespace ReadingTool.Site.Controllers.Home
                             Language2 = x.Language2 == null ? "" : x.Language2.Name,
                             Created = x.Created,
                             Modified = x.Modified,
-                            LastRead = x.LastRead,
-                            L1Text = x.L1Text,
-                            L2Text = x.L2Text
+                            LastRead = x.LastRead
                         }),
                     Terms = user.Terms.Select(x => new
                         {

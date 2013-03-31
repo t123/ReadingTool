@@ -188,7 +188,6 @@ namespace ReadingTool.Site.Helpers
         private static MvcHtmlString ConstructHtml(string message, Level level, bool includeClose = true, bool htmlEncode = true)
         {
             TagBuilder div = new TagBuilder("div");
-            div.AddCssClass("flash-message");
             div.AddCssClass("alert");
             div.AddCssClass("alert-" + level.ToString().ToLowerInvariant());
 
@@ -197,7 +196,7 @@ namespace ReadingTool.Site.Helpers
                 TagBuilder a = new TagBuilder("a");
                 a.AddCssClass("close");
                 a.Attributes.Add("href", "#");
-                a.Attributes.Add("onclick", "$(this).parent('.flash-message').fadeOut(); return false;");
+                a.Attributes.Add("onclick", "$(this).closest('.flash-message').fadeOut(); return false;");
                 a.InnerHtml = "&times";
 
                 div.InnerHtml = a.ToString();
@@ -220,7 +219,7 @@ namespace ReadingTool.Site.Helpers
             div.InnerHtml += p1.ToString() + p2.ToString();
 
             return new MvcHtmlString(
-                @"<div class=""row-fluid""><div class=""span12"">" + div.ToString() + @"</div></div>"
+                @"<div class=""row-fluid flash-message""><div class=""span12"">" + div.ToString() + @"</div></div>"
             );
         }
     }
