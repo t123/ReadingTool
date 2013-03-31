@@ -156,23 +156,16 @@ namespace ReadingTool.Services
                 string[] tokens = splitter.Split(sentence);
 
                 XElement t;
-                foreach(var token in tokens)
+                for(int j = 0; j < tokens.Length; j++)
                 {
+                    var token = tokens[j];
                     if(string.IsNullOrEmpty(token) || token == "\r" || token == "\n") continue;
 
                     if(token == " ")
                     {
-                        //if(settings.ShowSpaces)
-                        //{
                         t = new XElement("t");
                         t.SetAttributeValue("type", "space");
-                        //t.SetAttributeValue("inSpan", asParallel ? "false" : "true");
                         t.SetAttributeValue("inSpan", true);
-                        //}
-                        //else
-                        //{
-                        //    continue;
-                        //}
                     }
                     else if(_termTest.Match(token).Success)
                     {

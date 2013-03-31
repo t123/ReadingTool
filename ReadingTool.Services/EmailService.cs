@@ -18,12 +18,21 @@ namespace ReadingTool.Services
             try
             {
                 SmtpClient client = new SmtpClient();
-                MailMessage message = new MailMessage("info@readingtool.net", user.EmailAddress, subject, body);
-                client.Send(message);
+                client.SendCompleted += client_SendCompleted;
+                MailMessage message = new MailMessage("noreply@readingtool.net", user.EmailAddress, subject, body);
+                client.SendAsync(message, null);
             }
             catch(Exception e)
             {
                 _logger.Error(e);
+            }
+        }
+
+        void client_SendCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            if(e.Error != null)
+            {
+                _logger.Error(e.Error);
             }
         }
 
