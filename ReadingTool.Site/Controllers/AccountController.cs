@@ -26,6 +26,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Ionic.Zip;
 using Ionic.Zlib;
+using ReadingTool.Common;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Attributes;
@@ -201,14 +202,26 @@ namespace ReadingTool.Site.Controllers.Home
                         })
                 };
 
-            string data = ServiceStack.Text.JsonSerializer.SerializeToString(model);
 
             MemoryStream ms = new MemoryStream();
             using(ZipFile zip = new ZipFile())
             {
                 zip.CompressionMethod = CompressionMethod.Deflate;
                 zip.CompressionLevel = CompressionLevel.BestCompression;
+
+                string data = ServiceStack.Text.JsonSerializer.SerializeToString(model);
                 zip.AddEntry("account.json", data, Encoding.UTF8);
+
+                var userDirectory = UserDirectory.GetDirectory(UserId);
+                if(Directory.Exists(userDirectory))
+                {
+                    foreach(var file in Directory.GetFiles(userDirectory))
+                    {
+                        var fi = new FileInfo(file);
+                        zip.AddEntry("/texts/" + fi.Name, System.IO.File.ReadAllBytes(file));
+                    }
+                }
+
                 zip.Save(ms);
             }
 
