@@ -21,6 +21,21 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ReadingTool.Site.Models.Home
 {
+    public class ResetPasswordModel
+    {
+        public string Username { get; set; }
+        public string Key { get; set; }
+        [Display(Name = "Your New Password")]
+        public string Password { get; set; }
+    }
+
+    public class ForgotPasswordModel
+    {
+        [Required(ErrorMessage = "Please enter an email address.")]
+        [Display(Name = "Your Email Address")]
+        public string EmailAddress { get; set; }
+    }
+
     public class AccountModel
     {
         public class RegisterModel

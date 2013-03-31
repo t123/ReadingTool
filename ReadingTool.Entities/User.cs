@@ -41,12 +41,14 @@ namespace ReadingTool.Entities
         public virtual IList<Language> Languages { get; set; }
 
         public virtual string ApiKey { get; set; }
+        public virtual IList<ForgotPasswordRequest> ForgotPasswordRequest { get; set; }
 
         public User()
         {
             Texts = new List<Text>();
             Terms = new List<Term>();
             Languages = new List<Language>();
+            ForgotPasswordRequest = new List<ForgotPasswordRequest>();
         }
     }
 
@@ -65,6 +67,7 @@ namespace ReadingTool.Entities
             HasMany(x => x.Terms).Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Texts).Cascade.AllDeleteOrphan().Inverse();
             HasMany(x => x.Languages).Cascade.AllDeleteOrphan().Inverse();
+            HasMany(x => x.ForgotPasswordRequest).Cascade.AllDeleteOrphan().Inverse();
         }
     }
 }

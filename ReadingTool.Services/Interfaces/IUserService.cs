@@ -34,5 +34,8 @@ namespace ReadingTool.Services
         string CreateApiKey();
         User GetUserByApiKey(string apiKey);
         void DeleteAccount();
+        bool EmailExists(string emailAddress);
+        void CreateResetKey(string emailAddress);
+        bool ResetPassword(string username, string key, string password);
     }
 }

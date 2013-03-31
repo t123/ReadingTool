@@ -30,13 +30,15 @@ namespace ReadingTool.Services
     public class UserService : IUserService
     {
         private readonly Repository<User> _userRepository;
+        private readonly IEmailService _emailService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public Repository<User> Repository { get { return _userRepository; } }
         private readonly UserIdentity _identity;
 
-        public UserService(Repository<User> userRepository, IPrincipal principal)
+        public UserService(Repository<User> userRepository, IPrincipal principal, IEmailService emailService)
         {
             _userRepository = userRepository;
+            _emailService = emailService;
             _identity = principal.Identity as UserIdentity;
         }
 
@@ -80,6 +82,12 @@ namespace ReadingTool.Services
 
             if(BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
+                if(user.ForgotPasswordRequest != null)
+                {
+                    user.ForgotPasswordRequest.Clear();
+                    _userRepository.Save(user);
+                }
+
                 return user;
             }
 
@@ -109,6 +117,59 @@ namespace ReadingTool.Services
             return _userRepository.FindAll(x => x.Username == username).Any();
         }
 
+        public bool EmailExists(string emailAddress)
+        {
+            emailAddress = (emailAddress ?? "").Trim();
+            return _userRepository.FindAll(x => x.EmailAddress == emailAddress).Any();
+        }
+
+        public void CreateResetKey(string emailAddress)
+        {
+            emailAddress = (emailAddress ?? "").Trim().ToLowerInvariant();
+            var user = _userRepository.FindOne(x => x.EmailAddress == emailAddress);
+
+            if(user == null)
+            {
+                return;
+            }
+
+            user.ForgotPasswordRequest.Clear();
+            user.ForgotPasswordRequest.Add(new ForgotPasswordRequest()
+                {
+                    Expires = DateTime.Now.AddMinutes(60),
+                    ResetKey = System.Web.Security.Membership.GeneratePassword(50, 15),
+                    User = user
+                });
+
+            _userRepository.Save(user);
+            _emailService.ResetPasswordInstructions(user);
+        }
+
+        public bool ResetPassword(string username, string key, string password)
+        {
+            var user = _userRepository.FindOne(x => x.Username == username);
+
+            if(user == null || user.ForgotPasswordRequest.First() == null)
+            {
+                return false;
+            }
+
+            if(user.ForgotPasswordRequest.First().Expires < DateTime.Now)
+            {
+                return false;
+            }
+
+            if(!key.Equals(user.ForgotPasswordRequest.First().ResetKey))
+            {
+                return false;
+            }
+
+            UpdatePassword(user, password);
+            _emailService.ResetSuccess(user);
+
+            return true;
+        }
+
         public bool UpdatePassword(User user, string password)
         {
             if(user == null)
@@ -117,6 +178,7 @@ namespace ReadingTool.Services
             }
 
             user.Password = BCrypt.Net.BCrypt.HashPassword(password);
+            user.ForgotPasswordRequest.Clear();
             _userRepository.Save(user);
 
             return true;

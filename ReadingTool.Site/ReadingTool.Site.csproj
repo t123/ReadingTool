@@ -292,6 +292,8 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="ScriptsOther\CodeMirror\codemirror.min.js" />
     <Content Include="Views\Shared\PageNotFound.cshtml" />
+    <Content Include="Views\Home\ForgotPassword.cshtml" />
+    <Content Include="Views\Home\ResetPassword.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

@@ -24,10 +24,12 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using MvcCodeRouting;
 using ReadingTool.Common;
 using ReadingTool.Entities;
 using ReadingTool.Services;
 using ReadingTool.Site.Attributes;
+using ReadingTool.Site.Helpers;
 using ReadingTool.Site.Models.Home;
 
 namespace ReadingTool.Site.Controllers.Home
@@ -151,6 +153,62 @@ namespace ReadingTool.Site.Controllers.Home
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(ForgotPasswordModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if(!_userService.EmailExists(model.EmailAddress))
+            {
+                this.FlashError("Sorry, that email address is not registered on this site.");
+                return View(model);
+            }
+
+            _userService.CreateResetKey(model.EmailAddress);
+            this.FlashSuccess("Password reset instructions have been sent to you at {0}", model.EmailAddress);
+
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult ResetPassword([FromRoute]string username, string key)
+        {
+            return View(new ResetPasswordModel()
+                {
+                    Username = username,
+                    Key = key
+                });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(ResetPasswordModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if(_userService.ResetPassword(model.Username, model.Key, model.Password))
+            {
+                this.FlashSuccess("Your password has been reset, you can sign in below with your new password.");
+                return RedirectToAction("Index");
+            }
+
+            this.FlashError("Sorry, your password could not be reset");
+            return View(model);
         }
 
         public ActionResult Error()
