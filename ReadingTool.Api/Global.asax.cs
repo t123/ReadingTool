@@ -49,9 +49,9 @@ namespace ReadingTool.Api
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             //GlobalConfiguration.Configuration.MessageHandlers.Add(new HttpsHandler());
-            //GlobalConfiguration.Configuration.MessageHandlers.Add(new BasicAuthenticationMessageHandler());
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new CorsHandler());
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenMessageHandler());
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new BasicAuthenticationMessageHandler());
+            //GlobalConfiguration.Configuration.MessageHandlers.Add(new CorsHandler());
+            //GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenMessageHandler());
 
             Mapper.CreateMap<Language, LanguageResponseModel>()
                 .ForMember(x => x.Direction, y => y.MapFrom(z => z.Settings.Direction.ToString()))

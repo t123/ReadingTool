@@ -406,7 +406,12 @@ namespace ReadingTool.Services
             }
 
             var elements = document.Descendants("t").Where(x => x.Attribute("type").Value == "term");
-            var termsAsDict = _singleTerms.Where(x => x.Length == 1).ToDictionary(x => x.PhraseLower, x => new { State = x.State, FullDefinition = x.FullDefinition });
+            var termsAsDict = _singleTerms.Where(x => x.Length == 1).ToDictionary(x => x.PhraseLower, x => new
+                {
+                    Box = x.Box,
+                    State = x.State,
+                    FullDefinition = x.FullDefinition
+                });
 
             foreach(var element in elements)
             {
@@ -414,6 +419,7 @@ namespace ReadingTool.Services
 
                 if(termsAsDict.ContainsKey(lower))
                 {
+                    element.SetAttributeValue("box", "box" + termsAsDict[lower].Box);
                     element.SetAttributeValue("state", Term.TermStateToClass(termsAsDict[lower].State));
                     element.SetAttributeValue("data", termsAsDict[lower].FullDefinition);
                     element.SetAttributeValue("new", "");

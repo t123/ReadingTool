@@ -27,6 +27,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Ninject;
+using ReadingTool.Api.App_Start;
 using ReadingTool.Services;
 
 namespace ReadingTool.Api.Handler
@@ -39,14 +41,16 @@ namespace ReadingTool.Api.Handler
         public const char AuthorizationHeaderSeparator = ':';
 
         public BasicAuthenticationMessageHandler()
-            : this(GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserService)) as IUserService)
         {
-
-        }
-
-        public BasicAuthenticationMessageHandler(IUserService userService)
-        {
-            _userService = userService;
+            var resolver = GlobalConfiguration.Configuration.DependencyResolver as NinjectDependencyResolver;
+            if(resolver != null)
+            {
+                _userService = resolver.Container.Get<IUserService>();
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         protected override System.Threading.Tasks.Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)

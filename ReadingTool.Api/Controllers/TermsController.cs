@@ -35,15 +35,10 @@ namespace ReadingTool.Api.Controllers
 {
     [NeedsPersistence]
     [System.Web.Http.Authorize]
-    public class TermsController : ApiController
+    public class TermsController : BaseController
     {
         private readonly Repository<Term> _termRepository;
         private readonly Repository<User> _userRepository;
-
-        private Guid UserId
-        {
-            get { return Guid.Parse(HttpContext.Current.User.Identity.Name); }
-        }
 
         public TermsController(
             Repository<Term> termRepository,

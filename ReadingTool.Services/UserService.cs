@@ -35,6 +35,18 @@ namespace ReadingTool.Services
         public Repository<User> Repository { get { return _userRepository; } }
         private readonly UserIdentity _identity;
 
+        public UserService(Repository<User> userRepository)
+            : this(userRepository, null, new EmailService())
+        {
+
+        }
+
+        public UserService(Repository<User> userRepository, IPrincipal principal)
+            : this(userRepository, principal, new EmailService())
+        {
+
+        }
+
         public UserService(Repository<User> userRepository, IPrincipal principal, IEmailService emailService)
         {
             _userRepository = userRepository;
@@ -196,20 +208,23 @@ namespace ReadingTool.Services
 
         public void DeleteAccount()
         {
-            var user = _userRepository.FindOne(_identity.UserId);
-
-            if(user == null)
+            if(_identity!=null)
             {
-                return;
-            }
+                var user = _userRepository.FindOne(_identity.UserId);
 
-            _userRepository.Delete(user);
+                if (user == null)
+                {
+                    return;
+                }
 
-            string path = UserDirectory.GetDirectory(_identity.UserId);
+                _userRepository.Delete(user);
 
-            if(Directory.Exists(path))
-            {
-                Directory.Delete(path, true);
+                string path = UserDirectory.GetDirectory(_identity.UserId);
+
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
             }
         }
     }

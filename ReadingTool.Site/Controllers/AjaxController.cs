@@ -263,7 +263,7 @@ namespace ReadingTool.Site.Controllers.Home
                             Tags = Tags.ToString(term.Tags.Select(x => x.TagTerm)),
                             Box = term.Box,
                             TermId = term.TermId,
-                            Message = "Current box : <strong>" + term.Box + "</strong>",
+                            Message = "Current box : <strong>" + term.Box + "</strong>, due in " + (term.NextReview - DateTime.Now).ToSince(),
                             Length = term.Length
                         }
                 };

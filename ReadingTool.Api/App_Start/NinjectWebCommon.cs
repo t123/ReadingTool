@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics.Contracts;
 using System.Security.Principal;
+using System.Threading;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Dependencies;
@@ -144,10 +145,11 @@ namespace ReadingTool.Api.App_Start
         {
             InitNHibernate(kernel);
 
+            kernel.Bind<IEmailService>().To<EmailService>();
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<ITextService>().To<TextService>();
             kernel.Bind<IParserService>().To<DefaultParserService>();
-            kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
+            kernel.Bind<IPrincipal>().ToMethod(x => Thread.CurrentPrincipal);
         }
 
         private static void InitNHibernate(IKernel kernel)

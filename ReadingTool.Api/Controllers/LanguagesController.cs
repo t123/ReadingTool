@@ -34,13 +34,8 @@ namespace ReadingTool.Api.Controllers
 {
     [NeedsPersistence]
     [System.Web.Http.Authorize]
-    public class LanguagesController : ApiController
+    public class LanguagesController : BaseController
     {
-        private long UserId
-        {
-            get { return long.Parse(HttpContext.Current.User.Identity.Name); }
-        }
-
         private readonly Repository<Language> _languageRepository;
         private readonly Repository<User> _userRepository;
 
