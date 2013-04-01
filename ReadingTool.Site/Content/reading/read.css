@@ -101,6 +101,14 @@
 #readingareainner span.box9 {
   background-color: #CCFF66;
 }
+#readingareainner h1,
+#readingareainner h2,
+#readingareainner h3,
+#readingareainner h4,
+#readingareainner h5,
+#readingareainner h6 {
+  display: inline;
+}
 #textModal {
   z-index: 100;
   position: absolute;

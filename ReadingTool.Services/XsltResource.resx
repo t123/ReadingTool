@@ -149,6 +149,9 @@
   &lt;xsl:template match="t"&gt;
     &lt;xsl:apply-templates select="multi"/&gt;
     &lt;xsl:choose&gt;
+	  &lt;xsl:when test="@type='tag'"&gt;
+        &lt;xsl:value-of select="concat('&amp;lt;', @value,'&amp;gt;')" disable-output-escaping="yes"/&gt;
+      &lt;/xsl:when&gt;
       &lt;xsl:when test="@type='term'"&gt;
         &lt;span&gt;
           &lt;xsl:attribute name="class"&gt;
@@ -450,6 +453,9 @@
   &lt;xsl:template match="t"&gt;
     &lt;xsl:apply-templates select="multi"/&gt;
     &lt;xsl:choose&gt;
+	&lt;xsl:when test="@type='tag'"&gt;
+        &lt;xsl:value-of select="concat('&amp;lt;', @value,'&amp;gt;')" disable-output-escaping="yes"/&gt;
+      &lt;/xsl:when&gt;
       &lt;xsl:when test="@type='term'"&gt;
         &lt;span&gt;
           &lt;xsl:attribute name="class"&gt;

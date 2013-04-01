@@ -18,6 +18,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,10 +74,12 @@ namespace ReadingTool.Services
 
         protected virtual string BuildTextWithTitle(string inputText)
         {
-            return (_text.CollectionNo.HasValue ? _text.CollectionNo + ". " : "") +
+            return
+                   "<h4>" +
+                   (_text.CollectionNo.HasValue ? _text.CollectionNo + ". " : "") +
                    _text.Title +
                    (string.IsNullOrEmpty(_text.CollectionName) ? "" : " (" + _text.CollectionName + ")") +
-                   ".\n\n" +
+                   "</h4>\n\n" +
                    inputText;
         }
 
@@ -127,30 +130,7 @@ namespace ReadingTool.Services
             return document;
         }
 
-        //private bool isBold = false;
-        //private bool isUnderline = false;
-        //private bool isItalic = false;
-
-        //private void UpdateState(string tag, bool open)
-        //{
-        //    switch(tag)
-        //    {
-        //        case "b":
-        //            isBold = open;
-        //            break;
-
-        //        case "u":
-        //            isUnderline = open;
-        //            break;
-
-        //        case "i":
-        //            isItalic = open;
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
+        protected Regex _tagMatch = new Regex(@"<([^>]*)>", RegexOptions.Compiled);
 
         protected virtual XElement CreateParagraph(string paragraph, bool asParallel, Language.LanguageSettings settings, Splitter splitter)
         {
@@ -176,15 +156,36 @@ namespace ReadingTool.Services
                     continue;
                 }
 
+                var matches = _tagMatch.Matches(sentence);
+                sentence = _tagMatch.Replace(sentence, "");
+
                 var thisSentence = new XElement("s");
 
                 string[] tokens = splitter.Split(sentence);
 
                 XElement t;
+                int currentLength = 0;
                 for(int j = 0; j < tokens.Length; j++)
                 {
                     var token = tokens[j];
-                    if(string.IsNullOrEmpty(token) || token == "\r" || token == "\n") continue;
+
+                    foreach(Match match in matches)
+                    {
+                        if(match.Index == currentLength)
+                        {
+                            currentLength += match.Length;
+                            t = new XElement("t");
+                            t.SetAttributeValue("type", "tag");
+                            t.SetAttributeValue("value", match.Groups[1].Value);
+                            thisSentence.Add(t);
+                        }
+                    }
+
+                    currentLength += token.Length;
+                    if(string.IsNullOrEmpty(token) || token == "\r" || token == "\n")
+                    {
+                        continue;
+                    }
 
                     if(token == " ")
                     {
@@ -192,48 +193,6 @@ namespace ReadingTool.Services
                         t.SetAttributeValue("type", "space");
                         t.SetAttributeValue("inSpan", true);
                     }
-                    //else if(token == "[")
-                    //{
-                    //    string tag = "";
-                    //    for(int k = j + 1; k < tokens.Length; k++)
-                    //    {
-                    //        if(tokens[k] == "]")
-                    //        {
-                    //            j = k;
-                    //            break;
-                    //        }
-
-                    //        tag += tokens[k];
-                    //    }
-
-                    //    if(!string.IsNullOrEmpty(tag))
-                    //    {
-                    //        UpdateState(tag, true);
-                    //    }
-
-                    //    continue;
-                    //}
-                    //else if(token == "[/")
-                    //{
-                    //    string tag = "";
-                    //    for(int k = j + 1; k < tokens.Length; k++)
-                    //    {
-                    //        if(tokens[k] == "]")
-                    //        {
-                    //            j = k;
-                    //            break;
-                    //        }
-
-                    //        tag += tokens[k];
-                    //    }
-
-                    //    if(!string.IsNullOrEmpty(tag))
-                    //    {
-                    //        UpdateState(tag, false);
-                    //    }
-
-                    //    continue;
-                    //}
                     else if(_termTest.Match(token).Success)
                     {
                         t = new XElement("t");
@@ -248,10 +207,6 @@ namespace ReadingTool.Services
                             string lower = token.ToLowerInvariant();
                             t.SetAttributeValue("lower", lower);
                             t.SetAttributeValue("state", Term.TermStateToClass(TermState.NotSeen));
-
-                            //if(isBold) t.SetAttributeValue("bold", "_bx");
-                            //if(isUnderline) t.SetAttributeValue("underline", "_ux");
-                            //if(isItalic) t.SetAttributeValue("italic", "_ix");
                         }
 
                         t.SetAttributeValue("value", token);
@@ -262,13 +217,21 @@ namespace ReadingTool.Services
                         t.SetAttributeValue("type", "punctuation");
                         t.SetAttributeValue("inSpan", asParallel ? "false" : "true");
                         t.SetAttributeValue("value", token);
-
-                        //if(isBold) t.SetAttributeValue("bold", "_bx");
-                        //if(isUnderline) t.SetAttributeValue("underline", "_ux");
-                        //if(isItalic) t.SetAttributeValue("italic", "_ix");
                     }
 
                     thisSentence.Add(t);
+                }
+
+                foreach(Match match in matches)
+                {
+                    if(match.Index == currentLength)
+                    {
+                        currentLength += match.Length;
+                        t = new XElement("t");
+                        t.SetAttributeValue("type", "tag");
+                        t.SetAttributeValue("value", match.Groups[1].Value);
+                        thisSentence.Add(t);
+                    }
                 }
 
                 t = new XElement("t");
