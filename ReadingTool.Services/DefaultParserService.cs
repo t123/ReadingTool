@@ -62,7 +62,7 @@ namespace ReadingTool.Services
             string l2WithTitle = _asParallel ? BuildTextWithTitle(_text.L2Text) : string.Empty;
 
             var l1Split = SplitText(l1WithTitle, _l1Language.Settings);
-            var l2Split = _l2Language == null ? string.Empty : SplitText(l2WithTitle, _l2Language.Settings);
+            var l2Split = !asParallel || _l2Language == null ? string.Empty : SplitText(l2WithTitle, _l2Language.Settings);
 
             var xml = CreateTextXml(l1Split, l2Split);
 
