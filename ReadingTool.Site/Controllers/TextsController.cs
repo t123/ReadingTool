@@ -245,7 +245,7 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Edit(Guid id, TextModel model)
+        public ActionResult Edit(Guid id, string button, TextModel model)
         {
             if(!string.IsNullOrEmpty(model.L2Text) && model.Language2Id == null)
             {
@@ -277,6 +277,18 @@ namespace ReadingTool.Site.Controllers.Home
             _textService.Save(text);
 
             this.FlashSuccess("Text updated.");
+
+            if(!string.IsNullOrEmpty(button))
+            {
+                if(button.Equals("read", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return RedirectToAction("Read", new { id = id });
+                }
+                else if(button.Equals("readparallel", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return RedirectToAction("ReadParallel", new { id = id });
+                }
+            }
 
             return RedirectToAction("Edit", new { id = id });
         }

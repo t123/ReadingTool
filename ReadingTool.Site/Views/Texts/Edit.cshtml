@@ -105,7 +105,14 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary" name="button">Save</button>
+                    <button type="submit" class="btn btn-primary" name="button" value="read">Save & read</button>
+                    
+                    @if(Model.Language2Id!=null)
+                    {
+                        <button type="submit" class="btn btn-primary" name="button" value="readparallel">Save & read in parallel</button>
+                    }
+
                     <a href="@Url.Action("Read", new { id=Model.TextId})" class="btn">Read</a>
                     @if(Model.Language2Id!=null)
                     {
