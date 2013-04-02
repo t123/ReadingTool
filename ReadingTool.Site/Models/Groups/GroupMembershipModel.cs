@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 // LanguageViewModel.cs is part of ReadingTool.Site
 // 
 // ReadingTool.Site is free software: you can redistribute it and/or modify
@@ -16,18 +16,18 @@
 // 
 // Copyright (C) 2013 Travis Watt
 #endregion
-
 using System;
 using ReadingTool.Common;
 
 namespace ReadingTool.Site.Models.Groups
 {
-    public class GroupViewModel
+    public class GroupMembershipModel
     {
+        public Guid GroupMembershipId { get; set; }
+        public Guid UserId { get; set; }
+        public string Username { get; set; }
         public Guid GroupId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public GroupType GroupType { get; set; }
+        public string GroupName { get; set; }
         public MembershipType MembershipType { get; set; }
     }
 }

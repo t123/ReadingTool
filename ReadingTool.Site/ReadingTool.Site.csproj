@@ -207,6 +207,10 @@
     <Compile Include="Messages.cs" />
     <Compile Include="Models\Account\AccountModel.cs" />
     <Compile Include="Models\Ajax\TermModel.cs" />
+    <Compile Include="Models\Groups\GroupMembershipModel.cs" />
+    <Compile Include="Models\Groups\GroupMembershipViewModel.cs" />
+    <Compile Include="Models\Groups\GroupModel.cs" />
+    <Compile Include="Models\Groups\GroupTextViewModel.cs" />
     <Compile Include="Models\Groups\GroupViewModel.cs" />
     <Compile Include="Models\Home\AccountModel.cs" />
     <Compile Include="Models\Languages\DictionaryViewModel.cs" />

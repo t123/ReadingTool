@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 // LanguageViewModel.cs is part of ReadingTool.Site
 // 
 // ReadingTool.Site is free software: you can redistribute it and/or modify
@@ -18,16 +18,24 @@
 #endregion
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using ReadingTool.Common;
 
 namespace ReadingTool.Site.Models.Groups
 {
-    public class GroupViewModel
+    public class GroupModel
     {
         public Guid GroupId { get; set; }
+
+        [MaxLength(50, ErrorMessage = "The name must be less than 50 characters.")]
         public string Name { get; set; }
+
+        [MaxLength(1000, ErrorMessage = "The description must be less than 1000 characters.")]
         public string Description { get; set; }
+
+        [Display(Name = "Group Type")]
         public GroupType GroupType { get; set; }
-        public MembershipType MembershipType { get; set; }
+
+        public GroupMembershipModel CurrentUser { get; set; }
     }
 }
