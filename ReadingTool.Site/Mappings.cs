@@ -18,6 +18,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AutoMapper;
@@ -74,9 +75,12 @@ namespace ReadingTool.Site
             Mapper.CreateMap<Group, GroupViewModel>();
             Mapper.CreateMap<Text, GroupTextViewModel>()
                 .ForMember(x => x.Title, y => y.MapFrom(z => (z.CollectionNo.HasValue ? string.Format("{0:00}. ", z.CollectionNo.Value) : "") + z.Title))
-                .ForMember(x => x.Language1, y => y.MapFrom(z => z.Language1.Code))
                 .ForMember(x => x.IsParallel, y => y.MapFrom(z => z.Language2 != null))
                 .ForMember(x => x.User, y => y.MapFrom(z => z.User.DisplayName))
+                .ForMember(x => x.Language1, y => y.MapFrom(z =>
+                                                            (
+                                                                HttpRuntime.Cache[MvcApplication.SYSTEM_LANGUAGE_CACHE_KEY] as Dictionary<string, string> ?? new Dictionary<string, string>()
+                                                            ).GetValueOrDefault(z.Language1.Code, "Unknown")))
                 ;
         }
     }

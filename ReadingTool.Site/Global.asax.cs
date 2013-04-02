@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Principal;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
@@ -37,6 +38,7 @@ namespace ReadingTool.Site
     public class MvcApplication : System.Web.HttpApplication
     {
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public const string SYSTEM_LANGUAGE_CACHE_KEY = @"SYSTEM_LANGUAGE_CACHE_KEY";
 
         protected void Application_Start()
         {
@@ -48,6 +50,25 @@ namespace ReadingTool.Site
             ModelBinders.Binders.DefaultBinder = new EmptyStringModelBinder();
 
             Mappings.Register();
+
+            CacheSystemLanguages();
+        }
+
+        private void CacheSystemLanguages()
+        {
+            var systemLanguageRepository = DependencyResolver.Current.GetService<ReadingTool.Repository.Repository<SystemLanguage>>();
+            var languages = systemLanguageRepository.FindAll().ToDictionary(x => x.Code, x => x.Name);
+
+            HttpRuntime.Cache.Add(
+                MvcApplication.SYSTEM_LANGUAGE_CACHE_KEY, 
+                languages, 
+                null, 
+                Cache.NoAbsoluteExpiration, 
+                Cache.NoSlidingExpiration, 
+                CacheItemPriority.NotRemovable, 
+                (key, value, reason) =>
+                {
+                });
         }
 
         void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)

@@ -19,6 +19,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 using ReadingTool.Entities;
 using ReadingTool.Repository;
@@ -57,6 +59,23 @@ namespace ReadingTool.Site.Controllers.Home
             return View();
         }
 
+        private void RefreshLanguageCache()
+        {
+            var languages = _systemLanguageRepository.FindAll().ToDictionary(x => x.Code, x => x.Name);
+
+            HttpRuntime.Cache.Remove(MvcApplication.SYSTEM_LANGUAGE_CACHE_KEY);
+            HttpRuntime.Cache.Add(
+                MvcApplication.SYSTEM_LANGUAGE_CACHE_KEY,
+                languages,
+                null,
+                Cache.NoAbsoluteExpiration,
+                Cache.NoSlidingExpiration,
+                CacheItemPriority.NotRemovable,
+                (key, value, reason) =>
+                {
+                });
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddLanguage(SystemLanguageModel model)
@@ -76,6 +95,9 @@ namespace ReadingTool.Site.Controllers.Home
             _logger.InfoFormat("New Language {0}/{1} added", sl.Name, sl.Code);
 
             this.FlashSuccess("System language added.");
+
+            RefreshLanguageCache();
+
             return RedirectToAction("Languages");
         }
 
@@ -114,6 +136,9 @@ namespace ReadingTool.Site.Controllers.Home
             _systemLanguageRepository.Save(sl);
 
             this.FlashSuccess("System language updated.");
+
+            RefreshLanguageCache();
+
             return RedirectToAction("Languages");
         }
     }
