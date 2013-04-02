@@ -1,0 +1,29 @@
+﻿@using ReadingTool.Common.Extensions
+@model ReadingTool.Common.Search.SearchGridResult<ReadingTool.Site.Models.Groups.GroupViewModel> 
+@{
+    Layout = "";
+    WebGrid grid = new WebGrid(Model.Items, rowsPerPage: @Model.Paging.RowsPerPage);
+}
+
+@grid.GetHtml(
+    tableStyle: "table table-striped table-bordered table-condensed table-hover gridtable",
+    numericLinksCount: 0,
+    mode: WebGridPagerModes.Numeric,
+    footerStyle: "hidden",
+    columns: new[]
+        {
+            grid.Column("Name", format:@<text>
+                                            <a class="po" data-toggle="popover" data-placement="top" data-content="@(((string)item.Description).NewlineToBreak())" data-original-title="@item.Name">
+                                                @item.Name
+                                            </a>
+                                        </text>),
+            grid.Column(style:"col15", format:@<text>
+                                                   <form method="POST" action="@Url.Action("JoinGroup", "Groups", new {id = item.GroupId})">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-primary" style="width: 100%">join this group</button>
+                                                    </form>
+                                               </text>),
+    }
+)
+
+@Html.Partial("~/Views/Shared/_pager.cshtml", Model.Paging)
