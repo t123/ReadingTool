@@ -19,12 +19,14 @@
 
 using System;
 using System.Linq;
+using System.Web;
 using AutoMapper;
 using ReadingTool.Common;
 using ReadingTool.Common.Extensions;
 using ReadingTool.Entities;
 using ReadingTool.Site.Models.Account;
 using ReadingTool.Site.Models.Admin;
+using ReadingTool.Site.Models.Groups;
 using ReadingTool.Site.Models.Languages;
 using ReadingTool.Site.Models.Terms;
 using ReadingTool.Site.Models.Texts;
@@ -52,7 +54,7 @@ namespace ReadingTool.Site
                 .ForMember(x => x.LastRead, y => y.MapFrom(z => (DateTime.Now - z.LastRead).ToSince("ago", "")))
                 ;
 
-            Mapper.CreateMap<User, AccountModel.UserModel>();
+            Mapper.CreateMap<User, UserModel>();
 
             Mapper.CreateMap<Term, TermViewModel>()
                 .ForMember(x => x.State, y => y.MapFrom(z => z.State.ToDescription()))
@@ -68,6 +70,8 @@ namespace ReadingTool.Site
 
             Mapper.CreateMap<SystemLanguage, SystemLanguageModel>();
             Mapper.CreateMap<SystemLanguage, SystemLanguageIndexModel>();
+
+            Mapper.CreateMap<Group, GroupViewModel>();
         }
     }
 }

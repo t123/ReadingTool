@@ -187,6 +187,7 @@
     <Compile Include="Controllers\AjaxController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConstructController.cs" />
+    <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\ReviewController.cs" />
     <Compile Include="Controllers\RoutesController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="Messages.cs" />
     <Compile Include="Models\Account\AccountModel.cs" />
     <Compile Include="Models\Ajax\TermModel.cs" />
+    <Compile Include="Models\Groups\GroupViewModel.cs" />
     <Compile Include="Models\Home\AccountModel.cs" />
     <Compile Include="Models\Languages\DictionaryViewModel.cs" />
     <Compile Include="Models\Languages\LanguageModel.cs" />
@@ -294,6 +296,14 @@
     <Content Include="Views\Shared\PageNotFound.cshtml" />
     <Content Include="Views\Home\ForgotPassword.cshtml" />
     <Content Include="Views\Home\ResetPassword.cshtml" />
+    <Content Include="Views\Groups\Index.cshtml" />
+    <Content Include="Views\Groups\Partials\_grid.cshtml" />
+    <Content Include="Views\Groups\Partials\_detailsgrid.cshtml" />
+    <Content Include="Views\Groups\Add.cshtml" />
+    <Content Include="Views\Groups\Edit.cshtml" />
+    <Content Include="Views\Groups\Details.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\DeleteAccount.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

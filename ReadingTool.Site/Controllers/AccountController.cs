@@ -65,16 +65,16 @@ namespace ReadingTool.Site.Controllers.Home
                 return RedirectToAction("SignOut", "Home");
             }
 
-            return View(new AccountModel { User = Mapper.Map<User, AccountModel.UserModel>(user) });
+            return View(Mapper.Map<User, UserModel>(user));
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Update([Bind(Prefix = "User")]AccountModel.UserModel model)
+        public ActionResult Update(UserModel model)
         {
             if(!ModelState.IsValid)
             {
-                return View("Index", new AccountModel() { User = model });
+                return View("Index", model);
             }
 
             var user = _userService.Repository.FindOne(x => x.UserId == UserId);
@@ -97,24 +97,26 @@ namespace ReadingTool.Site.Controllers.Home
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult ChangePassword([Bind(Prefix = "Password")]AccountModel.PasswordModel model)
+        public ActionResult ChangePassword(PasswordModel model)
         {
             var user = _userService.ValidateUser(UserId, model.OldPassword);
 
             if(user == null)
             {
-                ModelState.AddModelError("Password.OldPassword", "Your password is incorrect");
+                ModelState.AddModelError("OldPassword", "Your password is incorrect");
             }
 
             if(!ModelState.IsValid)
             {
-                return View("Index", new AccountModel()
-                    {
-                        Password = model,
-                        User = Mapper.Map<User, AccountModel.UserModel>(_userService.Repository.FindOne(x => x.UserId == UserId))
-                    });
+                return View(model);
             }
 
             this.FlashSuccess("Your password has been updated.");
@@ -122,23 +124,26 @@ namespace ReadingTool.Site.Controllers.Home
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult DeleteAccount()
+        {
+            return View();
+        }
+
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Delete([Bind(Prefix = "Delete")]AccountModel.DeleteModel model)
+        public ActionResult DeleteAccount(DeleteModel model)
         {
             var user = _userService.ValidateUser(UserId, model.Password);
 
             if(user == null)
             {
-                ModelState.AddModelError("Delete.Password", "Your password is incorrect");
+                ModelState.AddModelError("Password", "Your password is incorrect");
             }
 
             if(!ModelState.IsValid)
             {
-                return View("Index", new AccountModel()
-                {
-                    User = Mapper.Map<User, AccountModel.UserModel>(_userService.Repository.FindOne(x => x.UserId == UserId))
-                });
+                return View();
             }
 
             this.FlashSuccess("Your account has been deleted.");

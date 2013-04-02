@@ -32,7 +32,7 @@ namespace ReadingTool.Site.Models.Texts
 
         public LanguageViewModel Language { get; set; }
         public LanguageViewModel Language2 { get; set; }
-        public AccountModel.UserModel User { get; set; }
+        public UserModel User { get; set; }
         public TextViewModel Text { get; set; }
     }
 }
