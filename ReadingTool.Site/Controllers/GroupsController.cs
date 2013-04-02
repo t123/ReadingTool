@@ -219,14 +219,24 @@ namespace ReadingTool.Site.Controllers.Home
             var model = new GroupViewModel()
                 {
                     GroupId = group.GroupId,
+                    Name = group.Name,
                     MembershipType = group.Members.First(x => x.User.UserId == UserId).MembershipType
                 };
 
             return View(model);
         }
 
-        public PartialViewResult DetailsGrid(string sort, GridSortDirection sortDir, int? page, string filter, int? perPage)
+        public PartialViewResult DetailsGrid(string sort, GridSortDirection sortDir, int? page, string filter, int? perPage, string data)
         {
+            var groupId = ServiceStack.Text.JsonSerializer.DeserializeFromString<Guid>(data);
+
+            var group = _groupService.HasAccess(groupId, UserId);
+
+            if(group == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
             var so = new SearchOptions()
             {
                 Filter = filter,
@@ -236,7 +246,8 @@ namespace ReadingTool.Site.Controllers.Home
                 Direction = sortDir
             };
 
-            var texts = _textRepository.FindAll(x => x.User == _userRepository.LoadOne(UserId));
+            var texts = group.Texts;
+
             var filterTerms = SearchFilterParser.Parse(filter);
 
             foreach(var term in filterTerms.Other)
@@ -295,13 +306,13 @@ namespace ReadingTool.Site.Controllers.Home
 
             texts = texts.Skip(so.Skip).Take(so.RowsPerPage);
 
-            var searchResult = new SearchResult<TextViewModel>()
+            var searchResult = new SearchResult<GroupTextViewModel>()
             {
-                Results = Mapper.Map<IEnumerable<Text>, IEnumerable<TextViewModel>>(texts),
+                Results = Mapper.Map<IEnumerable<Text>, IEnumerable<GroupTextViewModel>>(texts),
                 TotalRows = count
             };
 
-            var result = new SearchGridResult<TextViewModel>()
+            var result = new SearchGridResult<GroupTextViewModel>()
             {
                 Items = searchResult.Results,
                 Paging = new SearchGridPaging()
