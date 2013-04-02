@@ -25,15 +25,20 @@ namespace ReadingTool.Services
             return false;
         }
 
-        public Group HasAccess(Guid groupId, Guid userId)
+        public Group HasAccess(Guid groupId, Guid userId, MembershipType[] types = null)
         {
+            if(types == null)
+            {
+                types = new MembershipType[] { MembershipType.Member, MembershipType.Moderator, MembershipType.Owner };
+            }
+
             var group = _groupRepository.FindAll(
                 x =>
                 x.GroupId == groupId &&
                 x.Members.Any(
                     y =>
                     y.User == _userRepository.LoadOne(userId) &&
-                    (y.MembershipType == MembershipType.Member || y.MembershipType == MembershipType.Moderator || y.MembershipType == MembershipType.Owner)
+                    (types.Contains(y.MembershipType))
                     )
                 );
 

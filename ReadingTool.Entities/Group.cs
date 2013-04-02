@@ -14,12 +14,12 @@ namespace ReadingTool.Entities
         public virtual string Name { get; set; }
         public virtual string Description { get; set; }
         public virtual GroupType GroupType { get; set; }
-        //public virtual IList<Text> Texts { get; set; }
+        public virtual ICollection<Text> Texts { get; set; }
         public virtual IList<GroupMembership> Members { get; set; }
 
         public Group()
         {
-            //Texts = new List<Text>();
+            Texts = new HashSet<Text>();
             Members = new List<GroupMembership>();
         }
     }
@@ -32,8 +32,17 @@ namespace ReadingTool.Entities
             Map(x => x.Name).Length(50).Not.Nullable().UniqueKey("groupname").Index("IDX_Group_Name");
             Map(x => x.Description).Length(1000);
             Map(x => x.GroupType).CustomType<GroupType>();
-            //HasMany(x => x.Texts).Inverse().Cascade.None();
-            HasMany(x => x.Members).Cascade.All().Inverse();
+            HasMany(x => x.Members).Cascade.AllDeleteOrphan().Inverse();
+
+            HasManyToMany<Text>(x => x.Texts)
+                .Table("GroupText")
+                .ParentKeyColumn("GroupId")
+                .ChildKeyColumn("TextId")
+                .Cascade
+                .All()
+                .BatchSize(100)
+                .AsSet()
+                ;
         }
     }
 }

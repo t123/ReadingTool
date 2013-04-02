@@ -80,6 +80,12 @@ namespace ReadingTool.Site.Controllers.Home
             var user = _userService.Repository.FindOne(x => x.UserId == UserId);
             user.DisplayName = model.DisplayName.Trim();
             user.EmailAddress = model.EmailAddress.Trim().ToLowerInvariant();
+
+            if(string.IsNullOrWhiteSpace(user.DisplayName))
+            {
+                user.DisplayName = user.Username;
+            }
+
             _userService.Repository.Save(user);
 
             this.FlashSuccess("Your account has been updated.");

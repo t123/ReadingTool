@@ -167,7 +167,7 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpGet]
         public ActionResult Edit(Guid id)
         {
-            var group = _groupService.HasAccess(id, UserId);
+            var group = _groupService.HasAccess(id, UserId, new[] { MembershipType.Owner });
 
             if(group == null)
             {
@@ -203,7 +203,7 @@ namespace ReadingTool.Site.Controllers.Home
                 return View(model);
             }
 
-            var group = _groupService.HasAccess(model.GroupId, UserId);
+            var group = _groupService.HasAccess(model.GroupId, UserId, new[] { MembershipType.Owner });
             group.Name = model.Name.Trim();
             group.Description = model.Description.Trim();
             group.GroupType = model.GroupType;
@@ -214,7 +214,15 @@ namespace ReadingTool.Site.Controllers.Home
 
         public ActionResult Details(Guid id)
         {
-            return View();
+            var group = _groupService.HasAccess(id, UserId);
+
+            var model = new GroupViewModel()
+                {
+                    GroupId = group.GroupId,
+                    MembershipType = group.Members.First(x => x.User.UserId == UserId).MembershipType
+                };
+
+            return View(model);
         }
 
         public PartialViewResult DetailsGrid(string sort, GridSortDirection sortDir, int? page, string filter, int? perPage)
@@ -307,6 +315,227 @@ namespace ReadingTool.Site.Controllers.Home
             };
 
             return PartialView("Partials/_detailsgrid", result);
+        }
+
+        [HttpGet]
+        public ActionResult Membership(Guid id)
+        {
+            var group = _groupService.HasAccess(id, UserId, new[] { MembershipType.Owner, MembershipType.Moderator });
+
+            if(group == null)
+            {
+                this.FlashError("Group not found");
+                return RedirectToAction("Index");
+            }
+
+            var model = new GroupMembershipViewModel()
+                {
+                    GroupId = group.GroupId,
+                    Name = group.Name,
+                    Members = group.Members.Select(x => new GroupMembershipModel
+                        {
+                            GroupId = group.GroupId,
+                            UserId = x.User.UserId,
+                            GroupMembershipId = x.GroupMembershipId,
+                            GroupName = group.Name,
+                            MembershipType = x.MembershipType,
+                            Username = x.User.DisplayName
+                        }
+                        ).ToList()
+                };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Membership(Guid id, FormCollection form)
+        {
+            //TODO fix me
+
+            var group = _groupService.HasAccess(id, UserId, new[] { MembershipType.Owner, MembershipType.Moderator });
+
+            if(group == null)
+            {
+                this.FlashError("Group not found");
+                return RedirectToAction("Index");
+            }
+
+            foreach(var key in form.AllKeys.Where(x => x.StartsWith("m_")))
+            {
+                Guid membershipId;
+                string value;
+                try
+                {
+                    Guid.TryParse(key.Substring(2, key.Length - 2), out membershipId);
+                    value = form[key];
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if(membershipId == Guid.Empty)
+                {
+                    continue;
+                }
+
+                if(value.Equals("delete", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var membership = group.Members.FirstOrDefault(x => x.GroupMembershipId == membershipId);
+                    group.Members.Remove(membership);
+                }
+                else
+                {
+                    var member = group.Members.FirstOrDefault(x => x.GroupMembershipId == membershipId);
+
+                    if(member == null)
+                    {
+                        continue;
+                    }
+
+                    member.MembershipType = (MembershipType)Enum.Parse(typeof(MembershipType), value);
+                }
+            }
+
+            _groupRepository.Save(group);
+            this.FlashSuccess("Group updated");
+
+            return RedirectToAction("Membership", new { id = id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LeaveGroup(Guid id)
+        {
+            var group = _groupService.HasAccess(id, UserId, new[] { MembershipType.Member, MembershipType.Moderator });
+
+            if(group == null)
+            {
+                this.FlashError("Group not found");
+                return RedirectToAction("Index");
+            }
+
+            var membership = group.Members.FirstOrDefault(x => x.User.UserId == UserId);
+            group.Members.Remove(membership);
+
+            this.FlashSuccess("You have been removed from this group.");
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Browse()
+        {
+            return View();
+        }
+
+        public PartialViewResult BrowseGrid(string sort, GridSortDirection sortDir, int? page, string filter, int? perPage)
+        {
+            var so = new SearchOptions()
+            {
+                Filter = filter,
+                Page = page ?? 1,
+                RowsPerPage = perPage ?? SearchGridPaging.DefaultRows,
+                Sort = sort ?? "name",
+                Direction = sortDir
+            };
+
+            var groups = _groupRepository.FindAll(
+                x =>
+                    x.GroupType == GroupType.Public &&
+                    x.Members.All(y => y.User != _userRepository.LoadOne(UserId))
+                );
+
+            if(!string.IsNullOrEmpty(filter))
+            {
+                groups = groups.Where(x => x.Name.StartsWith(filter));
+            }
+
+            var count = groups.Count();
+            switch(so.Sort)
+            {
+                default:
+                    if(so.Direction == GridSortDirection.Asc)
+                    {
+                        groups = groups.OrderBy(x => x.Name);
+                    }
+                    else
+                    {
+                        groups = groups.OrderByDescending(x => x.Name);
+                    }
+                    break;
+            }
+
+            groups = groups.Skip(so.Skip).Take(so.RowsPerPage);
+
+            var searchResult = new SearchResult<GroupViewModel>()
+            {
+                Results = Mapper.Map<IEnumerable<Group>, IEnumerable<GroupViewModel>>(groups),
+                TotalRows = count
+            };
+
+            var result = new SearchGridResult<GroupViewModel>()
+            {
+                Items = searchResult.Results,
+                Paging = new SearchGridPaging()
+                {
+                    Page = so.Page,
+                    TotalRows = searchResult.TotalRows,
+                    RowsPerPage = perPage ?? SearchGridPaging.DefaultRows
+                },
+                Direction = sortDir,
+                Sort = sort
+            };
+
+            return PartialView("Partials/_browsegrid", result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult JoinGroup(Guid id)
+        {
+            var group = _groupRepository.FindOne(x => x.GroupId == id && x.GroupType == GroupType.Public);
+
+            if(group == null)
+            {
+                this.FlashError("Group not found");
+                return RedirectToAction("Browse");
+            }
+
+            var membership = group.Members.FirstOrDefault(x => x.User.UserId == UserId);
+
+            if(membership == null)
+            {
+                var groupMembership = new GroupMembership()
+                    {
+                        Group = group,
+                        MembershipType = MembershipType.Pending,
+                        User = _userRepository.LoadOne(UserId)
+                    };
+
+                group.Members.Add(groupMembership);
+                _groupRepository.Save(group);
+
+                this.FlashSuccess("A request has been submitted to the groups moderators.");
+                return RedirectToAction("Browse");
+            }
+            else
+            {
+                if(membership.MembershipType == MembershipType.Banned)
+                {
+                    this.FlashError("Group not found");
+                }
+                else if(membership.MembershipType == MembershipType.Pending)
+                {
+                    this.FlashInfo("You already have a pending request to join this group");
+                }
+                else
+                {
+                    this.FlashInfo("You are already a member of this group.");
+                }
+
+                return RedirectToAction("Browse");
+            }
         }
     }
 }

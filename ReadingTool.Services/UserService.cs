@@ -64,6 +64,7 @@ namespace ReadingTool.Services
                     {
                         Created = DateTime.Now,
                         Username = username.Trim(),
+                        DisplayName = username.Trim(),
                         Password = BCrypt.Net.BCrypt.HashPassword(password),
                         ApiKey = CreateApiKey(),
                     };
@@ -208,11 +209,11 @@ namespace ReadingTool.Services
 
         public void DeleteAccount()
         {
-            if(_identity!=null)
+            if(_identity != null)
             {
                 var user = _userRepository.FindOne(_identity.UserId);
 
-                if (user == null)
+                if(user == null)
                 {
                     return;
                 }
@@ -221,7 +222,7 @@ namespace ReadingTool.Services
 
                 string path = UserDirectory.GetDirectory(_identity.UserId);
 
-                if (Directory.Exists(path))
+                if(Directory.Exists(path))
                 {
                     Directory.Delete(path, true);
                 }

@@ -304,6 +304,9 @@
     <Content Include="Views\Groups\Details.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Account\DeleteAccount.cshtml" />
+    <Content Include="Views\Groups\Membership.cshtml" />
+    <Content Include="Views\Groups\Partials\_browsegrid.cshtml" />
+    <Content Include="Views\Groups\Browse.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
