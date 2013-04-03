@@ -4,9 +4,16 @@
     ViewBag.Title = "Group " + Model.Name;
     Bundles.AddInlineScript(
     @<text>
-    <script language="javascript">
-        window.initWebGrid('@Url.Action("DetailsGrid")', {'data': '@Model.GroupId' });
-    </script>
+         <script language="javascript">
+             function update() {
+                 var texts = [];
+                 $('input[type=checkbox]:checked').each(function (index, x) { texts.push($(x).val()); });
+                 $('#texts').val(texts.join(','));
+                 return true;
+             }
+             
+             window.initWebGrid('@Url.Action("DetailsGrid")', {'data': '@Model.GroupId' });
+         </script>
     </text>, "inline");
 }
 
@@ -38,9 +45,17 @@
 <div class="row-fluid">
     <div class="span12">
         <a href="@Url.Action("Index")" class="btn btn-primary">Back to my groups</a>
-        @if(Model.MembershipType==MembershipType.Member || Model.MembershipType==MembershipType.Moderator)
+            @using(Html.BeginForm("UnshareTexts", "Groups", FormMethod.Post, new { @style = "display:inline;", onsubmit = "return update();" }))
+            {
+                <input type="hidden" name="GroupId" value="@Model.GroupId"/>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="texts" id="texts" />
+                <button type="submit" class="btn">unshare selected texts</button>
+            }
+
+        @if(Model.MembershipType == MembershipType.Member || Model.MembershipType == MembershipType.Moderator)
         {
-            using (Html.BeginForm("LeaveGroup", "Groups", new {id = Model.GroupId}, FormMethod.Post, new { style="width: 200px; display:inline-block;"}))
+            using(Html.BeginForm("LeaveGroup", "Groups", new { id = Model.GroupId }, FormMethod.Post, new { style = "width: 200px; display:inline-block;" }))
             {
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-danger" style="width: 100%">Leave this group</button>

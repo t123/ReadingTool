@@ -429,7 +429,13 @@ namespace ReadingTool.Site.Controllers.Home
 
             var membership = group.Members.FirstOrDefault(x => x.User.UserId == UserId);
             group.Members.Remove(membership);
+            var texts = group.Texts.Where(x => x.User.UserId == UserId).ToArray();
+            foreach(var t in texts)
+            {
+                group.Texts.Remove(t);
+            }
 
+            _groupRepository.Save(group);
             this.FlashSuccess("You have been removed from this group.");
 
             return RedirectToAction("Index");
@@ -547,6 +553,36 @@ namespace ReadingTool.Site.Controllers.Home
 
                 return RedirectToAction("Browse");
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UnshareTexts(Guid groupId, string texts)
+        {
+            var group = _groupService.HasAccess(groupId, UserId);
+
+            if(group != null && !string.IsNullOrEmpty(texts))
+            {
+                foreach(var id in texts.Split(',').Select(x => Guid.Parse(x)))
+                {
+                    if(id == Guid.Empty)
+                    {
+                        continue;
+                    }
+
+                    var text = _textRepository.FindOne(x => x.TextId == id && x.User == _userRepository.LoadOne(UserId));
+
+                    if(text != null && group.Texts.Contains(text))
+                    {
+                        group.Texts.Remove(text);
+                    }
+                }
+
+                _groupRepository.Save(group);
+            }
+
+            this.FlashSuccess("Texts unshared");
+            return RedirectToAction("Details", new { id = groupId });
         }
     }
 }

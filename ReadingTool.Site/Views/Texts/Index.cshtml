@@ -3,6 +3,17 @@
     Bundles.AddInlineScript(
     @<text>
     <script language="javascript">
+        function update() {
+            if($('#GroupId').val()=='') {
+                return false;
+            }
+            
+            var texts = [];
+            $('input[type=checkbox]:checked').each(function (index, x) { texts.push($(x).val()); });
+            $('#texts').val(texts.join(','));
+            return true;
+        }
+
         window.initWebGrid('@Url.Action("IndexGrid")');
     </script>
     </text>, "inline");
@@ -36,5 +47,19 @@
     <div class="span12">
         <a href="@Url.Action("Add")" class="btn btn-primary">Add a new text</a>
         <a href="@Url.Action("Import")" class="btn">Import texts</a>
+        @{
+            var groups = ViewBag.Groups as Dictionary<Guid, string>;
+
+            if(groups != null && groups.Any())
+            {
+                using(Html.BeginForm("ShareTexts", "Texts", FormMethod.Post, new { @style = "display:inline;", onsubmit = "return update();" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="texts" id="texts" />
+                    @Html.DropDownList("GroupId", new SelectList(groups, "Key", "Value"), "Choose group", new { style = "margin-bottom:0;"})
+                    <button type="submit" class="btn">share selected texts</button>
+                }
+            }
+        }
     </div>
 </div>

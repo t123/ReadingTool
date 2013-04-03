@@ -14,12 +14,12 @@ namespace ReadingTool.Entities
         public virtual string Name { get; set; }
         public virtual string Description { get; set; }
         public virtual GroupType GroupType { get; set; }
-        public virtual IEnumerable<Text> Texts { get; set; }
+        public virtual ICollection<Text> Texts { get; set; }
         public virtual IList<GroupMembership> Members { get; set; }
 
         public Group()
         {
-            Texts = new HashSet<Text>();
+            Texts = new List<Text>();
             Members = new List<GroupMembership>();
         }
     }

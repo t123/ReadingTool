@@ -47,8 +47,11 @@ namespace ReadingTool.Site.Controllers.Home
         private readonly Repository<Text> _textRepository;
         private readonly Repository<User> _userRepository;
         private readonly Repository<Term> _termRepository;
+        private readonly Repository<Group> _groupRepository;
+        private readonly Repository<GroupMembership> _groupMembershipRepository;
         private readonly ITextService _textService;
         private readonly IParserService _parserService;
+        private readonly IGroupService _groupService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public TextsController(
@@ -56,20 +59,33 @@ namespace ReadingTool.Site.Controllers.Home
             Repository<Text> textRepository,
             Repository<User> userRepository,
             Repository<Term> termRepository,
+            Repository<Group> groupRepository,
+            Repository<GroupMembership> groupMembershipRepository,
             ITextService textService,
-            IParserService parserService
+            IParserService parserService,
+            IGroupService groupService
             )
         {
             _languageRepository = languageRepository;
             _textRepository = textRepository;
             _userRepository = userRepository;
             _termRepository = termRepository;
+            _groupRepository = groupRepository;
+            _groupMembershipRepository = groupMembershipRepository;
             _textService = textService;
             _parserService = parserService;
+            _groupService = groupService;
         }
 
         public ActionResult Index()
         {
+            var groups = _groupMembershipRepository
+                .FindAll(x => x.User == _userRepository.LoadOne(UserId))
+                .Select(x => x.Group)
+                .ToDictionary(x => x.GroupId, x => x.Name);
+
+            ViewBag.Groups = groups;
+
             return View();
         }
 
@@ -172,6 +188,38 @@ namespace ReadingTool.Site.Controllers.Home
             };
 
             return PartialView("Partials/_grid", result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ShareTexts(Guid groupId, string texts)
+        {
+            var group = _groupService.HasAccess(groupId, UserId);
+
+            if(group != null && !string.IsNullOrEmpty(texts))
+            {
+                foreach(var id in texts.Split(',').Select(x => Guid.Parse(x)))
+                {
+                    if(id == Guid.Empty)
+                    {
+                        continue;
+                    }
+
+                    var text = _textRepository.FindOne(x => x.TextId == id && x.User == _userRepository.LoadOne(UserId));
+
+                    if(group.Texts.Contains(text) || text == null)
+                    {
+                        continue;
+                    }
+
+                    group.Texts.Add(text);
+                }
+
+                _groupRepository.Save(group);
+            }
+
+            this.FlashSuccess("Texts shared");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]

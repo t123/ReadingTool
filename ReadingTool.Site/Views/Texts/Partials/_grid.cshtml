@@ -11,6 +11,9 @@
     footerStyle: "hidden",
     columns: new[]
         {
+            grid.Column(header: "", style: "col5", format: @<text>
+                                                                <input type="checkbox" value="@item.TextId" value="add"/>
+                                                            </text>),
             grid.Column("Language1", header: "Language", style: "col10"),
             grid.Column("Title"),
             grid.Column("CollectionName", header: "Collection Name", style: "col20"),

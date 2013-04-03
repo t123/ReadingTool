@@ -29,5 +29,6 @@ namespace ReadingTool.Site.Models.Groups
         public string Language1 { get; set; }
         public bool IsParallel { get; set; }
         public string User { get; set; }
+        public bool IsOwner { get; set; }
     }
 }

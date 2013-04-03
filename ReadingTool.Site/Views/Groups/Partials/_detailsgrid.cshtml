@@ -11,6 +11,12 @@
     footerStyle: "hidden",
     columns: new[]
         {
+            grid.Column(header: "", style: "col5", format:@<text>
+                                                                @if(item.IsOwner)
+                                                                {
+                                                                    <input type="checkbox" value="@item.TextId" name="remove"/>
+                                                                }
+                                                            </text>),
             grid.Column("Owner", header: "Owner", style: "col10", format:@<text>@item.User</text>),
             grid.Column("Language1", header: "Language", style: "col5"),
             grid.Column("Title"),
