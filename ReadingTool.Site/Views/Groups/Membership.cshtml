@@ -4,6 +4,7 @@
     ViewBag.Title = "Group Membership";
 }
 
+@Html.FlashMessage("Changing a user to a status of pending or banned or removing them will automatically unshare their texts.")
 @using(Html.BeginForm())
 {
     @Html.HiddenFor(x => x.GroupId)

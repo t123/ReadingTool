@@ -216,6 +216,12 @@ namespace ReadingTool.Site.Controllers.Home
         {
             var group = _groupService.HasAccess(id, UserId);
 
+            if(group == null)
+            {
+                this.FlashError("Group not found.");
+                return RedirectToAction("Index");
+            }
+
             var model = new GroupViewModel()
                 {
                     GroupId = group.GroupId,
@@ -391,10 +397,12 @@ namespace ReadingTool.Site.Controllers.Home
                     continue;
                 }
 
+                Guid removeTexts = Guid.Empty;
                 if(value.Equals("delete", StringComparison.InvariantCultureIgnoreCase))
                 {
                     var membership = group.Members.FirstOrDefault(x => x.GroupMembershipId == membershipId);
                     group.Members.Remove(membership);
+                    removeTexts = membership.User.UserId;
                 }
                 else
                 {
@@ -406,6 +414,21 @@ namespace ReadingTool.Site.Controllers.Home
                     }
 
                     member.MembershipType = (MembershipType)Enum.Parse(typeof(MembershipType), value);
+
+                    if(member.MembershipType == MembershipType.Pending || member.MembershipType == MembershipType.Banned)
+                    {
+                        removeTexts = member.User.UserId;
+                    }
+                }
+
+                if(removeTexts != Guid.Empty)
+                {
+                    var texts = group.Texts.Where(x => x.User.UserId == removeTexts).ToArray();
+
+                    foreach(var t in texts)
+                    {
+                        group.Texts.Remove(t);
+                    }
                 }
             }
 
