@@ -159,7 +159,7 @@ namespace ReadingTool.Site.Controllers.Home
                 };
 
             _groupRepository.Save(group);
-            this.FlashSuccess("Group added");
+            this.FlashSuccess("Group added.");
 
             return RedirectToAction("Edit", new { id = group.GroupId });
         }
@@ -171,7 +171,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             if(group == null)
             {
-                this.FlashError("Group not found");
+                this.FlashError("Group not found.");
                 return RedirectToAction("Index");
             }
 
@@ -246,7 +246,7 @@ namespace ReadingTool.Site.Controllers.Home
                 Direction = sortDir
             };
 
-            var texts = group.Texts;
+            var texts = group.Texts.AsQueryable();
 
             var filterTerms = SearchFilterParser.Parse(filter);
 
@@ -335,7 +335,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             if(group == null)
             {
-                this.FlashError("Group not found");
+                this.FlashError("Group not found.");
                 return RedirectToAction("Index");
             }
 
@@ -368,7 +368,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             if(group == null)
             {
-                this.FlashError("Group not found");
+                this.FlashError("Group not found.");
                 return RedirectToAction("Index");
             }
 
@@ -410,7 +410,7 @@ namespace ReadingTool.Site.Controllers.Home
             }
 
             _groupRepository.Save(group);
-            this.FlashSuccess("Group updated");
+            this.FlashSuccess("Group updated.");
 
             return RedirectToAction("Membership", new { id = id });
         }
@@ -423,7 +423,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             if(group == null)
             {
-                this.FlashError("Group not found");
+                this.FlashError("Group not found.");
                 return RedirectToAction("Index");
             }
 
@@ -509,7 +509,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             if(group == null)
             {
-                this.FlashError("Group not found");
+                this.FlashError("Group not found.");
                 return RedirectToAction("Browse");
             }
 
@@ -527,18 +527,18 @@ namespace ReadingTool.Site.Controllers.Home
                 group.Members.Add(groupMembership);
                 _groupRepository.Save(group);
 
-                this.FlashSuccess("A request has been submitted to the groups moderators.");
+                this.FlashSuccess("A request has been submitted to the group moderators.");
                 return RedirectToAction("Browse");
             }
             else
             {
                 if(membership.MembershipType == MembershipType.Banned)
                 {
-                    this.FlashError("Group not found");
+                    this.FlashError("Group not found.");
                 }
                 else if(membership.MembershipType == MembershipType.Pending)
                 {
-                    this.FlashInfo("You already have a pending request to join this group");
+                    this.FlashInfo("You already have a pending request to join this group.");
                 }
                 else
                 {

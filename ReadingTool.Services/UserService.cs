@@ -63,6 +63,7 @@ namespace ReadingTool.Services
                 User user = new User()
                     {
                         Created = DateTime.Now,
+                        LastLogin = DateTime.Now,
                         Username = username.Trim(),
                         DisplayName = username.Trim(),
                         Password = BCrypt.Net.BCrypt.HashPassword(password),

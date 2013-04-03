@@ -28,6 +28,8 @@ namespace ReadingTool.Site.Models.Groups
         public Guid GroupId { get; set; }
 
         [MaxLength(50, ErrorMessage = "The name must be less than 50 characters.")]
+        [MinLength(3, ErrorMessage = "The name must be more than 3 letters.")]
+        [RegularExpression(@"([\d\w\s]+)", ErrorMessage = "Only letters, numbers and spaces are allowed.")]
         public string Name { get; set; }
 
         [MaxLength(1000, ErrorMessage = "The description must be less than 1000 characters.")]

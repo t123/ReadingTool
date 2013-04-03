@@ -95,6 +95,7 @@ namespace ReadingTool.Site.Controllers.Home
                 return View("Index", new AccountModel { SignIn = model });
             }
 
+            user.LastLogin = DateTime.Now;
             CreateUserCookie(user);
 
             return RedirectToAction("Index", "Account");

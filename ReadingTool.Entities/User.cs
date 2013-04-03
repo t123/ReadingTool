@@ -31,6 +31,7 @@ namespace ReadingTool.Entities
         public virtual string DisplayName { get; set; }
         public virtual string EmailAddress { get; set; }
         public virtual DateTime Created { get; set; }
+        public virtual DateTime LastLogin { get; set; }
         public virtual string Password { get; set; }
 
         private string _roles;
@@ -60,7 +61,8 @@ namespace ReadingTool.Entities
             Map(x => x.Username).Length(50).Not.Nullable().UniqueKey("username").Index("IDX_User_Username");
             Map(x => x.DisplayName).Length(50);
             Map(x => x.EmailAddress).Length(100);
-            Map(x => x.Created);
+            Map(x => x.Created).Not.Nullable();
+            Map(x => x.LastLogin).Not.Nullable();
             Map(x => x.Password).Length(100).Not.Nullable();
             Map(x => x.ApiKey).Length(50).Not.Nullable();
             Map(Reveal.Member<User>("_roles")).Column("Roles").Length(25);
