@@ -66,10 +66,10 @@ namespace ReadingTool.Entities
             Map(x => x.LastRead);
             Map(x => x.AudioUrl).Length(250);
 
-            HasManyToMany<Text>(x => x.Groups)
+            HasManyToMany<Group>(x => x.Groups)
                 .Table("GroupText")
-                .ParentKeyColumn("TextId")
-                .ChildKeyColumn("GroupId")
+                .ParentKeyColumn("GroupId")
+                .ChildKeyColumn("TextId")
                 .Cascade
                 .All()
                 .BatchSize(100)

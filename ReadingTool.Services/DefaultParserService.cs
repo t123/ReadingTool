@@ -381,8 +381,14 @@ namespace ReadingTool.Services
 
                 if(termsAsDict.ContainsKey(lower))
                 {
-                    element.SetAttributeValue("box", "box" + termsAsDict[lower].Box);
-                    element.SetAttributeValue("state", Term.TermStateToClass(termsAsDict[lower].State));
+                    var state = termsAsDict[lower].State;
+
+                    if(state == TermState.NotKnown)
+                    {
+                        element.SetAttributeValue("box", "box" + termsAsDict[lower].Box);
+                    }
+
+                    element.SetAttributeValue("state", Term.TermStateToClass(state));
                     element.SetAttributeValue("data", termsAsDict[lower].FullDefinition);
                     element.SetAttributeValue("new", "");
                 }

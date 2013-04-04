@@ -35,6 +35,7 @@ namespace ReadingTool.Services
         private readonly Repository<Language> _languageRepository;
         private readonly Repository<User> _userRepository;
         private readonly Repository<Group> _groupRepository;
+        private readonly Repository<Term> _termRepository;
         private readonly IGroupService _groupService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly UserIdentity _identity;
@@ -44,6 +45,7 @@ namespace ReadingTool.Services
             Repository<Language> languageRepository,
             Repository<User> userRepository,
             Repository<Group> groupRepository,
+            Repository<Term> termRepository,
             IGroupService groupService,
             IPrincipal principal
             )
@@ -52,6 +54,7 @@ namespace ReadingTool.Services
             _languageRepository = languageRepository;
             _userRepository = userRepository;
             _groupRepository = groupRepository;
+            _termRepository = termRepository;
             _groupService = groupService;
             _identity = principal.Identity as UserIdentity;
         }
@@ -199,6 +202,12 @@ namespace ReadingTool.Services
 
             if(text != null)
             {
+                var query = _termRepository.Session.CreateQuery("update Term t set t.Text=null where t.Text.TextId=:textId").SetGuid("textId", id);
+                query.ExecuteUpdate();
+
+                query = _groupRepository.Session.CreateSQLQuery("delete from GroupText where TextId=:textId").SetGuid("textId", id);
+                query.ExecuteUpdate();
+
                 _textRepository.Delete(id);
 
                 string l1TextFilename = GetTextName(text, true);

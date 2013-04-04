@@ -152,7 +152,7 @@ namespace ReadingTool.Entities
             Map(x => x.BasePhrase).Length(50);
             Map(x => x.Sentence).Length(500);
             Map(x => x.Definition).Length(500);
-            References(x => x.Text);
+            References(x => x.Text).Nullable();
             References(x => x.Language).Not.Nullable().UniqueKey("IDX_Unique_Term");
             Map(x => x.Created);
             Map(x => x.Modified);
