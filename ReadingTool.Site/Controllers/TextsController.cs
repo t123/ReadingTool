@@ -27,6 +27,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Ionic.Zip;
 using Newtonsoft.Json;
+using ReadingTool.Common;
 using ReadingTool.Common.Search;
 using ReadingTool.Entities;
 using ReadingTool.Repository;
@@ -80,7 +81,7 @@ namespace ReadingTool.Site.Controllers.Home
         public ActionResult Index()
         {
             var groups = _groupMembershipRepository
-                .FindAll(x => x.User == _userRepository.LoadOne(UserId))
+                .FindAll(x => x.User == _userRepository.LoadOne(UserId) && new[] { MembershipType.Member, MembershipType.Owner, MembershipType.Moderator }.Contains(x.MembershipType))
                 .Select(x => x.Group)
                 .ToDictionary(x => x.GroupId, x => x.Name);
 
