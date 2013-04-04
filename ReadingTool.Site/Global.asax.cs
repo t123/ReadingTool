@@ -57,15 +57,15 @@ namespace ReadingTool.Site
         private void CacheSystemLanguages()
         {
             var systemLanguageRepository = DependencyResolver.Current.GetService<ReadingTool.Repository.Repository<SystemLanguage>>();
-            var languages = systemLanguageRepository.FindAll().ToDictionary(x => x.Code, x => x.Name);
+            var languages = systemLanguageRepository.FindAll().ToDictionary(x => x.Code, x => x.Name + " (" + x.Code + ")");
 
             HttpRuntime.Cache.Add(
-                MvcApplication.SYSTEM_LANGUAGE_CACHE_KEY, 
-                languages, 
-                null, 
-                Cache.NoAbsoluteExpiration, 
-                Cache.NoSlidingExpiration, 
-                CacheItemPriority.NotRemovable, 
+                MvcApplication.SYSTEM_LANGUAGE_CACHE_KEY,
+                languages,
+                null,
+                Cache.NoAbsoluteExpiration,
+                Cache.NoSlidingExpiration,
+                CacheItemPriority.NotRemovable,
                 (key, value, reason) =>
                 {
                 });

@@ -34,6 +34,8 @@ namespace ReadingTool.Services
         private readonly Repository<Text> _textRepository;
         private readonly Repository<Language> _languageRepository;
         private readonly Repository<User> _userRepository;
+        private readonly Repository<Group> _groupRepository;
+        private readonly IGroupService _groupService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly UserIdentity _identity;
 
@@ -41,12 +43,16 @@ namespace ReadingTool.Services
             Repository<Text> textRepository,
             Repository<Language> languageRepository,
             Repository<User> userRepository,
+            Repository<Group> groupRepository,
+            IGroupService groupService,
             IPrincipal principal
             )
         {
             _textRepository = textRepository;
             _languageRepository = languageRepository;
             _userRepository = userRepository;
+            _groupRepository = groupRepository;
+            _groupService = groupService;
             _identity = principal.Identity as UserIdentity;
         }
 
@@ -69,9 +75,9 @@ namespace ReadingTool.Services
         }
 
         #region blob storage
-        private string GetTextDirectory()
+        private string GetTextDirectory(Text text)
         {
-            string path = UserDirectory.GetDirectory(_identity.UserId);
+            string path = UserDirectory.GetDirectory(text.User.UserId);
 
             if(!Directory.Exists(path))
             {
@@ -83,7 +89,7 @@ namespace ReadingTool.Services
 
         private string GetTextName(Text text, bool l1)
         {
-            string basePath = GetTextDirectory();
+            string basePath = GetTextDirectory(text);
 
             if(l1)
             {
@@ -196,7 +202,7 @@ namespace ReadingTool.Services
                 _textRepository.Delete(id);
             }
 
-            var textDirectory = GetTextDirectory();
+            var textDirectory = GetTextDirectory(text);
 
             if(Directory.Exists(textDirectory))
             {
@@ -204,10 +210,29 @@ namespace ReadingTool.Services
             }
         }
 
-        public Text FindOne(Guid id)
+        public Text FindOne(Guid id, Guid? groupId = null, Guid? userId = null)
         {
-            Text text = _textRepository.FindOne(x => x.TextId == id && x.User.UserId == _identity.UserId);
-            text = ReadTextContents(text);
+            Text text = null;
+
+            if(groupId.HasValue && userId.HasValue)
+            {
+                var group = _groupService.HasAccess(groupId.Value, userId.Value);
+
+                if(group != null)
+                {
+                    text = group.Texts.FirstOrDefault(x => x.TextId == id);
+                }
+            }
+            else
+            {
+                text = _textRepository.FindOne(x => x.TextId == id && x.User.UserId == _identity.UserId);
+            }
+
+            if(text != null)
+            {
+                text = ReadTextContents(text);
+            }
+
             return text;
         }
 

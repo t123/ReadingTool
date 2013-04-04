@@ -18,6 +18,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using FluentNHibernate;
@@ -41,6 +42,12 @@ namespace ReadingTool.Entities
         public virtual string L1Text { get; set; }
         public virtual string L2Text { get; set; }
         public virtual string AudioUrl { get; set; }
+        public virtual ICollection<Group> Groups { get; set; }
+
+        public Text()
+        {
+            Groups = new List<Group>();
+        }
     }
 
     public class TextMap : ClassMap<Text>
@@ -58,6 +65,16 @@ namespace ReadingTool.Entities
             Map(x => x.Modified).Not.Nullable();
             Map(x => x.LastRead);
             Map(x => x.AudioUrl).Length(250);
+
+            HasManyToMany<Text>(x => x.Groups)
+                .Table("GroupText")
+                .ParentKeyColumn("TextId")
+                .ChildKeyColumn("Groups")
+                .Cascade
+                .All()
+                .BatchSize(100)
+                .AsSet()
+                ;
         }
     }
 }

@@ -19,7 +19,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -30,7 +33,9 @@ using ReadingTool.Repository;
 using ReadingTool.Services;
 using ReadingTool.Site.Attributes;
 using ReadingTool.Site.Helpers;
+using ReadingTool.Site.Models.Account;
 using ReadingTool.Site.Models.Groups;
+using ReadingTool.Site.Models.Languages;
 using ReadingTool.Site.Models.Texts;
 
 namespace ReadingTool.Site.Controllers.Home
@@ -43,21 +48,33 @@ namespace ReadingTool.Site.Controllers.Home
         private readonly Repository<Group> _groupRepository;
         private readonly Repository<Text> _textRepository;
         private readonly Repository<GroupMembership> _membershipRepository;
+        private readonly Repository<Term> _termRepository;
+        private readonly Repository<Language> _languageRepository;
         private readonly IGroupService _groupService;
+        private readonly IParserService _parserService;
+        private readonly ITextService _textService;
 
         public GroupsController(
             Repository<User> userRepository,
             Repository<Group> groupRepository,
             Repository<Text> textRepository,
             Repository<GroupMembership> membershipRepository,
-            IGroupService groupService
+            Repository<Term> termRepository,
+            Repository<Language> languageRepository,
+            IGroupService groupService,
+            IParserService parserService,
+            ITextService textService
             )
         {
             _userRepository = userRepository;
             _groupRepository = groupRepository;
             _textRepository = textRepository;
             _membershipRepository = membershipRepository;
+            _termRepository = termRepository;
+            _languageRepository = languageRepository;
             _groupService = groupService;
+            _parserService = parserService;
+            _textService = textService;
         }
 
         public ActionResult Index()
@@ -318,6 +335,11 @@ namespace ReadingTool.Site.Controllers.Home
                 TotalRows = count
             };
 
+            foreach(var r in searchResult.Results)
+            {
+                r.GroupId = groupId;
+            }
+
             var result = new SearchGridResult<GroupTextViewModel>()
             {
                 Items = searchResult.Results,
@@ -358,8 +380,10 @@ namespace ReadingTool.Site.Controllers.Home
                             MembershipType = x.MembershipType,
                             Username = x.User.DisplayName
                         }
-                        ).ToList()
+                        ).ToList(),
                 };
+
+            model.MembershipType = model.Members.FirstOrDefault(x => x.UserId == UserId).MembershipType;
 
             return View(model);
         }
@@ -618,6 +642,128 @@ namespace ReadingTool.Site.Controllers.Home
 
             this.FlashSuccess("Texts unshared");
             return RedirectToAction("Details", new { id = groupId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteGroup(Guid id)
+        {
+            var group = _groupService.HasAccess(id, UserId, new MembershipType[] { MembershipType.Owner, });
+
+            if(group == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            group.Members.Clear();
+            group.Texts.Clear();
+            _groupRepository.Save(group);
+            _groupRepository.Delete(group);
+
+            this.FlashSuccess("Group deleted");
+            return RedirectToAction("Index");
+        }
+
+
+        public ActionResult Read(Guid id, Guid groupId)
+        {
+            var text = _textService.FindOne(id, groupId, UserId);
+            var group = _groupService.HasAccess(groupId, UserId);
+
+            if(text == null || group == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var model = Create(group, text, false);
+
+            if(model == null)
+            {
+                this.FlashInfo("Sorry, the text could not be parsed. Do you have the language {0} in your language list?", text.Language1.Code);
+                return RedirectToAction("Details", new { id = groupId });
+            }
+
+            return View("Read", model);
+        }
+
+        public ActionResult ReadParallel(Guid id, Guid groupId)
+        {
+            var text = _textService.FindOne(id, groupId, UserId);
+            var group = _groupService.HasAccess(groupId, UserId);
+
+            if(text == null || group == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var model = Create(group, text, true);
+
+            if(model == null)
+            {
+                this.FlashInfo("Sorry, the text could not be parsed. Do you have the language {0} in your language list?", text.Language1.Code);
+                return RedirectToAction("Details", new { id = groupId });
+            }
+
+            return View("Read", model);
+        }
+
+        //public FileContentResult DownloadLatex(Guid id)
+        //{
+        //    var text = _textService.FindOne(id);
+
+        //    if(text == null)
+        //    {
+        //        throw new FileNotFoundException();
+        //    }
+
+        //    var terms = _termRepository.FindAll(x => x.Language == text.Language1 && x.User == _userRepository.LoadOne(UserId)).ToArray();
+        //    var latexParser = DependencyResolver.Current.GetService<LatexParserService>();
+        //    var parsed = latexParser.Parse(false, text.Language1, text.Language2, terms, text);
+
+        //    return new FileContentResult(Encoding.UTF8.GetBytes(parsed), "application/x-latex")
+        //    {
+        //        FileDownloadName = Path.Combine(text.Title, ".tex")
+        //    };
+        //}
+
+        private ReadModel Create(Group group, Text text, bool asParallel)
+        {
+            if(asParallel && text.Language2 == null)
+            {
+                asParallel = false;
+            }
+
+            var language1 = _languageRepository.FindOne(x => x.Code == text.Language1.Code && x.User == _userRepository.LoadOne(UserId));
+            var language2 = asParallel && text.Language2 != null ? _languageRepository.FindOne(x => x.Code == text.Language2.Code && x.User == _userRepository.LoadOne(UserId)) : null;
+
+            if(language1 == null)
+            {
+                return null;
+            }
+
+            if(asParallel && language2 == null)
+            {
+                return null;
+            }
+
+            var terms = _termRepository.FindAll(x => x.Language.Code == language1.Code && x.User == _userRepository.LoadOne(UserId)).ToArray();
+            var parsed = _parserService.Parse(asParallel, language1, language2, terms, text);
+
+            Guid nextText = group.Texts.Where(x => x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo > text.CollectionNo).OrderBy(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
+            Guid previousText = group.Texts.Where(x => x.Language1 == text.Language1 && x.CollectionName == text.CollectionName && x.CollectionNo < text.CollectionNo).OrderByDescending(x => x.CollectionNo).Select(x => x.TextId).FirstOrDefault();
+
+            return new ReadModel()
+            {
+                AsParallel = asParallel,
+                ParsedText = parsed,
+                Text = Mapper.Map<Text, TextViewModel>(text),
+                Language = Mapper.Map<Language, LanguageViewModel>(language1),
+                Language2 = !asParallel || text.Language2 == null ? null : Mapper.Map<Language, LanguageViewModel>(language2),
+                User = Mapper.Map<User, UserModel>(_userRepository.FindOne(UserId)),
+                PagedTexts = new Tuple<Guid, Guid>(previousText, nextText),
+                ApiDomain = ConfigurationManager.AppSettings["ApiDomain"],
+                Group = Mapper.Map<Group, GroupViewModel>(group)
+            };
         }
     }
 }

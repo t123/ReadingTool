@@ -1,0 +1,263 @@
+﻿@using ReadingTool.Common
+@using ReadingTool.Common.Extensions
+@model ReadingTool.Site.Models.Texts.ReadModel
+@{
+    string action = Model.AsParallel ? "ReadParallel" : "Read";
+    ViewBag.Title = Model.Text.Title + " - " + Model.Text.CollectionName;
+    Bundles.Reference("Content/Reading");
+    Bundles.Reference("Scripts/Reading", "inline");
+    Bundles.Reference("Scripts/SimpleModal", "inline");
+
+    Model.Text.AudioUrl = string.Empty;
+    
+    if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+    {
+        Bundles.Reference("content/jPlayer");
+        Bundles.Reference("Scripts/jPlayer", "inline");
+    }
+    
+    Bundles.AddInlineScript(@<text>
+                                 <script src="@Url.Action("Index", "Routes", new { @c="Ajax"})" type="text/javascript"></script>
+                                 <script language="javascript">
+                                     @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+                                     {
+                                         <text>function toggleAudio() {                                         $('#jp_container_1').toggle();
+                                         
+                                         if($('#jp_container_1').is(':visible')) {
+                                             $('.closelink').html('&rArr;');
+                                         } else {
+                                             $('.closelink').html('&lArr;');
+                                         }                                     }</text>
+                                     }
+                                     
+                                     $(function () {
+                                         var settings = {
+                                             textId: '@Model.Text.TextId',
+                                             languageId: '@Model.Language.LanguageId',
+                                             modal: @Model.Language.Modal.ToString().ToLowerInvariant(),
+                                             autoPause: @Model.Language.Modal.ToString().ToLowerInvariant(),
+                                             modalBehaviour: '@Model.Language.ModalBehaviour.ToLowerInvariant()',
+                                             hasAudio: @((!string.IsNullOrEmpty(Model.Text.AudioUrl)==true).ToString().ToLowerInvariant())
+                                         };
+
+                                         var modalHandler = new ModalHandler(routes, settings);
+
+                                         @if(!Model.Language.ShowSpaces)
+                                         {
+                                             if(Model.AsParallel)
+                                             {
+                                                <text>$('td.f .wsx').hide();</text>
+                                             }
+                                             else
+                                             {
+                                                 <text>$('.sentence .wsx').hide();</text>
+                                             }
+                                         }
+
+                                         @if(Model.AsParallel && !Model.Language2.ShowSpaces)
+                                         {
+                                            <text>$('td.s .wsx').hide();</text>
+                                         }
+
+                                         @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+                                         {
+                                             <text>
+                                         $("#jplayer").jPlayer({
+                                             ready: function (event) {
+                                                 $(this).jPlayer("setMedia", {
+                                                     mp3:"@Model.Text.AudioUrl"
+                                                 });
+                                             },
+                                             swfPath: "/scripts/jPlayer/",
+                                             supplied: "mp3",
+                                             wmode: "window",
+                                             volume: localStorage['jPlayer_Volume'] || 0.5
+                                         });                                         $('.closelink').click(function(e) {
+                                             toggleAudio();
+                                             return false;
+                                         });                                             </text>
+                                         }
+                                     });
+                                 </script>
+                             </text>, "inline");
+}
+
+@section MenuAdditional {
+    @if (Model.PagedTexts.Item2!=Guid.Empty)
+    {
+        <li class="pull-right">
+            <a href="@Url.Action(action, new {id = Model.PagedTexts.Item2, groupId=Model.Group.GroupId})">next</a>
+        </li>
+    }
+    <li style="margin-top: 2px;" class="pull-right">
+        <div class="btn-group">
+            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                more options for this text&nbsp;<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="@Url.Action("Read", new {id = Model.Text.TextId, groupId=Model.Group.GroupId})">read single mode</a>
+                    <a href="@Url.Action("ReadParallel", new {id = Model.Text.TextId, groupId=Model.Group.GroupId})">read in parallel</a>
+                    @if (Model.PagedTexts.Item1!=Guid.Empty)
+                    {
+                        <a href="@Url.Action(action, new {id = Model.PagedTexts.Item1, groupId=Model.Group.GroupId})">previous text</a>
+                    }
+                    @if(Model.PagedTexts.Item2 != Guid.Empty)
+                    {
+                        <a href="@Url.Action(action, new {id = Model.PagedTexts.Item2, groupId=Model.Group.GroupId})">next text</a>
+                    }
+                    <a href="@Url.Action("Details", new {id = Model.Group.GroupId})">back to group</a>
+                    <a href="#stats" onclick="$('#stats').show();">go to statistics</a>
+                    @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+                    {
+                        <a href="#" onclick="toggleAudio(); return false;">show/hide audio</a>
+                    }
+                </li>
+            </ul>
+        </div>
+    </li>
+    @if(Model.PagedTexts.Item1 != Guid.Empty)
+    {
+        <li class="pull-right">
+            <a href="@Url.Action(action, new {id = Model.PagedTexts.Item1, groupId=Model.Group.GroupId})">previous</a>
+        </li>
+    }
+}
+
+<div id="dictionary-content" style="display: none">
+    <iframe id="dictionaryiframe" width="100%" height="100%" scrolling="auto">
+    </iframe>
+</div>
+
+<div id="readingareaouter">
+    <div id="readingareainner">
+        @Html.Raw(@Model.ParsedText)
+    </div>
+    <div style="background-color: #fff; padding-left:15px;">
+        <div class="clr50"></div>
+        @if(Model.PagedTexts.Item1 != Guid.Empty)
+        {
+            <a href="@Url.Action(action, new { id = Model.PagedTexts.Item1, groupId=Model.Group.GroupId })" class="btn">previous text</a>
+        }
+        @if(Model.PagedTexts.Item2 != Guid.Empty)
+        {
+            <a href="@Url.Action(action, new { id = Model.PagedTexts.Item2, groupId=Model.Group.GroupId })" class="btn">next text</a>
+        }
+        <div class="clr10"></div>
+        <button type="button" id="btnMarkRemainingAsKnown"class="btn">mark the remaining words as known</button>
+        <div class="clr10"></div>
+        <div id="markRemainingAsKnownProgress" class="alert alert-block" style="display: none"></div>
+        <div class="clr100"></div>
+    </div>
+</div>
+
+<div id="textModal" style="display: none;">
+    <input type="hidden" id="termId" value=""/>
+    <div class="row">
+        <div class="span6"><strong><span id="currentWord"></span></strong></div>
+        <div class="span3">
+            <ul class="states">
+                <li class="pull-right"><a id="textModalCloseLink" href="#" onclick="return false;">close</a></li>
+                <li class="pull-right"><a id="increaseWord" href="#" onclick="return false;">increase</a></li>
+                <li class="pull-right"><a id="decreaseWord" href="#" onclick="return false;">decrease</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span9">
+            <ul class="dictionaries">
+                @foreach(var dictionary in Model.Language.Dictionaries)
+                {
+                    <li><a 
+                            target="@(string.IsNullOrEmpty(dictionary.WindowName) ? "_blank" : dictionary.WindowName)"
+                            class="dictionary" 
+                            data-id="@dictionary.DictionaryId" 
+                            data-parameter="@dictionary.Sentence.ToString().ToLowerInvariant()" 
+                            data-urlEncode="@(string.IsNullOrEmpty(dictionary.Encoding) ? "false": "true")" 
+                            data-url="@dictionary.Url" 
+                            data-autoOpen="@dictionary.AutoOpen.ToString().ToLowerInvariant()"
+                            >@dictionary.Name
+                        </a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">&nbsp;</div>
+        <div class="span7">
+            <ul class="states">
+                <li class="known"><input type="radio" name="state" id="knownState" value="@TermState.Known"/>known</li>
+                <li class="notknown"><input type="radio" name="state" id="unknownState" value="@TermState.NotKnown"/>not known</li>
+                <li class="notseen"><input type="radio" name="state" id="notseenState" value="@TermState.NotSeen"/>not seen</li>
+                <li class="ignore"><input type="radio" name="state" id="ignoredState" value="@TermState.Ignore"/>ignore</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">Sentence:</div>
+        <div class="span7"><input type="text" name="currentSentence" id="currentSentence"/><a href="#" id="refreshSentence">refresh</a></div>
+    </div>
+    <div class="row">
+        <div class="span2">Base word:</div>
+        <div class="span7"><input type="text" name="baseWord" id="baseWord" placeholder="nominative form, dictionary form etc"/></div>
+    </div>
+    <div class="row">
+        <div class="span2">Definition:</div>
+        <div class="span7"><textarea name="definition" id="definition" rows="3" placeholder="your definition of the word"></textarea></div>
+    </div>
+    <div class="row">
+        <div class="span2">Tags:</div>
+        <div class="span7"><input type="text" name="tags" id="tags" placeholder="comma separated list of tags"/></div>
+    </div>
+    <div class="row">
+        <div class="span7" id="saveMessage">
+        </div>
+        <div class="span1">
+            <button id="btnSave" title="ctrl-enter to save" class="btn btn-small">save</button>
+        </div>
+        <div class="span1">
+            <button id="btnReset" title="reset" class="btn btn-small">reset</button>
+        </div>
+    </div>
+</div>
+
+@if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
+{
+    <div id="jplayer" class="jp-jplayer"></div>
+    <div id="audiocontainer">
+        <a href="#" class="closelink" title="toggle audio player">&rArr;</a>
+        <div id="jp_container_1" class="jp-audio">
+            <div class="jp-type-single">
+                <div class="jp-gui jp-interface">
+                    <ul class="jp-controls">
+                        <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+                        <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+                        <li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
+                        <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
+                        <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+                        <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+                    </ul>
+                    <div class="jp-progress">
+                        <div class="jp-seek-bar">
+                            <div class="jp-play-bar"></div>
+                        </div>
+                    </div>
+                    <div class="jp-volume-bar">
+                        <div class="jp-volume-bar-value"></div>
+                    </div>
+                    <div class="jp-time-holder">
+                        <div class="jp-current-time"></div>
+                        <div class="jp-duration"></div>
+
+                        <ul class="jp-toggles">
+                            <li><a href="javascript:;" class="jp-repeat" tabindex="1" title="repeat">repeat</a></li>
+                            <li><a href="javascript:;" class="jp-repeat-off" tabindex="1" title="repeat off">repeat off</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="jp-no-solution">
+                    <span>Update Required</span>
+                    To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+                </div>
+            </div>
+        </div>    </div>}

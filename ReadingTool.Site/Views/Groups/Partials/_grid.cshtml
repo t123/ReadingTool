@@ -64,6 +64,15 @@
                                                                        </form>
                                                                    </li>
                                                                }
+                                                               @if (item.MembershipType == MembershipType.Owner)
+                                                               {
+                                                                   <li>
+                                                                       <form method="POST" action="@Url.Action("DeleteGroup", "Groups", new {id = item.GroupId})" onsubmit="return confirm('Are you sure?');">
+                                                                           @Html.AntiForgeryToken()
+                                                                           <button type="submit" class="btn btn-danger" style="width: 100%">delete group</button>
+                                                                       </form>
+                                                                   </li>
+                                                               }
                                                            </ul>
                                                        </div>
                                                    }

@@ -26,7 +26,7 @@ namespace ReadingTool.Services
     {
         void Save(Text text);
         void Delete(Guid id);
-        Text FindOne(Guid id);
+        Text FindOne(Guid id, Guid? groupId = null, Guid? userId = null);
         int Import(TextImport import);
     }
 }

@@ -18,30 +18,30 @@
                                                                 }
                                                             </text>),
             grid.Column("Owner", header: "Owner", style: "col10", format:@<text>@item.User</text>),
-            grid.Column("Language1", header: "Language", style: "col5"),
+            grid.Column("Language1", header: "Language", style: "col10"),
             grid.Column("Title"),
             grid.Column("CollectionName", header: "Collection Name", style: "col20"),
             grid.Column(style:"col5", format:@<text>
                                                   <div class="btn-group">
                                                           @if(item.IsParallel)
                                                           {
-                                                              <a href="@Url.Action("ReadParallel", new { id=item.TextId})" class="btn btn-small btn-primary">read parallel</a>
+                                                              <a href="@Url.Action("ReadParallel", new { id=item.TextId, groupId=item.GroupId})" class="btn btn-small btn-primary">read parallel</a>
                                                           }
                                                           else
                                                           {
-                                                              <a href="@Url.Action("Read", new { id=item.TextId})" class="btn btn-small btn-primary">read</a>
+                                                              <a href="@Url.Action("Read", new { id=item.TextId, groupId=item.GroupId})" class="btn btn-small btn-primary">read</a>
                                                           }
                                                           <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
                                                               <span class="caret"></span>
                                                           </button>
                                                           <ul class="dropdown-menu">
                                                               <li>
-                                                                  <a href="@Url.Action("Read", new { id=item.TextId})" class="btn">read</a>
+                                                                  <a href="@Url.Action("Read", new { id=item.TextId, groupId=item.GroupId})" class="btn">read</a>
                                                               </li>
                                                               @if(item.IsParallel)
                                                               {
                                                                   <li>
-                                                                      <a href="@Url.Action("ReadParallel", new {id = item.TextId})" class="btn">read parallel</a>
+                                                                      <a href="@Url.Action("ReadParallel", new {id = item.TextId, groupId=item.GroupId})" class="btn">read parallel</a>
                                                                   </li>
                                                               }
                                                           </ul>

@@ -18,6 +18,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using ReadingTool.Common;
 
 namespace ReadingTool.Site.Models.Groups
 {
@@ -25,6 +26,7 @@ namespace ReadingTool.Site.Models.Groups
     {
         public Guid GroupId { get; set; }
         public string Name { get; set; }
+        public MembershipType MembershipType { get; set; }
         public IList<GroupMembershipModel> Members { get; set; }
     }
 }

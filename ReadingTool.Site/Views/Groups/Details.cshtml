@@ -55,10 +55,23 @@
 
         @if(Model.MembershipType == MembershipType.Member || Model.MembershipType == MembershipType.Moderator)
         {
+            <a href="@Url.Action("Membership", new { id=Model.GroupId})" class="btn">Membership</a>
+            
             using(Html.BeginForm("LeaveGroup", "Groups", new { id = Model.GroupId }, FormMethod.Post, new { style = "width: 200px; display:inline-block;" }))
             {
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-danger" style="width: 100%">Leave this group</button>
+            }
+        }
+        
+        @if(Model.MembershipType == MembershipType.Owner)
+        {
+            <a href="@Url.Action("Membership", new { id=Model.GroupId})" class="btn">Membership</a>
+            
+            using(Html.BeginForm("DeleteGroup", "Groups", new { id = Model.GroupId }, FormMethod.Post, new { style = "width: 200px; display:inline-block;", onsubmit="return confirm('Are you sure?')"}))
+            {
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger" style="width: 100%">Delete this group</button>
             }
         }
     </div>

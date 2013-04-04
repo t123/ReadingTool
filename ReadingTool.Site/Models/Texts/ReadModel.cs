@@ -19,6 +19,7 @@
 
 using System;
 using ReadingTool.Site.Models.Account;
+using ReadingTool.Site.Models.Groups;
 using ReadingTool.Site.Models.Languages;
 
 namespace ReadingTool.Site.Models.Texts
@@ -34,5 +35,6 @@ namespace ReadingTool.Site.Models.Texts
         public LanguageViewModel Language2 { get; set; }
         public UserModel User { get; set; }
         public TextViewModel Text { get; set; }
+        public GroupViewModel Group { get; set; }
     }
 }

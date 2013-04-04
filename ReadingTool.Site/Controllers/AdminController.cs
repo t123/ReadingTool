@@ -61,7 +61,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         private void RefreshLanguageCache()
         {
-            var languages = _systemLanguageRepository.FindAll().ToDictionary(x => x.Code, x => x.Name);
+            var languages = _systemLanguageRepository.FindAll().ToDictionary(x => x.Code, x => x.Name + " (" + x.Code + ")");
 
             HttpRuntime.Cache.Remove(MvcApplication.SYSTEM_LANGUAGE_CACHE_KEY);
             HttpRuntime.Cache.Add(

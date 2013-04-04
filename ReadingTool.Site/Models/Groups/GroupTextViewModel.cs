@@ -30,5 +30,6 @@ namespace ReadingTool.Site.Models.Groups
         public bool IsParallel { get; set; }
         public string User { get; set; }
         public bool IsOwner { get; set; }
+        public Guid GroupId { get; set; }
     }
 }

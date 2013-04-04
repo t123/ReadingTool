@@ -83,6 +83,7 @@ namespace ReadingTool.Site.Controllers.Home
             var groups = _groupMembershipRepository
                 .FindAll(x => x.User == _userRepository.LoadOne(UserId) && new[] { MembershipType.Member, MembershipType.Owner, MembershipType.Moderator }.Contains(x.MembershipType))
                 .Select(x => x.Group)
+                .OrderBy(x => x.Name)
                 .ToDictionary(x => x.GroupId, x => x.Name);
 
             ViewBag.Groups = groups;
@@ -423,7 +424,6 @@ namespace ReadingTool.Site.Controllers.Home
                     ApiDomain = ConfigurationManager.AppSettings["ApiDomain"]
                 };
         }
-
 
         [HttpGet]
         public ActionResult Import()

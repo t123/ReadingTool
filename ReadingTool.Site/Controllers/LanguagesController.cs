@@ -128,6 +128,13 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpPost]
         public ActionResult Add(LanguageModel model)
         {
+            var exists = _languageRepository.FindOne(x => x.Code == model.Code && x.User == _userRepository.LoadOne(UserId));
+
+            if(exists != null)
+            {
+                ModelState.AddModelError("Code", "You already have this language in your list.");
+            }
+
             if(!ModelState.IsValid)
             {
                 model.Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name);
@@ -194,6 +201,13 @@ namespace ReadingTool.Site.Controllers.Home
         [HttpPost]
         public ActionResult Edit(Guid id, [Bind(Prefix = "Language")]LanguageModel model)
         {
+            var exists = _languageRepository.FindOne(x => x.Code == model.Code && x.User == _userRepository.LoadOne(UserId) && x.LanguageId != model.LanguageId);
+
+            if(exists != null)
+            {
+                ModelState.AddModelError("Code", "You already have this language in your list.");
+            }
+
             if(!ModelState.IsValid)
             {
                 var l = _languageRepository.FindOne(x => x.LanguageId == id && x.User.UserId == UserId);
