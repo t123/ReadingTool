@@ -78,7 +78,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             var groups = _groupRepository.FindAll(
                 x => x.Members.Select(y => new { y.User, y.MembershipType })
-                         .Any(y => y.User == _userRepository.LoadOne(UserId) && y.MembershipType == MembershipType.Owner || y.MembershipType == MembershipType.Moderator || y.MembershipType == MembershipType.Member)
+                         .Any(y => y.User == _userRepository.LoadOne(UserId) && y.MembershipType == MembershipType.Owner || y.MembershipType == MembershipType.Moderator || y.MembershipType == MembershipType.Member || y.MembershipType == MembershipType.Invited)
                 );
 
             var count = groups.Count();
@@ -415,7 +415,11 @@ namespace ReadingTool.Site.Controllers.Home
 
                     member.MembershipType = (MembershipType)Enum.Parse(typeof(MembershipType), value);
 
-                    if(member.MembershipType == MembershipType.Pending || member.MembershipType == MembershipType.Banned)
+                    if(
+                        member.MembershipType == MembershipType.Pending ||
+                        member.MembershipType == MembershipType.Banned ||
+                        member.MembershipType == MembershipType.Invited
+                        )
                     {
                         removeTexts = member.User.UserId;
                     }
@@ -442,7 +446,7 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         public ActionResult LeaveGroup(Guid id)
         {
-            var group = _groupService.HasAccess(id, UserId, new[] { MembershipType.Member, MembershipType.Moderator });
+            var group = _groupService.HasAccess(id, UserId, new[] { MembershipType.Member, MembershipType.Moderator, MembershipType.Invited, });
 
             if(group == null)
             {
@@ -534,7 +538,7 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         public ActionResult JoinGroup(Guid id)
         {
-            var group = _groupRepository.FindOne(x => x.GroupId == id && x.GroupType == GroupType.Public);
+            var group = _groupRepository.FindOne(x => x.GroupId == id);
 
             if(group == null)
             {
@@ -543,6 +547,12 @@ namespace ReadingTool.Site.Controllers.Home
             }
 
             var membership = group.Members.FirstOrDefault(x => x.User.UserId == UserId);
+
+            if(group.GroupType == GroupType.Private && (membership == null || membership.MembershipType != MembershipType.Invited))
+            {
+                this.FlashError("Group not found.");
+                return RedirectToAction("Browse");
+            }
 
             if(membership == null)
             {
@@ -569,9 +579,11 @@ namespace ReadingTool.Site.Controllers.Home
                 {
                     this.FlashInfo("You already have a pending request to join this group.");
                 }
-                else
+                else if(membership.MembershipType == MembershipType.Invited)
                 {
-                    this.FlashInfo("You are already a member of this group.");
+                    membership.MembershipType = MembershipType.Member;
+                    this.FlashInfo("You have now joined this group.");
+                    return RedirectToAction("Index");
                 }
 
                 return RedirectToAction("Browse");

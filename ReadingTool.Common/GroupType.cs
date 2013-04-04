@@ -19,6 +19,7 @@ namespace ReadingTool.Common
         Moderator = 2,
         Member = 3,
         Pending = 4,
-        Banned = 5
+        Banned = 5,
+        Invited = 6
     }
 }

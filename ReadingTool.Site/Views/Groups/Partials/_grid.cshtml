@@ -15,35 +15,58 @@
             grid.Column("Name"),
             grid.Column("MembershipType", style: "col15"),
             grid.Column(style:"col15", format:@<text>
-                                                   <div class="btn-group">
-                                                       <a href="@Url.Action("Details", new { id=item.GroupId})" class="btn btn-small btn-primary">view</a>
+                                                   @if(item.MembershipType==MembershipType.Invited)
+                                                   {
+                                                       <div class="btn-group">
+                                                           <form method="POST" action="@Url.Action("JoinGroup", "Groups", new {id = item.GroupId})" style="display: inline">
+                                                                @Html.AntiForgeryToken()
+                                                                <button type="submit" class="btn" style="width: 90%">accept invitation</button>
+                                                            </form>
                                                            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-                                                              <span class="caret"></span>
-                                                          </button>
-                                                       <ul class="dropdown-menu">
-                                                           @if(item.MembershipType==MembershipType.Owner)
-                                                           {
+                                                               <span class="caret"></span>
+                                                           </button>
+                                                           <ul class="dropdown-menu">
                                                                <li>
-                                                                   <a href="@Url.Action("Edit", new {id = item.GroupId})" class="btn">edit</a>
-                                                               </li>
-                                                           }
-                                                           @if(item.MembershipType==MembershipType.Owner || item.MembershipType==MembershipType.Moderator)
-                                                           {
-                                                               <li>
-                                                                   <a href="@Url.Action("Membership", new {id = item.GroupId})" class="btn">membership</a>
-                                                               </li>
-                                                           }
-                                                           @if(item.MembershipType==MembershipType.Member || item.MembershipType==MembershipType.Moderator)
-                                                           {
-                                                               <li>
-                                                                   <form method="POST" action="@Url.Action("LeaveGroup", "Groups", new {id = item.GroupId})">
-                                                                       @Html.AntiForgeryToken()
-                                                                       <button type="submit" class="btn btn-danger" style="width: 100%">leave group</button>
-                                                                   </form>
-                                                               </li>
-                                                           }
-                                                       </ul>
-                                                  </div> 
+                                                                    <form method="POST" action="@Url.Action("LeaveGroup", "Groups", new {id = item.GroupId})">
+                                                                        @Html.AntiForgeryToken()
+                                                                        <button type="submit" class="btn" style="width: 90%">decline invitation</button>
+                                                                    </form>
+                                                                </li>
+                                                           </ul>
+                                                       </div>
+                                                   }
+                                                   else
+                                                   {
+                                                       <div class="btn-group">
+                                                           <a href="@Url.Action("Details", new {id = item.GroupId})" class="btn btn-small btn-primary">view</a>
+                                                           <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                                                               <span class="caret"></span>
+                                                           </button>
+                                                           <ul class="dropdown-menu">
+                                                               @if (item.MembershipType == MembershipType.Owner)
+                                                               {
+                                                                   <li>
+                                                                       <a href="@Url.Action("Edit", new {id = item.GroupId})" class="btn">edit</a>
+                                                                   </li>
+                                                               }
+                                                               @if (item.MembershipType == MembershipType.Owner || item.MembershipType == MembershipType.Moderator)
+                                                               {
+                                                                   <li>
+                                                                       <a href="@Url.Action("Membership", new {id = item.GroupId})" class="btn">membership</a>
+                                                                   </li>
+                                                               }
+                                                               @if (item.MembershipType == MembershipType.Member || item.MembershipType == MembershipType.Moderator)
+                                                               {
+                                                                   <li>
+                                                                       <form method="POST" action="@Url.Action("LeaveGroup", "Groups", new {id = item.GroupId})">
+                                                                           @Html.AntiForgeryToken()
+                                                                           <button type="submit" class="btn btn-danger" style="width: 100%">leave group</button>
+                                                                       </form>
+                                                                   </li>
+                                                               }
+                                                           </ul>
+                                                       </div>
+                                                   }
                                                </text>),
     }
 )

@@ -4,7 +4,7 @@
     ViewBag.Title = "Group Membership";
 }
 
-@Html.FlashMessage("Changing a user to a status of pending or banned or removing them will automatically unshare their texts.")
+@Html.FlashMessage("Changing a user to a status of pending, invited or banned OR removing them will automatically unshare their texts.")
 @using(Html.BeginForm())
 {
     @Html.HiddenFor(x => x.GroupId)
@@ -13,6 +13,7 @@
         <thead>
             <tr>
                 <th>Member Name</th>
+                <th>Invited</th>
                 <th>Pending</th>
                 <th>Moderator</th>
                 <th>Member</th>
@@ -32,10 +33,12 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
+                        <td>&nbsp;</td>
                     }
                     else
                     {
                         @*TODO fix me*@
+                        <td><input type="radio" name="m_@member.GroupMembershipId" value="@MembershipType.Invited" checked="@(member.MembershipType == MembershipType.Invited)"/></td>
                         <td><input type="radio" name="m_@member.GroupMembershipId" value="@MembershipType.Pending" checked="@(member.MembershipType == MembershipType.Pending)"/></td>
                         <td><input type="radio" name="m_@member.GroupMembershipId" value="@MembershipType.Moderator" checked="@(member.MembershipType == MembershipType.Moderator)"/></td>
                         <td><input type="radio" name="m_@member.GroupMembershipId" value="@MembershipType.Member" checked="@(member.MembershipType == MembershipType.Member)"/></td>
