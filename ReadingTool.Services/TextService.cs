@@ -200,13 +200,19 @@ namespace ReadingTool.Services
             if(text != null)
             {
                 _textRepository.Delete(id);
-            }
 
-            var textDirectory = GetTextDirectory(text);
+                string l1TextFilename = GetTextName(text, true);
+                string l2TextFilename = GetTextName(text, false);
 
-            if(Directory.Exists(textDirectory))
-            {
-                Directory.Delete(textDirectory, true);
+                if(File.Exists(l1TextFilename))
+                {
+                    File.Delete(l1TextFilename);
+                }
+
+                if(File.Exists(l2TextFilename))
+                {
+                    File.Delete(l2TextFilename);
+                }
             }
         }
 
