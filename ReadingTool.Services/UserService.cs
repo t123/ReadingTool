@@ -21,6 +21,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using NHibernate;
 using ReadingTool.Common;
 using ReadingTool.Entities;
 using ReadingTool.Repository;
@@ -31,26 +32,27 @@ namespace ReadingTool.Services
     {
         private readonly Repository<User> _userRepository;
         private readonly IEmailService _emailService;
+        private readonly Repository<Text> _textRepository;
+        private readonly Repository<Term> _termRepository;
+        private readonly ISession _session;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public Repository<User> Repository { get { return _userRepository; } }
         private readonly UserIdentity _identity;
 
-        public UserService(Repository<User> userRepository)
-            : this(userRepository, null, new EmailService())
-        {
-
-        }
-
-        public UserService(Repository<User> userRepository, IPrincipal principal)
-            : this(userRepository, principal, new EmailService())
-        {
-
-        }
-
-        public UserService(Repository<User> userRepository, IPrincipal principal, IEmailService emailService)
+        public UserService(
+            Repository<User> userRepository,
+            IPrincipal principal,
+            IEmailService emailService,
+            Repository<Text> textRepository,
+            Repository<Term> termRepository,
+            ISession session
+            )
         {
             _userRepository = userRepository;
             _emailService = emailService;
+            _textRepository = textRepository;
+            _termRepository = termRepository;
+            _session = session;
             _identity = principal.Identity as UserIdentity;
         }
 
@@ -218,6 +220,16 @@ namespace ReadingTool.Services
                 {
                     return;
                 }
+
+                var textIds = _textRepository.FindAll(x => x.User == user).Select(x => x.TextId).ToArray();
+                var query = _session.CreateQuery("update Term t set t.Text=null where t.Text.TextId in (:textId)").SetParameterList("textId", textIds);
+                query.ExecuteUpdate();
+
+                query = _session.CreateSQLQuery("delete from GroupText where TextId in (:textId)").SetParameterList("textId", textIds);
+                query.ExecuteUpdate();
+
+                query = _session.CreateQuery("delete from GroupMembership gm where gm.User.UserId=:userId").SetGuid("userId", user.UserId);
+                query.ExecuteUpdate();
 
                 _userRepository.Delete(user);
 
