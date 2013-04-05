@@ -262,6 +262,7 @@
     <Content Include="Scripts\Body\webgrid.js" />
     <Content Include="Scripts\jPlayer\Jplayer.swf" />
     <Content Include="Scripts\jPlayer\jquery.jplayer.min.js" />
+    <Content Include="Scripts\jQuery-Autocomplete\jquery-autocomplete.js" />
     <Content Include="Scripts\Reading\state.js" />
     <Content Include="Scripts\Required\jquery-1.8.3.min.js" />
     <Content Include="Scripts\SimpleModal\jquery.simplemodal-1.4.4.js" />

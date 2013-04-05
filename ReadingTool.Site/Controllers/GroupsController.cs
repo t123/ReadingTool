@@ -788,5 +788,24 @@ namespace ReadingTool.Site.Controllers.Home
                 Group = Mapper.Map<Group, GroupViewModel>(group)
             };
         }
+
+        [AjaxRoute]
+        [HttpPost]
+        public ActionResult AutoUsernames(string query)
+        {
+            query = (query ?? "").Trim();
+            dynamic response = new
+                {
+                    query = query,
+                    suggestions = _userRepository
+                        .FindAll(x => x.Username.StartsWith(query))
+                        .OrderBy(x => x.Username)
+                        .Take(10)
+                        .ToList()
+                        .Select(x => x.Username)
+                };
+
+            return new JsonNetResult() { Data = response };
+        }
     }
 }

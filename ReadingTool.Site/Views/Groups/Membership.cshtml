@@ -2,6 +2,48 @@
 @model ReadingTool.Site.Models.Groups.GroupMembershipViewModel
 @{
     ViewBag.Title = "Group Membership";
+
+    Bundles.Reference("Scripts/jQuery-Autocomplete/jquery-autocomplete.js", "inline");
+                                                                                                              
+    Bundles.AddInlineScript(@<text>
+                                 <script src="@Url.Action("Index", "Routes", new { @c="Groups"})" type="text/javascript"></script>
+                                 <script language="javascript">
+                                     @*http://stackoverflow.com/questions/4715762/javascript-move-caret-to-last-character*@
+                                     function moveCaretToEnd(el) {
+                                         if (typeof el.selectionStart == "number") {
+                                             el.selectionStart = el.selectionEnd = el.value.length;
+                                         } else if (typeof el.createTextRange != "undefined") {
+                                             el.focus();
+                                             var range = el.createTextRange();
+                                             range.collapse(false);
+                                             range.select();
+                                         }
+                                     }
+                                     
+                                     var textarea = document.getElementById("invites");
+                                     textarea.onfocus = function () {
+                                         moveCaretToEnd(textarea);
+
+                                         // Work around Chrome's little problem
+                                         window.setTimeout(function () {
+                                             moveCaretToEnd(textarea);
+                                         }, 1);
+                                     };
+                                     
+                                     $('.autocomplete').each(function (index, html) {
+                                         var url = routes.groups.autoUsernames;
+                                         $(html).autocomplete({
+                                             minChars: 3,
+                                             type: 'POST',
+                                             serviceUrl: url,
+                                             delimiter: /\s* /,
+                                             onSelect: function (suggestion) {
+                                                 $(html).focus();
+                                             }
+                                         });
+                                     });
+                                 </script>
+                             </text>, "inline");
 }
 
 @Html.FlashMessage("Changing a user to a status of pending, invited or banned OR removing them will automatically unshare their texts.")
@@ -58,25 +100,26 @@
             }
         </tbody>
     </table>
-    if(Model.GroupType == GroupType.Private)
+    if (Model.GroupType == GroupType.Private)
     {
         <div class="row-fluid">
             <div class="span12">
                 <strong>Invite these users to the group:</strong>
-                <div class="clearfix"></div>
-                <textarea class="input-xxlarge" rows="5" name="invites" placeholder="Type in the usernames of users to invite to this group. Separate their names with spaces."></textarea>
+                <div class="clr5"></div>
+                <textarea class="input-xxlarge autocomplete" rows="5" name="invites" id="invites" placeholder="Type in the usernames of users to invite to this group. Separate their names with spaces."></textarea>
+                <div class="clr10"></div>
             </div>
         </div>
     }
     <div class="row-fluid">
         <div class="span12">
             <button type="submit" class="btn btn-primary">Save changes</button>
-            <a href="@Url.Action("Details", new { id=Model.GroupId})" class="btn">View group</a>
-            @if(Model.MembershipType==MembershipType.Owner)
+            <a href="@Url.Action("Details", new {id = Model.GroupId})" class="btn">View group</a>
+            @if (Model.MembershipType == MembershipType.Owner)
             {
                 <a href="@Url.Action("Edit", new {id = Model.GroupId})" class="btn">Edit group</a>
             }
-            <a href="@Url.Action("Index", new { id=Model.GroupId})" class="btn">Back to my groups</a>
+            <a href="@Url.Action("Index", new {id = Model.GroupId})" class="btn">Back to my groups</a>
         </div>
     </div>
 }
