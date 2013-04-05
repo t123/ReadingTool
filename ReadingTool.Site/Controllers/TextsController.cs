@@ -200,7 +200,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             if(group != null && !string.IsNullOrEmpty(texts))
             {
-                foreach(var id in texts.Split(',').Select(x => Guid.Parse(x)))
+                foreach(var id in texts.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)))
                 {
                     if(id == Guid.Empty)
                     {

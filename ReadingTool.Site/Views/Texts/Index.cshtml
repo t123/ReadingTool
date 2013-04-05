@@ -2,20 +2,20 @@
     ViewBag.Title = "Texts";
     Bundles.AddInlineScript(
     @<text>
-    <script language="javascript">
-        function update() {
-            if($('#GroupId').val()=='') {
-                return false;
-            }
+         <script language="javascript">
+             function update() {
+                 if($('#GroupId').val()=='') {
+                     return false;
+                 }
             
-            var texts = [];
-            $('input[type=checkbox]:checked').each(function (index, x) { texts.push($(x).val()); });
-            $('#texts').val(texts.join(','));
-            return true;
-        }
+                 var texts = [];
+                 $('input[type=checkbox]:checked').each(function (index, x) { texts.push($(x).val()); });
+                 $('#texts').val(texts.join(','));
+                 return true;
+             }
 
-        window.initWebGrid('@Url.Action("IndexGrid")');
-    </script>
+             window.initWebGrid('@Url.Action("IndexGrid")');
+         </script>
     </text>, "inline");
 }
 

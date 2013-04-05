@@ -51,3 +51,19 @@
 )
 
 @Html.Partial("~/Views/Shared/_pager.cshtml", Model.Paging)
+
+<script language="javascript">
+    $('#grid table thead tr th:first').html('<input type="checkbox" id="checkAll" value="" />');
+
+    $('#checkAll').live('click', function (e) {
+        updateCheckboxes();
+    });
+    
+    function updateCheckboxes() {
+        var state = $('#checkAll').attr('checked');
+        if (state == undefined) state = false;
+        $('.table input[type=checkbox]').each(function () {
+            $(this).attr('checked', state);
+        });
+    }
+</script>

@@ -71,7 +71,7 @@
         _updateGrid();
     });
 
-    grid.on('click', 'thead ', function (e) {
+    grid.on('click', 'th a', function (e) {
         e.preventDefault();
         var url = $(e.target).attr('href');
 
