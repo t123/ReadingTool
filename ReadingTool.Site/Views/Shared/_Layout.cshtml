@@ -32,11 +32,11 @@
                             <li @Html.Raw(controller.Equals("terms") ? "class=\"active\"" : "")>
                                 <a href="@Url.Action("Index", "Terms")">Terms</a>
                             </li>
-                            <li @Html.Raw(controller.Equals("review") ? "class=\"active\"" : "")>
-                                <a href="@Url.Action("Index", "Review")">Review</a>
-                            </li>
                             <li @Html.Raw(controller.Equals("groups") ? "class=\"active\"" : "")>
                                 <a href="@Url.Action("Index", "Groups")">Groups</a>
+                            </li>
+                            <li @Html.Raw(controller.Equals("review") ? "class=\"active\"" : "")>
+                                <a href="@Url.Action("Index", "Review")">Review</a>
                             </li>
                             <li>
                                 <a href="@Url.Action("SignOut", "Home")">Sign Out</a>
