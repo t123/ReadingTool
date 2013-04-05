@@ -1,4 +1,5 @@
 ﻿@using ReadingTool.Common
+@using ReadingTool.Common.Extensions
 @model ReadingTool.Common.Search.SearchGridResult<ReadingTool.Site.Models.Groups.GroupViewModel> 
 @{
     Layout = "";
@@ -12,7 +13,11 @@
     footerStyle: "hidden",
     columns: new[]
         {
-            grid.Column("Name"),
+            grid.Column("Name", format:@<text>
+                                            <a class="po normal" data-toggle="popover" data-content="@(((string)item.Description).NewlineToBreak())" data-original-title="@item.Name">
+                                                @item.Name
+                                            </a>
+                                        </text>),
             grid.Column("MembershipType", style: "col15"),
             grid.Column(style:"col15", format:@<text>
                                                    @if(item.MembershipType==MembershipType.Invited)
@@ -81,3 +86,13 @@
 )
 
 @Html.Partial("~/Views/Shared/_pager.cshtml", Model.Paging)
+
+<script language="javascript">
+    $(function () {
+        $('.po').popover({
+            animation: false,
+            html: false,
+            placement: 'right'
+        });
+    });
+</script>

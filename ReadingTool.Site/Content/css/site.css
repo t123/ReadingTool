@@ -104,6 +104,10 @@
   font-weight: bold;
   text-decoration: underline;
 }
+.table a.normal {
+  color: black;
+  text-decoration: none;
+}
 .CodeMirror {
   border: 1px solid #cecece;
 }

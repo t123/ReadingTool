@@ -41,7 +41,7 @@ the user must be approved before they can see the contents of a group.")
                     <button type="submit" class="btn btn-primary">Save</button>
                     @if(Model.CurrentUser!=null)
                     {
-                        <a href="@Url.Action("Details", new { id=Model.GroupId})" class="btn">Browse group</a>
+                        <a href="@Url.Action("Details", new { id=Model.GroupId})" class="btn">View group</a>
                         
                         if(Model.CurrentUser.MembershipType==MembershipType.Moderator || Model.CurrentUser.MembershipType==MembershipType.Owner)
                         {

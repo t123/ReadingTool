@@ -13,7 +13,7 @@
     columns: new[]
         {
             grid.Column("Name", format:@<text>
-                                            <a class="po" data-toggle="popover" data-placement="top" data-content="@(((string)item.Description).NewlineToBreak())" data-original-title="@item.Name">
+                                            <a class="po normal" data-toggle="popover" data-content="@(((string)item.Description).NewlineToBreak())" data-original-title="@item.Name">
                                                 @item.Name
                                             </a>
                                         </text>),
@@ -27,3 +27,13 @@
 )
 
 @Html.Partial("~/Views/Shared/_pager.cshtml", Model.Paging)
+
+<script language="javascript">
+    $(function () {
+        $('.po').popover({
+            animation: false,
+            html: false,
+            placement: 'right'
+        });
+    });
+</script>

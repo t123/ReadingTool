@@ -27,6 +27,7 @@ namespace ReadingTool.Site.Models.Groups
         public Guid GroupId { get; set; }
         public string Name { get; set; }
         public MembershipType MembershipType { get; set; }
+        public GroupType GroupType { get; set; }
         public IList<GroupMembershipModel> Members { get; set; }
     }
 }

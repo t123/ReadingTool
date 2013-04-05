@@ -371,6 +371,7 @@ namespace ReadingTool.Site.Controllers.Home
                 {
                     GroupId = group.GroupId,
                     Name = group.Name,
+                    GroupType = group.GroupType,
                     Members = group.Members.Select(x => new GroupMembershipModel
                         {
                             GroupId = group.GroupId,
@@ -390,7 +391,7 @@ namespace ReadingTool.Site.Controllers.Home
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Membership(Guid id, FormCollection form)
+        public ActionResult Membership(Guid id, FormCollection form, string invites)
         {
             //TODO fix me
 
@@ -457,6 +458,28 @@ namespace ReadingTool.Site.Controllers.Home
                     {
                         group.Texts.Remove(t);
                     }
+                }
+            }
+
+            foreach(var username in (invites ?? "").Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var user = _userRepository.FindOne(x => x.Username == username);
+
+                if(user == null)
+                {
+                    continue;
+                }
+
+                var member = group.Members.FirstOrDefault(x => x.User == user);
+
+                if(member == null)
+                {
+                    group.Members.Add(new GroupMembership()
+                        {
+                            Group = group,
+                            MembershipType = MembershipType.Invited,
+                            User = user
+                        });
                 }
             }
 
