@@ -252,63 +252,69 @@ namespace ReadingTool.Site.Controllers.Home
         [ValidateAntiForgeryToken]
         public ActionResult ImportLwt(ImportModel model)
         {
-            if(ModelState.IsValid)
+            try
             {
-                string jsonData;
-
-                try
+                if(ModelState.IsValid)
                 {
-                    if(ZipFile.IsZipFile(model.File.InputStream, true))
+                    string jsonData;
+
+                    try
                     {
-                        model.File.InputStream.Position = 0;
-                        using(var zip = ZipFile.Read(model.File.InputStream))
+                        if(ZipFile.IsZipFile(model.File.InputStream, true))
                         {
-                            var data = zip[0];
-
-                            if(data == null)
+                            model.File.InputStream.Position = 0;
+                            using(var zip = ZipFile.Read(model.File.InputStream))
                             {
-                                throw new FileNotFoundException();
-                            }
+                                var data = zip[0];
 
-                            using(var sr = new StreamReader(data.OpenReader()))
+                                if(data == null)
+                                {
+                                    throw new FileNotFoundException();
+                                }
+
+                                using(var sr = new StreamReader(data.OpenReader()))
+                                {
+                                    jsonData = sr.ReadToEnd();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
                             {
                                 jsonData = sr.ReadToEnd();
                             }
                         }
                     }
-                    else
+                    catch
                     {
                         using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
                         {
                             jsonData = sr.ReadToEnd();
                         }
                     }
-                }
-                catch
-                {
-                    using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
+                    if(!string.IsNullOrEmpty(jsonData))
                     {
-                        jsonData = sr.ReadToEnd();
-                    }
-                }
-                if(!string.IsNullOrEmpty(jsonData))
-                {
-                    _lwtImportService.Import(jsonData, model.TestMode);
+                        _lwtImportService.Import(jsonData, model.TestMode);
 
-                    if(model.TestMode)
-                    {
-                        this.FlashSuccess("The test was successful, all your data was recognised.");
-                        return RedirectToAction("ImportLwt");
-                    }
-                    else
-                    {
-                        this.FlashSuccess("Import was succesful.");
-                        return RedirectToAction("ImportLwt");
+                        if(model.TestMode)
+                        {
+                            this.FlashSuccess("The test was successful, all your data was recognised.");
+                            return RedirectToAction("ImportLwt");
+                        }
+                        else
+                        {
+                            this.FlashSuccess("Import was succesful.");
+                            return RedirectToAction("ImportLwt");
+                        }
                     }
                 }
             }
+            catch(Exception e)
+            {
+                this.FlashError(e.Message);
+            }
 
-            this.FlashError("Please check the errors below.");
             return View(model);
         }
     }
