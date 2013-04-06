@@ -46,6 +46,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\ReadingTool.Site\bin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=3.2.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ReadingTool.Site\bin\NHibernate.dll</HintPath>
@@ -68,6 +71,7 @@
     <Compile Include="Interfaces\ITextService.cs" />
     <Compile Include="DefaultParserService.cs" />
     <Compile Include="LatexParserService.cs" />
+    <Compile Include="LwtImportService.cs" />
     <Compile Include="TextService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />

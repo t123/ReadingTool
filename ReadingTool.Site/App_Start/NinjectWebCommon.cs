@@ -137,6 +137,7 @@ namespace ReadingTool.Site.App_Start
             kernel.Bind<IParserService>().To<DefaultParserService>();
             kernel.Bind<IEmailService>().To<EmailService>();
             kernel.Bind<IGroupService>().To<GroupService>();
+            kernel.Bind<LwtImportService>().To<LwtImportService>();
             kernel.Bind<IPrincipal>().ToMethod(x => HttpContext.Current.User);
         }
 

@@ -4,6 +4,11 @@
     WebGrid grid = new WebGrid(Model.Items, rowsPerPage: @Model.Paging.RowsPerPage);
 }
 
+@if(Model.Items.Any(x=>x.Code=="xx"))
+{
+    @Html.FlashMessage("Please set the correct language codes for your languages.")
+}
+
 @grid.GetHtml(
     tableStyle: "table table-striped table-bordered table-condensed table-hover gridtable",
     numericLinksCount: 0,

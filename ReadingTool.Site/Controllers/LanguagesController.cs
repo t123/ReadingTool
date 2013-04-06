@@ -116,7 +116,7 @@ namespace ReadingTool.Site.Controllers.Home
                 {
                     RegexSplitSentences = @".!?:;",
                     RegexWordCharacters = @"a-zA-ZÀ-ÖØ-öø-ȳ",
-                    Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
+                    Languages = _systemLanguageRepository.FindAll(x => x.Code != "xx").OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
                     ShowSpaces = true,
                     Modal = false,
                     ModalBehaviour = ModalBehaviour.LeftClick,
@@ -137,7 +137,7 @@ namespace ReadingTool.Site.Controllers.Home
 
             if(!ModelState.IsValid)
             {
-                model.Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name);
+                model.Languages = _systemLanguageRepository.FindAll(x => x.Code != "xx").OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name);
                 return View(model);
             }
 
@@ -181,7 +181,7 @@ namespace ReadingTool.Site.Controllers.Home
                             Code = language.Code,
                             Direction = language.Settings.Direction,
                             LanguageId = language.LanguageId,
-                            Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
+                            Languages = _systemLanguageRepository.FindAll(x => x.Code != "xx").OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name),
                             Name = language.Name,
                             RegexSplitSentences = language.Settings.RegexSplitSentences,
                             RegexWordCharacters = language.Settings.RegexWordCharacters,
@@ -211,7 +211,7 @@ namespace ReadingTool.Site.Controllers.Home
             if(!ModelState.IsValid)
             {
                 var l = _languageRepository.FindOne(x => x.LanguageId == id && x.User.UserId == UserId);
-                model.Languages = _systemLanguageRepository.FindAll().OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name);
+                model.Languages = _systemLanguageRepository.FindAll(x => x.Code != "xx").OrderBy(x => x.Name).ToDictionary(x => x.Code, x => x.Name);
 
                 LanguageEditModel led = new LanguageEditModel()
                     {

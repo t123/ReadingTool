@@ -28,7 +28,7 @@
                 <div class="control-group">
                     @Html.LabelFor(x => x.Code, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.DropDownListFor(x => x.Code, new SelectList(Model.Languages, "Key", "Value"))
+                        @Html.DropDownListFor(x => x.Code, new SelectList(Model.Languages, "Key", "Value"), "Please choose")
                         @Html.ValidationMessageFor(x => x.Code)
                     </div>
                 </div>

@@ -18,6 +18,7 @@
 #endregion
 
 using System;
+using FluentNHibernate.Conventions.Helpers;
 using FluentNHibernate.Mapping;
 
 namespace ReadingTool.Entities
@@ -37,6 +38,7 @@ namespace ReadingTool.Entities
     {
         public TagMap()
         {
+            Cache.ReadWrite();
             Id(x => x.TagId).GeneratedBy.GuidComb();
             Map(x => x.TagTerm).Length(50).Not.Nullable().Unique().Index("IDX_Tag_TagTerm");
         }

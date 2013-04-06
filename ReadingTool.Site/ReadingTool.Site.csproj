@@ -206,6 +206,7 @@
     <Compile Include="Mappings.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="Models\Account\AccountModel.cs" />
+    <Compile Include="Models\Account\ImportModel.cs" />
     <Compile Include="Models\Ajax\TermModel.cs" />
     <Compile Include="Models\Groups\GroupMembershipModel.cs" />
     <Compile Include="Models\Groups\GroupMembershipViewModel.cs" />
@@ -249,6 +250,7 @@
     <Content Include="Content\jPlayer\jplayer.blue.monday.jpg" />
     <Content Include="Content\jPlayer\jplayer.blue.monday.seeking.gif" />
     <Content Include="Content\jPlayer\jplayer.blue.monday.video.play.png" />
+    <Content Include="Content\jsonexport.php.txt" />
     <Content Include="Content\reading\read.css">
       <DependentUpon>read.less</DependentUpon>
     </Content>
@@ -313,6 +315,7 @@
     <Content Include="Views\Groups\Partials\_browsegrid.cshtml" />
     <Content Include="Views\Groups\Browse.cshtml" />
     <Content Include="Views\Groups\Read.cshtml" />
+    <Content Include="Views\Account\ImportLwt.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

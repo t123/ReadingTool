@@ -40,11 +40,13 @@ namespace ReadingTool.Site.Controllers.Home
     public class AccountController : BaseController
     {
         private readonly IUserService _userService;
+        private readonly LwtImportService _lwtImportService;
         private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, LwtImportService lwtImportService)
         {
             _userService = userService;
+            _lwtImportService = lwtImportService;
         }
 
         public ActionResult Index()
@@ -238,6 +240,76 @@ namespace ReadingTool.Site.Controllers.Home
 
             ms.Seek(0, SeekOrigin.Begin);
             return File(ms, "application/zip", "account.zip");
+        }
+
+        [HttpGet]
+        public ActionResult ImportLwt()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ImportLwt(ImportModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                string jsonData;
+
+                try
+                {
+                    if(ZipFile.IsZipFile(model.File.InputStream, true))
+                    {
+                        model.File.InputStream.Position = 0;
+                        using(var zip = ZipFile.Read(model.File.InputStream))
+                        {
+                            var data = zip[0];
+
+                            if(data == null)
+                            {
+                                throw new FileNotFoundException();
+                            }
+
+                            using(var sr = new StreamReader(data.OpenReader()))
+                            {
+                                jsonData = sr.ReadToEnd();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
+                        {
+                            jsonData = sr.ReadToEnd();
+                        }
+                    }
+                }
+                catch
+                {
+                    using(var sr = new StreamReader(model.File.InputStream, Encoding.UTF8))
+                    {
+                        jsonData = sr.ReadToEnd();
+                    }
+                }
+                if(!string.IsNullOrEmpty(jsonData))
+                {
+                    _lwtImportService.Import(jsonData, model.TestMode);
+
+                    if(model.TestMode)
+                    {
+                        this.FlashSuccess("The test was successful, all your data was recognised.");
+                        return RedirectToAction("ImportLwt");
+                    }
+                    else
+                    {
+                        this.FlashSuccess("Import was succesful.");
+                        return RedirectToAction("ImportLwt");
+                    }
+                }
+            }
+
+            this.FlashError("Please check the errors below.");
+            return View(model);
         }
     }
 }
