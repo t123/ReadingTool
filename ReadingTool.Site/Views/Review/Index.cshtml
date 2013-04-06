@@ -106,7 +106,8 @@
                                         @{
                                             var sentence = Html.Encode(term.Sentence);
                                         }
-                                        @Html.Raw(sentence.Replace(term.Phrase, @"<a class=""phrasepopover"" data-placement=""top""  data-content=""" + @term.FullDefinition+ @""" data-original-title="""+ @term.Phrase + @""">" + @term.Phrase + "</a>"))
+
+                                        @Html.Raw(sentence.Replace(Html.Encode(term.Phrase), @"<a class=""phrasepopover"" data-placement=""top""  data-content=""" + @term.FullDefinition+ @""" data-original-title="""+ @term.Phrase + @""">" + @term.Phrase + "</a>", StringComparison.InvariantCultureIgnoreCase))
                                     </td>
                                 </tr>
                                 counter++;
