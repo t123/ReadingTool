@@ -335,9 +335,11 @@ namespace ReadingTool.Site.Controllers.Home
                 TotalRows = count
             };
 
+            var membership = group.Members.First(x => x.User.UserId == UserId).MembershipType;
             foreach(var r in searchResult.Results)
             {
                 r.GroupId = groupId;
+                r.MembershipType = membership;
             }
 
             var result = new SearchGridResult<GroupTextViewModel>()

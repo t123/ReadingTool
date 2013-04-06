@@ -68,8 +68,8 @@ namespace ReadingTool.Entities
 
             HasManyToMany<Group>(x => x.Groups)
                 .Table("GroupText")
-                .ParentKeyColumn("GroupId")
-                .ChildKeyColumn("TextId")
+                .ParentKeyColumn("TextId")
+                .ChildKeyColumn("GroupId")
                 .Cascade
                 .All()
                 .BatchSize(100)

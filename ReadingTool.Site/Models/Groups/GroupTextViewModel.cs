@@ -17,6 +17,7 @@
 // Copyright (C) 2013 Travis Watt
 #endregion
 using System;
+using ReadingTool.Common;
 
 namespace ReadingTool.Site.Models.Groups
 {
@@ -31,5 +32,6 @@ namespace ReadingTool.Site.Models.Groups
         public string User { get; set; }
         public bool IsOwner { get; set; }
         public Guid GroupId { get; set; }
+        public MembershipType MembershipType { get; set; }
     }
 }

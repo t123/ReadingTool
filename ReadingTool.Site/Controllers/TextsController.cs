@@ -107,6 +107,24 @@ namespace ReadingTool.Site.Controllers.Home
 
             var filterTerms = SearchFilterParser.Parse(filter);
 
+            foreach(var term in filterTerms.Tags)
+            {
+                switch(term)
+                {
+                    case "parallel":
+                        texts = texts.Where(x => x.Language2 != null);
+                        break;
+
+                    case "shared":
+                        texts = texts.Where(x => x.Groups.Any());
+                        break;
+
+                    case "audio":
+                        texts = texts.Where(x => x.AudioUrl.Length > 0);
+                        break;
+                }
+            }
+
             foreach(var term in filterTerms.Other)
             {
                 if(languages.ContainsKey(term))

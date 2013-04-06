@@ -1,4 +1,5 @@
-﻿@model ReadingTool.Common.Search.SearchGridResult<ReadingTool.Site.Models.Groups.GroupTextViewModel> 
+﻿@using ReadingTool.Common
+@model ReadingTool.Common.Search.SearchGridResult<ReadingTool.Site.Models.Groups.GroupTextViewModel> 
 @{
     Layout = "";
     WebGrid grid = new WebGrid(Model.Items, rowsPerPage: @Model.Paging.RowsPerPage);
@@ -12,7 +13,7 @@
     columns: new[]
         {
             grid.Column(header: "", style: "col5", format:@<text>
-                                                                @if(item.IsOwner)
+                                                                @if(item.IsOwner || (item.MembershipType==MembershipType.Owner || item.MembershipType==MembershipType.Moderator))
                                                                 {
                                                                     <input type="checkbox" value="@item.TextId" name="remove"/>
                                                                 }

@@ -79,25 +79,50 @@ namespace ReadingTool.Site.Controllers.Home
 
             foreach(var term in filterTerms.Tags)
             {
-                if(term == "known")
+                switch(term)
                 {
-                    terms = terms.Where(x => x.State == TermState.Known);
-                }
-                else if(term == "notknown")
-                {
-                    terms = terms.Where(x => x.State == TermState.NotKnown);
-                }
-                else if(term == "ignore")
-                {
-                    terms = terms.Where(x => x.State == TermState.Ignore);
-                }
-                else if(term == "notseen")
-                {
-                    terms = terms.Where(x => x.State == TermState.NotSeen);
-                }
-                else
-                {
-                    terms = terms.Where(x => x.Tags.Any(y => y.TagTerm == term));
+                    case "known":
+                        terms = terms.Where(x => x.State == TermState.Known);
+                        break;
+                    case "notknown":
+                        terms = terms.Where(x => x.State == TermState.NotKnown);
+                        break;
+                    case "ignore":
+                        terms = terms.Where(x => x.State == TermState.Ignore);
+                        break;
+                    case "notseen":
+                        terms = terms.Where(x => x.State == TermState.NotSeen);
+                        break;
+                    case "box1":
+                        terms = terms.Where(x => x.Box == 1);
+                        break;
+                    case "box2":
+                        terms = terms.Where(x => x.Box == 2);
+                        break;
+                    case "box3":
+                        terms = terms.Where(x => x.Box == 3);
+                        break;
+                    case "box4":
+                        terms = terms.Where(x => x.Box == 4);
+                        break;
+                    case "box5":
+                        terms = terms.Where(x => x.Box == 5);
+                        break;
+                    case "box6":
+                        terms = terms.Where(x => x.Box == 6);
+                        break;
+                    case "box7":
+                        terms = terms.Where(x => x.Box == 7);
+                        break;
+                    case "box8":
+                        terms = terms.Where(x => x.Box == 8);
+                        break;
+                    case "box9":
+                        terms = terms.Where(x => x.Box == 9);
+                        break;
+                    default:
+                        terms = terms.Where(x => x.Tags.Any(y => y.TagTerm == term));
+                        break;
                 }
             }
 
