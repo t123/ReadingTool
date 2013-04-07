@@ -34,5 +34,6 @@ namespace ReadingTool.Site.Models.Texts
         public bool IsParallel { get; set; }
         public string AudioUrl { get; set; }
         public bool ShareAudioUrl { get; set; }
+        public bool Shared { get; set; }
     }
 }

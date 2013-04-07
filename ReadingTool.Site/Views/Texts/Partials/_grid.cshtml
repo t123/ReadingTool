@@ -15,7 +15,23 @@
                                                                 <input type="checkbox" value="@item.TextId" value="add"/>
                                                             </text>),
             grid.Column("Language1", header: "Language", style: "col10"),
-            grid.Column("Title"),
+            grid.Column("Title", format:@<text>
+                                             @item.Title
+@if(item.IsParallel)
+{
+    <i class="icon-pause pull-right" title="text is parallel"> </i>
+}
+
+@if(!string.IsNullOrEmpty(item.AudioUrl))
+{
+    <i class="icon-music pull-right" title="text has audio"> </i>
+}
+
+@if(item.Shared)
+{
+    <i class="icon-share pull-right" title="text is shared"> </i>
+}
+                                         </text>),
             grid.Column("CollectionName", header: "Collection Name", style: "col20"),
             grid.Column("LastRead", header: "Last Read", style: "col10"),
             grid.Column(style:"col5", format:@<text>
@@ -54,7 +70,7 @@
                                                   </div> 
                                               </text>)
     }
-)
+    )
 
 @Html.Partial("~/Views/Shared/_pager.cshtml", Model.Paging)
 

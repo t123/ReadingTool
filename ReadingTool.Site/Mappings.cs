@@ -53,6 +53,7 @@ namespace ReadingTool.Site
                 .ForMember(x => x.Created, y => y.MapFrom(z => (DateTime.Now - z.Created).ToSince("ago")))
                 .ForMember(x => x.Modified, y => y.MapFrom(z => (DateTime.Now - z.Modified).ToSince("ago")))
                 .ForMember(x => x.LastRead, y => y.MapFrom(z => (DateTime.Now - z.LastRead).ToSince("ago", "")))
+                .ForMember(x => x.Shared, y => y.MapFrom(z => z.Groups.Any()))
                 ;
 
             Mapper.CreateMap<User, UserModel>();

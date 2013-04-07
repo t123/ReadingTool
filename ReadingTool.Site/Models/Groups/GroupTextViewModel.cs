@@ -33,5 +33,7 @@ namespace ReadingTool.Site.Models.Groups
         public bool IsOwner { get; set; }
         public Guid GroupId { get; set; }
         public MembershipType MembershipType { get; set; }
+        public string AudioUrl { get; set; }
+        public bool ShareAudioUrl { get; set; }
     }
 }

@@ -12,7 +12,7 @@
             @Html.HiddenFor(x => x.DisplayName)
             <fieldset>
                 <div class="media">
-                    <a class="pull-left" href="http://www.gravatar.com">
+                    <a class="pull-left" href="http://www.gravatar.com" style="width: 80px; height:80px;">
                         @Html.Gravatar(Model.EmailAddress, Model.DisplayName, "media-object")
                     </a>
                     <div class="media-body">
