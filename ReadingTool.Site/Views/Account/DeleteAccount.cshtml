@@ -16,6 +16,7 @@ And no it can't be recovered. Make sure you " + Html.ActionLink("export", "Expor
                     @Html.LabelFor(x => x.Password, new { @class = "control-label" })
                     <div class="controls">
                         @Html.PasswordFor(x => x.Password, new { @placeholder = "your current password" })
+                        @Html.TipFor(x => x.Password)
                         @Html.ValidationMessageFor(x => x.Password)
                     </div>
                 </div>

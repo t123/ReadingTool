@@ -51,10 +51,12 @@ namespace ReadingTool.Site.Models.Account
     {
         [Display(Name = "New Password")]
         [Required(ErrorMessage = "Please enter your new password.")]
+        [Tip("Your new password.")]
         public string NewPassword { get; set; }
 
         [Display(Name = "Current Password")]
         [Required(ErrorMessage = "Please enter your current password.")]
+        [Tip("Your current password is required.")]
         public string OldPassword { get; set; }
     }
 
@@ -62,6 +64,7 @@ namespace ReadingTool.Site.Models.Account
     {
         [Display(Name = "Password")]
         [Required(ErrorMessage = "Please enter your password.")]
+        [Tip("Your current password is required.")]
         public string Password { get; set; }
     }
 }
