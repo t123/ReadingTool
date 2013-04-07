@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using FluentNHibernate.Mapping;
 using ReadingTool.Common;
@@ -141,13 +142,37 @@ namespace ReadingTool.Entities
             Map(x => x.Length).Not.Nullable();
             Map(x => x.State).CustomType<TermState>().Index("IDX_Term_State");
             Map(x => x.Phrase).Length(50).Not.Nullable();
-            Map(x => x.PhraseLower)
-                .CustomSqlType("nvarchar(50) collate Latin1_General_Bin ")
-                .Length(50)
-                .Not.Nullable()
-                .Index("IDX_Term_Phrase")
-                .UniqueKey("IDX_Unique_Term")
-                ;
+
+            string dbType = ConfigurationManager.AppSettings["dbType"];
+            if(dbType == "sqlite")
+            {
+                Map(x => x.PhraseLower)
+                    .Length(50)
+                    .Not.Nullable()
+                    .Index("IDX_Term_Phrase")
+                    .UniqueKey("IDX_Unique_Term")
+                    ;
+            }
+            else if(dbType == "mysql")
+            {
+                Map(x => x.PhraseLower)
+                    .CustomSqlType("nvarchar(50) collate utf8_bin")
+                    .Length(50)
+                    .Not.Nullable()
+                    .Index("IDX_Term_Phrase")
+                    .UniqueKey("IDX_Unique_Term")
+                    ;
+            }
+            else
+            {
+                Map(x => x.PhraseLower)
+                    .CustomSqlType("nvarchar(50) collate Latin1_General_Bin ")
+                    .Length(50)
+                    .Not.Nullable()
+                    .Index("IDX_Term_Phrase")
+                    .UniqueKey("IDX_Unique_Term")
+                    ;
+            }
 
             Map(x => x.BasePhrase).Length(50);
             Map(x => x.Sentence).Length(500);
@@ -166,7 +191,7 @@ namespace ReadingTool.Entities
                 .ChildKeyColumn("TagId")
                 .Cascade
                 .All()
-                .BatchSize(1000)
+                .BatchSize(dbType == "sqlite" ? 100 : 1000)
                 .AsSet()
                 ;
         }

@@ -26,9 +26,15 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using FluentNHibernate.Conventions;
+using FluentNHibernate.Conventions.AcceptanceCriteria;
+using FluentNHibernate.Conventions.Helpers;
+using FluentNHibernate.Conventions.Inspections;
+using FluentNHibernate.Conventions.Instances;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using NHibernate;
 using NHibernate.Context;
+using NHibernate.Dialect;
 using NHibernate.Event;
 using NHibernate.Tool.hbm2ddl;
 using Ninject;
@@ -144,13 +150,7 @@ namespace ReadingTool.Site.App_Start
         private static void InitNHibernate(IKernel kernel)
         {
             var cfg = Fluently.Configure()
-                .Database(
-                    MsSqlConfiguration
-                        .MsSql2008
-                        .ConnectionString(ConfigurationManager.AppSettings["connectionString"])
-                        .ShowSql()
-                        .AdoNetBatchSize(200)
-                )
+
                 .CurrentSessionContext<WebSessionContext>()
                 .Cache(x => x.UseQueryCache())
                 .Cache(x => x.UseSecondLevelCache())
@@ -164,6 +164,54 @@ namespace ReadingTool.Site.App_Start
                     }
                 )
                 ;
+
+#if DEBUG
+            cfg = cfg.ExposeConfiguration(config => new SchemaExport(config).SetOutputFile("c:\\temp\\readingtool.sql").Execute(true, false, false));
+#endif
+
+            switch(ConfigurationManager.AppSettings["dbType"])
+            {
+                case "sqlite":
+                    cfg = cfg.Database(
+                        SQLiteConfiguration
+                            .Standard
+                            .ConnectionString(ConfigurationManager.AppSettings["connectionString"])
+                            .ShowSql()
+                            .AdoNetBatchSize(200)
+                        );
+                    break;
+
+                case "mysql":
+                    cfg = cfg.Database(
+                        MySQLConfiguration
+                            .Standard
+                            .ConnectionString(ConfigurationManager.AppSettings["connectionString"])
+                            .ShowSql()
+                            .AdoNetBatchSize(200)
+                        );
+                    break;
+
+                case "mssql2005":
+                    cfg = cfg.Database(
+                        MsSqlConfiguration
+                            .MsSql2005
+                            .ConnectionString(ConfigurationManager.AppSettings["connectionString"])
+                            .ShowSql()
+                            .AdoNetBatchSize(200)
+                        );
+                    break;
+
+                case "mssql2008":
+                default:
+                    cfg = cfg.Database(
+                        MsSqlConfiguration
+                            .MsSql2008
+                            .ConnectionString(ConfigurationManager.AppSettings["connectionString"])
+                            .ShowSql()
+                            .AdoNetBatchSize(200)
+                        );
+                    break;
+            }
 
             var sessionFactory = cfg.BuildSessionFactory();
             kernel.Bind<ISessionFactory>().ToConstant(sessionFactory);
