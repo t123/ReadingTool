@@ -43,6 +43,7 @@ namespace ReadingTool.Entities
         public virtual string L2Text { get; set; }
         public virtual string AudioUrl { get; set; }
         public virtual ICollection<Group> Groups { get; set; }
+        public virtual bool ShareAudioUrl { get; set; }
 
         public Text()
         {
@@ -65,6 +66,7 @@ namespace ReadingTool.Entities
             Map(x => x.Modified).Not.Nullable();
             Map(x => x.LastRead);
             Map(x => x.AudioUrl).Length(250);
+            Map(x => x.ShareAudioUrl).Not.Nullable();
 
             HasManyToMany<Group>(x => x.Groups)
                 .Table("GroupText")

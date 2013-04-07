@@ -21,7 +21,8 @@
                 <div class="control-group">
                     @Html.LabelFor(x => x.Language.Name, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Language.Name, new { @watermark = "your name for the language", @class="input-xlarge" })
+                        @Html.TextBoxFor(x => x.Language.Name, new { @watermark = "your name for the language", @class = "input-xlarge" })
+                        @Html.TipFor(x => x.Language.Name)
                         @Html.ValidationMessageFor(x => x.Language.Name)
                     </div>
                 </div>
@@ -29,13 +30,15 @@
                     @Html.LabelFor(x => x.Language.Code, new { @class = "control-label" })
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Language.Code, new SelectList(Model.Language.Languages, "Key", "Value"), "Please choose")
+                        @Html.TipFor(x => x.Language.Code)
                         @Html.ValidationMessageFor(x => x.Language.Code)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Language.ModalBehaviour, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.DropDownListFor(x => x.Language.ModalBehaviour, new SelectList(from ModalBehaviour m in Enum.GetValues(typeof(ModalBehaviour)) select new { Key=m, Value=m.ToDescription()}, "Key", "Value"))
+                        @Html.DropDownListFor(x => x.Language.ModalBehaviour, new SelectList(from ModalBehaviour m in Enum.GetValues(typeof(ModalBehaviour)) select new { Key = m, Value = m.ToDescription() }, "Key", "Value"))
+                        @Html.TipFor(x => x.Language.ModalBehaviour)
                         @Html.ValidationMessageFor(x => x.Language.ModalBehaviour)
                     </div>
                 </div>
@@ -43,6 +46,7 @@
                     @Html.LabelFor(x => x.Language.Modal, new { @class = "control-label" })
                     <div class="controls">
                         @Html.CheckBoxFor(x => x.Language.Modal, new { @placeholder = "open dictionaries in a modal dialog" })
+                        @Html.TipFor(x => x.Language.Modal)
                         @Html.ValidationMessageFor(x => x.Language.Modal)
                     </div>
                 </div>
@@ -50,6 +54,7 @@
                     @Html.LabelFor(x => x.Language.AutoPause, new { @class = "control-label" })
                     <div class="controls">
                         @Html.CheckBoxFor(x => x.Language.AutoPause, new { @placeholder = "automatically pause audio" })
+                        @Html.TipFor(x => x.Language.AutoPause)
                         @Html.ValidationMessageFor(x => x.Language.AutoPause)
                     </div>
                 </div>
@@ -61,14 +66,16 @@ as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'
                 <div class="control-group">
                     @Html.LabelFor(x => x.Language.RegexWordCharacters, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Language.RegexWordCharacters, new { @placeholder = "word test regular expression, add \\-\\' for French", @class="input-xxlarge" })
+                        @Html.TextBoxFor(x => x.Language.RegexWordCharacters, new { @placeholder = "word test regular expression, add \\-\\' for French", @class = "input-xxlarge" })
+                        @Html.TipFor(x => x.Language.RegexWordCharacters)
                         @Html.ValidationMessageFor(x => x.Language.RegexWordCharacters)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Language.RegexSplitSentences, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(x => x.Language.RegexSplitSentences, new { @placeholder = "end of sentence characters", @class="input-xxlarge" })
+                        @Html.TextBoxFor(x => x.Language.RegexSplitSentences, new { @placeholder = "end of sentence characters", @class = "input-xxlarge" })
+                        @Html.TipFor(x => x.Language.RegexSplitSentences)
                         @Html.ValidationMessageFor(x => x.Language.RegexSplitSentences)
                     </div>
                 </div>
@@ -76,6 +83,7 @@ as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'
                     @Html.LabelFor(x => x.Language.Direction, new { @class = "control-label" })
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Language.Direction, new SelectList(directions, "Key", "Value", Model.Language.Direction))
+                        @Html.TipFor(x => x.Language.Direction)
                         @Html.ValidationMessageFor(x => x.Language.Direction)
                     </div>
                 </div>
@@ -83,6 +91,7 @@ as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'
                     @Html.LabelFor(x => x.Language.ShowSpaces, new { @class = "control-label" })
                     <div class="controls">
                         @Html.CheckBoxFor(x => x.Language.ShowSpaces, new { @placeholder = "show spaces in the text" })
+                        @Html.TipFor(x => x.Language.ShowSpaces)
                         @Html.ValidationMessageFor(x => x.Language.ShowSpaces)
                     </div>
                 </div>
@@ -117,9 +126,9 @@ as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'
                             <td>@dictionary.Url</td>
                             <td>@Html.FormatYesNo(dictionary.AutoOpen)</td>
                             <td>@Html.FormatYesNo(dictionary.Sentence)</td>
-                            <td><a href="@Url.Action("EditDictionary", new {id=Model.Language.LanguageId, dictionaryId=dictionary.DictionaryId})" class="btn btn-small">Edit</a></td>
+                            <td><a href="@Url.Action("EditDictionary", new { id = Model.Language.LanguageId, dictionaryId = dictionary.DictionaryId })" class="btn btn-small">Edit</a></td>
                             <td>
-                                @using(Html.BeginForm("DeleteDictionary", "Languages", new {id=Model.Language.LanguageId, dictionaryId=dictionary.DictionaryId}, FormMethod.Post))
+                                @using(Html.BeginForm("DeleteDictionary", "Languages", new { id = Model.Language.LanguageId, dictionaryId = dictionary.DictionaryId }, FormMethod.Post))
                                 {
                                     @Html.AntiForgeryToken()
                                     <input type="submit" value="Delete" class="btn btn-danger btn-small"/>
@@ -138,6 +147,6 @@ as a single word, use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'
 </div>
 <div class="row-fluid">
     <div class="span12">
-        <a href="@Url.Action("AddDictionary", new { id=Model.Language.LanguageId})" class="btn btn-primary">Add new dictionary</a>
+        <a href="@Url.Action("AddDictionary", new { id = Model.Language.LanguageId })" class="btn btn-primary">Add new dictionary</a>
     </div>
 </div>

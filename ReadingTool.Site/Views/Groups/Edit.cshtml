@@ -18,34 +18,35 @@
                     @Html.LabelFor(x => x.Name, new { @class = "control-label" })
                     <div class="controls">
                         @Html.TextBoxFor(x => x.Name, new { @placeholder = "your name for the group", @class = "input-xlarge" })
+                        @Html.TipFor(x => x.Name)
                         @Html.ValidationMessageFor(x => x.Name)
                     </div>
                 </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Description, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextAreaFor(x => x.Description, 5, 80, new  { @class="input-xxlarge", @placeholder="a short description of the group, max 1000 characters"})
+                        @Html.TextAreaFor(x => x.Description, 5, 80, new { @class = "input-xxlarge", @placeholder = "a short description of the group, max 1000 characters" })
+                        @Html.TipFor(x => x.Description)
                         @Html.ValidationMessageFor(x => x.Description)
                     </div>
                 </div>
-                @Html.FlashMessage(@"If a group is public anyone can join the group, whereas a private group requires an invitation. In both cases 
-the user must be approved before they can see the contents of a group.")
                 <div class="control-group">
                     @Html.LabelFor(x => x.GroupType, new { @class = "control-label" })
                     <div class="controls">
                         @Html.DropDownListFor(x => x.GroupType, new SelectList(from GroupType m in Enum.GetValues(typeof(GroupType)) select new { Key = m, Value = m.ToDescription() }, "Key", "Value"))
+                        @Html.TipFor(x => x.GroupType)
                         @Html.ValidationMessageFor(x => x.GroupType)
                     </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Save</button>
-                    @if(Model.CurrentUser!=null)
+                    @if(Model.CurrentUser != null)
                     {
-                        <a href="@Url.Action("Details", new { id=Model.GroupId})" class="btn">View group</a>
+                        <a href="@Url.Action("Details", new { id = Model.GroupId })" class="btn">View group</a>
                         
-                        if(Model.CurrentUser.MembershipType==MembershipType.Moderator || Model.CurrentUser.MembershipType==MembershipType.Owner)
+                        if(Model.CurrentUser.MembershipType == MembershipType.Moderator || Model.CurrentUser.MembershipType == MembershipType.Owner)
                         {
-                            <a href="@Url.Action("Membership", new { id=Model.GroupId})" class="btn">Browse membership</a>
+                            <a href="@Url.Action("Membership", new { id = Model.GroupId })" class="btn">Browse membership</a>
                         }
                     }
                 </div>

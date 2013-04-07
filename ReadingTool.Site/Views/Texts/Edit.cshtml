@@ -50,6 +50,7 @@
                     @Html.LabelFor(x => x.Title, new { @class = "control-label" } )
                     <div class="controls">
                         @Html.TextBoxFor(x => x.Title, new { @placeholder = "title of your text", @class="input-xxlarge" })
+                        @Html.TipFor(x => x.Title)
                         @Html.ValidationMessageFor(x => x.Title)
                     </div>
                 </div>
@@ -57,6 +58,7 @@
                     @Html.LabelFor(x => x.CollectionName, new { @class = "control-label" })
                     <div class="controls">
                         @Html.TextBoxFor(x => x.CollectionName, new { @placeholder = "collection name for grouping texts", @class="input-xxlarge" })
+                        @Html.TipFor(x => x.CollectionName)
                         @Html.ValidationMessageFor(x => x.CollectionName)
                     </div>
                 </div>
@@ -64,6 +66,7 @@
                     @Html.LabelFor(x => x.CollectionNo, new { @class = "control-label" })
                     <div class="controls">
                         @Html.TextBoxFor(x => x.CollectionNo, new { @placeholder = "collection number for ordering texts in a collection", @class="input-xxlarge" })
+                        @Html.TipFor(x => x.CollectionNo)
                         @Html.ValidationMessageFor(x => x.CollectionNo)
                     </div>
                 </div>
@@ -71,14 +74,23 @@
                     @Html.LabelFor(x => x.AudioUrl, new { @class = "control-label" })
                     <div class="controls">
                         @Html.TextBoxFor(x => x.AudioUrl, new { @placeholder = "URL of the audio", @class="input-xxlarge" })
+                        @Html.TipFor(x => x.AudioUrl)
                         @Html.ValidationMessageFor(x => x.AudioUrl)
                     </div>
                 </div>
-
+                <div class="control-group">
+                    @Html.LabelFor(x => x.ShareAudioUrl, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.CheckBoxFor(x => x.ShareAudioUrl)
+                        @Html.TipFor(x => x.ShareAudioUrl)
+                        @Html.ValidationMessageFor(x => x.ShareAudioUrl)
+                    </div>
+                </div>
                 <div class="control-group">
                     @Html.LabelFor(x => x.Language1Id, new {@class = "control-label"})
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Language1Id, new SelectList(Model.LanguageList, "Key", "Value"))
+                        @Html.TipFor(x=>x.Language1Id)
                         @Html.ValidationMessageFor(x=>x.Language1Id)
                     </div>
                 </div>
@@ -86,6 +98,7 @@
                     @Html.LabelFor(x => x.L1Text, new {@class = "control-label"})
                     <div class="controls">
                         @Html.TextAreaFor(x=>x.L1Text)
+                        @Html.TipFor(x=>x.L1Text)
                         @Html.ValidationMessageFor(x=>x.L1Text)
                     </div>
                 </div>
@@ -93,6 +106,7 @@
                     @Html.LabelFor(x => x.Language2Id, new {@class = "control-label"})
                     <div class="controls">
                         @Html.DropDownListFor(x => x.Language2Id, new SelectList(Model.LanguageList, "Key", "Value"), "None")
+                        @Html.TipFor(x=>x.Language2Id)
                         @Html.ValidationMessageFor(x=>x.Language2Id)
                     </div>
                 </div>
@@ -100,6 +114,7 @@
                     @Html.LabelFor(x => x.L2Text, new {@class = "control-label"})
                     <div class="controls">
                         @Html.TextAreaFor(x=>x.L2Text)
+                        @Html.TipFor(x=>x.L2Text)
                         @Html.ValidationMessageFor(x=>x.L2Text)
                     </div>
                 </div>

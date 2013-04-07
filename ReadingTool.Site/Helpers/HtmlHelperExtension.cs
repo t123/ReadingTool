@@ -18,9 +18,13 @@
 #endregion
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
+using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Helpers
 {
@@ -44,6 +48,29 @@ namespace ReadingTool.Site.Helpers
             }
 
             return false;
+        }
+
+        public static IHtmlString TipFor<TModel, TValue>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression)
+        {
+            MemberExpression memberExpression = (MemberExpression)expression.Body;
+            var attr = (TipAttribute)memberExpression.Member.GetCustomAttributes(typeof(TipAttribute), true).FirstOrDefault();
+
+            if(attr == null)
+            {
+                return new HtmlString("");
+            }
+
+            TagBuilder a = new TagBuilder("a");
+            TagBuilder icon = new TagBuilder("i");
+            icon.AddCssClass("icon-question-sign");
+            icon.SetInnerText(" ");
+
+            a.AddCssClass("tip");
+            a.Attributes.Add("data-toggle", "tooltip");
+            a.Attributes.Add("title", attr.Description);
+            a.InnerHtml = icon.ToString();
+
+            return new HtmlString(a.ToString());
         }
     }
 }

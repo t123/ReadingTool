@@ -19,6 +19,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Models.Account
 {
@@ -28,15 +29,21 @@ namespace ReadingTool.Site.Models.Account
 
         [Display(Name = "Email Address")]
         [MaxLength(50, ErrorMessage = "Please use less than 100 characters.")]
+        [Tip("Your email address is not required. It's only used if you forget your password.")]
         public string EmailAddress { get; set; }
+
         public string Username { get; set; }
+
         [Display(Name = "Display Name")]
         [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]
+        [Tip("This is the name other users see.")]
         public string DisplayName { get; set; }
+        
         public DateTime Created { get; set; }
         //public string[] Roles { get; set; }
 
         [Display(Name = "Your API Key")]
+        [Tip("The API key is used to access the API.")]
         public string ApiKey { get; set; }
     }
 

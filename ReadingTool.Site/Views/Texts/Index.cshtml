@@ -13,6 +13,13 @@
                  $('#texts').val(texts.join(','));
                  return true;
              }
+             
+             function update2() {
+                 var texts = [];
+                 $('input[type=checkbox]:checked').each(function (index, x) { texts.push($(x).val()); });
+                 $('#texts2').val(texts.join(','));
+                 return true;
+             }
 
              window.initWebGrid('@Url.Action("IndexGrid")');
          </script>
@@ -56,9 +63,16 @@
                 {
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="texts" id="texts" />
-                    @Html.DropDownList("GroupId", new SelectList(groups, "Key", "Value"), "Choose group", new { style = "margin-bottom:0;"})
-                    <button type="submit" class="btn">share selected texts</button>
+                    @Html.DropDownList("GroupId", new SelectList(groups, "Key", "Value"), "Choose group", new { style = "margin-bottom:0;" })
+                    <button type="submit" class="btn">Share selected texts</button>
                 }
+            }
+
+            using(Html.BeginForm("DeleteTexts", "Texts", FormMethod.Post, new { @style = "display:inline;", onsubmit = "return update2();" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="texts" id="texts2" />
+                <button type="submit" class="btn btn-danger">Delete selected texts</button>
             }
         }
     </div>

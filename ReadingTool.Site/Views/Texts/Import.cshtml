@@ -27,6 +27,7 @@
                 <fieldset>
                     <legend>Import Texts</legend>
                     <input type="file" name="file" />
+                    @Html.TipFor(x=>x.File)
 
                     <div class="buttons">
                         <input type="submit" class="btn btn-primary" name="save" value="Import these texts" />

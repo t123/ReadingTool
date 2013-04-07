@@ -3,6 +3,18 @@
     Bundles.Reference("Content/css");
     Bundles.Reference("Scripts/Required");
     Bundles.Reference("Scripts/Body", "body");
+
+    Bundles.AddInlineScript(@<text>
+                                 <script language="javascript">
+                                     $(function() {
+                                         $('.tip').tooltip({
+                                             animation: false,
+                                             html: true,
+                                             placement: 'top'
+                                         });
+                                     });
+                                 </script>
+                             </text>, "inline");
 }
 <!DOCTYPE html>
 <html>

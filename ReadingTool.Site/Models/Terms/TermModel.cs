@@ -20,26 +20,33 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using ReadingTool.Common;
+using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Models.Terms
 {
     public class TermModel
     {
         public Guid TermId { get; set; }
+        [Tip("The current state of the word.")]
         public TermState State { get; set; }
 
-        [MaxLength(50, ErrorMessage = "Please use less than 50 characters")]
+        [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]
         public string Phrase { get; set; }
 
         [Display(Name = "Base Phrase")]
-        [MaxLength(50, ErrorMessage = "Please use less than 50 characters")]
+        [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]
+        [Tip("The nominative/dictionary form of the word so that different forms of the same word can be grouped together.")]
         public string BasePhrase { get; set; }
 
-        [MaxLength(500, ErrorMessage = "Please use less than 500 characters")]
+        [MaxLength(500, ErrorMessage = "Please use less than 500 characters.")]
+        [Tip("An example sentence for this word.")]
         public string Sentence { get; set; }
 
-        [MaxLength(500, ErrorMessage = "Please use less than 500 characters")]
+        [MaxLength(500, ErrorMessage = "Please use less than 500 characters.")]
+        [Tip("Your definition of the word.")]
         public string Definition { get; set; }
+
+        [Tip("Any tags you want to use for this word, for example genders etc.")]
         public string Tags { get; set; }
         public short Length { get; set; }
         public short Box { get; set; }

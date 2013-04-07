@@ -20,6 +20,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using ReadingTool.Common;
+using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Models.Groups
 {
@@ -30,12 +31,15 @@ namespace ReadingTool.Site.Models.Groups
         [MaxLength(50, ErrorMessage = "The name must be less than 50 characters.")]
         [MinLength(3, ErrorMessage = "The name must be more than 3 letters.")]
         [RegularExpression(@"([\d\w\s]+)", ErrorMessage = "Only letters, numbers and spaces are allowed.")]
+        [Tip("The name of the group.")]
         public string Name { get; set; }
 
         [MaxLength(1000, ErrorMessage = "The description must be less than 1000 characters.")]
+        [Tip("A description of the group.")]
         public string Description { get; set; }
 
         [Display(Name = "Group Type")]
+        [Tip("Public groups can be searched for and anyone can join but membership must be approved by a moderator. Private groups are by invitation only, invited users must accept the invitation.")]
         public GroupType GroupType { get; set; }
 
         public GroupMembershipModel CurrentUser { get; set; }

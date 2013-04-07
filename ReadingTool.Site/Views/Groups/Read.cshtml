@@ -8,7 +8,10 @@
     Bundles.Reference("Scripts/Reading", "inline");
     Bundles.Reference("Scripts/SimpleModal", "inline");
 
-    Model.Text.AudioUrl = string.Empty;
+    if(!Model.Text.ShareAudioUrl)
+    {
+        Model.Text.ShareAudioUrl = string.Empty;
+    }
     
     if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
     {
@@ -21,13 +24,15 @@
                                  <script language="javascript">
                                      @if(!string.IsNullOrEmpty(Model.Text.AudioUrl))
                                      {
-                                         <text>function toggleAudio() {                                         $('#jp_container_1').toggle();
+                                         <text>function toggleAudio() {
+                                         $('#jp_container_1').toggle();
                                          
                                          if($('#jp_container_1').is(':visible')) {
                                              $('.closelink').html('&rArr;');
                                          } else {
                                              $('.closelink').html('&lArr;');
-                                         }                                     }</text>
+                                         }
+                                     }</text>
                                      }
                                      
                                      $(function () {
@@ -72,10 +77,13 @@
                                              supplied: "mp3",
                                              wmode: "window",
                                              volume: localStorage['jPlayer_Volume'] || 0.5
-                                         });                                         $('.closelink').click(function(e) {
+                                         });
+
+                                         $('.closelink').click(function(e) {
                                              toggleAudio();
                                              return false;
-                                         });                                             </text>
+                                         });
+                                             </text>
                                          }
                                      });
                                  </script>
@@ -260,4 +268,6 @@
                     To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
                 </div>
             </div>
-        </div>    </div>}
+        </div>
+    </div>
+}

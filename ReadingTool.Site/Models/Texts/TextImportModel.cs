@@ -19,12 +19,14 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Web;
+using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Models.Texts
 {
     public class TextImportModel
     {
         [Display(Name = "JSON File")]
+        [Tip("A JSON file in the format generated in the sample below.")]
         public HttpPostedFileBase File { get; set; }
     }
 }

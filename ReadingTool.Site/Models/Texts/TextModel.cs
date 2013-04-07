@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ReadingTool.Site.Attributes;
 
 namespace ReadingTool.Site.Models.Texts
 {
@@ -29,18 +30,25 @@ namespace ReadingTool.Site.Models.Texts
 
         [Required(ErrorMessage = "Please enter a title.")]
         [MaxLength(250, ErrorMessage = "Please use less than 250 characters.")]
+        [Tip("The title of your text.")]
         public string Title { get; set; }
+
         [MaxLength(50, ErrorMessage = "Please use less than 50 characters.")]
         [Display(Name = "Collection Name")]
+        [Tip("The collection, if any, this text belongs to.")]
         public string CollectionName { get; set; }
+
         [Display(Name = "Collection Number")]
+        [Tip("The collection number is used for ordering texts within a collection.")]
         public int? CollectionNo { get; set; }
 
         [Required(ErrorMessage = "Please select a language.")]
+        [Tip("The language this text is in.")]
         [Display(Name = "Language 1")]
         public Guid Language1Id { get; set; }
 
         [Display(Name = "Language 2")]
+        [Tip("If the text is a parallel text, the language of the parallel text.")]
         public Guid? Language2Id { get; set; }
 
         [Display(Name = "Text")]
@@ -53,6 +61,11 @@ namespace ReadingTool.Site.Models.Texts
 
         [Display(Name = "Audio URL")]
         [MaxLength(250, ErrorMessage = "Please use less than 250 characters.")]
+        [Tip("The URL of the audio for this text.")]
         public string AudioUrl { get; set; }
+
+        [Display(Name = "Share the audio?")]
+        [Tip("Check this box to share the audio URL if you choose to share this text.")]
+        public bool ShareAudioUrl { get; set; }
     }
 }

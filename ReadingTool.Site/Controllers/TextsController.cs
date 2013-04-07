@@ -238,7 +238,28 @@ namespace ReadingTool.Site.Controllers.Home
                 _groupRepository.Save(group);
             }
 
-            this.FlashSuccess("Texts shared");
+            this.FlashSuccess("Texts shared.");
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteTexts(string texts)
+        {
+            if(!string.IsNullOrEmpty(texts))
+            {
+                foreach(var id in texts.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)))
+                {
+                    if(id == Guid.Empty)
+                    {
+                        continue;
+                    }
+
+                    _textService.Delete(id);
+                }
+            }
+
+            this.FlashSuccess("Texts deleted.");
             return RedirectToAction("Index");
         }
 
@@ -255,7 +276,7 @@ namespace ReadingTool.Site.Controllers.Home
         {
             if(!string.IsNullOrEmpty(model.L2Text) && model.Language2Id == null)
             {
-                ModelState.AddModelError("Language2Id", "Please select a language");
+                ModelState.AddModelError("Language2Id", "Please select a language.");
             }
 
             if(!ModelState.IsValid)
@@ -274,7 +295,8 @@ namespace ReadingTool.Site.Controllers.Home
                     Title = model.Title,
                     L1Text = model.L1Text,
                     L2Text = model.L2Text,
-                    AudioUrl = model.AudioUrl
+                    AudioUrl = model.AudioUrl,
+                    ShareAudioUrl = model.ShareAudioUrl
                 };
 
             _textService.Save(text);
@@ -304,7 +326,8 @@ namespace ReadingTool.Site.Controllers.Home
                     Title = text.Title,
                     AudioUrl = text.AudioUrl,
                     L1Text = text.L1Text,
-                    L2Text = text.L2Text
+                    L2Text = text.L2Text,
+                    ShareAudioUrl = text.ShareAudioUrl
                 };
 
             return View(model);
@@ -317,7 +340,7 @@ namespace ReadingTool.Site.Controllers.Home
         {
             if(!string.IsNullOrEmpty(model.L2Text) && model.Language2Id == null)
             {
-                ModelState.AddModelError("Language2Id", "Please select a language");
+                ModelState.AddModelError("Language2Id", "Please select a language.");
             }
 
             if(!ModelState.IsValid)
@@ -341,6 +364,7 @@ namespace ReadingTool.Site.Controllers.Home
             text.L1Text = model.L1Text;
             text.L2Text = model.L2Text;
             text.AudioUrl = model.AudioUrl;
+            text.ShareAudioUrl = model.ShareAudioUrl;
 
             _textService.Save(text);
 
@@ -366,7 +390,7 @@ namespace ReadingTool.Site.Controllers.Home
         public ActionResult Delete(Guid id)
         {
             _textService.Delete(id);
-            this.FlashSuccess("Text Deleted.");
+            this.FlashSuccess("Text deleted.");
 
             return RedirectToAction("Index");
         }
@@ -518,7 +542,7 @@ namespace ReadingTool.Site.Controllers.Home
 
                             if(data == null)
                             {
-                                throw new Exception("There is no file in the ZIP archive");
+                                throw new Exception("There is no file in the ZIP archive.");
                             }
 
                             using(var sr = new StreamReader(data.OpenReader()))
@@ -526,8 +550,8 @@ namespace ReadingTool.Site.Controllers.Home
                                 JsonSerializer serializer = new JsonSerializer();
                                 json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
 
-                                if(json == null) throw new Exception("File is empty");
-                                if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
+                                if(json == null) throw new Exception("File is empty.");
+                                if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified.");
                             }
                         }
                     }
@@ -538,14 +562,14 @@ namespace ReadingTool.Site.Controllers.Home
                             JsonSerializer serializer = new JsonSerializer();
                             json = serializer.Deserialize<TextImport>(new JsonTextReader(sr));
 
-                            if(json == null) throw new Exception("File is empty");
-                            if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified");
+                            if(json == null) throw new Exception("File is empty.");
+                            if(json.Items == null || json.Items.Length == 0) throw new Exception("No texts are specified.");
                         }
                     }
 
                     int imported = _textService.Import(json);
 
-                    this.FlashSuccess("{0} texts were imported", imported);
+                    this.FlashSuccess("{0} texts were imported.", imported);
                     return this.RedirectToAction("Import");
                 }
                 catch(Exception e)

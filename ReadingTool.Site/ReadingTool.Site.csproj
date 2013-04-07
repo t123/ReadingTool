@@ -182,6 +182,7 @@
     <Compile Include="Attributes\AutoMapFilter.cs" />
     <Compile Include="Attributes\AjaxRouteAttribute.cs" />
     <Compile Include="Attributes\NeedsPersistenceAttribute.cs" />
+    <Compile Include="Attributes\TipAttribute.cs" />
     <Compile Include="CassetteConfiguration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AjaxController.cs" />
