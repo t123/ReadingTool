@@ -33,6 +33,29 @@ namespace ReadingTool.Services
 {
     public class DefaultParserService : IParserService
     {
+        private log4net.ILog _timingLogger = log4net.LogManager.GetLogger("TimingAppender");
+
+        protected class Timing
+        {
+            public double TotalSeconds { get; set; }
+            public DateTime StartTime { get; set; }
+            public DateTime AfterSplit { get; set; }
+            public DateTime AfterXml { get; set; }
+            public DateTime AfterClass { get; set; }
+            public DateTime EndTime { get; set; }
+            public bool IsParallel { get; set; }
+            public int L1TextLength { get; set; }
+            public int L2TextLength { get; set; }
+            public int TotalTextWords { get; set; }
+            public int TotalUserSingleWords { get; set; }
+            public int TotalUserMultiWords { get; set; }
+
+            public Timing()
+            {
+                StartTime = DateTime.Now;
+            }
+        }
+
         protected bool _asParallel;
         protected Text _text;
         protected Language _l1Language;
@@ -41,6 +64,7 @@ namespace ReadingTool.Services
         protected Regex _termTest;
         protected Splitter _l1Splitter;
         protected Splitter _l2Splitter;
+        protected Timing _timing;
 
         public string Parse(bool asParallel, Language l1Language, Language l2Language, Term[] terms, Text text)
         {
@@ -61,15 +85,34 @@ namespace ReadingTool.Services
             string l1WithTitle = BuildTextWithTitle(_text.L1Text);
             string l2WithTitle = _asParallel ? BuildTextWithTitle(_text.L2Text) : string.Empty;
 
+            _timing = new Timing()
+            {
+                IsParallel = _asParallel,
+                L1TextLength = l1WithTitle.Length,
+                L2TextLength = l2WithTitle.Length,
+            };
+
             var l1Split = SplitText(l1WithTitle, _l1Language.Settings);
             var l2Split = !asParallel || _l2Language == null ? string.Empty : SplitText(l2WithTitle, _l2Language.Settings);
 
+            _timing.AfterSplit = DateTime.Now;
+
             var xml = CreateTextXml(l1Split, l2Split);
+
+            _timing.AfterXml = DateTime.Now;
 
             var result = ClassTerms(xml);
             xml = CreateStats(result.Item1, result.Item2);
 
-            return ApplyTransform(xml);
+            _timing.AfterClass = DateTime.Now;
+
+            var transform = ApplyTransform(xml);
+
+            _timing.EndTime = DateTime.Now;
+            _timing.TotalSeconds = (_timing.EndTime - _timing.StartTime).TotalSeconds;
+            _timingLogger.Info(ServiceStack.Text.TypeSerializer.SerializeToString(_timing));
+
+            return transform;
         }
 
         protected virtual string BuildTextWithTitle(string inputText)
@@ -268,6 +311,8 @@ namespace ReadingTool.Services
             var kn = new XElement("knownCount", knownCount);
             var un = new XElement("unknownCount", unknownCount);
 
+            _timing.TotalTextWords = totalWords;
+
             if(int.Parse(tw.Value) > 0)
             {
                 ns.SetAttributeValue("percent", string.Format("{0:0.00}", (double)ns / (double)tw * 100));
@@ -323,9 +368,13 @@ namespace ReadingTool.Services
         {
             var totalTerms = document.Descendants("t").Count(x => x.Attribute("type").Value == "term");
 
+            //var multiTerms = _singleTerms.Where(x => x.Length > 1).ToArray();
+            //_timing.TotalUserMultiWords = multiTerms.Length;
+
             //Multilength
             foreach(var multi in _singleTerms.Where(x => x.Length > 1))
             {
+                _timing.TotalUserMultiWords++;
                 var first = multi.PhraseLower.Split(' ').First();
                 var partials = document
                     .Descendants("t")
@@ -374,6 +423,8 @@ namespace ReadingTool.Services
                     State = x.State,
                     FullDefinition = x.FullDefinition
                 });
+
+            _timing.TotalUserSingleWords = termsAsDict.Count;
 
             foreach(var element in elements)
             {
