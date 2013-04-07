@@ -166,7 +166,8 @@ namespace ReadingTool.Site.App_Start
                 ;
 
 #if DEBUG
-            cfg = cfg.ExposeConfiguration(config => new SchemaExport(config).SetOutputFile("c:\\temp\\readingtool.sql").Execute(true, false, false));
+            var dbSqlFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "readingtool.sql");
+            cfg = cfg.ExposeConfiguration(config => new SchemaExport(config).SetOutputFile(dbSqlFile).Execute(true, false, false));
 #endif
 
             switch(ConfigurationManager.AppSettings["dbType"])

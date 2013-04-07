@@ -191,7 +191,7 @@ namespace ReadingTool.Entities
                 .ChildKeyColumn("TagId")
                 .Cascade
                 .All()
-                .BatchSize(dbType == "sqlite" ? 100 : 1000)
+                .BatchSize(dbType == "sqlite" ? 200 : 1000)
                 .AsSet()
                 ;
         }
