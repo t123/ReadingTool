@@ -327,7 +327,8 @@ namespace ReadingTool.Site.Controllers.Home
                     AudioUrl = text.AudioUrl,
                     L1Text = text.L1Text,
                     L2Text = text.L2Text,
-                    ShareAudioUrl = text.ShareAudioUrl
+                    ShareAudioUrl = text.ShareAudioUrl,
+                    Groups = string.Join("", text.Groups.Select(x => "<li><a href=\"" + Url.Action("Details", "Groups", new { id = x.GroupId }) + "\">" + x.Name + "</a></li>"))
                 };
 
             return View(model);
@@ -343,13 +344,14 @@ namespace ReadingTool.Site.Controllers.Home
                 ModelState.AddModelError("Language2Id", "Please select a language.");
             }
 
+            var text = _textService.FindOne(id);
+
             if(!ModelState.IsValid)
             {
+                model.Groups = string.Join("", text.Groups.Select(x => "<li><a href=\"" + Url.Action("Details", "Groups", new { id = x.GroupId }) + "\">" + x.Name + "</a></li>"));
                 model.LanguageList = _languageRepository.FindAll(x => x.User == _userRepository.LoadOne(UserId)).OrderBy(x => x.Name).ToDictionary(x => x.LanguageId, x => x.Name);
                 return View(model);
             }
-
-            var text = _textService.FindOne(id);
 
             if(text == null || id != model.TextId)
             {

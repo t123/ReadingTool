@@ -67,5 +67,7 @@ namespace ReadingTool.Site.Models.Texts
         [Display(Name = "Share the audio?")]
         [Tip("Check this box to share the audio URL if you choose to share this text.")]
         public bool ShareAudioUrl { get; set; }
+
+        public string Groups { get; set; }
     }
 }

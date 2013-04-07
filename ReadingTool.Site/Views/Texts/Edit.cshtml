@@ -138,3 +138,16 @@
         }
     </div>
 </div>
+@if(!string.IsNullOrEmpty(Model.Groups))
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="well well-small">
+            This text is shared in the followings groups:
+                <ul>
+                    @Html.Raw(Model.Groups)
+                </ul>
+            </div>
+        </div>
+    </div>
+}
