@@ -15,7 +15,7 @@
     var currentLength;
     var isIpad = navigator.userAgent.indexOf('iPad') != -1;
     var jPlayer = $('#jplayer');
-    
+
     var hasChanged = false;
     var currentElement;
 
@@ -84,8 +84,8 @@
                 }
             });
         }
-        
-        if(settings.hasAudio) {
+
+        if (settings.hasAudio) {
             jPlayer.bind($.jPlayer.event.volumechange, function (e) {
                 localStorage['jPlayer_Volume'] = e.jPlayer.options.volume;
             });
@@ -101,6 +101,7 @@
 
         $('#refreshSentence').click(function () {
             self.refreshSentence();
+            self._updateDictionaries(); //Evil
         });
 
         $('#btnReset').click(function () {
@@ -218,7 +219,7 @@
     self.close = function () {
         termId.val('');
         textModal.hide();
-        
+
         if (settings.hasAudio) {
             jPlayer.jPlayer("play", jPlayer.data().jPlayer.status.currentTime - 1);
         }
@@ -228,7 +229,7 @@
         if (settings.hasAudio) {
             jPlayer.jPlayer('pause');
         }
-        
+
         currentElement = $(element).closest('span');
         self._buildCurrentPopup();
         self._updateModalLocaion();
@@ -448,6 +449,11 @@
             baseWord.val('');
             definition.val('');
             tags.val('');
+        }
+
+        if (data.sentence == '') {
+            self.refreshSentence();
+            self._updateDictionaries();
         }
 
         currentLength = data.length;
