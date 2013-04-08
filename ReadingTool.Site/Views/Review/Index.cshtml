@@ -98,7 +98,7 @@
                                     <td><input type="radio" name="term_@term.TermId" value="know"/></td>
                                     <td><input type="radio" name="term_@term.TermId" value="dontknow"/></td>
                                     <td @Html.Raw(style)>
-                                        <a class="phrasepopover" data-toggle="popover" data-placement="right" data-content="@term.FullDefinition.NewlineToBreak()" data-original-title="@term.Phrase">
+                                        <a class="phrasetooltip" data-toggle="tooltip" data-placement="top" data-original-title="@term.FullDefinition.NewlineToBreak()">
                                             @(string.IsNullOrEmpty(term.BasePhrase) ? term.Phrase : term.BasePhrase)
                                         </a>
                                     </td>
@@ -107,7 +107,7 @@
                                             var sentence = Html.Encode(term.Sentence);
                                         }
 
-                                        @Html.Raw(sentence.Replace(Html.Encode(term.Phrase), @"<a class=""phrasepopover"" data-placement=""top""  data-content=""" + @term.FullDefinition+ @""" data-original-title="""+ @term.Phrase + @""">" + @term.Phrase + "</a>", StringComparison.InvariantCultureIgnoreCase))
+                                        @Html.Raw(sentence.Replace(Html.Encode(term.Phrase), @"<a class=""phrasepopover"" data-placement=""top""  data-content=""" + @term.FullDefinition.NewlineToBreak() + @""" data-original-title="""+ @term.Phrase + @""">" + @term.Phrase + "</a>", StringComparison.InvariantCultureIgnoreCase))
                                     </td>
                                 </tr>
                                 counter++;
