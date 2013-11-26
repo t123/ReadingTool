@@ -102,6 +102,7 @@
         $('#refreshSentence').click(function () {
             self.refreshSentence();
             self._updateDictionaries(); //Evil
+			return false;
         });
 
         $('#btnReset').click(function () {

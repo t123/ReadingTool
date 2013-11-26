@@ -320,6 +320,8 @@
     <Content Include="Views\Groups\Browse.cshtml" />
     <Content Include="Views\Groups\Read.cshtml" />
     <Content Include="Views\Account\ImportLwt.cshtml" />
+    <None Include="Properties\PublishProfiles\readingtool - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\readingtool - Web Deploy.pubxml" />
     <None Include="Views\_ViewStart.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

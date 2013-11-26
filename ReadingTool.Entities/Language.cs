@@ -48,7 +48,7 @@ namespace ReadingTool.Entities
             public string RegexSplitSentences { get; set; }
             public string RegexWordCharacters { get; set; }
             public LanguageDirection Direction { get; set; }
-            public ModalBehaviour ModalBehaviour { get; set; }
+            public ModalBehaviour ModalUserBehaviour { get; set; }
             public bool AutoPause { get; set; }
         }
 

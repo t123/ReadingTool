@@ -152,7 +152,7 @@ namespace ReadingTool.Site.Controllers.Home
                             RegexWordCharacters = model.RegexWordCharacters,
                             ShowSpaces = model.ShowSpaces,
                             Modal = model.Modal,
-                            ModalBehaviour = model.ModalBehaviour,
+                            ModalUserBehaviour = model.ModalBehaviour,
                             AutoPause = model.AutoPause
                         },
                     User = _userRepository.LoadOne(UserId)
@@ -187,7 +187,7 @@ namespace ReadingTool.Site.Controllers.Home
                             RegexWordCharacters = language.Settings.RegexWordCharacters,
                             ShowSpaces = language.Settings.ShowSpaces,
                             Modal = language.Settings.Modal,
-                            ModalBehaviour = language.Settings.ModalBehaviour,
+                            ModalBehaviour = language.Settings.ModalUserBehaviour,
                             AutoPause = language.Settings.AutoPause
                         }
                 };
@@ -238,7 +238,7 @@ namespace ReadingTool.Site.Controllers.Home
                     RegexWordCharacters = model.RegexWordCharacters,
                     ShowSpaces = model.ShowSpaces,
                     Modal = model.Modal,
-                    ModalBehaviour = model.ModalBehaviour,
+                    ModalUserBehaviour = model.ModalBehaviour,
                     AutoPause = model.AutoPause
                 };
 

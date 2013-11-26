@@ -36,6 +36,9 @@
 .errorlist ul li {
   color: #b5121b;
 }
+span.field-validation-error {
+  color: #b5121b;
+}
 .table {
   font-size: smaller;
 }

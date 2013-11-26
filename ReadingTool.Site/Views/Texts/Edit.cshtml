@@ -8,31 +8,18 @@
     Bundles.Reference("/Content/CodeMirror");
     
     Bundles.AddInlineScript(@<text><script language="javascript">
-                                       function checkL2() {
-                                           if ($('#Language2Id').val() == '') {
-                                               $('#l2textcontrol').hide();
-                                           } else {
-                                               $('#l2textcontrol').show();
-                                           }
-                                       }
-                                       $('#Language2Id').change(function () {
-                                           checkL2();
-                                       });
-
                                        var cm_l1, cm_l2;
                                        $(function() {
-                                           checkL2();
-                                           
                                            cm_l1 = CodeMirror.fromTextArea(document.getElementById("L1Text"), {
                                                mode: "plain/text",
                                                lineNumbers: true,
-                                               lineWrapping: true,
+                                               lineWrapping: false,
                                            });
                                            
                                            cm_l2 = CodeMirror.fromTextArea(document.getElementById("L2Text"), {
                                                mode: "plain/text",
                                                lineNumbers: true,
-                                               lineWrapping: true,
+                                               lineWrapping: false,
                                            });;
                                        });
                                    </script></text>, "inline");
@@ -86,36 +73,22 @@
                         @Html.ValidationMessageFor(x => x.ShareAudioUrl)
                     </div>
                 </div>
-                <div class="control-group">
-                    @Html.LabelFor(x => x.Language1Id, new {@class = "control-label"})
-                    <div class="controls">
+                <div>
+                    <div style="width: 48%; display: inline-block">
+                        @Html.LabelFor(x => x.Language1Id, new {@class = "control-label", style="padding-right: 20px;"})
                         @Html.DropDownListFor(x => x.Language1Id, new SelectList(Model.LanguageList, "Key", "Value"))
                         @Html.TipFor(x=>x.Language1Id)
                         @Html.ValidationMessageFor(x=>x.Language1Id)
-                    </div>
-                </div>
-                <div class="control-group">
-                    @Html.LabelFor(x => x.L1Text, new {@class = "control-label"})
-                    <div class="controls">
+                        <div class="clr5"></div>
                         @Html.TextAreaFor(x=>x.L1Text)
-                        @Html.TipFor(x=>x.L1Text)
-                        @Html.ValidationMessageFor(x=>x.L1Text)
                     </div>
-                </div>
-                <div class="control-group">
-                    @Html.LabelFor(x => x.Language2Id, new {@class = "control-label"})
-                    <div class="controls">
+                    <div style="width: 48%; display: inline-block">
+                        @Html.LabelFor(x => x.Language2Id, new {@class = "control-label", style="padding-right: 20px;"})
                         @Html.DropDownListFor(x => x.Language2Id, new SelectList(Model.LanguageList, "Key", "Value"), "None")
                         @Html.TipFor(x=>x.Language2Id)
                         @Html.ValidationMessageFor(x=>x.Language2Id)
-                    </div>
-                </div>
-                <div class="control-group" id="l2textcontrol">
-                    @Html.LabelFor(x => x.L2Text, new {@class = "control-label"})
-                    <div class="controls">
+                        <div class="clr5"></div>
                         @Html.TextAreaFor(x=>x.L2Text)
-                        @Html.TipFor(x=>x.L2Text)
-                        @Html.ValidationMessageFor(x=>x.L2Text)
                     </div>
                 </div>
 

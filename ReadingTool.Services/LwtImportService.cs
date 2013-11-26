@@ -103,7 +103,7 @@ namespace ReadingTool.Services
                             AutoPause = true,
                             Direction = LanguageDirection.LTR,
                             Modal = true,
-                            ModalBehaviour = ModalBehaviour.LeftClick,
+                            ModalUserBehaviour = ModalBehaviour.LeftClick,
                             ShowSpaces = item.LgRemoveSpaces.HasValue ? !item.LgRemoveSpaces.Value : false,
                             RegexWordCharacters = item.LgRegexpWordCharacters,
                             RegexSplitSentences = item.LgRegexpSplitSentences
