@@ -1,0 +1,107 @@
+.clr1 {
+	clear:both;
+	height: 1px;
+	display: block;
+}
+
+.clr2 {
+	clear:both;
+	height: 2px;
+	display: block;
+}
+
+.clr3 {
+	clear:both;
+	height: 3px;
+	display: block;
+}
+
+.clr4 {
+	clear:both;
+	height: 4px;
+	display: block;
+}
+
+.clr5 {
+	clear:both;
+	height: 5px;
+	display: block;
+}
+
+.clr10 {
+	clear:both;
+	height: 10px;
+	display: block;
+}
+
+.clr20 {
+	clear:both;
+	height: 20px;
+	display: block;
+}
+
+.clr30 {
+	clear:both;
+	height: 30px;
+	display: block;
+}
+
+.clr40 {
+	clear:both;
+	height: 40px;
+	display: block;
+}
+
+.clr50 {
+	clear:both;
+	height: 50px;
+	display: block;
+}
+
+.clr60 {
+	clear:both;
+	height: 60px;
+	display: block;
+}
+
+.clr70 {
+	clear:both;
+	height: 70px;
+	display: block;
+}
+
+.clr80 {
+	clear:both;
+	height: 80px;
+	display: block;
+}
+
+.clr90 {
+	clear:both;
+	height: 90px;
+	display: block;
+}
+
+.clr100 {
+	clear:both;
+	height: 100px;
+	display: block;
+}
+
+h1 a {
+	color: black;
+	text-decoration: none;
+}
+
+h1 a:hover {
+	color: black;
+	text-decoration: none;
+}
+
+th.form {
+    width: 80px;
+}
+
+td.form {
+    width: 80px;
+}

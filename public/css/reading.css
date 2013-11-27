@@ -1,0 +1,165 @@
+body {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.container-fluid {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+.nav-pills {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+#readingareaouter {
+  background: #565656;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+#readingareainner {
+  font-size: 1.2em;
+  line-height: 25px;
+  font-family: 'Droid Sans', Tahoma, Arial;
+  background: #fff;
+  padding-left: 15px;
+  padding-right: 15px;
+  /* http://meyerweb.com/eric/tools/color-blend/ */
+
+}
+#readingareainner table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 0px;
+}
+#readingareainner table td.f {
+  vertical-align: top;
+  border-right: 1px solid black;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  width: 49%;
+}
+#readingareainner table td.s {
+  vertical-align: top;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  width: 49%;
+}
+#readingareainner a {
+  color: inherit;
+  text-decoration: none;
+}
+#readingareainner span._u {
+  background-color: #F5B8A9;
+}
+#readingareainner span._n {
+  background-color: #DAE5EB;
+}
+#readingareainner span._i {
+  background-color: white;
+}
+#readingareainner span._bx {
+  font-weight: bold;
+}
+#readingareainner span._ux {
+  text-decoration: underline;
+}
+#readingareainner span._ix {
+  font-style: italic;
+}
+#readingareainner span.box1 {
+  background-color: #F5B8A9;
+}
+#readingareainner span.box2 {
+  background-color: #F0C1A1;
+}
+#readingareainner span.box3 {
+  background-color: #EBCA98;
+}
+#readingareainner span.box4 {
+  background-color: #E6D390;
+}
+#readingareainner span.box5 {
+  background-color: #E1DC88;
+}
+#readingareainner span.box6 {
+  background-color: #DBE47F;
+}
+#readingareainner span.box7 {
+  background-color: #D6ED77;
+}
+#readingareainner span.box8 {
+  background-color: #D1F66E;
+}
+#readingareainner span.box9 {
+  background-color: #CCFF66;
+}
+#readingareainner h1,
+#readingareainner h2,
+#readingareainner h3,
+#readingareainner h4,
+#readingareainner h5,
+#readingareainner h6 {
+  display: inline;
+}
+#textModal {
+  z-index: 100;
+  position: absolute;
+  background-color: #f0f0f0;
+  border: 2px solid black;
+  width: 700px;
+  padding: 3px;
+}
+#textModal ul.states {
+  padding: 0px;
+  margin: 0px 0px 5px 0px;
+}
+#textModal ul.states li {
+  display: inline;
+  margin-right: 15px;
+}
+#textModal ul.states li.known {
+  background-color: #fff;
+}
+#textModal ul.states li.notknown {
+  background-color: #F5B8A9;
+}
+#textModal ul.states li.notseen {
+  background-color: #DAE5EB;
+}
+#textModal ul.states li.ignore {
+  background-color: #fff;
+}
+#textModal ul.dictionaries {
+  padding: 5px 0px 5px 0px;
+  margin: 0px 0px 5px 0px;
+}
+#textModal ul.dictionaries li {
+  margin-right: 10px;
+  display: inline;
+}
+#textModal input[type="text"],
+#textModal textarea {
+  border: 1px solid #aeaeae;
+  padding: 0px;
+  border-radius: 0px;
+}
+
+#textModal input[type="text"].changed,
+#textModal textarea.changed {
+  background-color: #F5B8A9;
+}
+#audiocontainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+#audiocontainer .closelink {
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  z-index: 100;
+  font-size: smaller;
+  font-weight: bold;
+}
