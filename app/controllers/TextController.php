@@ -269,8 +269,9 @@ class TextController extends BaseController {
         
         $cmd = "/usr/bin/pdflatex -output-directory $path --interaction batchmode $latex";
         $output = shell_exec($cmd);
+        $title = mb_convert_encoding($text->title, 'ISO-8859-1', 'UTF-8');
         
-        return Response::download($pdf, $text->title . ".pdf", 
+        return Response::download($pdf, $title . ".pdf", 
                     array('Content-Type' => 'application/pdf')
                 );
     }

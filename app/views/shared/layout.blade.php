@@ -13,9 +13,6 @@ use RT\Core\FlashMessage;
         {{ HTML::style('font-awesome/css/font-awesome.min.css') }}
         {{ HTML::style('css/common.css') }}
         @yield('topCss')
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        {{ HTML::script('js/bootstrap.js') }}
-        @yield('topJs')
     </head>
     <body>
         <div id="wrapper">
@@ -56,6 +53,8 @@ use RT\Core\FlashMessage;
             </div>
         </div>	
     </body>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    {{ HTML::script('js/bootstrap.js') }}
+    @yield('topJs')
     @yield('bottomJs')
 </html>
