@@ -16,7 +16,7 @@
             <td>{{{ $t['language'] }}}</td>
             <td>{{{ $t['state'] }}}</td>
             <td>
-                <a title="{{{ $t['basePhrase'] }}}&#10;{{{ $t['definition'] }}}">
+                <a title="{{{ empty($t['basePhrase']) ? $t['phrase'] : $t['basePhrase'] }}}&#10;{{{ $t['definition'] }}}">
                     {{{ $t['phrase'] }}}
                 </a>
                 <a href="http://www.forvo.com/search-{{{ $t['code'] }}}/{{{ $t['phrase'] }}}" target="__forvo__"><i class="icon-play pull-right" title="search forvo"> </i></a>
