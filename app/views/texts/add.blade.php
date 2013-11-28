@@ -83,7 +83,13 @@ Texts - Add Text
 {{ Form::close() }}
 @stop
 
+@section('topCss')
+{{ HTML::style('css/codemirror.css') }}
+@stop
+
 @section('bottomJs')
+{{ HTML::script('js/CodeMirror/codemirror.min.js') }}
+
 <script language="javascript">
     function checkL2() {
         if ($('#l2_id').val() == '') {
@@ -95,6 +101,23 @@ Texts - Add Text
     $('#l2_id').change(function() {
         checkL2();
     });
-    checkL2();
+
+    var cm_l1, cm_l2;
+    $(function() {
+        cm_l1 = CodeMirror.fromTextArea(document.getElementById("l1Text"), {
+            mode: "plain/text",
+            lineNumbers: true,
+            lineWrapping: false
+        });
+
+        cm_l2 = CodeMirror.fromTextArea(document.getElementById("l2Text"), {
+            mode: "plain/text",
+            lineNumbers: true,
+            lineWrapping: false
+        });
+        
+        checkL2();
+    });
+    
 </script>
 @stop

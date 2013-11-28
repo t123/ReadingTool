@@ -15,7 +15,11 @@
             <td><input type="checkbox" value="{{ $t['id'] }}" /></td>
             <td>{{{ $t['language'] }}}
             <td>
-                {{{ $t['title'] }}}
+                @if( $t['collectionNo']==null )
+                    {{{ $t['title'] }}}
+                @else
+                    {{{ $t['collectionNo'] }}}. {{{ $t['title'] }}}
+                @endif
                 
                 @if( $t['isParallel'] )
                     <i class="icon-pause pull-right" title="text is parallel"> </i>
@@ -27,7 +31,9 @@
                     <i class="icon-share pull-right" title="text is shared"> </i>
                 @endif
             </td>
-            <td>{{{ $t['collectionName'] }}}</td>
+            <td>
+                {{{ $t['collectionName'] }}}
+            </td>
             <td>{{ $t['lastRead'] }}</td>
             <td>
                 <div class="btn-group">

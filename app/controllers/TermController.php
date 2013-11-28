@@ -34,6 +34,9 @@ class TermController extends BaseController {
             array_push($tarray, array(
                 'id' => $t->id,
                 'language' => $t->language_name,
+                'code' => $t->language_code,
+                'basePhrase' => $t->basePhrase,
+                'definition' => $t->definition,
                 'state' => $t->state,
                 'phrase' => $t->phrase,
                 'sentence' => $t->sentence,

@@ -67,7 +67,10 @@ Texts - Edit Text
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('l2Text') ? 'has-error' : '' }}" id="l2textcontrol" style="display:none">
+<?php
+$style = $text->l2_id==null ? "display:none" : "";
+?>
+<div class="form-group {{ $errors->has('l2Text') ? 'has-error' : '' }}" id="l2textcontrol" style="{{ $style }}">
     {{ Form::label('l2Text', 'Parallel Text', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
         {{ Form::textarea('l2Text', null, array('class'=>'form-control')) }}
@@ -92,7 +95,12 @@ Texts - Edit Text
 {{ Form::close() }}
 @stop
 
+@section('topCss')
+{{ HTML::style('css/codemirror.css') }}
+@stop
+
 @section('bottomJs')
+{{ HTML::script('js/CodeMirror/codemirror.min.js') }}
 <script language="javascript">
     function checkL2() {
         if ($('#l2_id').val() == '') {
@@ -104,6 +112,20 @@ Texts - Edit Text
     $('#l2_id').change(function() {
         checkL2();
     });
-    checkL2();
+    
+    var cm_l1, cm_l2;
+    $(function() {
+        cm_l1 = CodeMirror.fromTextArea(document.getElementById("l1Text"), {
+            mode: "plain/text",
+            lineNumbers: true,
+            lineWrapping: false
+        });
+
+        cm_l2 = CodeMirror.fromTextArea(document.getElementById("l2Text"), {
+            mode: "plain/text",
+            lineNumbers: true,
+            lineWrapping: false
+        });
+    });
 </script>
 @stop

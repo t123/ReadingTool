@@ -83,7 +83,7 @@ class TermService implements ITermService {
 
         $query = "
             select 
-                a.*, c.name as language_name
+                a.*, c.name as language_name, c.code as language_code
             from terms a, languages c
             where 
                 a.user_id=" . $this->user->id . " and 

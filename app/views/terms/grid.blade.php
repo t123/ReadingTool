@@ -15,7 +15,12 @@
         <tr>
             <td>{{{ $t['language'] }}}</td>
             <td>{{{ $t['state'] }}}</td>
-            <td>{{{ $t['phrase'] }}}</td>
+            <td>
+                <a title="{{{ $t['basePhrase'] }}}&#10;{{{ $t['definition'] }}}">
+                    {{{ $t['phrase'] }}}
+                </a>
+                <a href="http://www.forvo.com/search-{{{ $t['code'] }}}/{{{ $t['phrase'] }}}" target="__forvo__"><i class="icon-play pull-right" title="search forvo"> </i></a>
+            </td>
             <td>{{{ $t['sentence'] }}}</td>
             <td>{{{ $t['added'] }}}</td>
             <td>{{{ $t['updated'] }}}</td>

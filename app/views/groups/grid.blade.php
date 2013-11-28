@@ -22,7 +22,11 @@
             <td>{{{ $t['owner'] }}}
             <td>{{{ $t['language'] }}}
             <td>
-                {{{ $t['title'] }}}
+                @if( $t['collectionNo']==null )
+                    {{{ $t['title'] }}}
+                @else
+                    {{{ $t['collectionNo'] }}}. {{{ $t['title'] }}}
+                @endif
                 
                 @if( $t['isParallel'] )
                     <i class="icon-pause pull-right" title="text is parallel"> </i>
