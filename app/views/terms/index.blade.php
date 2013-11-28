@@ -4,6 +4,15 @@
 Terms
 @stop
 
+@section('topCss')
+<style type="text/css">
+    td a, td a:hover {
+        color: black;
+        text-decoration: none;
+    }
+</style>
+@stop
+
 @section('content')
 <input type="hidden" id="currentPage" value="1"/>
 <div class="row">

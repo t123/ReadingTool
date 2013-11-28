@@ -4,7 +4,7 @@
             <th><input type="checkbox" /></th>
             <th><a href="?sort=language">Language</a></th>
             <th><a href="?sort=title">Title</a></th>
-            <th><a href="?sort=collectionname">CollectionName</a></th>
+            <th><a href="?sort=collectionname">Collection Name</a></th>
             <th><a href="?sort=lastread">Last Read</a></th>
             <th style="width:150px">&nbsp;</th>
         </tr>
