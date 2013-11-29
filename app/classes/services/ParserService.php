@@ -173,7 +173,7 @@ class ParserService implements IParserService {
             $termsAsDict[$t->phraseLower] = 
                     array(
                         'state'=>$t->state,
-                        'definition'=>$t->fullDefinition()
+                        'definition'=>str_replace("\n", "<br/>", $t->fullDefinition())
                     );
         }
         

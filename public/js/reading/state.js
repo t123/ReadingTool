@@ -314,7 +314,7 @@ var ModalHandler = function (routes, settings) {
                 next = next.next();
                 continue;
             }
-            currentWord += next.text() + ' ';
+            currentWord += this._currentWordFromSpan(next) + ' ';
             next = next.next();
             i++;
         } while (i < currentLength && safety < 200)
@@ -405,16 +405,16 @@ var ModalHandler = function (routes, settings) {
     self._updateTips = function (data) {
         $('#readingareainner .' + data.phrase)
                         .removeClass('_k _u _n _i box1 box2 box3 box4 box5 box6 box7 box8 box9')
-                        .addClass(data.state == 'Unnown' ? 'box' + data.box : data.stateClass);
+                        .addClass(data.state == 'unknown' ? 'box' + data.box : data.stateClass);
 
         var tempDef = data.basePhrase.length > 0 ? data.basePhrase : '';
-        if (data.definition.length > 0) tempDef += "\n" + data.definition;
-        if (data.tags.length > 0) tempDef += "\n" + data.tags;
+        if (data.definition.length > 0) tempDef += "<br/>" + data.definition.replace(/\n/g, '<br />');
+        if (data.tags.length > 0) tempDef += "<br/>" + data.tags;
 
         $('#readingareainner .' + data.phrase).each(function (index) {
             var phrase = $(this).text();
             $(this).html(
-                (tempDef.length > 0 ? '<a title="' + tempDef + '">' : '') + phrase + (tempDef.length > 0 ? '</a>' : '')
+                (tempDef.length > 0 ? '<a rel="tooltip" title="' + tempDef + '">' : '') + phrase + (tempDef.length > 0 ? '</a>' : '')
             );
         });
     };
@@ -516,8 +516,16 @@ var ModalHandler = function (routes, settings) {
         }
     };
 
+    self._currentWordFromSpan = function(element) {
+        if(element[0].childNodes[0].nodeType==3) {
+            return element[0].childNodes[0].nodeValue;
+        } else {
+            return element[0].childNodes[0].innerText;
+        }
+    };
+    
     self._buildCurrentPopup = function () {
-        word.text(currentElement.text());
+        word.text(this._currentWordFromSpan(currentElement));
         sentence.val(this._getCurrentSentence());
     };
 
@@ -526,6 +534,7 @@ var ModalHandler = function (routes, settings) {
         var currentSentence = '';
         elements.each(function (index, node) {
             if (node.nodeName == 'SUP') return;
+            
             var nodeContent = node.textContent;
             if (nodeContent == '') nodeContent = node.innerText;
             currentSentence += nodeContent;

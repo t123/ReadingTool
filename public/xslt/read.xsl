@@ -51,6 +51,7 @@
                                 <xsl:attribute name="title">
                                     <xsl:value-of select="@data" />
                                 </xsl:attribute>
+                                <xsl:attribute name="rel">tooltip</xsl:attribute>
                                 <xsl:value-of select="@value" />
                             </a>
                         </xsl:when>

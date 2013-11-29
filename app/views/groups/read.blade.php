@@ -287,6 +287,12 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                         return false;
                     });
                 @endif
+                
+                $('body').tooltip({
+                    selector: '[rel=tooltip]',
+                    html: true,
+                    animation: false
+                });
             });
         </script>
 </html>

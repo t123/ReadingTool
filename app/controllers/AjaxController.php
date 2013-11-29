@@ -78,6 +78,16 @@ class AjaxController extends BaseController {
                 ));
     }
     
+    private function termLength($phrase) {
+        if(empty($phrase)) {
+            return 0;
+        }
+        
+        $ex = explode(' ', trim($phrase));
+        
+        return sizeof($ex);
+    }
+    
     public function postSaveTerm() {
         $rules = array(
             'phrase' => 'max:50',
@@ -92,7 +102,7 @@ class AjaxController extends BaseController {
             return Response::json(array('state'=>'failed', 'message'=>'<strong>WARNING</strong>: Term did not save, invalid input'));
         }
         
-        $length = sizeof(explode(' ', trim(Input::get('phrase'))));
+        $length = $this->termLength(Input::get('phrase'));
         $message = '';
         $termId = Input::get('termId');
         $tags = explode(',', Input::get('tags'));
@@ -225,7 +235,7 @@ class AjaxController extends BaseController {
         $languageId = Input::get('languageId');
         $spanTerm = Input::get('spanTerm');
         
-        $length = sizeof(explode(' ', $spanTerm));
+        $length = $this->termLength($spanTerm);
         
         $term = null;
         
