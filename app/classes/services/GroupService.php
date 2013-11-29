@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB as DB;
 use Illuminate\Support\Facades\Auth as Auth;
 
 interface IGroupService {
-    public function findAllForUser();
+    public function findAllForUser($types = null);
     public function findOneByOwner($id);
     public function findOneByOwnerOrModerator($id);
     public function findOneByOwnerModeratorOrMember($id);
@@ -156,11 +156,15 @@ class GroupService implements IGroupService {
         return array('count'=>$count, 'groups'=>$groups);
     }
     
-    public function findAllForUser() {
+    public function findAllForUser($types = null) {
+        if($types==null) {
+            $types = array('member','moderator','owner', 'pending', 'invited');
+        }
+        
         $groups = DB::table('groups')
                 ->join('group_user', 'groups.id', '=', 'group_user.group_id')
                 ->where('group_user.user_id', '=', $this->user->id)
-                ->whereIn('group_user.membership', array('member','moderator','owner', 'pending', 'invited'))
+                ->whereIn('group_user.membership', $types)
                 ->get();
         
         return $groups;

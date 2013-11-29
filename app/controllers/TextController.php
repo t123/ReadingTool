@@ -42,7 +42,7 @@ class TextController extends BaseController {
     }
     
     public function index() {
-        $groups = $this->groupService->findAllForUser();
+        $groups = $this->groupService->findAllForUser(array('member','moderator','owner'));
         $garray = array();
         
         foreach($groups as $g) {
