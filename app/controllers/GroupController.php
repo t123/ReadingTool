@@ -378,7 +378,8 @@ class GroupController extends BaseController {
         foreach($result['groups'] as $g) {
             array_push($tarray, array(
                 'id' => $g->id,
-                'name' => $g->name
+                'name' => $g->name,
+                'description' => str_replace("\n", "<br/>", htmlentities($g->description))
             ));
         }
         

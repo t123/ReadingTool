@@ -8,7 +8,11 @@
     <tbody>
     @foreach ($groups as $g)
         <tr>
-            <td>{{{ $g['name'] }}}</td>
+            <td>
+                <a title="{{ $g['description'] }}" rel="tooltip">
+                    {{{ $g['name'] }}}
+                </a>
+            </td>
             <td>
                 {{ Form::open(array('action' => array('GroupController@postJoinGroup', $g['id']))) }}
                     <button type="submit" class="btn btn-default">Join group</button>
