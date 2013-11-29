@@ -111,7 +111,7 @@ class TermController extends BaseController {
     }
 
     public function postDelete($id) {
-        Term::destroy($id);
+        $this->termService->delete($id);
         Session::flash(FlashMessage::MSG, new FlashMessage('Your term has been deleted.'));
         return Redirect::action('TermController@index');
     }

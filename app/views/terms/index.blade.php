@@ -54,6 +54,12 @@ Terms
 <script language="javascript">
     $(function() {
         window.initWebGrid('/terms');
+        
+        $('body').tooltip({
+            selector: '[rel=tooltip]',
+            html: true,
+            animation: false
+        });
     });
 </script>
 @stop

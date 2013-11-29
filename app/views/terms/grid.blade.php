@@ -3,11 +3,12 @@
         <tr>
             <th><a href="?sort=language">Language</a></th>
             <th><a href="?sort=state">State</a></th>
+            <th><a href="?sort=phrase">Base Phrase</a></th>
             <th><a href="?sort=phrase">Phrase</a></th>
             <th>Sentence</th>
             <th><a href="?sort=added">Added</a></th>
             <th><a href="?sort=changed">Changed</a></th>
-            <th class="form">&nbsp;</th>
+            <th style="width:100px;">&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -15,17 +16,46 @@
         <tr>
             <td>{{{ $t['language'] }}}</td>
             <td>{{{ $t['state'] }}}</td>
+            <?php
+            $tooltip = (empty($t['basePhrase']) ? $t['phrase'] : $t['basePhrase']) . "<br/>" . str_replace("\n", "<br/>", $t['definition']);
+            ?>
             <td>
-                <a title="{{{ empty($t['basePhrase']) ? $t['phrase'] : $t['basePhrase'] }}}&#10;{{{ $t['definition'] }}}">
+                <a rel="tooltip" title="{{{ $tooltip }}}">
+                    {{{ empty($t['basePhrase']) ? $t['phrase'] : $t['basePhrase'] }}}
+                </a>
+                <a href="http://www.forvo.com/search-{{{ $t['code'] }}}/{{{ $t['basePhrase'] }}}" target="__forvo__"><i class="icon-play pull-right" title="search forvo"> </i></a>
+            </td>
+            <td>
+                <a rel="tooltip" title="{{{ $tooltip }}}">
                     {{{ $t['phrase'] }}}
                 </a>
                 <a href="http://www.forvo.com/search-{{{ $t['code'] }}}/{{{ $t['phrase'] }}}" target="__forvo__"><i class="icon-play pull-right" title="search forvo"> </i></a>
             </td>
-            <td>{{{ $t['sentence'] }}}</td>
+            <td>
+                <span style="font-size: smaller">
+                    {{{ $t['sentence'] }}}
+                </span>
+                <a href="https://translate.google.com/#{{{ $t['code'] }}}/en/{{{ $t['sentence'] }}}" target="__gt___">
+                    <i class="icon-search pull-right" title="search google translate"> </i></a>
+                </a>
+            </td>
             <td>{{{ $t['added'] }}}</td>
             <td>{{{ $t['updated'] }}}</td>
             <td>
-                <a href="{{ action("TermController@edit", $t['id']) }}" class="btn btn-default">edit</a>
+                <div class="btn-group">
+                    <a href="{{ action("TermController@edit", $t['id']) }}" class="btn btn-default">edit</a>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            {{ Form::open(array('action' => array('TermController@postDelete', $t['id']))) }}
+                                <button type="submit" class="btn btn-sm btn-danger">delete</button>
+                            {{ Form::close() }}
+                        </li>
+                    </ul>
+                </div>
             </td>
         </tr>
     @endforeach
