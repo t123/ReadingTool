@@ -3,7 +3,7 @@
         <tr>
             <th><a href="?sort=language">Language</a></th>
             <th><a href="?sort=state">State</a></th>
-            <th><a href="?sort=phrase">Base Phrase</a></th>
+            <th><a href="?sort=basephrase">Base Phrase</a></th>
             <th><a href="?sort=phrase">Phrase</a></th>
             <th>Sentence</th>
             <th><a href="?sort=added">Added</a></th>

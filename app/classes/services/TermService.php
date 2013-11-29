@@ -133,7 +133,11 @@ class TermService implements ITermService {
                     break;
 
                 case "phrase":
-                    $orderBy = " a.phraseLower $sortDirQ, c.name ASC ";
+                    $orderBy = " order by a.phraseLower $sortDirQ, c.name ASC ";
+                    break;
+                
+                case "basephrase":
+                    $orderBy = " order by a.basePhrase $sortDirQ, c.name ASC ";
                     break;
 
                 case "added":
