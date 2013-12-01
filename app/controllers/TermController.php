@@ -193,8 +193,6 @@ class TermController extends BaseController {
             $tsv .= implode("\t", $te) . "\n";
         }
 
-        print $tsv;
-        
         return Response::make($tsv, 200, array(
                     'Content-Description' => 'File Transfer',
                     'Content-Type' => 'text/html',
