@@ -40,9 +40,16 @@
                 <?php
                 $action = $t["l2_id"]==null ? "read" : "readParallel";
                 ?>
-                <a href="{{ action("TextController@$action", $t["text_id"] ) }}">
-                    <i class="icon-question-sign pull-right" title="{{{ $t['source'] }}}" rel="tooltip"> </i>
-                </a>
+                @if($t["group_id"]==null)
+                    <a href="{{ action("TextController@$action", $t["text_id"] ) }}">
+                        <i class="icon-question-sign pull-right" title="{{{ $t['source'] }}}" rel="tooltip"> </i>
+                    </a>
+                @else
+                    <a href="{{ action("GroupController@$action", array($t['group_id'], $t["text_id"] )) }}">
+                        <i class="icon-question-sign pull-right" title="{{{ $t['source'] }}}" rel="tooltip"> </i>
+                    </a>
+                @endif
+                
                 @if(!empty($t['sentence']))
                     <a href="https://translate.google.com/#{{{ $t['code'] }}}/en/{{{ $t['sentence'] }}}" target="__gt___">
                         <i class="icon-search pull-right" title="search google translate"> </i>

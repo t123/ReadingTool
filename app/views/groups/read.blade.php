@@ -248,6 +248,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                 
                 var settings = {
                     textId: '{{ $text->id }}',
+                    groupId: '{{ $groupId }}',
                     languageId: '{{ $language1->id }}',
                     modal: {{ $language1->getSettings()->Modal=="on" ? "true" : "false" }},
                     autoPause: {{ $language1->getSettings()->AutoPause=="on" ? "true" : "false" }},

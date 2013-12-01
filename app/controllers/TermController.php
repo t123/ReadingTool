@@ -56,7 +56,8 @@ class TermController extends BaseController {
                 'source' => $source,
                 'text_id' => $t->text_id,
                 'l1_id' => $t->l1_id,
-                'l2_id' => $t->l2_id
+                'l2_id' => $t->l2_id,
+                'group_id' => $t->group_id
             ));
         }
 

@@ -208,6 +208,7 @@ var ModalHandler = function (routes, settings) {
                 tags: tags.val(),
                 languageId: settings.languageId,
                 textId: settings.textId,
+                groupId: settings.groupId,
                 state: $('input[name="state"]:checked').val(),
             }
         }).done(function (data) {

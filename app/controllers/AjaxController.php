@@ -128,7 +128,9 @@ class AjaxController extends BaseController {
                 default: throw new \Exception('Unknown state: ' . $state);
             }
             
+            $groupId = Input::get('groupId');
             $term->text_id = Input::get('textId');
+            $term->group_id = empty($groupId) ? null : $groupId;
             $term->length = $length;
             $term->save();
             
@@ -172,10 +174,12 @@ class AjaxController extends BaseController {
             $term->definition =trim(Input::get('definition'));
             
             $sentence = trim(Input::get('sentence'));
+            $groupId = Input::get('groupId');
             
             if(strcmp(trim($term->sentence), $sentence)!=0) {
                 $term->sentence = $sentence;
                 $term->text_id = Input::get('textId');
+                $term->group_id = empty($groupId) ? null : $groupId;
             }
             
             $state = Input::get('state');
