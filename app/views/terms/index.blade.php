@@ -47,7 +47,7 @@ Terms
 <div id="grid"></div>
 <div class="clr20"></div>
 <div class="btn-group">
-    <a href="{{ action("TermController@exportTerms", 0) }}" class="btn btn-default">Export all unknown terms</a>
+    <a onclick="$('#exportFields').show();" href="{{ action("TermController@exportTerms", 0) }}" class="btn btn-default">Export all unknown terms</a>
     @if($languages->count()>1)
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
@@ -56,11 +56,31 @@ Terms
         <ul class="dropdown-menu" role="menu">
             @foreach($languages as $l)
             <li>
-                <a href="{{ action("TermController@exportTerms", $l->id ) }}" class="btn btn-default">Export unknown terms for <strong>{{{ $l->name }}}</strong></a>
+                <a onclick="$('#exportFields').show();" href="{{ action("TermController@exportTerms", $l->id ) }}" class="btn btn-default">Export unknown terms for <strong>{{{ $l->name }}}</strong></a>
             </li>
             @endforeach
         </ul>
     @endif
+</div>
+<div id="exportFields" style="display:none">
+    <div class="clr20"></div>
+    <div class="alert alert-info alert-block">
+        <button type="button" class="close" aria-hidden="true" onclick="$('#exportFields').hide();">&times;</button>
+        The fields of the TSV export are as follows:
+        <ul>
+            <li>Id</li>
+            <li>State</li>
+            <li>Phrase</li>
+            <li>Base Phrase</li>
+            <li>Definition</li>
+            <li>Creation Date</li>
+            <li>Updated Date</li>
+            <li>Sentence</li>
+            <li>Language</li>
+            <li>Tags</li>
+        </ul>
+    </div>
+    <div class="clr20"></div>
 </div>
 @stop
 

@@ -145,21 +145,22 @@ class TermController extends BaseController {
             $terms = $termService->findAllForLanguage($id, 'unknown');
         }
         
-        $te = array(
-            'id' => 'id',
-            'state' => 'state',
-            'phrase' => 'phrase',
-            'basePhrase' => 'basePhrase',
-            'definition' => 'definition',
-            'created' => 'created_at',
-            'updated' => 'updated_at',
-            'sentence' => 'sentence',
-            'language' => 'language',
-            'tags' => 'tags'
-        );
+//        $te = array(
+//            'id' => 'id',
+//            'state' => 'state',
+//            'phrase' => 'phrase',
+//            'basePhrase' => 'basePhrase',
+//            'definition' => 'definition',
+//            'created' => 'created_at',
+//            'updated' => 'updated_at',
+//            'sentence' => 'sentence',
+//            'language' => 'language',
+//            'tags' => 'tags'
+//        );
 
-        $tsv = implode("\t", $te) . "\n";
-
+//        $tsv = implode("\t", $te) . "\n";
+        $tsv = "";
+        
         foreach ($terms as $t) {
             $tags = array();
 
@@ -175,7 +176,7 @@ class TermController extends BaseController {
                 'definition' => $this->fixForTSV($t->definition),
                 'created' => $t->created_at,
                 'updated' => $t->updated_at,
-                'sentence' => $this->fixForTSV($t->sentence),
+                'sentence' => preg_replace("/$t->phrase/iu", "<strong>\$0</strong>", $this->fixForTSV($t->sentence)),
                 'language' => $this->fixForTSV($larray[$t->language_id]),
                 'tags' => implode(",", $tags)
             );
