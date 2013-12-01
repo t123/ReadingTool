@@ -187,7 +187,8 @@ class TermController extends BaseController {
                 'sentence' => preg_replace("/$t->phrase/iu", "<strong>\$0</strong>", $this->fixForTSV($t->sentence)),
                 'language' => $this->fixForTSV($larray[$t->language_id]),
                 'tags' => implode(",", $tags),
-                'source' => $this->fixForTSV($source)
+                'source' => $this->fixForTSV($source),
+                'text_id' => $t->text_id
             );
 
             $tsv .= implode("\t", $te) . "\n";
