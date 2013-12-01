@@ -56,7 +56,11 @@ My Groups
                                 </a>
                             </li>
                             <li><a href="{{ action("GroupController@membership", $g->id) }}" class="btn btn-default">Membership</a></li>
-                            <li><a href="#" class="btnall btn-danger">Delete</a></li>
+                            <li>
+                                {{ Form::open(array('action' => array('GroupController@postDelete', $g->id))) }}
+                                    <button type="submit" class="btn btn-danger">Delete group</button>
+                                {{ Form::close() }}
+                            </li>
                         @elseif($g->membership=='moderator')
                             <li><a href="{{ action("GroupController@membership", $g->id) }}" class="btn btn-default">Membership</a></li>
                             <li>
