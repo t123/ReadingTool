@@ -42,14 +42,14 @@ Texts
         <a href="{{ action("TextController@add") }}" class="btn btn-default">Add a new text</a>
     </div>
     @if(sizeof($groups)>0)
-        <div class="col-md-2">
-            {{ Form::select('group', $groups, null, array('class'=>'form-control', 'id'=>'group')) }}
-        </div>
-        <div class="col-md-2">
-            {{ Form::open(array('action' => array('TextController@postShare'), 'onsubmit'=>'return update();')) }}
+        <div class="col-md-5">
+            Group
+            {{ Form::select('group', $groups, null, array('class'=>'form-control', 'id'=>'group', 'style'=>'width:180px;display:inline')) }}
+
+            {{ Form::open(array('action' => array('TextController@postShare'), 'onsubmit'=>'return update();', 'style'=>'width:180px;display:inline')) }}
                 <input type="hidden" name="texts" id="texts" />
                 <input type="hidden" name="groupId" id="groupId" />
-                <button type="submit" class="btn btn-default pull-right">Share selected texts</button>
+                <button type="submit" class="btn btn-default">Share selected texts</button>
             {{ Form::close() }}
         </div>
     @endif
