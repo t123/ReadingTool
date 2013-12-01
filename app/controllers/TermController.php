@@ -53,7 +53,10 @@ class TermController extends BaseController {
                 'sentence' => $t->sentence,
                 'added' => \RT\Core\HumanTime::toReadable($t->created_at),
                 'updated' => \RT\Core\HumanTime::toReadable($t->updated_at),
-                'source' => $source
+                'source' => $source,
+                'text_id' => $t->text_id,
+                'l1_id' => $t->l1_id,
+                'l2_id' => $t->l2_id
             ));
         }
 
