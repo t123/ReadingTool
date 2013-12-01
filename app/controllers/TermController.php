@@ -196,7 +196,7 @@ class TermController extends BaseController {
 
         return Response::make($tsv, 200, array(
                     'Content-Description' => 'File Transfer',
-                    'Content-Type' => 'text/html',
+                    'Content-Type' => 'text/csv',
                     'Content-Disposition' => 'attachment; filename="terms.tsv"',
                     'Content-Transfer-Encoding' => 'binary',
                     'Expires' => 0,

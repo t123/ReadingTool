@@ -41,14 +41,14 @@ class TermService implements ITermService {
             return Term::where('terms.user_id', '=', $this->user->id)
                         ->leftJoin('texts', 'terms.text_id','=','texts.id')
                         ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
-                        ->orderBy('terms.phraseLower', 'ASC')
+                        ->orderBy('terms.id', 'ASC')
                         ->get();
         } else {
             return Term::where('terms.user_id', '=', $this->user->id)
                         ->where('terms.state', '=', $state)
                         ->leftJoin('texts', 'terms.text_id','=','texts.id')
                         ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
-                        ->orderBy('terms.phraseLower', 'ASC')
+                        ->orderBy('terms.id', 'ASC')
                         ->get();
         }
     }
@@ -59,7 +59,7 @@ class TermService implements ITermService {
                         ->where('terms.language_id', '=', $languageId)
                         ->leftJoin('texts', 'terms.text_id','=','texts.id')
                         ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
-                        ->orderBy('terms.phraseLower', 'ASC')
+                        ->orderBy('terms.id', 'ASC')
                         ->get();
         } else {
             return Term::where('terms.user_id', '=', $this->user->id)
@@ -67,7 +67,7 @@ class TermService implements ITermService {
                         ->where('terms.state', '=', $state)
                         ->leftJoin('texts', 'terms.text_id','=','texts.id')
                         ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
-                        ->orderBy('terms.phraseLower', 'ASC')
+                        ->orderBy('terms.id', 'ASC')
                         ->get();
         }
     }
