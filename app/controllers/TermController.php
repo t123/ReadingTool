@@ -5,19 +5,26 @@ use App\Models\Term;
 use App\Models\Tag;
 use App\Models\Language;
 use RT\Services\ITermService;
+use RT\Services\ILanguageService;
 
 class TermController extends BaseController {
 
     private $termService;
+    private $languageService;
 
-    public function __construct(ITermService $termService) {
+    public function __construct(ITermService $termService, RT\Services\ILanguageService $languageService) {
         $this->termService = $termService;
-
+        $this->languageService = $languageService;
+        
         View::share('currentController', 'Term');
     }
 
     public function index() {
-        return View::make('terms.index');
+        $languages = $this->languageService->findAll();
+
+        return View::make('terms.index')
+                        ->with('languages', $languages)
+        ;
     }
 
     public function postIndex() {
@@ -34,7 +41,7 @@ class TermController extends BaseController {
             $source = empty($t->collectionNo) ? "" : $t->collectionNo . ". ";
             $source .= empty($t->collectionName) ? "" : $t->collectionName . ": ";
             $source .= $t->title;
-            
+
             array_push($tarray, array(
                 'id' => $t->id,
                 'language' => $t->language_name,
@@ -121,7 +128,7 @@ class TermController extends BaseController {
         return Redirect::action('TermController@index');
     }
 
-    public function exportTerms() {
+    public function exportTerms($id) {
         $termService = App::make('RT\Services\TermService');
         $languageService = App::make('RT\Services\LanguageService');
 
@@ -132,8 +139,12 @@ class TermController extends BaseController {
             $larray[$l->id] = $l->name;
         }
 
-        $terms = $termService->findAll('unknown');
-
+        if($id<=0) {
+            $terms = $termService->findAll('unknown');
+        } else {
+            $terms = $termService->findAllForLanguage($id, 'unknown');
+        }
+        
         $te = array(
             'id' => 'id',
             'state' => 'state',

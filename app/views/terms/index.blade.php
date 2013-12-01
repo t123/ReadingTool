@@ -46,7 +46,22 @@ Terms
 <div class="clr20"></div>
 <div id="grid"></div>
 <div class="clr20"></div>
-<a href="{{ action("TermController@exportTerms") }}" class="btn btn-default">Export unknown terms</a>
+<div class="btn-group">
+    <a href="{{ action("TermController@exportTerms", 0) }}" class="btn btn-default">Export all unknown terms</a>
+    @if($languages->count()>1)
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            @foreach($languages as $l)
+            <li>
+                <a href="{{ action("TermController@exportTerms", $l->id ) }}" class="btn btn-default">Export unknown terms for <strong>{{{ $l->name }}}</strong></a>
+            </li>
+            @endforeach
+        </ul>
+    @endif
+</div>
 @stop
 
 @section('bottomJs')
@@ -54,7 +69,7 @@ Terms
 <script language="javascript">
     $(function() {
         window.initWebGrid('/terms');
-        
+
         $('body').tooltip({
             selector: '[rel=tooltip]',
             html: true,

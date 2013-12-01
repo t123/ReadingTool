@@ -6,6 +6,12 @@ use RT\Services\LanguageService;
 class ApiController extends BaseController {
 
     private function createTerm($t, $larray) {
+        $tags = array();
+
+        foreach ($t->tags as $ctag) {
+            array_push($tags, $this->$ctag->tag);
+        }
+        
         return array(
             'id' => $t->id,
             'state' => $t->state,
@@ -15,7 +21,8 @@ class ApiController extends BaseController {
             'created' => $t->created_at,
             'updated' => $t->updated_at,
             'sentence' => $t->sentence,
-            'language' => $larray[$t->language_id]
+            'language' => $larray[$t->language_id],
+            'tags' => implode(",", $tags)
         );
     }
     

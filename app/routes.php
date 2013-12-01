@@ -55,7 +55,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('/terms', 'TermController@postIndex');
     Route::get('/terms/edit/{id}', 'TermController@edit')->where('id', '[0-9]+');
     Route::post('/terms/edit/{id}', 'TermController@postEdit')->where('id', '[0-9]+');
-    Route::get('/terms/export', 'TermController@exportTerms');
+    Route::get('/terms/export/{id}', 'TermController@exportTerms')->where('id', '[0-9]+');
     Route::post('/terms/delete/{id}', 'TermController@postDelete')->where('id', '[0-9]+');
     
     Route::get('/groups', 'GroupController@index');

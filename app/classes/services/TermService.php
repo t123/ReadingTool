@@ -15,7 +15,7 @@ interface ITermService {
 
     public function delete($id);
 
-    public function findAllForLanguage($languageId);
+    public function findAllForLanguage($languageId, $state=null);
 
     public function findByPhraseAndLanguage($phrase, $languageId);
 
@@ -49,10 +49,19 @@ class TermService implements ITermService {
         }
     }
 
-    public function findAllForLanguage($languageId) {
-        return Term::where('user_id', '=', $this->user->id)
+    public function findAllForLanguage($languageId, $state=null) {
+        if ($state == null) {
+            return Term::where('user_id', '=', $this->user->id)
                         ->where('language_id', '=', $languageId)
+                        ->orderBy('phraseLower', 'ASC')
                         ->get();
+        } else {
+            return Term::where('user_id', '=', $this->user->id)
+                        ->where('language_id', '=', $languageId)
+                        ->where('state', '=', $state)
+                        ->orderBy('phraseLower', 'ASC')
+                        ->get();
+        }
     }
 
     public function delete($id) {
