@@ -32,13 +32,17 @@
                 <a href="http://www.forvo.com/search-{{{ $t['code'] }}}/{{{ $t['phrase'] }}}" target="__forvo__"><i class="icon-play pull-right" title="search forvo"> </i></a>
             </td>
             <td>
-                <span style="font-size: smaller">
-                    {{{ $t['sentence'] }}}
-                </span>
+                @if(!empty($t['sentence']))
+                    <span style="font-size: smaller">
+                        {{{ $t['sentence'] }}}
+                    </span>
+                @endif
                 <i class="icon-question-sign pull-right" title="{{{ $t['source'] }}}" rel="tooltip"> </i>
-                <a href="https://translate.google.com/#{{{ $t['code'] }}}/en/{{{ $t['sentence'] }}}" target="__gt___">
-                    <i class="icon-search pull-right" title="search google translate"> </i>
-                </a>
+                @if(!empty($t['sentence']))
+                    <a href="https://translate.google.com/#{{{ $t['code'] }}}/en/{{{ $t['sentence'] }}}" target="__gt___">
+                        <i class="icon-search pull-right" title="search google translate"> </i>
+                    </a>
+                @endif
             </td>
             <td>{{{ $t['added'] }}}</td>
             <td>{{{ $t['updated'] }}}</td>
