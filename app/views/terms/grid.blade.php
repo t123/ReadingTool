@@ -35,8 +35,9 @@
                 <span style="font-size: smaller">
                     {{{ $t['sentence'] }}}
                 </span>
+                <i class="icon-question-sign pull-right" title="{{{ $t['source'] }}}" rel="tooltip"> </i>
                 <a href="https://translate.google.com/#{{{ $t['code'] }}}/en/{{{ $t['sentence'] }}}" target="__gt___">
-                    <i class="icon-search pull-right" title="search google translate"> </i></a>
+                    <i class="icon-search pull-right" title="search google translate"> </i>
                 </a>
             </td>
             <td>{{{ $t['added'] }}}</td>

@@ -116,7 +116,7 @@ class AjaxController extends BaseController {
             $term->user_id = Auth::user()->id;
             $term->phrase = trim(Input::get('phrase'));
             $term->phraseLower = mb_strtolower($term->phrase);
-            $term->sentence = Input::get('sentence');
+            $term->sentence = trim(Input::get('sentence'));
             
             $state = Input::get('state');
             
@@ -167,10 +167,17 @@ class AjaxController extends BaseController {
             if($term==null) {
                 return Response::json(array('state'=>'failed', 'message'=>'<strong>WARNING</strong>: Term did not save, term not found'));    
             }
-            
+
             $term->basePhrase = trim(Input::get('basePhrase'));
             $term->definition =trim(Input::get('definition'));
-            $term->sentence = Input::get('sentence');
+            
+            $sentence = trim(Input::get('sentence'));
+            
+            if(strcmp(trim($term->sentence), $sentence)!=0) {
+                $term->sentence = $sentence;
+                $term->text_id = Input::get('textId');
+            }
+            
             $state = Input::get('state');
             
             switch(strtolower($state)) {

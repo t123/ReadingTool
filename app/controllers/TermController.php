@@ -31,6 +31,10 @@ class TermController extends BaseController {
         $tarray = array();
 
         foreach ($result['terms'] as $t) {
+            $source = empty($t->collectionNo) ? "" : $t->collectionNo . ". ";
+            $source .= empty($t->collectionName) ? "" : $t->collectionName . ": ";
+            $source .= $t->title;
+            
             array_push($tarray, array(
                 'id' => $t->id,
                 'language' => $t->language_name,
@@ -41,7 +45,8 @@ class TermController extends BaseController {
                 'phrase' => $t->phrase,
                 'sentence' => $t->sentence,
                 'added' => \RT\Core\HumanTime::toReadable($t->created_at),
-                'updated' => \RT\Core\HumanTime::toReadable($t->updated_at)
+                'updated' => \RT\Core\HumanTime::toReadable($t->updated_at),
+                'source' => $source
             ));
         }
 
