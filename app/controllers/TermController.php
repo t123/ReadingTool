@@ -167,11 +167,15 @@ class TermController extends BaseController {
         
         foreach ($terms as $t) {
             $tags = array();
-
+            
             foreach ($t->tags as $ctag) {
                 array_push($tags, $this->fixForTSV($ctag->tag));
             }
 
+            $source = empty($t->collectionNo) ? "" : $t->collectionNo . ". ";
+            $source .= empty($t->collectionName) ? "" : $t->collectionName . ": ";
+            $source .= $t->title;
+            
             $te = array(
                 'id' => $t->id,
                 'state' => $t->state,
@@ -182,12 +186,15 @@ class TermController extends BaseController {
                 'updated' => $t->updated_at,
                 'sentence' => preg_replace("/$t->phrase/iu", "<strong>\$0</strong>", $this->fixForTSV($t->sentence)),
                 'language' => $this->fixForTSV($larray[$t->language_id]),
-                'tags' => implode(",", $tags)
+                'tags' => implode(",", $tags),
+                'source' => $this->fixForTSV($source)
             );
 
             $tsv .= implode("\t", $te) . "\n";
         }
 
+        print $tsv;
+        
         return Response::make($tsv, 200, array(
                     'Content-Description' => 'File Transfer',
                     'Content-Type' => 'text/html',

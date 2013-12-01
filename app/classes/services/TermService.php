@@ -38,28 +38,36 @@ class TermService implements ITermService {
 
     public function findAll($state = null) {
         if ($state == null) {
-            return Term::where('user_id', '=', $this->user->id)
-                            ->orderBy('phraseLower', 'ASC')
-                            ->get();
+            return Term::where('terms.user_id', '=', $this->user->id)
+                        ->leftJoin('texts', 'terms.text_id','=','texts.id')
+                        ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
+                        ->orderBy('terms.phraseLower', 'ASC')
+                        ->get();
         } else {
-            return Term::where('user_id', '=', $this->user->id)
-                            ->where('state', '=', $state)
-                            ->orderBy('phraseLower', 'ASC')
-                            ->get();
+            return Term::where('terms.user_id', '=', $this->user->id)
+                        ->where('terms.state', '=', $state)
+                        ->leftJoin('texts', 'terms.text_id','=','texts.id')
+                        ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
+                        ->orderBy('terms.phraseLower', 'ASC')
+                        ->get();
         }
     }
 
     public function findAllForLanguage($languageId, $state=null) {
         if ($state == null) {
-            return Term::where('user_id', '=', $this->user->id)
-                        ->where('language_id', '=', $languageId)
-                        ->orderBy('phraseLower', 'ASC')
+            return Term::where('terms.user_id', '=', $this->user->id)
+                        ->where('terms.language_id', '=', $languageId)
+                        ->leftJoin('texts', 'terms.text_id','=','texts.id')
+                        ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
+                        ->orderBy('terms.phraseLower', 'ASC')
                         ->get();
         } else {
-            return Term::where('user_id', '=', $this->user->id)
-                        ->where('language_id', '=', $languageId)
-                        ->where('state', '=', $state)
-                        ->orderBy('phraseLower', 'ASC')
+            return Term::where('terms.user_id', '=', $this->user->id)
+                        ->where('terms.language_id', '=', $languageId)
+                        ->where('terms.state', '=', $state)
+                        ->leftJoin('texts', 'terms.text_id','=','texts.id')
+                        ->select('terms.*', 'texts.title', 'texts.collectionName', 'texts.title')
+                        ->orderBy('terms.phraseLower', 'ASC')
                         ->get();
         }
     }

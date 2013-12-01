@@ -78,6 +78,7 @@ Terms
             <li>Sentence</li>
             <li>Language</li>
             <li>Tags</li>
+            <li>Source Text</li>
         </ul>
     </div>
     <div class="clr20"></div>

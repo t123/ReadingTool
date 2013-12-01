@@ -22,6 +22,7 @@ class ApiController extends BaseController {
             'updated' => $t->updated_at,
             'sentence' => $t->sentence,
             'language' => $larray[$t->language_id],
+            'text_id' => $t->text_id,
             'tags' => implode(",", $tags)
         );
     }
