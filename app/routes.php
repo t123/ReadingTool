@@ -16,8 +16,6 @@ Route::get('/sign-out', 'HomeController@signout');
 Route::post('/sign-in', 'HomeController@signin');
 Route::post('/sign-up', 'HomeController@signup');
 
-Route::get('/temp', 'HomeController@temp');
-
 Route::group(array('before' => 'auth'), function() {
     Route::get('/my-account', 'AccountController@index');
     Route::post('/my-account', 'AccountController@postIndex');
