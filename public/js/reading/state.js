@@ -471,12 +471,12 @@ var ModalHandler = function (routes, settings) {
             baseWord.val(data.basePhrase);
             definition.val(data.definition);
             tags.val(data.tags);
-            termId.val(0);
+            termId.val(data.termId);
         } else {
             baseWord.val('');
             definition.val('');
             tags.val('');
-            termId.val(data.termId);
+            termId.val(0);
         }
 
         if (data.sentence == '') {
