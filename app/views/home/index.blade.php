@@ -29,7 +29,7 @@ use RT\Core\FlashMessage;
                     {{ Form::open(array('action'=>'HomeController@signin', 'class'=>'form-horizontal', 'role'=>'form')) }}
 
                     <legend>Sign in to your account</legend>
-                    
+
                     @if(Session::has(FlashMessage::MSG))
                     <div class="alert {{ Session::get(FlashMessage::MSG)->getLevel() }}">
                         {{ Session::get(FlashMessage::MSG)->getMessage() }}
@@ -59,7 +59,7 @@ use RT\Core\FlashMessage;
                     {{ Form::close() }}
                 </div>
                 <div class="col-md-6">
-                    {{ Form::open(array('action'=>'HomeController@signup', 'class'=>'form-horizontal', 'role'=>'form')) }}
+                    {{ Form::open(array('action'=>'HomeController@signup', 'class'=>'form-horizontal', 'role'=>'form', 'autocomplete'=>'off')) }}
 
                     <legend>Create a new account</legend>
 
@@ -84,6 +84,17 @@ use RT\Core\FlashMessage;
                     </div>
 
                     {{ Form::close() }}
+                </div>
+            </div>
+            <div class="navbar navbar-inverse navbar-fixed-bottom">
+                <div class="navbar-inner">
+                    <div class="row">
+                        <div class="col-sm-11 col-sm-offset-1" style="line-height: 50px">
+                            <a rel="license" href="http://www.gnu.org/licenses/agpl-3.0.txt" target="_blank">&copy; {{ date("Y") }} released under the AGPL</a>
+                            <span style="color:#428bca">&nbsp;&nbsp;&dash;&nbsp;&nbsp;</span>
+                            <a target="_blank" href="http://www.github.com/t123/readingtool/">source code</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
