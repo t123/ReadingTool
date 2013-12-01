@@ -194,6 +194,8 @@ class TermController extends BaseController {
             $tsv .= implode("\t", $te) . "\n";
         }
 
+        $tsv = substr($tsv,0,-2);
+        
         return Response::make($tsv, 200, array(
                     'Content-Description' => 'File Transfer',
                     'Content-Type' => 'text/csv',
@@ -202,7 +204,7 @@ class TermController extends BaseController {
                     'Expires' => 0,
                     'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
                     'Pragma' => 'public',
-                    'Content-Length' => mb_strlen($tsv)
+                    'Content-Length' => strlen($tsv)
         ));
     }
 
