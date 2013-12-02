@@ -55,7 +55,7 @@ class HomeController extends BaseController {
                         array(
                             'username' => Input::get('signin_username'),
                             'password' => Input::get('signin_password')
-                        )
+                        ), true
                 )
         ) {
             Session::flash(FlashMessage::MSG, new FlashMessage('Either your username or password is incorrect.', FlashMessage::DANGER));

@@ -40,6 +40,7 @@ My Account
     <div class="col-sm-offset-2 col-sm-10">
         <button type="submit" class="btn btn-primary">Save changes</button>
         <a href="{{ action('AccountController@changePassword') }}" class="btn btn-default">Change your password</a>
+        <a href="{{ action('HomeController@signout') }}" class="btn btn-default">Sign out</a>
         <a href="{{ action('AccountController@deleteAccount') }}" class="btn btn-default">Delete your account</a>
     </div>
 </div>
