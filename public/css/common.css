@@ -173,3 +173,7 @@ td.form {
 #simplemodal-container h3 {
   color: #84b8d9;
 }
+
+.CodeMirror {
+  border: 1px solid #cecece;
+}
