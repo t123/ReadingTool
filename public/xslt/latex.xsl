@@ -10,6 +10,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[charter]{mathdesign}
 \usepackage[normalmargins]{savetrees}
+\usepackage[hidelinks]{hyperref}
 \usepackage[pdftex,
     pdfauthor={</xsl:text><xsl:value-of select="//root/@author"/><xsl:text>},
     pdftitle={</xsl:text><xsl:value-of select="//root/@title"/><xsl:text>},
