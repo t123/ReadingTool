@@ -3,45 +3,24 @@
     <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
     <xsl:template match="/">
-        <xsl:text>\documentclass[12pt]{article}
-
-        </xsl:text>
-        <xsl:text>\usepackage[papersize={108mm,144mm},margin=2mm]{geometry}
-
-        </xsl:text>
-        <xsl:text>\usepackage[utf8]{inputenc}
-
-        </xsl:text>
-        <xsl:text>\usepackage[T1]{fontenc}
-        </xsl:text>
-        
-        <xsl:text>\usepackage{perpage}
-
-        </xsl:text>
-        <xsl:text>\MakePerPage{footnote}
-
-        </xsl:text>
-        <xsl:text>\sloppy
-
-        </xsl:text>
-        <xsl:text>\pagestyle{empty}
-
-        </xsl:text>
-        <xsl:text>\usepackage[scaled]{helvet}
-
-        </xsl:text>
-        <xsl:text>\renewcommand{\familydefault}{\sfdefault}
-
-        </xsl:text>
-        <xsl:text>\setlength\parindent{0pt}
-
-        </xsl:text>
-        <xsl:text>\begin{document}
-
-        </xsl:text>
-        <xsl:apply-templates select="//root/link"/>
-        <xsl:text>\end{document}
-        </xsl:text>
+        <xsl:text>\documentclass[8pt]{article}
+\usepackage[papersize={90mm,120mm},margin=2mm]{geometry}
+\usepackage[kerning=true]{microtype}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[charter]{mathdesign}
+\usepackage[normalmargins]{savetrees}
+\usepackage[pdftex,
+    pdfauthor={</xsl:text><xsl:value-of select="//root/@author"/><xsl:text>},
+    pdftitle={</xsl:text><xsl:value-of select="//root/@title"/><xsl:text>},
+    pdfcreator={ReadingTool}]{hyperref}
+\sloppy
+\pagestyle{empty}
+\begin{document}
+</xsl:text>
+<xsl:apply-templates select="//root/link"/>
+<xsl:text>\end{document}
+</xsl:text>
     </xsl:template>
 
     <xsl:template match="link">

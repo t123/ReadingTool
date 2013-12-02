@@ -7,6 +7,7 @@ use App\Models\Text;
 use App\Models\Term;
 use \User;
 use RT\Core\Splitter;
+use Illuminate\Support\Facades\Auth as Auth;
 
 interface IParserService {
 
@@ -61,6 +62,7 @@ class ParserService implements IParserService {
 
         $rootNode = $document->createElement("root");
         $rootNode->setAttribute("title", $this->text->title);
+        $rootNode->setAttribute("author", Auth::user()->username);
 
         $paragraphs = explode('¶', $text);
         $parallelParagraphs = explode('¶', $parallelText);
