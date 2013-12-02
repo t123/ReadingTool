@@ -62,6 +62,7 @@ Terms
         </ul>
     @endif
 </div>
+There is also a simple <a href="{{ action("ApiController@getIndex")}}">API</a> available for exporting data.
 <div id="exportFields" style="display:none">
     <div class="clr20"></div>
     <div class="alert alert-info alert-block">

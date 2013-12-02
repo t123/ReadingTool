@@ -194,8 +194,10 @@ class TermController extends BaseController {
             $tsv .= implode("\t", $te) . "\n";
         }
 
-        $tsv = substr($tsv,0,-2);
-        
+        if(strlen($tsv)>0) {
+            $tsv = substr($tsv,0,-1);
+        }
+
         return Response::make($tsv, 200, array(
                     'Content-Description' => 'File Transfer',
                     'Content-Type' => 'text/csv',

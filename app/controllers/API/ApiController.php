@@ -9,7 +9,7 @@ class ApiController extends BaseController {
         $tags = array();
 
         foreach ($t->tags as $ctag) {
-            array_push($tags, $this->$ctag->tag);
+            array_push($tags, $ctag->tag);
         }
         
         return array(
@@ -103,6 +103,10 @@ class ApiController extends BaseController {
         return $tarray;
     }
 
+    public function getIndex() {
+        return View::make('api.index');
+    }
+    
     public function getTerms($id = null) {
         return Response::json(array('terms' => $this->makeTerms($id)));
     }
