@@ -22,6 +22,10 @@ Languages - Add Group
         {{ $errors->first('description') }}
     </div>							
 </div>
+<div class="alert alert-info alert-block">
+    Any user can search for and join a public group but their membership must be approved by the owner or a moderator. 
+    To join a private group users require an invitation from the owner or a moderator.
+</div>
 <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
     {{ Form::label('type', 'Type', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
