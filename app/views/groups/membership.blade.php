@@ -79,7 +79,7 @@ $isOwner = false;
 @stop
 
 @section('bottomJs')
-{{ HTML::script('js/jQuery-Autocomplete/jquery-autocomplete.js') }}
+{{ HTML::script('js/jQuery-Autocomplete/jquery.autocomplete.min.js') }}
 <script language="javascript">
 {{--  http://stackoverflow.com/questions/4715762/javascript-move-caret-to-last-character --}}
         
