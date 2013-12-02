@@ -68,6 +68,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('/groups/texts/{id}', 'GroupController@texts')->where('id', '[0-9]+');
     Route::post('/groups/texts/{id}', 'GroupController@postTexts')->where('id', '[0-9]+');
     Route::post('/groups/unshare', 'GroupController@postUnshare');
+    Route::post('/groups/usernames', 'GroupController@postUsernames');
     Route::get('/groups/read/{groupId}/{textId}', 'GroupController@read')->where('groupId', '[0-9]+')->where('textId', '[0-9]+');
     Route::get('/groups/read-parallel/{groupId}/{textId}', 'GroupController@readParallel')->where('groupId', '[0-9]+')->where('textId', '[0-9]+');
     Route::get('/groups/download-pdf/{groupId}/{textId}', 'GroupController@downloadPdf')->where('groupId', '[0-9]+')->where('textId', '[0-9]+');

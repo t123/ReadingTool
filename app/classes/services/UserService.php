@@ -13,6 +13,8 @@ interface IUserService {
     public function createUser($username, $password);
 
     public function deleteUser();
+    
+    public function findUsers($query);
 }
 
 class UserService implements IUserService {
@@ -23,6 +25,20 @@ class UserService implements IUserService {
         $this->user = Auth::user();
     }
 
+    public function findUsers($query) {
+        $query = trim($query);
+        
+        if(strlen($query)<3) {
+            return null;
+        }
+        
+        return User::where('id', '!=', $this->user->id)
+                ->where('username', 'LIKE', "$query%")
+                ->orderBy('username')
+                ->take(10)
+                ->get();
+    }
+    
     public function createUser($username, $password) {
         $countQuery = DB::select("select count(id) as counted from users where type='admin'");
         $count = $countQuery[0]->counted;

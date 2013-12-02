@@ -8,6 +8,7 @@ use RT\Services\ITextService;
 use RT\Services\ILanguageService;
 use RT\Services\ITermService;
 use RT\Services\IParserService;
+use RT\Services\IUserService;
 
 class GroupController extends BaseController {
     private $groupService;
@@ -15,6 +16,7 @@ class GroupController extends BaseController {
     private $languageService;
     private $termService;
     private $parserService;
+    private $userService;
     
     private $rules = array(
             'name' => 'max:50|required',
@@ -27,7 +29,8 @@ class GroupController extends BaseController {
             ITextService $textService, 
             ILanguageService $languageService, 
             ITermService $termService,
-            IParserService $parserService
+            IParserService $parserService,
+            IUserService $userService
             ) 
                 {
         $this->groupService = $groupService;
@@ -35,6 +38,7 @@ class GroupController extends BaseController {
         $this->languageService = $languageService;
         $this->termService = $termService;
         $this->parserService = $parserService;
+        $this->userService = $userService;
         
         View::share('currentController', 'Group');
     }
@@ -399,5 +403,13 @@ class GroupController extends BaseController {
         $this->groupService->updateMembership(Auth::user()->id, $id, 'pending');
         Session::flash(FlashMessage::MSG, new FlashMessage('A request has been sent to the group for moderation.', FlashMessage::SUCCESS));
         return Redirect::action('GroupController@findGroups');
+    }
+    
+    public function postUsernames() {
+        return Response::json(
+                array('suggestions'=>
+                    $this->userService->findUsers(Input::get('query'))->lists('username')
+                    )
+                );
     }
 }

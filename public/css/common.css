@@ -110,3 +110,23 @@ td.form {
     color: black;
     text-decoration: none;
 }
+
+.autocomplete-suggestions {
+  border: 1px solid #999;
+  background: #FFF;
+  cursor: default;
+  overflow: auto;
+  color: #000;
+}
+.autocomplete-suggestion {
+  padding: 2px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.autocomplete-selected {
+  background: #0081c2;
+  color: #fff !important;
+}
+.autocomplete-suggestions strong {
+  font-weight: bold;
+}
