@@ -42,7 +42,7 @@ $currentController = '';
                     <div class="col-lg-10 col-lg-offset-1">
                         <div class="media">
                             <a class="pull-left">
-                                <img src="/img/misc-jackie-chan.png" alt="Page not found" title="Page nout found" class="media-object" style="width: 250px"/>
+                                <img src="/img/misc-jackie-chan.png" alt="Page not found" title="Page not found" class="media-object" style="width: 250px"/>
                             </a>
                             <div class="media-body">
                                 <div class="clr50"></div>
