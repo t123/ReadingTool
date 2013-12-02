@@ -372,7 +372,7 @@ var ModalHandler = function (routes, settings) {
             var urlEncode = anchor.data('urlencode');
             var url = anchor.data('url');
             var auto = anchor.data('autoopen');
-            var input = parameter == true ? sentence.val() : currentElement.text();
+            var input = parameter == true ? sentence.val() : self._currentWordFromSpan(currentElement);
             if (auto == undefined) {
                 auto = false;
             }
