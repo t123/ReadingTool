@@ -408,9 +408,9 @@ var ModalHandler = function (routes, settings) {
                         .removeClass('_k _u _n _i box1 box2 box3 box4 box5 box6 box7 box8 box9')
                         .addClass(data.state == 'unknown' ? 'box' + data.box : data.stateClass);
 
-        var tempDef = data.basePhrase.length > 0 ? data.basePhrase : '';
-        if (data.definition.length > 0) tempDef += "<br/>" + data.definition.replace(/\n/g, '<br />');
-        if (data.tags.length > 0) tempDef += "<br/>" + data.tags;
+        var tempDef = data.basePhrase.length > 0 ? data.basePhrase + "<br/>" : '';
+        if (data.definition.length > 0) tempDef += data.definition.replace(/\n/g, '<br />') + "<br/>";
+        if (data.tags.length > 0) tempDef += data.tags;
 
         $('#readingareainner .' + data.phrase).each(function (index) {
             var phrase = $(this).text();
