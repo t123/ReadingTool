@@ -50,6 +50,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('/texts/download-pdf/{id}', 'TextController@downloadPdf')->where('id', '[0-9]+');
     Route::post('/texts/deleteMany', 'TextController@postDeleteMany');
     Route::post('/texts/share', 'TextController@postShare');
+    Route::get('/texts/copy-and-edit/{id}', 'TextController@copyAndEdit')->where('id', '[0-9]+');
 
     Route::get('/terms', 'TermController@index');
     Route::post('/terms', 'TermController@postIndex');

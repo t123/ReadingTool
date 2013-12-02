@@ -301,4 +301,27 @@ class TextController extends BaseController {
         Session::flash(FlashMessage::MSG, new FlashMessage('Your texts have been deleted.', FlashMessage::SUCCESS));
         return Redirect::action('TextController@index');
     }
+    
+    public function copyAndEdit($id) {
+        $text = $this->textService->find($id);
+        
+        if($text==null) {
+            return Redirect::action('TextController@index');
+        }
+        
+        $newText = new Text;
+        $newText->user_id = Auth::user()->id;
+        $newText->title = $text->title;
+        $newText->collectionName = $text->collectionName;
+        $newText->collectionNo = $text->collectionNo;
+        $newText->audioUrl = $text->audioUrl;
+        $newText->shareAudioUrl = $text->shareAudioUrl;
+        $newText->l1_id = $text->l1_id;
+        $newText->l2_id = $text->l2_id;
+        
+        $this->textService->save($newText, $text->l1Text, $text->l2Text);
+        
+        Session::flash(FlashMessage::MSG, new FlashMessage('Your text has been copied. The copy is display below.', FlashMessage::SUCCESS));
+        return Redirect::action('TextController@edit', array('id'=>$newText->id));
+    }
 }

@@ -81,6 +81,9 @@ $style = $text->l2_id==null ? "display:none" : "";
 <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
         <button type="submit" class="btn btn-primary">Save changes</button>
+        <a href="{{ action("TextController@copyAndEdit", $text->id) }}" class="btn btn-default">
+            Create copy & edit
+        </a>
         <a href="{{ action("TextController@read", $text->id) }}" class="btn btn-default">
             Read
         </a>
