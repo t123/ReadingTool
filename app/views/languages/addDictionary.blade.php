@@ -18,14 +18,14 @@ Languages - Add Dictionary
 <div class="form-group {{ $errors->has('encoding') ? 'has-error' : '' }}">
     {{ Form::label('encoding', 'Encoding', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::text('encoding', null, array('class'=>'form-control', 'placeholder'=>'word encoding for URL')) }}
+        {{ Form::text('encoding', null, array('class'=>'form-control', 'placeholder'=>'word encoding for URL, leave blank if unknown')) }}
         {{ $errors->first('encoding') }}
     </div>							
 </div>
 <div class="form-group {{ $errors->has('windowName') ? 'has-error' : '' }}">
     {{ Form::label('windowName', 'Window Name', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::text('windowName', null, array('class'=>'form-control', 'placeholder'=>'name of the window tab')) }}
+        {{ Form::text('windowName', null, array('class'=>'form-control', 'placeholder'=>'name of the window tab, dictionaries with the same name open in the same tab')) }}
         {{ $errors->first('windowName') }}
     </div>							
 </div>
@@ -39,14 +39,14 @@ Languages - Add Dictionary
 <div class="form-group {{ $errors->has('sentence') ? 'has-error' : '' }}">
     {{ Form::label('sentence', 'Send sentence?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('sentence', null) }}
+        {{ Form::checkbox('sentence', null) }} Sends the entire sentence to the dictionary instead of the word
         {{ $errors->first('sentence') }}
     </div>
 </div>
 <div class="form-group {{ $errors->has('autoOpen') ? 'has-error' : '' }}">
     {{ Form::label('autoOpen', 'Automatically open?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('autoOpen', null) }}
+        {{ Form::checkbox('autoOpen', null) }} Opens the dictionary when the modal opens without a click
         {{ $errors->first('autoOpen') }}
     </div>
 </div>

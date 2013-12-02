@@ -40,7 +40,7 @@ Languages - Add Language
 <div class="form-group {{ $errors->has('Modal') ? 'has-error' : '' }}">
     {{ Form::label('Modal', 'Open dictionaries in modal instead of tab?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('Modal', null) }}
+        {{ Form::checkbox('Modal', null) }} If you have 2 or more monitors use tabs works better. Modals may be better with one monitor.
         {{ $errors->first('Modal') }}
     </div>
 </div>
@@ -82,15 +82,15 @@ Languages - Add Language
 <div class="form-group {{ $errors->has('ShowSpaces') ? 'has-error' : '' }}">
     {{ Form::label('ShowSpaces', 'Display Spaces?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('ShowSpaces', null, true) }}
+        {{ Form::checkbox('ShowSpaces', null, true) }} Display spaces between the words
         {{ $errors->first('ShowSpaces') }}
     </div>
 </div>
 
 <div class="form-group {{ $errors->has('AutoPause') ? 'has-error' : '' }}">
-    {{ Form::label('AutoPause', 'Pause audio when word moodal opens?', array('class'=>'col-sm-2 control-label')) }}
+    {{ Form::label('AutoPause', 'Pause audio when word modal opens?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('AutoPause', null, true) }}
+        {{ Form::checkbox('AutoPause', null, true) }} Pause the audio when a word is clicked. Automatically resumes when modal closes.
         {{ $errors->first('AutoPause') }}
     </div>
 </div>

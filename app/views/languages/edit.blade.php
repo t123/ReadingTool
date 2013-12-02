@@ -43,13 +43,16 @@ $json = json_decode($language==null ? "" : $language->settings);
 <div class="form-group {{ $errors->has('Modal') ? 'has-error' : '' }}">
     {{ Form::label('Modal', 'Open dictionaries in modal instead of tab?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('Modal', null, $json->Modal) }}
+        {{ Form::checkbox('Modal', null, $json->Modal) }} If you have 2 or more monitors use tabs works better. Modals may be better with one monitor.
         {{ $errors->first('Modal') }}
     </div>
 </div>
 
 <legend>Parser Settings</legend>
-
+<div class="alert alert-block alert-info">
+    For a language like French, if you want to treat words like est-ce, là-bas or s'il as a single word, 
+    use the following expression <strong>a-zA-ZÀ-ÖØ-öø-ȳ\-\'</strong> instead.
+</div>
 <div class="form-group {{ $errors->has('RegexWordCharacters') ? 'has-error' : '' }}">
     {{ Form::label('RegexWordCharacters', 'Regex Test Words', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
@@ -82,15 +85,15 @@ $json = json_decode($language==null ? "" : $language->settings);
 <div class="form-group {{ $errors->has('ShowSpaces') ? 'has-error' : '' }}">
     {{ Form::label('ShowSpaces', 'Display Spaces?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('ShowSpaces', null, $json->ShowSpaces) }}
+        {{ Form::checkbox('ShowSpaces', null, $json->ShowSpaces) }} Display spaces between the words
         {{ $errors->first('ShowSpaces') }}
     </div>
 </div>
 
 <div class="form-group {{ $errors->has('AutoPause') ? 'has-error' : '' }}">
-    {{ Form::label('AutoPause', 'Pause audio when word moodal opens?', array('class'=>'col-sm-2 control-label')) }}
+    {{ Form::label('AutoPause', 'Pause audio when word modal opens?', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::checkbox('AutoPause', null, $json->AutoPause) }}
+        {{ Form::checkbox('AutoPause', null, $json->AutoPause) }} Pause the audio when a word is clicked. Automatically resumes when modal closes.
         {{ $errors->first('AutoPause') }}
     </div>
 </div>
