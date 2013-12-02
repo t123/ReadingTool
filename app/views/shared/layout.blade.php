@@ -18,7 +18,7 @@ use RT\Core\FlashMessage;
         <div id="wrapper">
             <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="{{ action('AccountController@index') }}">Reading Tool - {{{ Auth::user()->currentName() }}}</a>
+                    <a title="Reading Tool &copy {{ date("Y") }} AGPL 3" class="navbar-brand" href="{{ action('AccountController@index') }}">Reading Tool - {{{ Auth::user()->currentName() }}}</a>
                 </div>
 
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
