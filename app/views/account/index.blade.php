@@ -48,11 +48,15 @@ My Account
 <div class="clr20"></div>
 {{ Form::model($user, array('action'=>'AccountController@postCss', 'class'=>'form-horizontal', 'role'=>'form')) }}
 <legend>Custom CSS for Reading</legend>
-<div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
+<div class="form-group">
     {{ Form::label('css', 'Custom CSS', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
-        {{ Form::textarea('css', $css, array('class'=>'form-control', 'placeholder'=>'Your custom CSS for the reading screen. This will replace the default CSS. Leave blank to reset to default.')) }}
-        {{ $errors->first('css') }}
+        {{ Form::textarea('css', $css, array('id'=>'customCss','class'=>'form-control', 'placeholder'=>'Your custom CSS for the reading screen. This will replace the default CSS. Leave blank to reset to default.')) }}
+    </div>
+    <div class="clr5"></div>
+    <div class="col-sm-8 col-sm-offset-2">
+        The original CSS can be <a href="{{URL::asset('css/reading.css')}}">downloaded here</a> (right-click and choose save link as).<br/>
+        To use the system CSS leave the above box blank.
     </div>
 </div>
 <div class="form-group">
@@ -61,4 +65,23 @@ My Account
     </div>
 </div>
 {{ Form::close() }}
+@stop
+
+@section('topCss')
+{{ HTML::style('css/codemirror.css') }}
+@stop
+
+@section('bottomJs')
+{{ HTML::script('js/CodeMirror/codemirror.min.js') }}
+{{ HTML::script('js/CodeMirror/css.js') }}
+<script language="javascript">
+    var cm_css;
+    $(function() {
+        cm_css = CodeMirror.fromTextArea(document.getElementById("customCss"), {
+            mode: "text/css",
+            lineNumbers: true,
+            lineWrapping: true
+        });
+    });
+</script>
 @stop
