@@ -14,7 +14,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
         <title>{{{ $text->title }}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8"> 
-        <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
         {{ HTML::style('css/common.css') }}
         @if(empty($css))
             {{ HTML::style('css/reading.css') }}
