@@ -324,6 +324,10 @@ var ModalHandler = function (routes, settings) {
     };
 
     self.markRemainingAsKnown = function () {
+        if(!confirm('Are you sure you want to mark the remaining words as known?')) {
+            return;
+        }
+        
         var toWorkOn = $('#readingareainner ._n');
 
         var words = [];
@@ -332,11 +336,11 @@ var ModalHandler = function (routes, settings) {
             words.push($(this).text());
         });
 
-        markRemainingMessage.removeClass('alert-info alert-success alert-error');
+        markRemainingMessage.removeClass('alert-info alert-success alert-warning alert-danger');
         if (words.length > 0) {
             markRemainingMessage.addClass('alert-info').html('Saving words....').show();
         } else {
-            markRemainingMessage.addClass('alert-error').html('No words to save.').show();
+            markRemainingMessage.addClass('alert-warning').html('No words to save.').show();
             return;
         }
 
@@ -350,12 +354,12 @@ var ModalHandler = function (routes, settings) {
                 terms: words
             }
         }).done(function (data) {
-            markRemainingMessage.removeClass('alert-info alert-success alert-error');
+            markRemainingMessage.removeClass('alert-info alert-success alert-warning alert-danger');
 
             if (data == "OK") {
                 markRemainingMessage.addClass('alert-success').html('All words saved.');
             } else {
-                markRemainingMessage.addClass('alert-error').html('There was an error saving your words. Please refresh and try again.');
+                markRemainingMessage.addClass('alert-danger').html('There was an error saving your words. Please refresh and try again.');
             }
 
             markRemainingMessage.show();
