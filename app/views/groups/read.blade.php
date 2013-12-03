@@ -110,7 +110,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                 <div class="clr10"></div>
                 <button type="button" id="btnMarkRemainingAsKnown" class="btn btn-default">mark the remaining words as known</button>
                 <div class="clr10"></div>
-                <div id="markRemainingAsKnownProgress" class="alert alert-block" style="display: none"></div>
+                <div id="markRemainingAsKnownProgress" class="alert alert-block" style="width:98%; display: none"></div>
                 <div class="clr100"></div>
             </div>
         </div>
