@@ -52,7 +52,7 @@ App::error(function(Exception $exception, $code) {
     }
     
     Log::error($exception);
-    return Response::view('errors.error',array(),404);
+    return Response::view('errors.error',array(), 500);
 });
 
 /*

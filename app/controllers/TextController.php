@@ -8,6 +8,7 @@ use RT\Services\ITermService;
 use RT\Services\ILanguageService;
 use RT\Services\IGroupService;
 use RT\Services\IParserService;
+use RT\Services\IUserService;
 
 class TextController extends BaseController {
     private $textService;
@@ -15,6 +16,7 @@ class TextController extends BaseController {
     private $parserService;
     private $languageService;
     private $groupService;
+    private $userService;
     
     private $rules = array(
             'title' => 'max:100|required',
@@ -30,13 +32,15 @@ class TextController extends BaseController {
             ITermService $termService, 
             IParserService $parserService, 
             ILanguageService $languageService,
-            IGroupService $groupService
+            IGroupService $groupService,
+            IUserService $userService
         ) {
         $this->textService = $textService;
         $this->termService = $termService;
         $this->parserService = $parserService;
         $this->languageService = $languageService;
         $this->groupService = $groupService;
+        $this->userService = $userService;
         
         View::share('currentController', 'Text');
     }
@@ -213,6 +217,7 @@ class TextController extends BaseController {
                 ->with('user', Auth::user())
                 ->with('nextId', $next==null ? null : $next->id)
                 ->with('previousId', $previous==null ? null : $previous->id)
+                ->with('css', $this->userService->getCss())
                 ;
     }
     
@@ -244,6 +249,7 @@ class TextController extends BaseController {
                 ->with('user', Auth::user())
                 ->with('nextId', $next==null ? null : $next->id)
                 ->with('previousId', $previous==null ? null : $previous->id)
+                ->with('css', $this->userService->getCss())
                 ;
     }
     

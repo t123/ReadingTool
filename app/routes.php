@@ -23,6 +23,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('/my-account/change-password', 'AccountController@postChangePassword');
     Route::get('/my-account/delete-account', 'AccountController@deleteAccount');
     Route::post('/my-account/delete-account', 'AccountController@postDeleteAccount');
+    Route::post('/my-account/css', 'AccountController@postCss');
     Route::get('/my-account/thank-you', 'AccountController@thankyou');
 
     Route::get('/languages', 'LanguageController@index');

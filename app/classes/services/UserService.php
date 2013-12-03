@@ -15,6 +15,9 @@ interface IUserService {
     public function deleteUser();
     
     public function findUsers($query);
+    
+    public function saveCss($css);
+    public function getCss();
 }
 
 class UserService implements IUserService {
@@ -117,5 +120,35 @@ class UserService implements IUserService {
             (is_dir("$dir/$file")) ? $this->delTree("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
+    }
+    
+    public function getCss() {
+        $path = Bucket::getBucketName(Auth::user()->id);
+
+        if (!is_dir($path)) {
+            return "";
+        }
+
+        if (file_exists($path . '/reading.css')) {
+            return file_get_contents($path . '/reading.css');
+        }
+
+        return "";
+    }
+
+    public function saveCss($css) {
+        $path = Bucket::getBucketName(Auth::user()->id);
+
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+
+        if (empty($css)) {
+            if (file_exists($path . '/reading.css')) {
+                unlink($path . '/reading.css');
+            }
+        } else {
+            file_put_contents($path . '/reading.css', $css);
+        }
     }
 }

@@ -2,18 +2,21 @@
 
 use RT\Core\FlashMessage;
 use RT\Services\IUserService;
+use RT\Core\Bucket;
 
 class AccountController extends BaseController {
+
     private $userService;
-    
+
     public function __construct(IUserService $userService) {
         $this->userService = $userService;
         View::share('currentController', 'Account');
     }
-    
+
     public function index() {
         return View::make('account.index')
                         ->with('user', Auth::user())
+                        ->with('css', $this->userService->getCss())
         ;
     }
 
@@ -33,8 +36,17 @@ class AccountController extends BaseController {
         $user->displayName = Input::get('displayName');
         $user->email = Input::get('email');
         $user->save();
-        
+
         Session::flash(FlashMessage::MSG, new FlashMessage('Your account has been updated.', FlashMessage::SUCCESS));
+
+        return Redirect::action('AccountController@index');
+    }
+
+    public function postCss() {
+        $css = trim(Input::get('css'));
+        $this->userService->saveCss($css);
+
+        Session::flash(FlashMessage::MSG, new FlashMessage('Your CSS has been updated.', FlashMessage::SUCCESS));
 
         return Redirect::action('AccountController@index');
     }
@@ -89,7 +101,7 @@ class AccountController extends BaseController {
         if (Hash::check(Input::get('currentPassword'), $user->password)) {
             $this->userService->deleteUser();
             Auth::logout();
-            
+
             Session::flash(FlashMessage::MSG, new FlashMessage('Your account has been deleted.', FlashMessage::SUCCESS));
 
             return Redirect::action('HomeController@index');

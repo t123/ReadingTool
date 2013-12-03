@@ -16,7 +16,13 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
         <meta charset="utf-8"> 
         <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
         {{ HTML::style('css/common.css') }}
-        {{ HTML::style('css/reading.css') }}
+        @if(empty($css))
+            {{ HTML::style('css/reading.css') }}
+        @else
+        <style type="text/css">
+            {{{ $css }}}
+        </style>
+        @endif
         {{ HTML::style('css/blue.monday/jplayer.blue.monday.css') }}
         {{ HTML::style('css/bootstrap.css') }}
         

@@ -283,6 +283,7 @@ class GroupController extends BaseController {
                 ->with('nextId', null)
                 ->with('previousId', null)
                 ->with('groupId', $groupId)
+                ->with('css', $this->userService->getCss())
                 ;
     }
     
@@ -334,6 +335,7 @@ class GroupController extends BaseController {
                 ->with('nextId', null)
                 ->with('previousId', null)
                 ->with('groupId', $groupId)
+                ->with('css', $this->userService->getCss())
                 ;
     }
     

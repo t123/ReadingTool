@@ -3,7 +3,7 @@ body {
   padding-right: 0px !important;
 }
 
-.container-fluid {
+.container {
   padding-left: 0px !important;
   padding-right: 0px !important;
 }
@@ -68,33 +68,7 @@ body {
 #readingareainner span._ix {
   font-style: italic;
 }
-#readingareainner span.box1 {
-  background-color: #F5B8A9;
-}
-#readingareainner span.box2 {
-  background-color: #F0C1A1;
-}
-#readingareainner span.box3 {
-  background-color: #EBCA98;
-}
-#readingareainner span.box4 {
-  background-color: #E6D390;
-}
-#readingareainner span.box5 {
-  background-color: #E1DC88;
-}
-#readingareainner span.box6 {
-  background-color: #DBE47F;
-}
-#readingareainner span.box7 {
-  background-color: #D6ED77;
-}
-#readingareainner span.box8 {
-  background-color: #D1F66E;
-}
-#readingareainner span.box9 {
-  background-color: #CCFF66;
-}
+
 #readingareainner h1,
 #readingareainner h2,
 #readingareainner h3,
