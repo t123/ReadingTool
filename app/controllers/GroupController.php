@@ -339,14 +339,32 @@ class GroupController extends BaseController {
                 ;
     }
     
-    public function downloadPdf($id) {
-        $text = $this->textService->find($id);
-        $terms = $this->termService->findAllForLanguage($text->language1->id);
+    public function downloadPdf($groupId, $textId) {
+        $group = $this->groupService->findOneByOwnerModeratorOrMember($groupId);
+        $text = $this->textService->findForGroupUser($textId, $groupId);
+        
+        if ($group==null || $text == null) {
+            return Redirect::action('TextController@index');
+        }
+        
+        $language1 = $this->languageService->findOneByCode($text->language1->code);
+        
+        if(!$text->shareAudioUrl) {
+            $text->audioUrl = null;
+        }
+        
+        if($language1==null) {
+            $slanguage = $this->languageService->findOneSystemLanguage($text->language1->code);
+            Session::flash(FlashMessage::MSG, new FlashMessage('Sorry, you do not have the language ' . $slanguage->language . ' ('. $text->language1->code . ') in your languages.', FlashMessage::WARNING));
+            return Redirect::action('GroupController@texts', array('id'=>$groupId));
+        }
+        
+        $terms = $this->termService->findAllForLanguage($language1->id);
         
         $parserService = new \RT\Services\LatextParserService;
         $parsed = $parserService->parse(
                 FALSE,
-                $text->language1,
+                $language1,
                 null,
                 $terms,
                 $text
@@ -362,9 +380,27 @@ class GroupController extends BaseController {
         $cmd = "/usr/bin/pdflatex -output-directory $path --interaction batchmode $latex";
         $output = shell_exec($cmd);
         
-        return Response::download($pdf, $text->title . ".pdf", 
-                    array('Content-Type' => 'application/pdf')
-                );
+        return Response::download($pdf, $text->title . ".pdf", array('Content-Type' => 'application/pdf'));
+    }
+    
+    public function downloadText($groupId, $textId) {
+        $group = $this->groupService->findOneByOwnerModeratorOrMember($groupId);
+        $text = $this->textService->findForGroupUser($textId, $groupId);
+
+        if ($group==null || $text == null) {
+            return Redirect::action('GroupController@index');
+        }
+
+        $title = mb_convert_encoding($text->title, 'ISO-8859-1', 'UTF-8');
+        
+        $headers = array(
+            'Content-Type' => 'application/x-tt',
+            'Content-Disposition' => "inline;filename=$title.txt"
+        );
+
+        $contents = $text->l2_id == null ? $text->l1Text : $text->l1Text . "\n\n=====\n\n" . $text->l2Text;
+
+        return Response::make($contents, 200, $headers);
     }
     
     public function findGroups() {

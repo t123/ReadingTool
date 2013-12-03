@@ -142,7 +142,13 @@ class ParserService implements IParserService {
                         $t->setAttribute("state", "_n");
                     }
                     
-                    $t->setAttribute("value", $token);
+                    try {
+                        $t->setAttribute("value", $token);
+                    } catch(\Exception $ex) {
+                        \Log::error($ex);
+                        print "Was the text encoded in UTF-8?";
+                        exit;
+                    }
                 } else {
                     $t = $document->createElement("t");
                     $t->setAttribute("type", "punctuation");

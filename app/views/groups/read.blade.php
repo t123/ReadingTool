@@ -64,6 +64,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                                             <a href="{{ action("GroupController@readParallel", array($groupId, $text->id)) }}">read in parallel</a>
                                         @endif
                                         <a href="{{ action("GroupController@downloadPdf", array($groupId, $text->id)) }}">download as PDF</a>
+                                        <a href="{{ action("GroupController@downloadText", array($groupId, $text->id)) }}">download as plain text</a>
                                         @if($nextId!=null)
                                             <a href="{{ action("GroupController@read", $nextId) }}">next text</a>
                                         @endif

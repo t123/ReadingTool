@@ -64,6 +64,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                                             <a href="{{ action("TextController@readParallel", $text->id) }}">read in parallel</a>
                                         @endif
                                         <a href="{{ action("TextController@downloadPdf", $text->id) }}">download as PDF</a>
+                                        <a href="{{ action("TextController@downloadText", $text->id) }}">download as plain text</a>
                                         @if($nextId!=null)
                                             <a href="{{ action("TextController@edit", $nextId) }}">next text</a>
                                         @endif

@@ -49,6 +49,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('/texts/read/{id}', 'TextController@read')->where('id', '[0-9]+');
     Route::get('/texts/read-parallel/{id}', 'TextController@readParallel')->where('id', '[0-9]+');
     Route::get('/texts/download-pdf/{id}', 'TextController@downloadPdf')->where('id', '[0-9]+');
+    Route::get('/texts/download-text/{id}', 'TextController@downloadText')->where('id', '[0-9]+');
     Route::post('/texts/deleteMany', 'TextController@postDeleteMany');
     Route::post('/texts/share', 'TextController@postShare');
     Route::get('/texts/copy-and-edit/{id}', 'TextController@copyAndEdit')->where('id', '[0-9]+');
@@ -73,6 +74,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('/groups/read/{groupId}/{textId}', 'GroupController@read')->where('groupId', '[0-9]+')->where('textId', '[0-9]+');
     Route::get('/groups/read-parallel/{groupId}/{textId}', 'GroupController@readParallel')->where('groupId', '[0-9]+')->where('textId', '[0-9]+');
     Route::get('/groups/download-pdf/{groupId}/{textId}', 'GroupController@downloadPdf')->where('groupId', '[0-9]+')->where('textId', '[0-9]+');
+    Route::get('/groups/download-text/{groupId}/{textId}', 'GroupController@downloadText')->where('groupId', '[0-9]+')->where('textId', '[0-9]+');
     Route::get('/public-groups', 'GroupController@findGroups');
     Route::post('/public-groups', 'GroupController@postFindGroups');
     Route::post('/public-groups/join/{id}', 'GroupController@postJoinGroup')->where('id', '[0-9]+');
