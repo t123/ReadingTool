@@ -45,6 +45,19 @@
                         <a href="{{ action("GroupController@read", array($group->id, $t['id'])) }}" class="btn btn-sm btn-default">
                             read
                         </a>
+                        @if($t['isOwner'])
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{{ action("TextController@edit", array($t['id'])) }}" class="btn btn-sm btn-default">
+                                        edit
+                                    </a>
+                                </li>
+                            </ul>
+                        @endif
                     @else
                         <a href="{{ action("GroupController@readParallel", array($group->id, $t['id'])) }}" class="btn btn-sm btn-default">
                             read parallel
@@ -59,6 +72,13 @@
                                     read
                                 </a>
                             </li>
+                            @if($t['isOwner'])
+                            <li>
+                                <a href="{{ action("TextController@edit", array($t['id'])) }}" class="btn btn-sm btn-default">
+                                    edit
+                                </a>
+                            </li>
+                            @endif
                         </ul>
                     @endif
                 </div>
