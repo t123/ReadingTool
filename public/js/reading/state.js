@@ -244,7 +244,7 @@ var ModalHandler = function (routes, settings) {
     };
 
     self.close = function () {
-        termId.val('');
+        termId.val('0');
         textModal.hide();
 
         if (settings.hasAudio) {
@@ -276,7 +276,7 @@ var ModalHandler = function (routes, settings) {
 
         currentLength++;
         self._updateWord();
-        termId.val('');
+        termId.val('0');
         self._load();
         self.refreshSentence();
     };
@@ -287,7 +287,7 @@ var ModalHandler = function (routes, settings) {
         }
         currentLength--;
         self._updateWord();
-        termId.val('');
+        termId.val('0');
         self._load();
         self.refreshSentence();
     };
@@ -481,7 +481,7 @@ var ModalHandler = function (routes, settings) {
             baseWord.val('');
             definition.val('');
             tags.val('');
-            termId.val(0);
+            termId.val('0');
         }
 
         if (data.sentence == '') {
