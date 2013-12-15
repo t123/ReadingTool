@@ -165,8 +165,8 @@ var ModalHandler = function (routes, settings) {
                 if (code == 27) {
                     self.close();
                 } else if (event.ctrlKey && code == 13) {
-                    self.save();
-                    self.close();
+                    self.save(true);
+                    //self.close();
                 }
             } else {
                 if (settings.hasAudio) {
@@ -195,7 +195,7 @@ var ModalHandler = function (routes, settings) {
         });
     };
 
-    self.save = function () {
+    self.save = function (close) {
         $.ajax({
             url: self.routes.ajax.saveTerm,
             type: 'POST',
@@ -220,6 +220,10 @@ var ModalHandler = function (routes, settings) {
             self._populateModal(data);
             self._updateTips(data);
             message.html(data.message);
+            
+            if(close) {
+                self.close();
+            }
         });
     };
 
