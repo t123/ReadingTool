@@ -67,6 +67,7 @@ class TermController extends BaseController {
                 ->with('terms', $tarray)
                 ->with('currentPage', $currentPage)
                 ->with('pages', $pages)
+                ->with('count', $result['count'])
                 ->__toString()
         ;
 
