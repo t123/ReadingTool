@@ -177,11 +177,17 @@ class TermController extends BaseController {
             $source .= empty($t->collectionName) ? "" : $t->collectionName . ": ";
             $source .= $t->title;
             
+            $basePhrase = $this->fixForTSV($t->basePhrase);
+            
+            if(!isset($basePhrase) || trim($basePhrase)=='') {
+                $basePhrase = $t->phrase;
+            }
+            
             $te = array(
                 'id' => $t->id,
                 'state' => $t->state,
                 'phrase' => $t->phrase,
-                'basePhrase' => $this->fixForTSV($t->basePhrase),
+                'basePhrase' => $basePhrase,
                 'definition' => $this->fixForTSV($t->definition),
                 'created' => $t->created_at,
                 'updated' => $t->updated_at,
