@@ -42,6 +42,8 @@ class TextController extends BaseController {
 
     public function index() {
         $groups = $this->groupService->findAllForUser(array('member', 'moderator', 'owner'));
+        $collections = $this->textService->findCollectionsForUser();
+        
         $garray = array();
 
         foreach ($groups as $g) {
@@ -49,7 +51,9 @@ class TextController extends BaseController {
         }
 
         return View::make('texts.index')
-                        ->with('groups', $garray);
+                        ->with('groups', $garray)
+                        ->with('collections', $collections)
+                        ;
     }
 
     public function postIndex() {

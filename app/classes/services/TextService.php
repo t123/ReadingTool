@@ -26,6 +26,8 @@ interface ITextService {
     public function previousText($text);
 
     public function save($text, $l1, $l2);
+    
+    public function findCollectionsForUser();
 }
 
 class TextService implements ITextService {
@@ -71,6 +73,19 @@ class TextService implements ITextService {
         return $text;
     }
 
+    public function findCollectionsForUser() {
+        $collections =  Text::where('user_id', '=', $this->user->id)
+                ->where('collectionName', '<>', '')
+                ->select('collectionName')
+                ->orderBy('collectionName', 'ASC')
+                ->distinct()
+                ->get()
+                ->lists('collectionName','collectionName')
+                ;
+                
+        return $collections;
+    }
+    
     public function findForGroupUser($id, $groupId) {
         $text = Text::where('texts.id', '=', $id)
                         ->join('group_text', 'texts.id', '=', 'group_text.text_id')

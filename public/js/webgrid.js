@@ -37,6 +37,10 @@
     });
 
     filter.bind("keyup", function (e) {
+        _filterChanged(e);
+    });
+    
+    var _filterChanged = function(e) {
         if (e.keyCode == 16 ||
             e.keyCode == 17 ||
             e.keyCode == 18 ||
@@ -47,6 +51,7 @@
         }
         if (e.keyCode == 13) {
             state.page = 1;
+            state.filter = filter.val();
             _updateGrid();
             return;
         }
@@ -56,7 +61,7 @@
             state.page = 1;
             _updateGrid();
         }, 500);
-    });
+    };
 
     var state = {
         sort: '',

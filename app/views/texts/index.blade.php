@@ -7,13 +7,16 @@ Texts
 @section('content')
 <input type="hidden" id="currentPage" value="1"/>
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-6">
         <input 
             name="filter"
             id="filter"
             type="text" 
             class="form-control input-sm" 
             placeholder="search for language, title, collection name or these tags: #shared, #audio, #parallel" />
+    </div>
+    <div class="col-md-3">
+        {{ Form::select('collections', $collections, null, array('class'=>'form-control input-sm', 'id'=>'collections', 'onchange'=>'changeCollection()')) }}
     </div>
     <div class="col-md-2">
         <select class="form-control input-sm" name="rowsPerPage" id="rowsPerPage">
@@ -65,6 +68,11 @@ Texts
 @section('bottomJs')
 {{ HTML::script('js/webgrid.js') }}
 <script language="javascript">
+    function changeCollection() {
+        $('#filter').val($('#collections').val());
+        $('#filter').trigger('keyup');
+    }
+    
     function update() {
         if($('#GroupId').val()=='') {
             return false;
