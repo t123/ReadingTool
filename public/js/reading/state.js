@@ -455,7 +455,6 @@ var ModalHandler = function (routes, settings) {
                 var parameter = anchor.data('parameter');
                 var urlEncode = anchor.data('urlencode');
                 var url = anchor.data('url');
-                var auto = anchor.data('autoopen');
                 
                 if(parameter) {
                     anchor.hide();
@@ -465,10 +464,6 @@ var ModalHandler = function (routes, settings) {
                 }
                 
                 var input = baseWord.val();
-
-                if (auto == undefined) {
-                    auto = false;
-                }
 
                 if (urlEncode) {
                     $.ajax({
@@ -482,16 +477,10 @@ var ModalHandler = function (routes, settings) {
                     }).done(function (data) {
                         if (data != '') {
                             anchor.attr('href', data);
-                            if (auto) {
-                                anchor[0].click();
-                            }
                         }
                     });
                 } else {
                     anchor.attr('href', url.replace('###', input));
-                    if (auto) {
-                        anchor[0].click();
-                    }
                 }
             });
         }
