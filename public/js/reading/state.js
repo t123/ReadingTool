@@ -252,7 +252,7 @@ var ModalHandler = function (routes, settings) {
             hasChanged = false;
             self._populateModal(data);
             self._updateTips(data);
-            self._updateDictionaries();
+            self._updateDictionaries(true);
             message.html(data.message);
             
             if(close) {
@@ -406,7 +406,7 @@ var ModalHandler = function (routes, settings) {
         toWorkOn.removeClass('_n').removeClass('_nw').addClass('_k');
     };
 
-    self._updateDictionaries = function () {
+    self._updateDictionaries = function (ignoreAutopen) {
         $('.dictionary').each(function (index, a) {
             var anchor = $(a);
             var id = anchor.data('id');
@@ -415,7 +415,7 @@ var ModalHandler = function (routes, settings) {
             var url = anchor.data('url');
             var auto = anchor.data('autoopen');
             var input = parameter == true ? sentence.val() : self._currentWordFromSpan(currentElement);
-            if (auto == undefined) {
+            if (ignoreAutopen || auto == undefined) {
                 auto = false;
             }
 
