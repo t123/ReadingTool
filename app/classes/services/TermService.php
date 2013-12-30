@@ -133,7 +133,7 @@ class TermService implements ITermService {
                     $xtra = " and a.id in ( select z.term_id from tag_term z where z.tag_id in ( select y.id from tags y where y.tag='$tag' ) ) ";
                 }
             } else {
-                $xtra .= " and (a.phraseLower like '%$piece%') ";
+                $xtra .= " and (a.phraseLower like '%$piece%' or c.name LIKE '$piece') ";
             }
         }
 
