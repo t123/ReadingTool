@@ -157,6 +157,39 @@ var ModalHandler = function (routes, settings) {
                 return false;
             }
         });
+        
+        $('a.dictionarybase').click(function (e) {
+            var url = $(e.target || e.srcElement || e.originalTarget).data('url');
+            if (settings.modal && url.indexOf("translate.google") < 0) {
+                $('#dictionaryiframe').attr('src', (e.target || e.srcElement || e.originalTarget).href);
+                $('#dictionary-content').modal({
+                    overlayClose: true,
+                    autoResize: false,
+                    onShow: function(dialog) {
+                        var h = $(window).height();
+                        var w = $(window).width();
+                        dialog.container.css('height', '98%');
+                        dialog.container.css('width', '90%');
+                        var h2 = dialog.container.height();
+                        var w2 = dialog.container.width();
+                        var top = (h / 2) - (h2 / 2) - h2;
+                        var left = (w / 2) - (w2 / 2) - w2;
+
+                        if (top < 60) {
+                            top = 60;
+                        }
+
+                        if (left < 60) {
+                            left = 60;
+                        }
+
+                       dialog.container.css('left', left + 'px');
+                       dialog.container.css('top', top + 'px');
+                    }
+                });
+                return false;
+            }
+        });
 
         $(document).keyup(function (event) {
             var code = (event.keyCode ? event.keyCode : event.which);
@@ -219,6 +252,7 @@ var ModalHandler = function (routes, settings) {
             hasChanged = false;
             self._populateModal(data);
             self._updateTips(data);
+            self._updateDictionaries();
             message.html(data.message);
             
             if(close) {
@@ -409,6 +443,58 @@ var ModalHandler = function (routes, settings) {
                 }
             }
         });
+        
+        if(baseWord.val()=='') {
+            $('.dictionarybase').hide();
+        } else {
+            $('.dictionarybase').show();
+            
+            $('.dictionarybase').each(function (index, a) {
+                var anchor = $(a);
+                var id = anchor.data('id');
+                var parameter = anchor.data('parameter');
+                var urlEncode = anchor.data('urlencode');
+                var url = anchor.data('url');
+                var auto = anchor.data('autoopen');
+                
+                if(parameter) {
+                    anchor.hide();
+                    return;
+                } else {
+                    anchor.show();
+                }
+                
+                var input = baseWord.val();
+
+                if (auto == undefined) {
+                    auto = false;
+                }
+
+                if (urlEncode) {
+                    $.ajax({
+                        type: 'POST',
+                        url: self.routes.ajax.encodeTerm,
+                        data: {
+                            languageId: settings.languageId,
+                            dictionaryId: id,
+                            input: input
+                        }
+                    }).done(function (data) {
+                        if (data != '') {
+                            anchor.attr('href', data);
+                            if (auto) {
+                                anchor[0].click();
+                            }
+                        }
+                    });
+                } else {
+                    anchor.attr('href', url.replace('###', input));
+                    if (auto) {
+                        anchor[0].click();
+                    }
+                }
+            });
+        }
     };
 
     self._updateTips = function (data) {

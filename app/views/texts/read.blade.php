@@ -142,6 +142,15 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                                data-autoOpen="{{ $d->autoOpen ? "true" : "false" }}">
                                    {{{ $d->name }}}
                             </a>
+                            <a target="{{{ hasAudio($d->windowName) ? $d->windowName : "d_" . time() }}}"
+                               class="dictionarybase"
+                               data-id="{{ $d->id }}"
+                               data-parameter="{{ $d->sentence ? "true" : "false" }}"
+                               data-urlEncode="{{ hasAudio($d->encoding) ? "true" : "false" }}"
+                               data-url="{{ $d->url }}"
+                               data-autoOpen="{{ $d->autoOpen ? "true" : "false" }}">
+                                   (base)
+                            </a>
                         </li>
                         @endforeach
                     </ul>
