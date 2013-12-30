@@ -74,15 +74,16 @@ class TextService implements ITextService {
     }
 
     public function findCollectionsForUser() {
-        $collections =  Text::where('user_id', '=', $this->user->id)
-                ->where('collectionName', '<>', '')
-                ->select('collectionName')
-                ->orderBy('collectionName', 'ASC')
-                ->distinct()
-                ->get()
-                ->lists('collectionName','collectionName')
-                ;
-                
+        $query = "
+            select 
+                distinct(concat(b.name, ' - ', a.collectionName)) as cName
+            from 
+                texts a, languages b 
+            where 
+                a.l1_id=b.id and a.user_id=? 
+            order by cName";
+        
+        $collections = DB::select($query, array($this->user->id));
         return $collections;
     }
     

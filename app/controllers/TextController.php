@@ -45,14 +45,20 @@ class TextController extends BaseController {
         $collections = $this->textService->findCollectionsForUser();
         
         $garray = array();
+        $carray = array();
 
         foreach ($groups as $g) {
             $garray[$g->id] = $g->name;
         }
+        
+        foreach($collections as $c) {
+            $key = str_replace(' - ', ' ', $c->cName);
+            $carray["$key"] = $c->cName;
+        }
 
         return View::make('texts.index')
                         ->with('groups', $garray)
-                        ->with('collections', $collections)
+                        ->with('collections', $carray)
                         ;
     }
 
