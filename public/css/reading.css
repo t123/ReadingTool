@@ -145,3 +145,20 @@ body {
   font-size: smaller;
   font-weight: bold;
 }
+
+#readingareainner .radio,  #readingareainner .checkbox {
+  display: inline;
+  padding-left: 0px;
+  vertical-align: baseline;
+}
+
+#readingareainner .label {
+  display: inline;
+  padding: 0px;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  border: 0;
+  white-space: inherit;
+  border-radius: 0;
+}
