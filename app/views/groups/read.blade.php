@@ -128,7 +128,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-9">
+                <div class="col-sm-12">
                     <ul class="dictionaries">
                         @foreach($language1->dictionaries as $d)
                         <li>

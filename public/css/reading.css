@@ -115,6 +115,7 @@ body {
 #textModal ul.dictionaries {
   padding: 5px 0px 5px 0px;
   margin: 0px 0px 5px 0px;
+  font-size: 13px;
 }
 #textModal ul.dictionaries li {
   margin-right: 10px;

@@ -101,7 +101,7 @@ var ModalHandler = function (routes, settings) {
 
         $('#refreshSentence').click(function () {
             self.refreshSentence();
-            self._updateDictionaries(); //Evil
+            self._updateDictionaries(true); //Evil
 			return false;
         });
 
