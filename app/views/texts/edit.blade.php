@@ -87,9 +87,11 @@ $style = $text->l2_id==null ? "display:none" : "";
         <a href="{{ action("TextController@read", $text->id) }}" class="btn btn-default">
             Read
         </a>
-        <a href="{{ action("TextController@readParallel", $text->id) }}" class="btn btn-default">
-            Read parallel
-        </a>
+        @if($text->l2_id!=null)
+            <a href="{{ action("TextController@readParallel", $text->id) }}" class="btn btn-default">
+                Read parallel
+            </a>
+        @endif
         <a href="{{ action("TextController@downloadPdf", $text->id) }}" class="btn btn-default">
             Download PDF
         </a>
