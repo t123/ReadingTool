@@ -164,5 +164,5 @@ body {
 }
 
 #readingareainner .show {
-  display: inline;
+  display: inline !important;
 }
