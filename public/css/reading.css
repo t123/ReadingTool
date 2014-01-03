@@ -162,3 +162,7 @@ body {
   white-space: inherit;
   border-radius: 0;
 }
+
+#readingareainner .show {
+  display: inline;
+}
