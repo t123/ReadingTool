@@ -166,3 +166,8 @@ body {
 #readingareainner .show {
   display: inline !important;
 }
+
+div.jp-audio a.jp-volume-max,
+div.jp-audio-stream a.jp-volume-max {
+	margin-top: auto;	
+}
