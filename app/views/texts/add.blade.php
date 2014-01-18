@@ -54,6 +54,8 @@ Texts - Add Text
 <div class="form-group {{ $errors->has('l1Text') ? 'has-error' : '' }}">
     {{ Form::label('l1Text', 'Text', array('class'=>'col-sm-2 control-label')) }}
     <div class="col-sm-8">
+        <input type="button" class="btn btn-default btn-sm" value="Toggle Line Wrapping" id="l1_wrap"/>
+        <div class="clr10"></div>
         {{ Form::textarea('l1Text', null, array('class'=>'form-control')) }}
         {{ $errors->first('l1Text') }}
     </div>
@@ -100,6 +102,11 @@ Texts - Add Text
     }
     $('#l2_id').change(function() {
         checkL2();
+    });
+    
+    $('#l1_wrap').click(function() {
+        cm_l1.setOption('lineWrapping', !cm_l1.getOption('lineWrapping'));
+        cm_l2.setOption('lineWrapping', !cm_l2.getOption('lineWrapping'));
     });
 
     var cm_l1, cm_l2;
