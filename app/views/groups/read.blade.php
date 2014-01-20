@@ -173,7 +173,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
             <div class="clr2"></div>
             <div class="row">
                 <div class="col-sm-2">Base word:</div>
-                <div class="col-sm-10"><input type="text" name="baseWord" id="baseWord" placeholder="nominative form, nominative, dictionary form etc" class="form-control input-sm" style="width: 85%"/></div>
+                <div class="col-sm-10"><input type="text" name="baseWord" id="baseWord" placeholder="nominative form, nominative, dictionary form etc" class="form-control input-sm" style="display:inline; width: 85%"/><a href="#" id="copyWord">copy</a></div>
             </div>
             <div class="clr2"></div>
             <div class="row">

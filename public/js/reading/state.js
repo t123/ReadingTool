@@ -112,6 +112,10 @@ var ModalHandler = function (routes, settings) {
         $('#btnSave').click(function () {
             self.save();
         });
+        
+        $('#copyWord').click(function () {
+            baseWord.val(word.text());
+        });
 
         $('input[type="text"], input[type="radio"]').change(function () {
             hasChanged = true;
