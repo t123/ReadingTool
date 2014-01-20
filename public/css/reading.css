@@ -172,3 +172,7 @@ div.jp-audio a.jp-volume-max,
 div.jp-audio-stream a.jp-volume-max {
 	margin-top: auto;	
 }
+
+.tooltip-inner {
+    max-width: 450px !important;
+}
