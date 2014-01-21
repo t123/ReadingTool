@@ -161,7 +161,7 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
                 <div class="col-sm-7">
                     <ul class="states">
                         <li class="known"><input type="radio" name="state" id="knownState" value="known"/>known</li>
-                        <li class="notknown"><input type="radio" name="state" id="unknownState" value="unknown"/>not known</li>
+                        <li class="notknown"><input type="radio" name="state" id="unknownState" value="unknown" tabindex="1"/>not known</li>
                         <li class="notseen"><input type="radio" name="state" id="notseenState" value="notseen"/>not seen</li>
                         <li class="ignore"><input type="radio" name="state" id="ignoredState" value="ignore"/>ignore</li>
                     </ul>
@@ -169,30 +169,30 @@ $readAction = $asParallel ? "TextController@readParallel" : "TextController@read
             </div>
             <div class="row">
                 <div class="col-sm-2">Sentence:</div>
-                <div class="col-sm-10"><input type="text" name="currentSentence" id="currentSentence" class="form-control input-sm" style="display:inline; width: 85%"/><a href="#" id="refreshSentence">refresh</a></div>
+                <div class="col-sm-10"><input type="text" name="currentSentence" id="currentSentence" class="form-control input-sm" style="display:inline; width: 85%" tabindex="2"/><a href="#" id="refreshSentence" tabindex="-1">refresh</a></div>
             </div>
             <div class="clr2"></div>
             <div class="row">
                 <div class="col-sm-2">Base word:</div>
-                <div class="col-sm-10"><input type="text" name="baseWord" id="baseWord" placeholder="nominative form, nominative, dictionary form etc" class="form-control input-sm" style="display:inline; width: 85%"/><a href="#" id="copyWord">copy</a></div>
+                <div class="col-sm-10"><input type="text" name="baseWord" id="baseWord" placeholder="nominative form, nominative, dictionary form etc" class="form-control input-sm" style="display:inline; width: 85%" tabindex="3"/><a href="#" tabindex="-1" id="copyWord">copy</a></div>
             </div>
             <div class="clr2"></div>
             <div class="row">
                 <div class="col-sm-2">Definition:</div>
-                <div class="col-sm-10"><textarea name="definition" id="definition" rows="3" placeholder="your definition of the word" class="form-control input-sm" style="width: 85%"></textarea></div>
+                <div class="col-sm-10"><textarea name="definition" id="definition" rows="3" placeholder="your definition of the word" class="form-control input-sm" style="width: 85%" tabindex="4"></textarea></div>
             </div>
             <div class="clr2"></div>
             <div class="row">
                 <div class="col-sm-2">Tags:</div>
-                <div class="col-sm-10"><input type="text" name="tags" id="tags" placeholder="comma separated list of tags" class="form-control input-sm" style="width: 85%"/></div>
+                <div class="col-sm-10"><input type="text" name="tags" id="tags" placeholder="comma separated list of tags" class="form-control input-sm" style="width: 85%" tabindex="5"/></div>
             </div>
             <div class="clr2"></div>
             <div class="row">
                 <div class="col-sm-9" id="saveMessage">
                 </div>
                 <div class="col-sm-3">
-                    <button id="btnSave" title="ctrl-enter to save" class="btn btn-primary btn-sm">save</button>
-                    <button id="btnReset" title="reset" class="btn btn-default btn-sm">reset</button>
+                    <button id="btnSave" title="ctrl-enter to save" class="btn btn-primary btn-sm" tabindex="6">save</button>
+                    <button id="btnReset" title="reset" class="btn btn-default btn-sm" tabindex="7">reset</button>
                 </div>
             </div>
         </div>
