@@ -176,3 +176,8 @@ div.jp-audio-stream a.jp-volume-max {
 .tooltip-inner {
     max-width: 450px !important;
 }
+
+#readingareainner .nav, #readingareainner .nav:before, #readingareainner .nav:after {
+    content: initial;
+    display: inline;
+}
