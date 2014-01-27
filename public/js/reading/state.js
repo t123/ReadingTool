@@ -102,7 +102,7 @@ var ModalHandler = function (routes, settings) {
         $('#refreshSentence').click(function () {
             self.refreshSentence();
             self._updateDictionaries(true); //Evil
-			return false;
+            return false;
         });
 
         $('#btnReset').click(function () {
@@ -115,6 +115,7 @@ var ModalHandler = function (routes, settings) {
         
         $('#copyWord').click(function () {
             baseWord.val(word.text());
+            return false;
         });
 
         $('input[type="text"], input[type="radio"]').change(function () {

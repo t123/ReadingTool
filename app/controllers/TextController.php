@@ -224,6 +224,11 @@ class TextController extends BaseController {
 
     public function readParallel($id) {
         $text = $this->textService->find($id);
+        
+        if($text->l2_id==null) {
+            return Redirect::action('TextController@read', array('id' => $id));
+        }
+        
         $terms = $this->termService->findAllForLanguage($text->language1->id);
 
         $parsed = $this->parserService->parse(
