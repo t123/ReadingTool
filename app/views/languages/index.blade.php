@@ -10,6 +10,7 @@ Languages
         <tr> 
             <th>Name</th>
             <th>Code</th>
+            <th>Archived?</th>
             <th class="form">&nbsp;</th>
             <th class="form">&nbsp;</th>
         </tr>
@@ -19,6 +20,7 @@ Languages
         <tr>
             <td>{{{ $l->name }}}</td>
             <td>{{{ $l->code }}}</td>
+            <td>{{{ $l->archived ? "Yes" : "No" }}}</td>
             <td>
                 <a href="{{ action("LanguageController@edit", $l->id) }}" class="btn btn-default">edit</a>
             </td>
