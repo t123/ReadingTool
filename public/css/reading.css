@@ -13,6 +13,12 @@
   border-bottom: 1px dotted #ababab
 }
 
+/*Known words with definition*/
+#readingareainner span._kd {
+  background-color: white;
+  border-bottom: 1px dotted #ababab
+}
+
 /* General font and background colour*/
 #readingareainner {
   font-size: 1.2em;

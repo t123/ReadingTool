@@ -44,6 +44,9 @@
                         <xsl:text> </xsl:text>
                         <xsl:value-of select='@new' />
                         <xsl:text> </xsl:text>
+                        <xsl:if test="string-length(@data)>0 and @state='_k'">
+                            <xsl:text> _kd</xsl:text>
+                        </xsl:if>
                     </xsl:attribute>
                     <xsl:choose>
                         <xsl:when test="@data">
