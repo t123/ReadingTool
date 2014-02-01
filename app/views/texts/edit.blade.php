@@ -45,37 +45,30 @@ Texts - Edit Text
 </div>
 <div class="form-group {{ $errors->has('l1_id') ? 'has-error' : '' }}">
     {{ Form::label('l1_id', 'Language 1', array('class'=>'col-sm-2 control-label')) }}
-    <div class="col-sm-8">
+    <div class="col-sm-3">
         {{ Form::select('l1_id', $languages, null, array('class'=>'form-control')) }}
         {{ $errors->first('l1_id') }}
-     </div>
-</div>
-
-<div class="form-group {{ $errors->has('l1Text') ? 'has-error' : '' }}">
-    {{ Form::label('l1Text', 'Text', array('class'=>'col-sm-2 control-label')) }}
-    <div class="col-sm-8">
-        <input type="button" class="btn btn-default btn-sm" value="Toggle Line Wrapping" id="l1_wrap"/>
-        <div class="clr10"></div>
-        {{ Form::textarea('l1Text', null, array('class'=>'form-control')) }}
-        {{ $errors->first('l1Text') }}
     </div>
-</div>
-
-<div class="form-group {{ $errors->has('l2_id') ? 'has-error' : '' }}">
+    <div class="col-sm-1"></div>
     {{ Form::label('l2_id', 'Language 2', array('class'=>'col-sm-2 control-label')) }}
-    <div class="col-sm-8">
+    <div class="col-sm-3">
         {{ Form::select('l2_id', array(''=>'None')+$languages, null, array('class'=>'form-control')) }}
         {{ $errors->first('l2_id') }}
     </div>
 </div>
 
-<?php
-$style = $text->l2_id==null ? "display:none" : "";
-?>
-<div class="form-group {{ $errors->has('l2Text') ? 'has-error' : '' }}" id="l2textcontrol" style="{{ $style }}">
-    {{ Form::label('l2Text', 'Parallel Text', array('class'=>'col-sm-2 control-label')) }}
-    <div class="col-sm-8">
-        {{ Form::textarea('l2Text', null, array('class'=>'form-control')) }}
+<div class="form-group {{ $errors->has('l1Text') ? 'has-error' : '' }}">
+    <input type="button" class="btn btn-default btn-sm col-sm-offset-2" value="Toggle Line Wrapping" id="l1_wrap"/>
+    <div class="clr10"></div>
+    <div class="col-sm-6" id="l1textcontrol">
+        {{ Form::textarea('l1Text', null, array('class'=>'form-control', 'id'=>'l1Text')) }}
+        {{ $errors->first('l1Text') }}
+    </div>
+    <?php
+    $style = $text->l2_id==null ? "display:none" : "";
+    ?>
+    <div class="col-sm-6" style="{{ $style }}" id="l2textcontrol">
+        {{ Form::textarea('l2Text', null, array('class'=>'form-control', 'id'=>'l2Text')) }}
         {{ $errors->first('l2Text') }}
     </div>
 </div>
@@ -112,10 +105,13 @@ $style = $text->l2_id==null ? "display:none" : "";
     function checkL2() {
         if ($('#l2_id').val() == '') {
             $('#l2textcontrol').hide();
+            $('#l1textcontrol').removeClass('col-sm-6').addClass('col-sm-12');
         } else {
             $('#l2textcontrol').show();
+            $('#l1textcontrol').removeClass('col-sm-12').addClass('col-sm-6');
         }
     }
+    
     $('#l2_id').change(function() {
         checkL2();
     });
@@ -138,6 +134,8 @@ $style = $text->l2_id==null ? "display:none" : "";
             lineNumbers: true,
             lineWrapping: false
         });
+        
+        checkL2();
     });
 </script>
 @stop
