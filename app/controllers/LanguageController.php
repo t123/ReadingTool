@@ -88,6 +88,7 @@ class LanguageController extends BaseController {
         $language = $this->languageService->find($id);
         $language->name = Input::get('name');
         $language->code = Input::get('code');
+        $language->archived = Input::get('archived') == "on";
         $language->settings = json_encode(
                 array(
                     'ModalBehaviour' => Input::get('ModalBehaviour'),

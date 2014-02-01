@@ -80,7 +80,7 @@ class TextService implements ITextService {
             from 
                 texts a, languages b 
             where 
-                a.l1_id=b.id and a.user_id=? 
+                a.l1_id=b.id and a.user_id=? and b.archived=0 
             order by cName";
         
         $collections = DB::select($query, array($this->user->id));
@@ -128,7 +128,8 @@ class TextService implements ITextService {
             ";
         $xtra = "";
         $having = "";
-
+        $pieces = 0;
+        
         foreach (explode(' ', $filter) as $piece) {
             $piece = trim(mb_strtolower($piece));
 
@@ -147,9 +148,14 @@ class TextService implements ITextService {
                 }
             } else {
                 $xtra .= " and (a.title like '%$piece%' or a.collectionName like '%$piece%' or c.name='$piece') ";
+                $pieces++;
             }
         }
 
+        if($pieces==0) {
+            $xtra .= " and c.archived=0 ";
+        }
+        
         $query .= $xtra . $having;
         $startPage = $perPage * ($currentPage - 1);
         $sortDirQ = empty($sortDir) || $sortDir == 0 ? " ASC" : " DESC";

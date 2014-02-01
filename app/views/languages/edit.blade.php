@@ -47,6 +47,13 @@ $json = json_decode($language==null ? "" : $language->settings);
         {{ $errors->first('Modal') }}
     </div>
 </div>
+<div class="form-group {{ $errors->has('archived') ? 'has-error' : '' }}">
+    {{ Form::label('archived', 'Archive language?', array('class'=>'col-sm-2 control-label')) }}
+    <div class="col-sm-8">
+        {{ Form::checkbox('archived', null) }}
+        {{ $errors->first('archived') }}
+    </div>
+</div>
 
 <legend>Parser Settings</legend>
 <div class="alert alert-block alert-info">
