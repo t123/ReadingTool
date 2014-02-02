@@ -579,7 +579,12 @@ var ModalHandler = function (routes, settings) {
         }
 
         currentLength = data.length;
-        $('[name=state][value=' + data.state + ']').prop('checked', 'true');
+        
+        if(data.state=='ignored') {
+            $('[name=state][value="ignore"]').prop('checked', 'true');
+        } else {
+            $('[name=state][value=' + data.state + ']').prop('checked', 'true');
+        }
     };
 
     self._updateModalLocaion = function () {
