@@ -420,7 +420,8 @@ var ModalHandler = function (routes, settings) {
             var url = anchor.data('url');
             var auto = anchor.data('autoopen');
             var input = parameter == true ? sentence.val() : self._currentWordFromSpan(currentElement);
-            if (ignoreAutopen || auto == undefined) {
+            
+            if (ignoreAutopen || auto == undefined || $('input[name="state"]:checked').val()=='known'){
                 auto = false;
             }
 
