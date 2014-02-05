@@ -35,7 +35,7 @@ use RT\Core\FlashMessage;
                     <ul class="nav navbar-nav navbar-right navbar-user">
                         @if(!Request::secure())
                             <li class="dropdown messages-dropdown">
-                                <a href="{{ str_replace('http://', 'https://', Request::url()) }}">switch to https</a>
+                                <a href="{{ str_replace('http://', 'https://', Request::url()) }}" class="https">switch to https</a>
                             </li>
                         @endif
                         <li class="dropdown messages-dropdown">

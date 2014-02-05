@@ -177,3 +177,12 @@ td.form {
 .CodeMirror {
   border: 1px solid #cecece;
 }
+
+.https {
+	color: #fff !important;
+	font-weight: bold;
+}
+
+a.https:hover {
+	text-decoration: underline !important;
+}
