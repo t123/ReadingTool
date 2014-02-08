@@ -16,7 +16,7 @@ Texts
             placeholder="search for language, title, collection name or these tags: #shared, #audio, #parallel" />
     </div>
     <div class="col-md-3">
-        {{ Form::select('collections', $collections, null, array('class'=>'form-control input-sm', 'id'=>'collections', 'onchange'=>'changeCollection()')) }}
+        {{ Form::select('collections', array(''=>'Choose a collection')+$collections, null, array('class'=>'form-control input-sm', 'id'=>'collections', 'onchange'=>'changeCollection()')) }}
     </div>
     <div class="col-md-2">
         <select class="form-control input-sm" name="rowsPerPage" id="rowsPerPage">

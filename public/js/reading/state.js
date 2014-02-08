@@ -30,11 +30,22 @@ var ModalHandler = function (routes, settings) {
             self.close();
         });
 
-        $('#readingareainner p span span').live('contextmenu', function (e) {
-            return settings.modalBehaviour != '5'; //right click
+        $('#readingareainner p span span').live('contextmenu', function (event) {
+            if($(this).hasClass('pcx') || $(this).hasClass('wsx')) {
+                return;
+            }
+            
+            if(settings.modalBehaviour==5) {//right click
+                self.open(event.target || event.srcElement || event.originalTarget);
+                return false;
+            }
         });
 
         $('#readingareainner p span span').live('mousedown', function (event) {
+            if($(this).hasClass('pcx') || $(this).hasClass('wsx')) {
+                return;
+            }
+            
             if (textModal.is(":visible")) {
                 if (!hasChanged) {
                     self.close();
