@@ -18,6 +18,7 @@ var ModalHandler = function (routes, settings) {
 
     var hasChanged = false;
     var currentElement;
+    var wasPlaying = false;
 
     self.init = function () {
         $('#textModalCloseLink').hover(function () {
@@ -301,12 +302,14 @@ var ModalHandler = function (routes, settings) {
         termId.val('0');
         textModal.hide();
 
-        if (settings.hasAudio) {
+        if (settings.hasAudio && wasPlaying) {
             jPlayer.jPlayer("play", jPlayer.data().jPlayer.status.currentTime - 1);
         }
     };
 
     self.open = function (element) {
+        wasPlaying = !jPlayer.data().jPlayer.status.paused;
+        
         if (settings.hasAudio) {
             jPlayer.jPlayer('pause');
         }
