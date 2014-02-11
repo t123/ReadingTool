@@ -308,7 +308,7 @@ var ModalHandler = function (routes, settings) {
     };
 
     self.open = function (element) {
-        wasPlaying = !jPlayer.data().jPlayer.status.paused;
+        wasPlaying = jPlayer.data()==null ? false : !jPlayer.data().jPlayer.status.paused;
         
         if (settings.hasAudio) {
             jPlayer.jPlayer('pause');
