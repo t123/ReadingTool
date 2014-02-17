@@ -145,6 +145,8 @@ class TextService implements ITextService {
                     $xtra .= ' and length(a.audioUrl)>0 ';
                 } else if ($tag == 'shared') {
                     $having = ' having isShared=1 ';
+                } else if($tag == 'unread') {
+                    $xtra .= ' and a.lastread is null ';
                 }
             } else {
                 $xtra .= " and (a.title like '%$piece%' or a.collectionName like '%$piece%' or c.name='$piece') ";

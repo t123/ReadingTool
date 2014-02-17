@@ -13,7 +13,7 @@ Texts
             id="filter"
             type="text" 
             class="form-control input-sm" 
-            placeholder="search for language, title, collection name or these tags: #shared, #audio, #parallel" />
+            placeholder="search for language, title, collection name or these tags: #shared, #audio, #parallel, #unread" />
     </div>
     <div class="col-md-3">
         {{ Form::select('collections', array(''=>'Choose a collection')+$collections, null, array('class'=>'form-control input-sm', 'id'=>'collections', 'onchange'=>'changeCollection()')) }}
