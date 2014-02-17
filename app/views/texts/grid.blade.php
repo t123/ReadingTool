@@ -76,6 +76,13 @@
     </tbody>
 </table>
 <div class="text-center">
+    <div class="row">
+        <div class="col-md-4">
+            Total Matching Texts: <strong>{{ $count }}</strong>
+        </div>
+    </div>
+</div>
+<div class="text-center">
     <div class="pagination pagination-sm">
         @if($currentPage==1)
             <li class="active"><a href="#">first page</a></li>

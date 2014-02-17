@@ -94,6 +94,7 @@ class TextController extends BaseController {
                 ->with('texts', $tarray)
                 ->with('currentPage', $currentPage)
                 ->with('pages', $pages)
+                ->with('count', $result['count'])
                 ->__toString()
         ;
 
