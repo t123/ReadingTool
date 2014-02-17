@@ -147,6 +147,8 @@ class TextService implements ITextService {
                     $having = ' having isShared=1 ';
                 } else if($tag == 'unread') {
                     $xtra .= ' and a.lastread is null ';
+                } else if($tag == 'read') {
+                    $xtra .= ' and a.lastread is not null ';
                 }
             } else {
                 $xtra .= " and (a.title like '%$piece%' or a.collectionName like '%$piece%' or c.name='$piece') ";
