@@ -10,12 +10,16 @@
 /*Ignored words/not seen words*/
 #readingareainner span._i {
   background-color: white;
-  border-bottom: 1px dotted #ababab
 }
 
 /*Known words with definition*/
 #readingareainner span._kd {
   background-color: white;
+  border-bottom: 1px dotted #ababab
+}
+
+/*Ignored words/not seen words with definition*/
+#readingareainner span._id {
   border-bottom: 1px dotted #ababab
 }
 

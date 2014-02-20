@@ -508,7 +508,7 @@ var ModalHandler = function (routes, settings) {
 
     self._updateTips = function (data) {
         $('#readingareainner .' + data.phrase)
-                        .removeClass('_k _kd _u _n _i box1 box2 box3 box4 box5 box6 box7 box8 box9')
+                        .removeClass('_k _kd _u _n _i _id box1 box2 box3 box4 box5 box6 box7 box8 box9')
                         .addClass(data.stateClass);
 
         var tempDef = data.basePhrase.length > 0 ? data.basePhrase + "<br/>" : '';
@@ -523,6 +523,8 @@ var ModalHandler = function (routes, settings) {
     
             if(tempDef.length>0 && data.stateClass=="_k") {
                 $(this).addClass("_kd");
+            } else if(tempDef.length>0 && data.stateClass=="_i") {
+                $(this).addClass("_id");
             }
         });
     };
