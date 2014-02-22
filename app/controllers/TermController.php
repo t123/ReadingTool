@@ -122,14 +122,14 @@ class TermController extends BaseController {
 
         $term->save();
 
-        Session::flash(FlashMessage::MSG, new FlashMessage('Your term has been updated.'));
+        Session::flash(FlashMessage::MSG, new FlashMessage('Your term has been updated.', FlashMessage::SUCCESS));
 
         return Redirect::action('TermController@edit', array('id' => $id));
     }
 
     public function postDelete($id) {
         $this->termService->delete($id);
-        Session::flash(FlashMessage::MSG, new FlashMessage('Your term has been deleted.'));
+        Session::flash(FlashMessage::MSG, new FlashMessage('Your term has been deleted.', FlashMessage::SUCCESS));
         return Redirect::action('TermController@index');
     }
 
