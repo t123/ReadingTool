@@ -60,6 +60,7 @@ Texts - Add Text
 
 <div class="form-group {{ $errors->has('l1Text') ? 'has-error' : '' }}">
     <input type="button" class="btn btn-default btn-sm col-sm-offset-2" value="Toggle Line Wrapping" id="l1_wrap"/>
+    <input type="button" class="btn btn-default btn-sm col-sm-offset-2" value="Toggle Height" id="l1_height"/>
     <div class="clr10"></div>
     <div class="col-sm-6" id="l1textcontrol">
         {{ Form::textarea('l1Text', null, array('class'=>'form-control', 'id'=>'l1Text')) }}
@@ -104,8 +105,20 @@ Texts - Add Text
         cm_l1.setOption('lineWrapping', !cm_l1.getOption('lineWrapping'));
         cm_l2.setOption('lineWrapping', !cm_l2.getOption('lineWrapping'));
     });
-
-    var cm_l1, cm_l2;
+    
+    $('#l1_height').click(function() {
+        if(height) {
+            cm_l1.setSize(null, 500);
+            cm_l2.setSize(null, 500);
+        } else {
+            cm_l1.setSize(null, 300);
+            cm_l2.setSize(null, 300);
+        }
+        
+        height = !height;
+    });
+    
+    var cm_l1, cm_l2, height = true;
     $(function() {
         cm_l1 = CodeMirror.fromTextArea(document.getElementById("l1Text"), {
             mode: "plain/text",
