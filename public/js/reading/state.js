@@ -320,6 +320,7 @@ var ModalHandler = function (routes, settings) {
         self._buildCurrentPopup();
         self._updateModalLocaion();
         self._load();
+        hasChanged = false;
     };
 
     self.refreshSentence = function () {
