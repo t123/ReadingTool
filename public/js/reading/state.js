@@ -580,7 +580,6 @@ var ModalHandler = function (routes, settings) {
                 selection.removeAllRanges();
                 range.selectNodeContents(word[0]);
                 selection.addRange(range);
-                $('#baseWord').focus();
             }, 25);
     };
 
