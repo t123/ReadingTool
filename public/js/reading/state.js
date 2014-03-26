@@ -81,6 +81,7 @@ var ModalHandler = function (routes, settings) {
                     default: return;
                 }
 
+                hasChanged = false;
                 self.open(event.target || event.srcElement || event.originalTarget);
             }
         });
