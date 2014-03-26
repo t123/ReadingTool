@@ -573,6 +573,15 @@ var ModalHandler = function (routes, settings) {
                 $('#btnReset').show();
             });
         }
+        
+        setTimeout(function(){
+                var range = document.createRange();
+                var selection = window.getSelection();
+                selection.removeAllRanges();
+                range.selectNodeContents(word[0]);
+                selection.addRange(range);
+                $('#baseWord').focus();
+            }, 25);
     };
 
     self._populateModal = function (data) {
