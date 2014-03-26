@@ -47,43 +47,44 @@ var ModalHandler = function (routes, settings) {
                 return;
             }
             
-            if (textModal.is(":visible")) {
-                if (!hasChanged) {
-                    self.close();
-                }
-            } else {
-                switch (settings.modalBehaviour) {
-                    case '1': //leftclick
-                        if (event.which != 1) return;
-                        if (event.altKey || event.shiftKey || event.ctrlKey) return;
-                        break;
-
-                    case '2': //ctrlleftclick
-                        if (event.which != 1 || !event.ctrlKey) return;
-                        if (event.altKey || event.shiftKey) return;
-                        break;
-
-                    case '3': //shiftleftclick
-                        if (event.which != 1 || !event.shiftKey) return;
-                        if (event.altKey || event.ctrlKey) return;
-                        break;
-
-                    case '4': //middleclick
-                        if (event.which != 2) return;
-                        if (event.altKey || event.shiftKey || event.ctrlKey) return;
-                        break;
-
-                    case 'rightclick':
-                        if (event.which != 3) return;
-                        if (event.altKey || event.shiftKey || event.ctrlKey) return;
-                        break;
-
-                    default: return;
-                }
-
-                hasChanged = false;
-                self.open(event.target || event.srcElement || event.originalTarget);
+            if (textModal.is(":visible") && hasChanged) {
+                return;
             }
+            switch (settings.modalBehaviour) {
+                case '1': //leftclick
+                    if (event.which != 1) return;
+                    if (event.altKey || event.shiftKey || event.ctrlKey) return;
+                    break;
+
+                case '2': //ctrlleftclick
+                    if (event.which != 1 || !event.ctrlKey) return;
+                    if (event.altKey || event.shiftKey) return;
+                    break;
+
+                case '3': //shiftleftclick
+                    if (event.which != 1 || !event.shiftKey) return;
+                    if (event.altKey || event.ctrlKey) return;
+                    break;
+
+                case '4': //middleclick
+                    if (event.which != 2) return;
+                    if (event.altKey || event.shiftKey || event.ctrlKey) return;
+                    break;
+
+                case 'rightclick':
+                    if (event.which != 3) return;
+                    if (event.altKey || event.shiftKey || event.ctrlKey) return;
+                    break;
+
+                default: return;
+            }
+
+            if (textModal.is(":visible")) {
+                self.close();
+            }
+
+            hasChanged = false;
+            self.open(event.target || event.srcElement || event.originalTarget);
         });
 
         if (isIpad) {
