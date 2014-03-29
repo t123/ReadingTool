@@ -555,6 +555,7 @@ var ModalHandler = function (routes, settings) {
             self._populateModal(data);
             self._updateDictionaries();
             message.html(data.message);
+            self._selectText();
         } else {
             message.html('<strong>Fetching word....</strong>');
             $('#btnSave').hide();
@@ -574,16 +575,19 @@ var ModalHandler = function (routes, settings) {
                 message.html(data.message);
                 $('#btnSave').show();
                 $('#btnReset').show();
+                self._selectText();
             });
         }
-        
+    };
+    
+    self._selectText = function() {
         setTimeout(function(){
                 var range = document.createRange();
                 var selection = window.getSelection();
                 selection.removeAllRanges();
                 range.selectNodeContents(word[0]);
                 selection.addRange(range);
-            }, 25);
+            }, 125);
     };
 
     self._populateModal = function (data) {
@@ -603,6 +607,7 @@ var ModalHandler = function (routes, settings) {
         if (data.sentence == '') {
             self.refreshSentence();
             self._updateDictionaries();
+            hasChanged = false;
         }
 
         currentLength = data.length;
